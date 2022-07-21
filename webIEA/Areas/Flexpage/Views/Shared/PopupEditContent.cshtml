@@ -1,0 +1,82 @@
+﻿@model Flexpage.Models.BlockCommandModel
+@{ 
+    var id = "fp_BlockEditorContainer_" + Model.IDPostfix;
+}
+<script>console.log("popupeditcontent opened");</script>
+<div id=@("fp_BlockEditorContainer_" + Model.IDPostfix)>
+    @Html.Action((!string.IsNullOrEmpty(Model.Action) ? Model.Action : "GetBlockSettingsView"), (!string.IsNullOrEmpty(Model.Controller) ? Model.Controller : "Admin"), Model)
+</div>
+<div class="popup-message-area" id="popup-message-area">
+    <div class="popup-message-area-text" id="popup-message-area-text"></div>
+</div>
+<div class="new_footer_content">
+    <div class="col-md-6 pull-left left">
+        <!-- <a href=""><img src="/areas/flexpage/content/images/icons/revert.svg" alt=""> Restore previous version</a> -->
+    </div>
+    <div class="col-md-6 pull-right right fp_popupButtonsContainer" style="@(Model.AllowSave == 0 ? "visibility: hidden" : "")">
+        <a href="javascript:void(0)" id=@("fp_BlockEditorSaveBtn_" + Model.IDPostfix) onclick="fp_saveBlock('@Model.IDPostfix', '@Model.BlocklistID', '@Model.BlockAfter', '@Model.Parameters')">
+            @(string.IsNullOrWhiteSpace(Model.OneButtonText) ? "SAVE" : Model.OneButtonText)
+        </a>
+        <button id=@("fp_BlockEditorCloseBtn_" + Model.IDPostfix) aria-label="Close" onclick="fp_beforeClosePopUp(this, @Model.IDPostfix)">CANCEL</button>
+    </div>
+</div>
+<input type="hidden" id=@("formsForTracking" + Model.IDPostfix)>
+<script type="text/javascript">
+    @*$("#@("fp_BlockEditorCloseBtn_" + Model.IDPostfix)").on("click", function (e) {
+        e.preventDefault();
+    });*@
+    $(document).ready(function () {
+        fp_PopupTogglePleaseWaitDiv("#@id", "none");
+        var popup = $("#flexpage-popup-control_" + @Model.IDPostfix);
+        if (popup.find("#in-editor-modal-header-content").length > 0) {
+            var detachedChilds = popup.find("#in-editor-modal-header-content").children().detach();
+            popup.find(".modal-header").html('');
+            popup.find(".modal-header").append(detachedChilds);
+        }
+
+        if (popup.find("#in-editor-modal-footer-content").length > 0) {
+            var detachedChilds = popup.find("#in-editor-modal-footer-content").children().detach();
+            popup.find(".modal-footer:not(.not-replace)").html('');
+            popup.find(".modal-footer:not(.not-replace)").append(detachedChilds);
+            popup.find(".new_footer_content").remove();
+        } else {
+            var detachedChilds = popup.find('.new_footer_content').children().detach();
+            popup.find(".modal-footer:not(.not-replace)").html('');
+            popup.find(".modal-footer:not(.not-replace)").append(detachedChilds);
+        }
+
+        fp_TrackInitialize(false);
+    });
+
+    function fp_TrackInitialize(isDirty) {
+        $('#@("fp_PopupContent_" + Model.IDPostfix)').find('[fortraking]').each(function () {
+            let formID = $(this).attr('id');
+            let trackType = $(this).attr('fortraking');
+
+            if (formID) {
+                if (trackType === 'all') {
+                    $('#' + formID + ' input:text').addClass('tracked');
+                    $('#' + formID + ' input:checkbox').addClass('tracked');
+                    $('#' + formID + ' input:radio').addClass('tracked');
+                    $('#' + formID + ' textarea').addClass('tracked');
+                    $('#' + formID + ' select').addClass('tracked');
+                }
+
+                $('#' + formID).track();
+                if (isDirty) {
+                    $('#' + formID).find('.tracked').each(function () {
+                        $(this).addClass('tracker-dirty');
+                    });
+                }
+
+                //$('#' + formID).trigger('reinitialize.tracker');
+            }
+        });
+    }
+
+    function fp_DevControlChanged(s, e) {
+        s.GetMainElement().className = s.GetMainElement().className.concat(' tracker-dirty');
+        //$('#@("fp_PopupContent_" + Model.IDPostfix)').find('.tracked').addClass('tracker-dirty');
+    }   
+
+</script>

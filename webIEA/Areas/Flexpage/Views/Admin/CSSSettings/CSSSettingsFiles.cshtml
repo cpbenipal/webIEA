@@ -1,0 +1,12 @@
+﻿@model  Flexpage.Abstract.DTO.CSSSettingsModel
+
+<div id="fp_CssSettingFiles" class="fp_CssSettingFiles">
+    @for (var index = 0; index < Model.CssSettingFiles.Count(); index++)
+    {
+            @Html.Partial("~/Areas/Flexpage/Views/Admin/CSSSettings/CSSSettingsFile.cshtml", Model.CssSettingFiles[index],
+            new ViewDataDictionary{
+                { "Index", index }
+            })
+    }
+</div>
+

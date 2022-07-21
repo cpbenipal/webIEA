@@ -1,0 +1,69 @@
+﻿@using Flexpage.Abstract.DTO
+@model WizardUserViewModel
+
+@{
+    string containerID = $"fp_wizard_{Model.ID}";
+
+    if(Session["BlockTypes"] == null)
+    {
+        Session["BlockTypes"] = new HashSet<eBlockType>();
+    }
+    var staticBlocks = Session["BlockTypes"] as HashSet<Flexpage.Abstract.DTO.eBlockType>;
+}
+
+
+@using(Ajax.BeginForm("SubmitWizardStep", "WizardBlock", null,
+    new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = containerID
+    },
+    new { id = $"{containerID}_form" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.CurrentStep)
+    @Html.HiddenFor(m => m.SessionID)
+
+    int formsIdx = 0;
+    for(int i = 0; i < Model.Blocks.Count; i++)
+    {
+        // add blocks into dictionary to load resources
+        var blockTypeName = Model.Blocks[i].GetType().Name.Replace("Model", "");
+        staticBlocks.Add((eBlockType)Enum.Parse(typeof(eBlockType), blockTypeName));
+
+        if(Model.Blocks[i].BlockType == "WebForm" && Model is Flexpage.Models.WizardExtension)
+        {
+            @Html.EditorFor(m => ((Flexpage.Models.WizardExtension)m).FormSections[formsIdx], "../../../Areas/Flexpage/Views/Flexpage/WizardFormSection", new { sectionIndex = i, ReadOnlyMode = Model.ReadOnlyMode });
+            formsIdx++;
+        }
+        else
+        {
+            if(String.IsNullOrWhiteSpace(Model.CustomView))
+            {
+                Html.RenderPartial(String.Format("~/Areas/Flexpage/Views/Flexpage/{0}.cshtml", blockTypeName), Model.Blocks[i]);
+            }
+            else
+            {
+                Html.RenderPartial(String.Format("~/Areas/Flexpage/Views/Flexpage/CustomViews/{0}.cshtml", Model.CustomView), Model.Blocks[i]);
+            }
+        }
+    }
+
+    <div class="row">
+        @Html.HiddenFor(m => m.Command)
+        @Html.HiddenFor(m => m.Arguments)
+        <div class="col-md-6">
+            @if(Model.CurrentStep > 1 && Model.CurrentStep < Model.StepsCount && !Model.FirstLoad)
+            {
+                <a href="javascript:void(0)" class="btn btn-blue-fullcolor-radius" onclick="fp_wizard_beforeSubmit(this, 'prev')">Prev</a>
+            }
+        </div>
+        <div class="col-md-6 text-right">
+            @if(Model.CurrentStep < Model.StepsCount && !Model.FirstLoad)
+            {
+                <a href="javascript:void(0)" class="btn btn-blue-fullcolor-radius" onclick="fp_wizard_beforeSubmit(this, 'next')">Next</a>
+            }
+        </div>
+    </div>
+}

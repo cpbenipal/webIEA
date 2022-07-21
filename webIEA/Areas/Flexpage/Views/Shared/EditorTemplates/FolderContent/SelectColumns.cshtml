@@ -1,0 +1,115 @@
+﻿@using System.Web.Mvc.Html
+@model Pluritech.Properties.Abstract.DTO.ContactsTreeList
+
+@{
+    Layout = "~/Areas/Flexpage/Views/Shared/_PopupLayout.cshtml";
+}
+
+<div class="modal fade" id="flexpage-popup-control_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Select Columns</h3>
+                <button type="button" class="close" aria-label="Close" onclick="fp_beforeClosePopUp(this, 1)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body" style="min-height:400px;">
+                @using (Ajax.BeginForm("ExportContacts", "Export", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "model-body" }, new { @id = "fp_BlockEditorForm", @role = "form" }))
+                {
+                    @Html.Hidden("folderId", ViewData["folderId"])
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FolderContent/_SelectColumnTreeList.cshtml", Model);
+                }
+            </div>
+            <div class="modal-footer" id="flexpage-modal-footer_1">
+                <div class="col-md-6 pull-left left">
+                </div>
+                <div class="col-md-6 pull-right right">
+                    <a href="javascript:void(0)" id="action-save">OK</a>
+                    <a href="javascript:void(0)" aria-label="Close" onclick="fp_beforeClosePopUp(this, 1)">CANCEL</a>
+                </div>
+            </div>
+        </div>
+        <div style="display: none; z-index: 1000; position: absolute;  top: 50%; left: 50%; transform: perspective(1px) translateY(-50%) translateX(-50%); text-align: center; width: 256px; height: 100px; opacity: 0.8; background-color: #23598e" id="pleaseWaitDiv">
+            <span style="display: block; opacity: 1; color: #ffffff; font-size: x-large; padding-top: 33px">
+                Please, wait ...
+            </span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var subNodes;
+    var parentNodes;
+    function fp_exportInit(s, e) {
+        subNodes = JSON.parse(s.cpNodes);
+        parentNodes = JSON.parse(s.cpParentNodes);
+    }
+
+    $(function() {
+        var popup = $('.modal');
+        popup.modal();
+
+        $('.modal').on('hidden.bs.modal',
+            function() {
+                setTimeout(function() {
+                        window.parent.flexpage.onClose();
+                    },
+                    1000);
+            });
+
+        $("#action-save").click(function(parameters) {
+            var arr = ['Id', 'ParentId', 'Name', 'ParentType'];
+            SettingsTreeList.GetSelectedNodeValues(arr,
+                function(value) {
+
+                    if (value.length === 0)
+                        return;
+
+                    var obj = [];
+                    for (var i = 0; i < value.length; i++) {
+                        var subNode = subNodes.find(el => el.Id === value[i][0]);
+                        if (typeof subNode !== 'undefined') {
+                            if (!obj.some(el => el.Id === subNode.ParentId)) {
+                                var parent = parentNodes.find(el => el.Id === subNode.ParentId)
+                                obj.push({
+                                    Id: parent.Id,
+                                    ParentId: parent.ParentId,
+                                    Name: parent.Name,
+                                    IsSelect: false,
+                                    ParentType: parent.ParentType
+                                });
+                            }
+                        };
+                        if (!obj.some(el => el.Id === value[i][0])) {
+                            obj.push({
+                            Id: value[i][0],
+                            ParentId: value[i][1],
+                            Name: value[i][2],
+                            IsSelect: true,
+                            ParentType: value[i][3]
+                            });
+                        }
+                    }
+
+                    $.ajax({
+                        url: "/Export/ExportContacts",
+                        type: "POST",
+                        data: {
+                            FolderID: $("#folderId").val(),
+                            SelectColumnTreeList: obj,
+                            Xml: window.parent.flexpage.ExportXls,
+                            exportSearchQuery: "@Model.ExportSearchQuery"
+                        }, 
+                        success: function (response) {
+                            if (!response.length)
+                                window.parent.flexpage.Download("/Export/ExportContacts");
+                        },
+                        error: function(response) {
+                        }
+                    });
+                });
+
+        });
+    });
+
+</script>

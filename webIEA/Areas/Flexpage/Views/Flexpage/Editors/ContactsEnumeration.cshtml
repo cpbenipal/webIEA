@@ -1,0 +1,25 @@
+﻿@model Flexpage.Models.ContactsEnumerationModel
+
+@{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/Content/_Scripts.cshtml", Model);}
+<div id="fp_ContactsEnumerationBlockEditorContainer" class="flexpage page-cms">
+    @using (Ajax.BeginForm("UpdateContactsEnumeration", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_ContactsEnumerationBlockEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_ContactsEnumerationBlockEditorForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+
+        <div class="row" id="folder-content">
+            <ul class="nav nav-pills tabs-navigation">
+                <li class="active"><a data-toggle="pill" href="#sources-settings">Sources settings</a></li>
+                <li><a data-toggle="pill" href="#general-settings">General settings</a></li>
+                <li><a data-toggle="pill" href="#layout-settings">Layout Settings</a></li>
+                <li><a data-toggle="pill" href="#columns">Columns</a></li>
+                <li><a data-toggle="pill" href="#sorting-settings">Sorting Settings</a></li>
+            </ul>
+            <div class="tab-content">
+                @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactsEnumeration/_SourcesGeneral.cshtml", Model);}
+                @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactsEnumeration/_Layout.cshtml", Model);}
+                @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactsEnumeration/_ColumnsSorting.cshtml", Model);}
+            </div>
+        </div>
+    }
+</div>

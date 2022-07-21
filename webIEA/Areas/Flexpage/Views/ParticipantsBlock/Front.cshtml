@@ -1,0 +1,65 @@
+﻿@model Flexpage.Abstract.DTO.ParticipantsFrontModel
+<style>
+    .fp_participants-container div {
+        text-align: center;
+    }
+
+    .fp_participants-container img.fp_participant-image {
+        height: 120px;
+    }
+</style>
+
+<script type="text/javascript">
+    var participantsCycle = new ParticipantsCycle(@(Model.ContactsPerPage > 0 && Model.IsAutoScroll && Model.Interval.HasValue ? 1000 * Model.Interval : 0), @Model.ID, '', '', @Model.ContactsPerPage, @Json.Encode(Model.ShowCountry), @Json.Encode(Model.ShowFavorite));
+    participantsCycle.startReload(@Model.ID);
+</script>
+
+@if (Model.ShowFilter)
+{
+<div class="fp_participants-filter">
+
+    <div class="tab-content">
+
+        <div class="col-md-2">
+            <label>Country</label>
+            <select class="form-control" id="fp_participant-country@(Model.ID)">
+                <option value="0"></option>
+                @foreach (var country in Model.Countries)
+                {
+                <option value="@country.ID">@country.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>First Name</label>
+            <input type="text" class="form-control" id="fp_participant-firstname@(Model.ID)"/>
+        </div>
+        <div class="col-md-2">
+            <label>Last Name</label>
+            <input type="text" class="form-control" id="fp_participant-lastname@(Model.ID)"/>
+        </div>
+        <div class="col-md-2">
+            <label>Organization</label>
+            <input type="text" class="form-control" id="fp_participant-organization@(Model.ID)"/>
+        </div>
+        <div class="col-md-2">
+            <label>&nbsp</label>
+            <input type="button" class="form-control" value="Apply" onclick="participantsCycle.setFilter(@(Model.ID))" />
+        </div>
+
+    </div>
+
+</div>
+}
+
+<div class="fp_participants-container">
+    <div class="col-md-@(Model.ContactsPerPage > 0 ? 2 : 0) fp_participants-button">
+        <input type="button" value="left" class="left" onclick="participantsCycle.reload(-1, @(Model.ID))" style="display: none;"/>
+    </div>
+    <div class="col-md-@(Model.ContactsPerPage > 0 ? 8 : 12) fp_participants-items" id="participants-ext-items@(Model.ID)">
+    </div>
+    <div class="col-md-@(Model.ContactsPerPage > 0 ? 2 : 0) fp_participants-button" style="">
+        <input type="button" value="right" class="right"  onclick="participantsCycle.reload(1, @(Model.ID))" style="display: none;"/>
+    </div>
+</div>
+

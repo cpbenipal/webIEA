@@ -1,0 +1,21 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+
+
+<!--Sources settings-->
+<div id="sources-settings" class="tab-pane fade in active">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="form-fields">
+
+                    @Html.Hidden("SourceBlockAliasValue", Model.SourceBlockAlias)
+                    @Html.DropDownListFor(m => m.SourceBlockAlias, new SelectList(new List<string>())
+        , new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

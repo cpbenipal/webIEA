@@ -1,0 +1,22 @@
+﻿@using Flexpage.Code.Helpers
+@using Flexpage.Models
+@using Flexpage.Code.Common
+@using Flexpage.Domain.Entities
+@using Flexpage.Domain.Enum
+
+@model Flexpage.Models.MediaModel
+@{
+    string currentBlockID = string.Format("audioBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+}
+
+<div id="@currentBlockID" class="">
+    @if (Model.DisplayTitle)
+    {
+        <h4 class="text-center">@Model.Title.NotEmptyLocalization</h4>
+    }
+    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_Player.cshtml", 
+        new PlayerModel(Model) { MediaType = new MediaType() { Name = MediaTypeName.Audio.GetDisplay() } })
+    <div>
+        @Model.Description.NotEmptyLocalization
+    </div>
+</div>

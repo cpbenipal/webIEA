@@ -1,0 +1,70 @@
+﻿@model Flexpage.Abstract.GridColumnModel
+
+@Html.HiddenFor(m => m.ID)
+@if (Model.IsSystem)
+{
+    @Html.HiddenFor(m => m.Order, new { value = Model.Order })
+    @Html.HiddenFor(m => m.Name)
+    @Html.HiddenFor(m => m.ShowInGrid)
+    @Html.HiddenFor(m => m.SortOrder)
+    @Html.HiddenFor(m => m.IsSystem)
+}
+else
+{
+<div class="ui-state-default fp_fc_column">
+    <div class="row">
+        <div class="col-md-12 folder-content-hidden-title">Input fields <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Default tooltip"></i></div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                @Html.HiddenFor(m => m.Order, new { value = Model.Order })
+                @Html.DropDownListFor(m => m.Name, new SelectList(ViewData["Allowed"] as List<Flexpage.Abstract.DTO.ColumnMapping>
+             , "ShortName", "Caption"), new { @class = "form-control" })                
+            </div>
+        </div>
+        <div class="col-md-1 center-option">
+            <div class="trash">
+                <button onclick="return fp_folderContent_deleteColumn(this)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12 folder-content-hidden-title">Alignment</div>
+        <div class="col-md-2 center-option">
+            @Html.DropDownListFor(m => m.Alignment, new SelectList(Model.AllowedAlignment), new { @class = "form-control" })
+        </div>
+        <div class="col-md-12 folder-content-hidden-title">Show in grid</div>
+        <div class="col-md-1 center-option">
+            <label>
+                @Html.CheckBoxFor(m => m.ShowInGrid, new { @class = "custom-control-input" })
+            </label>
+        </div>
+        <div class="col-md-12 folder-content-hidden-title">Show in detail</div>
+        <div class="col-md-1 center-option">
+            <label>
+                @Html.CheckBoxFor(m => m.ShowInDetail, new { @class = "custom-control-input" })
+            </label>
+        </div>
+        @if (ViewData["LinksAllowed"] as bool? != false)
+        {
+        <div class="col-md-12 folder-content-hidden-title">Show as link</div>
+        <div class="col-md-1 center-option">
+            <label>
+                @Html.CheckBoxFor(m => m.ShowAsLink, new { @class = "custom-control-input" })
+            </label>
+        </div>
+        }
+        <div class="col-md-12 folder-content-hidden-title">Only for authorised users</div>
+        <div class="col-md-1 center-option">
+            <label>
+                @Html.CheckBoxFor(m => m.OnlyForAuthorized, new { @class = "custom-control-input" })
+            </label>
+        </div>
+        <div class="col-md-12 folder-content-hidden-title">Order</div>
+        <div class="col-md-1 col-md-offset-1 all-scroll dnd-action" style="margin-left:5%">
+            <label>
+                <i class="fa fa-bars all-scroll" aria-hidden="true"></i>
+            </label>
+        </div>
+    </div>
+</div>
+}

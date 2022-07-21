@@ -1,0 +1,159 @@
+﻿@model Flexpage.Abstract.DTO.NewsEditorModel
+
+<script type="text/javascript">
+
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_events_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the news?', function() { s.DeleteRow(e.visibleIndex); });
+        else if (e.buttonID == 'btnEdit')
+            fp_popupControlOpen({ command: 'edit', blockType: 'Event', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true }, function () { fp_initJS(); s.PerformCallback(); });
+    }
+
+    function fp_afterAddNewsRecord() {
+        fp_NewsBlock_Grid.PerformCallback();
+        fp_initJS();
+    }
+
+    fp_popupControlChangeTitle('NEWS', '#fp_NewsBlockEditorContainer');
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        var pager = $("#ShowPager");
+        $("#ShowPagerButtons").attr("disabled", !pager.is(":checked"));
+        $("#ShowPagerNumbers").attr("disabled", !pager.is(":checked"));
+        $("#ScrollAnimation").attr("disabled", !pager.is(":checked"));
+        pager.click(function () {
+            $("#ShowPagerButtons").attr("disabled", !pager.is(":checked"));
+            $("#ShowPagerNumbers").attr("disabled", !pager.is(":checked"));
+            $("#ScrollAnimation").attr("disabled", !pager.is(":checked"));
+        })
+        //fp_ControlsForTracking(_controlsForTracking);
+    });
+</script>
+
+<div class="flexpage" id="fp_NewsBlockEditorContainer">
+    <ul class="nav nav-pills tabs-navigation">
+        <li class="active"><a data-toggle="pill" href="#news-settings">Settings</a></li>
+        <li><a data-toggle="pill" href="#news-record">News</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="news-settings" class="tab-pane active fade in">
+            @using (Ajax.BeginForm("UpdateNews", "News", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_NewsBlockEditorContainer" }, new { id = "fp_NewsBlockEditorForm", forTraking = "" }))
+            {
+                @Html.HiddenFor(m => m.ID)
+                @Html.HiddenFor(m => m.Alias)
+                <div class="row">
+                    <div class="col-md-4 form-fields">
+                        <label for="type">View type:</label>
+                        @Html.DropDownListFor(m => Model.ViewType, new SelectList(new List<Object>
+                        {
+                            new {value = "1", text = "Single record"},
+                            new {value = "0", text = "List of records"}
+                        }, "value", "text"), new {@class = "form-control tracked"})
+                    </div>
+                    <div class="col-md-8 form-fields">
+                        <label for="template">Template:</label>
+                        @Html.DropDownListFor(m => Model.TemplateView, new SelectList(Model.AllowedTemplates), new { @class = "form-control tracked" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 form-fields">
+                        <label for="tagName">Tag name:</label>
+                        @Html.DevExpress().TokenBox(
+                            settings =>
+                            {
+                                settings.Name = "TagNameBlock";
+                                settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                settings.ControlStyle.CssClass = "form-control";
+                                settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                settings.Style.Add(HtmlTextWriterStyle.Display,"table");
+                                settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                                settings.Properties.ValueField = "Value";
+                                settings.Properties.TextField = "Text";
+
+                            }
+                        ).BindList(Model.AllowedCategories).Bind(Model.Categories).GetHtml()
+                    </div>
+                    <div class="col-md-5 form-fields">
+                        <label for="sortType">Sort type:</label>
+                        @Html.DropDownListFor(m => Model.SortType, new SelectList(new List<Object>{
+                            new { value = Flexpage.Abstract.Enum.eNewsSortType.Asc , text = "Ascending" },
+                            new { value = Flexpage.Abstract.Enum.eNewsSortType.Desc , text = "Descending" },
+                            new { value = Flexpage.Abstract.Enum.eNewsSortType.Random , text = "Random" },
+                        }, "value", "text"), new { @class = "form-control tracked" })
+                    </div>
+                    <div class="col-md-3 form-fields">
+                        <label for="recordPerPage">Records count per page:</label>
+                        @Html.TextBoxFor(m => Model.RecordsPerPage, new { @class = "form-control tracked" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-fields">
+                        <label for="fullView">Full-view news page URL:</label>
+                        @Html.TextBoxFor(m => Model.FullNewsPageUrl, new { @class = "form-control tracked" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="panel-page element-center form-fields">
+                            @Html.EditorFor(m => Model.IsHeaderLink)
+                            <label for="IsHeaderLink">Use news record header as link when short view and template is not set</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="panel-page element-center form-fields">
+                            @Html.EditorFor(m => Model.ShowPager)
+                            <label for="ShowPager">Show pager</label>
+                        </div>
+                        <div class="panel-page element-center form-fields">
+                            @Html.EditorFor(m => Model.ShowPagerButtons)
+                            <label for="ShowPager">Show next/prev buttons</label>
+                        </div>
+                        <div class="panel-page element-center form-fields">
+                            @Html.EditorFor(m => Model.ShowPagerNumbers)
+                            <label for="ShowPager">Show page numbers</label>
+                        </div>
+                        <div class="panel-page element-center form-fields">
+                            @Html.EditorFor(m => Model.ScrollAnimation)
+                            <label for="ShowPager">Scroll animation on page change</label>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="news-record" class="tab-pane fade">
+            <!--button-->
+            <div class="row records-button">
+                <div class="col-md-10">
+                <h4 class="title-main-block">Records <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="News records list"></i></h4>
+                </div>
+                <div class="col-md-2">
+                    <div class="pull-right">
+                        <a data-toggle="modal" data-target="#news-add-new">
+                            <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command: 'add', blockType: 'Event' }, fp_afterAddNewsRecord)">
+                                Add new
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--records-->
+            <div class="flexpage records-field">
+                @Html.Action("EventsGrid", "Events")
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,205 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Domain.Enum
+@using Flexpage.Helpers;
+
+@model Flexpage.Models.FolderContentModel
+
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_FolderContent_Grid" + Model.ID.ToString();
+
+
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "FolderContentGrid", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser
+        , filterCustomProperties = ViewData["FilterCustomProperties"], filterExtension= ViewData["FilterExtension"], TypeContextMenu = Model.TypeContextMenu
+    };
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Sorting,
+        new { Controller = "Flexpage", Action = "FolderContent_SortingAction", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser
+            , filterCustomProperties = ViewData["FilterCustomProperties"], filterExtension = ViewData["FilterExtension"], TypeContextMenu = Model.TypeContextMenu
+        }
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Paging,
+        new {Controller = "Flexpage", Action = "FolderContent_PagingAction", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser
+            , filterCustomProperties = ViewData["FilterCustomProperties"], filterExtension = ViewData["FilterExtension"], TypeContextMenu = Model.TypeContextMenu
+        }
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Filtering,
+        new { Controller = "Flexpage", Action = "FolderContent_FilteringAction", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser
+            , filterCustomProperties = ViewData["FilterCustomProperties"], filterExtension = ViewData["FilterExtension"], TypeContextMenu = Model.TypeContextMenu
+        }
+    );
+    settings.Attributes["PWBrowser"] = Model.PWBrowser.ToString().ToLower();
+    settings.Attributes["TypeContextMenu"] = Model.TypeContextMenu.ToString().ToLower();
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    foreach(Flexpage.Abstract.GridColumnModel col in Model.Columns)
+    {
+        if(!col.ShowInGrid && col.SortOrder == DevExpress.Data.ColumnSortOrder.None)
+            continue;
+
+        settings.Columns.Add(column =>
+        {
+            column.CellStyle.HorizontalAlign = col.Alignment == Flexpage.Abstract.Alignment.Centered.ToString() ? HorizontalAlign.Center
+                : (col.Alignment == Flexpage.Abstract.Alignment.Left.ToString() ? HorizontalAlign.Left : HorizontalAlign.Right);
+            column.Caption = col.ColumnCaption ?? col.FieldName;
+            column.FieldName = col.FieldName;
+            column.Visible = col.ShowInGrid;
+
+            if(col.Name == "Date" || col.Name == "EntryDate"|| col.Name == "DateModification" || col.Name == "UploadDate")
+            {
+                column.ColumnType = MVCxGridViewColumnType.DateEdit;
+                column.UnboundType = DevExpress.Data.UnboundColumnType.DateTime;
+                column.SettingsHeaderFilter.DateRangePickerSettings.ClearButtonText = "Clear";
+            }
+            else
+                column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+        });
+    }
+
+    settings.KeyFieldName = "ID";
+    settings.Columns.Add(column =>
+    {
+        column.Visible = false;
+        column.FieldName = "ID";
+    });
+
+
+    settings.HtmlDataCellPrepared = (sender, e) => {
+        var id = e.GetValue("ID");
+        if (id == null)
+            return;
+
+        e.Cell.Attributes.Add("data-rowId", id.ToString());
+    };
+
+    settings.CustomUnboundColumnData += (s, e) =>
+    {
+        MVCxGridView grid = (MVCxGridView)s;
+        Pluritech.Shared.Abstract.DTO.ObjectInfo data = grid.GetRow(grid.VisibleStartIndex + e.ListSourceRowIndex) as Pluritech.Shared.Abstract.DTO.ObjectInfo;
+
+        if(data != null)
+        {
+            Flexpage.Abstract.GridColumnModel colModel = Model.Columns.FirstOrDefault(c => c.FieldName == e.Column.FieldName);
+
+            object resValue = Model.GetObjectPropertyValue(data, e.Column.FieldName);
+            object resExt = Model.GetObjectPropertyValue(data, "File.Extension");
+
+            var expand = Model.ExpandAllDetailsOnLoad;
+            var btnDetails = "";
+            if (Model.ShowDetailButtons && Model.ShowDetailRow && e.Column.Index == 0)
+            {
+                btnDetails = "<span class=\"dxgvDetailButton "
+                             + (expand ? "dxgvDetailButtonExpanded " : "")
+                             + (Model.AllowOnlyOneDetailRow ? "allowOnlyOneDetailRow " : "") + "\""+
+                             " onclick=\" fp_DetailToggleButton"+Model.ID.ToString()+"(this);\" >"
+                             + "<span class=\"dx-acc dxGridView_gvDetailExpandedButton_MetropolisBlue\"> <img src=\" / DXR.axd?r=1_58-FET9i\" alt=\"Expand\"></span>"
+                             + "<span class=\" dx-acc dxGridView_gvDetailCollapsedButton_MetropolisBlue\"><img src=\"/DXR.axd?r=1_58-FET9i\" alt=\"Collapse\"></span></span>";
+            }
+
+            if ((colModel != null && colModel.ShowAsLink) || (e.Column.FieldName == "FileShortcut.Name" && Model.ShowItemAsLink))
+            {
+                if (e.Column.FieldName == "FileShortcut.Name")
+                {
+                    e.Value = new MvcHtmlString((e.Column.Index == 0 ? btnDetails : "") + String.Format("<a href=\"{0}\" class=\"gvDownloadLink\"><span data-rowId='{2}' data-blockId='{3}' data-id='{2}' class='fp_gridNameValue' data-ext='{4}'>{1}</span></a>",
+                        Url.Action("DownloadFile", "Flexpage", new {id = e.GetListSourceFieldValue("ID"), revisionID = 0}), resValue, data.ID, Model.ID, resExt));
+                }
+                else
+                {
+                    e.Value = new MvcHtmlString((e.Column.Index == 0 ? btnDetails : "") + String.Format("<a href=\"{0}\" class=\"gvDownloadLink\"><span data-id='{2}' data-blockId='{2}' class='fp_gridNameValue' data-ext='{3}'>{1}</span></a>",
+                        Url.Action("DownloadFile", "Flexpage", new {id = e.GetListSourceFieldValue("ID"), revisionID = 0}), resValue, Model.ID, resExt));
+                }
+            }
+            else if (e.Column.FieldName == "FileShortcut.Name")
+            {
+                e.Value = new MvcHtmlString((e.Column.Index == 0 ? btnDetails : "") + String.Format("<span  data-rowId='{1}'  data-id='{1}' data-blockId='{2}' class='fp_gridNameValue' data-ext='{3}'>{0}</span>", resValue, data.ID, Model.ID, resExt));
+            }
+            else if(e.Column.Index == 0)
+            {
+                e.Value =new MvcHtmlString( btnDetails+resValue);
+            }
+            else
+            {
+                e.Value = resValue;
+            }
+
+        };
+    };
+
+
+    settings.Settings.ShowColumnHeaders = Model.ShowHeaderRow;
+    settings.Settings.ShowFilterRow = Model.ShowFilterRow;
+
+    //clear button
+    settings.CommandColumn.Width = 35;
+    settings.CommandColumn.Visible = Model.ShowClearColumn  || Model.ShowSelectionBoxes;
+    settings.CommandColumn.ShowClearFilterButton = Model.ShowClearColumn;
+    settings.CommandColumn.ShowSelectCheckbox = Model.ShowSelectionBoxes;
+    settings.SettingsBehavior.AllowSelectByRowClick = Model.AllowZipDownload|| Model.AllowSelectByRowClick;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.ClearFilterButton.Image.IconID = IconID.FilterClearfilter16x16office2013;
+    if (Model.PagingMode == PagingMode.ShowAll)
+    {
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+        settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
+    }
+    settings.Settings.ShowFooter = Model.AllowZipDownload;
+    settings.SetFooterRowTemplateContent("<a href='/flexpage/FolderContentDownloadZip?ids=' class='footer download' onclick='return fp_downloadZip(this)'>Download</a>");
+
+    settings.SettingsDetail.ShowDetailButtons = false;
+    settings.SettingsDetail.ShowDetailRow = Model.ShowDetailRow;
+    settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = false;
+
+    if(Model.ShowDetailRow)
+    {
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            string ADD_ITEM_TEMPLATE = "<div class='fc_detail_item fc_{0}'><label>{1}</label><span>{2}</span></div>";
+            string ADD_ITEM_TEMPLATE_AUTH = "<div class='fc_detail_item fc_{0}'>{1}</div>";
+
+            string details = "";
+            foreach (Flexpage.Abstract.GridColumnModel col in Model.Columns)
+            {
+                if (!col.ShowInDetail)
+                    continue;
+
+                Pluritech.Shared.Abstract.DTO.ObjectInfo objectData = c.Grid.GetRow(c.VisibleIndex) as Pluritech.Shared.Abstract.DTO.ObjectInfo;
+
+                object value = Model.GetObjectPropertyValue(objectData, col.FieldName);
+
+                if (col.OnlyForAuthorized)
+                    details += string.Format(ADD_ITEM_TEMPLATE_AUTH, col.FieldName, value);
+                else
+                    details += string.Format(ADD_ITEM_TEMPLATE, col.FieldName, col.ColumnCaption, value);
+            }
+            ViewContext.Writer.Write(details);
+            //Html.RenderAction("FolderContent_GetDetailsRow", "Flexpage", c.Grid.GetRow(c.VisibleIndex) as ObjectInfo);
+        });
+        settings.BeforeGetCallbackResult = (s, e) =>
+        {
+            MVCxGridView g = (MVCxGridView)s;
+            g.DetailRows.ExpandAllRows();
+        };
+    }
+
+    settings.HtmlRowCreated += (s, e) =>
+    {
+        e.Row.Attributes["data-perm"] = e.GetValue("FileShortcut.Permissions")?.ToString() ?? "";
+    };
+
+    settings.SettingsCookies.Enabled = true;
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.BeginCallback = "function (s, e) {e.customArgs['ID'] = " + Model.ID.ToString() + "; fp_beginCallback" + Model.ID.ToString() + "(s, e); }";
+    settings.ClientSideEvents.ContextMenu = "fp_contextMenu"+Model.ID.ToString();
+    settings.ClientSideEvents.EndCallback = "function(s,e) { fp_browser_EndCallback" + Model.ID.ToString() + "(); }";
+    settings.ClientSideEvents.SelectionChanged = "function(s, e) { fp_folderContentSelected" + Model.ID.ToString() + "(s, e); }";
+}).BindToCustomData(Model.GridModel).GetHtml()

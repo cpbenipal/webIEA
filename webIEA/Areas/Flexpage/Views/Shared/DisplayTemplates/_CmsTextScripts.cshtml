@@ -1,0 +1,15 @@
+﻿@model Flexpage.Models.ScriptModel
+
+<script type="text/javascript">
+    @{string cmd = @String.IsNullOrEmpty(Model.Command) ? "changelanguage" : Model.Command;}
+        function fp_cmsTextChangeLanguage(langCode) {
+            fp_StoreFromHtmlEditorToHidden('FullText');
+            fp_PostAjaxForm('#@Model.Container', { command: '@cmd', parameters: langCode });
+    }
+
+    function fp_preSaveBlock() {
+        fp_StoreFromHtmlEditorToHidden('FullText');
+    }
+
+</script>
+

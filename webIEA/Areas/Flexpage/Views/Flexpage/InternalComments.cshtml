@@ -1,0 +1,71 @@
+﻿@model Flexpage.Abstract.DTO.InternalCommentsViewModel
+<style>
+    div.comments {
+        background-color: #D9D9D9;
+        border-radius: 10px;
+        min-height: 160px;
+        width: 280px;
+        padding: 10px;
+    }
+
+        div.comments span {
+            color: #a3a3a3;
+            display: block;
+            width: 100%;
+        }
+
+    #icCommentInputContainer {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" property="stylesheet" href="~/Areas/Flexpage/Content/css/dx.light.css">
+
+<input type="hidden" value="@Model.ObjectID" id="icObjectID" />
+<div style="margin-bottom:10px;">
+    <span style="color:#9c9c9c;">Internal comments</span> <a id="icEditLink" href="javascript:void(0)" onclick="icStartAddingComment()"><img src="~/Areas/Flexpage/Content/Images/edit.svg" /></a>
+</div>
+<div class="comments">
+    <div id="icCommentContainer">
+        @foreach (var item in Model.Comments)
+        {
+            <span><i>@item.PersonName: @item.Comment</i></span>
+        }
+    </div>
+
+    <span id="icCommentInputContainer"><input type="text" id="icCommentInput" /> <a href="javascript:void(0)"><img src="~/Areas/Flexpage/Content/Images/check.svg" onclick="icSubmitComment()" /></a> </span>
+</div>
+
+<script>
+    function icStartAddingComment() {
+        $('#icCommentInputContainer').show();
+        $('#icEditLink').hide();
+    }
+
+    function icSubmitComment() {
+        if ($('#icCommentInput').val().length > 0) {
+
+            $.ajax({
+                url: '@Url.Action("SubmitComment","InternalComments")',
+                data: { text: $('#icCommentInput').val(), objectID: $('#icObjectID').val()},
+                type: "post",
+                cache: false,
+                success: function (result) {
+                    $('#icCommentContainer').append('<span><i>' + '@Model.PersonName ' + $('#icCommentInput').val() + '</i></span>');
+
+                    console.log(result);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                },
+                complete: function () {
+                    $('#icCommentInput').val('');
+                }
+            });
+
+        }
+
+        $('#icCommentInputContainer').hide();
+        $('#icEditLink').show();
+    }
+
+</script>

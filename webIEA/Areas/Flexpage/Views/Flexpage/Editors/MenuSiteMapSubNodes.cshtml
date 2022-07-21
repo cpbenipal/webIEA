@@ -1,0 +1,51 @@
+﻿@model Flexpage.Models.MenuModel
+
+
+@foreach (Flexpage.Models.MenuItemModel item in Model.Items)
+{
+    
+    string col = String.Empty;
+    bool hasChild = false;
+    
+
+    if (item.SubMenu != null)
+    {
+        hasChild = true;
+    }
+    <div class="flexpage pages-list subpanel">
+        <div class="panel panel-default">
+            <div class="panel-heading  panel-page">
+                <p class="panel-title">
+                    <a class="panel-group">
+                        @{
+                            string p = hasChild ? String.Format("parent={0}", @item.CurrentCounter) : "";
+                        }
+                        <input class="form-check-input footitems" id="@item.ResourceKey" forparent="@item.ParenCounter" @p type="checkbox" name="footitems">
+                    </a>
+                    @{
+                        col = "#menuNode" + @item.CurrentCounter;
+                    }
+                    <a data-toggle="collapse" href="@col" class="align-box">
+                        @item.Text<span class="pull-right">
+                        @if (hasChild)
+                        {
+                            <i class="fas fa-chevron-down rotate"></i>
+                        }
+                    </span>
+                </a>
+            </p>
+        </div>
+        @if (hasChild)
+        {
+            col = "menuNode" + @item.CurrentCounter;
+            <div id="@col" class="panel-collapse collapse collapse-field-container" aria-expanded="false" style="">
+                @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/MenuSiteMapSubNodes.cshtml", item.SubMenu)
+            </div>
+        }
+    </div>
+</div>
+}
+
+
+
+

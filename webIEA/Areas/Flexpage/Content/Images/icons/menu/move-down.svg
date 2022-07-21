@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>ic/menu/move-down</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 24 24 24 24 0 0 0"></polygon>
+    </defs>
+    <g id="ic/menu/move-down" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1">
+            <path d="M17.0273,17.7393 C17.0963,17.9073 17.0753,18.0603 16.9613,18.2013 L12.3423,23.2683 C12.2553,23.3563 12.1543,23.4003 12.0403,23.4003 C11.9163,23.4003 11.8103,23.3563 11.7223,23.2683 L7.0393,18.2013 C6.9243,18.0603 6.9033,17.9073 6.9723,17.7393 C7.0523,17.5723 7.1793,17.4893 7.3553,17.4893 L10.3103,17.4893 L10.3103,1.0223 C10.3103,0.8983 10.3503,0.7993 10.4293,0.7183 C10.5083,0.6403 10.6103,0.5993 10.7333,0.5993 L13.2663,0.5993 C13.3893,0.5993 13.4913,0.6403 13.5703,0.7183 C13.6493,0.7993 13.6893,0.8983 13.6893,1.0223 L13.6893,17.4893 L16.6443,17.4893 C16.8293,17.4893 16.9573,17.5723 17.0273,17.7393" id="Fill-1" fill-opacity="0.8" fill="#23598E"></path>
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Clip-4"></g>
+        </g>
+    </g>
+</svg>

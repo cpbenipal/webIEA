@@ -1,0 +1,134 @@
+﻿@using System.Web.UI.WebControls;
+@model List<Flexpage.Abstract.DTO.ScheduleItem>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_Schedule_Grid";
+    settings.CallbackRouteValues = new { Controller = "Schedule", Action = "fp_Schedule_Grid_Callback" };
+    settings.CustomActionRouteValues = new { Controller = "Schedule", Action = "fp_Schedule_Grid_CustomAction" };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnEditSchedule", Text = "Edit" });
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnDeleteSchedule", Text = "Delete" });
+
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+    settings.CommandColumn.Caption = "Actions";
+    settings.CommandColumn.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+    settings.Columns.Add(column =>
+    {
+
+        column.ColumnType = MVCxGridViewColumnType.Default;
+        column.Width = new Unit(70, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Schedule Name";
+        column.FieldName = "Name";
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.SetDataItemTemplateContent(c =>
+        {
+            column.Width = new Unit(30, UnitType.Percentage);
+            column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            column.Caption = "Active";
+            Html.DevExpress().CheckBox(checkboxSettings =>
+            {
+                checkboxSettings.Name = "cb_" + c.KeyValue.ToString();
+                checkboxSettings.Properties.ClientSideEvents.ValueChanged = String.Format("function(s,e) {{ OnValueChanged(s,e,{0}); }}", c.KeyValue);
+
+                if (ViewData.Model != null)
+                {
+                    foreach (Flexpage.Abstract.DTO.ScheduleItem si in ViewData.Model)
+                    {
+                        if (si.ID == Convert.ToInt32(c.KeyValue.ToString()))
+                        {
+                            checkboxSettings.Checked = si.IsActive;
+                        }
+                    }
+                }
+            }).Render();
+        });
+    });
+
+    settings.SetEditFormTemplateContent(c =>
+    {
+        Html.DevExpress().FormLayout(flSettings =>
+        {
+            flSettings.Name = "ScheduleUpdateForm";
+            flSettings.Width = Unit.Percentage(100);
+            flSettings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+            flSettings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 700;
+            flSettings.ColCount = 2;
+
+            flSettings.Items.Add().FieldName = "Name";
+            flSettings.Items.Add().FieldName = "UseLocalTime";
+            flSettings.Items.Add().FieldName = "StartDate";
+            flSettings.Items.Add().FieldName = "FinishDate";
+            flSettings.Items.Add().FieldName = "Frequency";
+            flSettings.Items.Add().FieldName = "UseTimeZone";
+            flSettings.Items.Add(i =>
+            {
+                i.FieldName = "TimeZone";
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.Properties.TextField = "DisplayName";
+                    s.Properties.ValueField = "Id";
+                    s.Properties.ValueType = typeof(string);
+                    s.Properties.DataSource = TimeZoneInfo.GetSystemTimeZones();
+                    s.Width = Unit.Percentage(100);
+                });
+            });
+
+            flSettings.Items.AddEmptyItem();
+            flSettings.Items.Add(i =>
+            {
+                i.ShowCaption = DefaultBoolean.False;
+            }).SetNestedContent(() =>
+            {
+                ViewContext.Writer.Write("<div style='float:right'>");
+                Html.DevExpress().Button(btnSettings =>
+                {
+                    btnSettings.Name = "btnUpdate";
+                    btnSettings.Text = "Update";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ fp_Schedule_Grid.UpdateEdit(); }";
+                }).Render();
+                Html.DevExpress().Button(btnSettings =>
+                {
+                    btnSettings.Name = "btnCancel";
+                    btnSettings.Text = "Cancel";
+                    btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ fp_Schedule_Grid.CancelEdit(); }";
+                }).Render();
+                ViewContext.Writer.Write("</div>");
+            });
+        })
+        .Bind(c.Grid.GetRow(c.Grid.EditingRowVisibleIndex))
+        .Render();
+    });
+
+    settings.CustomButtonInitialize = (sender, e) =>
+    {
+        if (e.VisibleIndex == -1) return;
+        if (e.ButtonID == "btnDeleteSchedule")
+        {
+            e.Image.IconID = IconID.EditDelete16x16office2013;
+        }
+        else if (e.ButtonID == "btnEditSchedule")
+        {
+            e.Image.IconID = IconID.EditEdit16x16office2013; 
+        }
+    };
+
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRow = settings.Settings.ShowFilterRowMenu = true;
+    settings.ClientSideEvents.CustomButtonClick = "fp_scheduleGrid_CustomButtonClick";
+}).Bind(Model).GetHtml()

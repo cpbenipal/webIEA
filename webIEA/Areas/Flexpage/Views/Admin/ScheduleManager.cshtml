@@ -1,0 +1,81 @@
+﻿@model Flexpage.Abstract.DTO.ScheduleManagerModel
+@{
+    ViewBag.Title = "Schedule Manager";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<script type="text/javascript">
+
+    function fp_scheduleGrid_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDeleteSchedule') {
+            $.ajax({
+                url: '/Schedule/IsScheduleLinked',
+                data: { 'scheduleID': s.GetRowKey(e.visibleIndex) },
+                type: "post",
+                cache: false,
+                success: function (result) {
+                    const obj = JSON.parse(result);
+                    let question;
+                    if (obj.hasBlock) {
+                        question = 'There is at least one block linked to this schedule. If you delete the schedule, the block default visibility will be restored. Do you want to delete this schedule?';
+                    }
+                    else {
+                        question = 'Do you want to delete this schedule?';
+                    }
+
+                    fp_ConfirmDialog('Delete schedule', question, function () {
+                        fp_Schedule_Grid.PerformCallback({ 'buttonID': e.buttonID, 'scheduleID': s.GetRowKey(e.visibleIndex) });
+                    });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                }
+            });
+        }
+        else if (e.buttonID == 'btnEditSchedule'){
+            fp_popupControlOpen({ command: 'ScheduleEdit', controller: 'Schedule', action: 'LoadScheduleItem', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true }, fp_afterAddSchedule);
+        }
+    }
+
+    function OnValueChanged(s, e, key) {
+        $.ajax({
+            url: '/Schedule/ChangeActivationState',
+            data: { 'scheduleID': key },
+            type: "post",
+            cache: false,
+            success: function (result) {
+                
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+    }
+
+    function fp_afterAddSchedule() {
+        fp_Schedule_Grid.PerformCallback();
+    }
+</script>
+
+<div class="flexpage" id="fp_ScheduleEditorContainer">
+    <div class="row records-button">
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-2">
+            <div class="pull-right">
+                <a data-toggle="modal" data-target="#news-add-new">
+                    <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command:'NewSchedule', controller: 'Schedule',  action: 'LoadScheduleItem', title: 'SCHEDULE' }, fp_afterAddSchedule)">
+                        Add new
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="flexpage records-field">
+        @Html.Partial("~/Areas/Flexpage/Views/Admin/ScheduleManagerGrid.cshtml", Model.ScheduleItems)
+    </div>
+</div>
+
+

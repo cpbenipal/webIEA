@@ -1,0 +1,47 @@
+﻿@model List<Flexpage.Abstract.DTO.EventViewModel>
+
+<div class="row">
+    @if (Model.Count == 0)
+    {
+        <p class="text-center">There are no events for <br><span class="date-event">@ViewBag.CurrentDay.ToLongDateString()</span></p>
+    }
+    @foreach (var item in Model)
+    {
+        <div class="event">
+            <div class="col-md-9">
+                <div class="event-color" style="background: @item.Category.BgColor;">
+                </div>
+                <div class="event-details">
+                    <div class="event-title">
+                        @item.Title
+                    </div>
+                    <div class="event-location">
+                        @item.Place
+                    </div>
+                    <div class="event-description">
+                        @Html.Raw(item.Notes.NotEmptyText)
+                    </div>
+                </div>
+            </div>
+            @if (ViewBag.IsAdmin)
+            {
+                <div class="col-md-3">
+                    <div class="event-actions blocks">
+                        <button id="btnEventPopupEdit" onclick="flexpageCalendar.openDialogAddEvent(@item.ID, '@ViewBag.CurrentDay.Date.ToString("yyyy-MM-dd")')">
+                            <i class="far fa-edit"></i>
+                        </button>
+                        <button id="btnEventPopupDelet" data-toggle="modal" data-target="#delete-event" onclick="flexpageCalendar.deleteEvent(@item.ID, '@item.StartDate', '@ViewBag.CalendarBlockID')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        @if (ViewBag.AllowFavorites)
+                        {
+                            <button @(item.IsFavorite ? "disabled" : "") id = "btnEventPopupFavorite" data - toggle = "modal" data-target = "#favorite-event" onclick = "flexpageCalendar.favoriteEvent('@ViewBag.CurrentDay', @ViewBag.CalendarBlockID, @item.ID)" >
+                                <i class="fas fa-heart" style="color: @(item.IsFavorite ? "#444444" : "#44AA44")"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

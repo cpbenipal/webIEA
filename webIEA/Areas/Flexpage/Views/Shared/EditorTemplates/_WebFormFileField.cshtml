@@ -1,0 +1,54 @@
+﻿@model Flexpage.Models.WebFormFieldValueModel
+
+@{
+    var id = Model.FieldID+"_"+ Model.ID;
+    string fileUploadName = $"WebFormFileUploader_{id}";
+    string fileUploadValue = $"WebFormInputFile_{id}";
+    string UploadControl= $"WebFormFileUploadControl_{id}";
+}
+<script>
+    function fp_FilesUploadComplete@(id)(e, s) {
+        if (s.isValid) {
+            $("#@(fileUploadName.ToString())").addClass("hidden");
+            $("input[name='@Html.NameFor(m => m.StringValue)']").val(s.callbackData);
+            $("span[name='@Html.NameFor(m => m.StringValue)']").text(e.uploadManager.fileInfos[0].fileName);
+            $("#@(fileUploadValue.ToString())").removeClass("hidden");
+        }
+    }
+    function fp_webFormClearInputFile@(id)() {
+        $("input[name='@Html.NameFor(m => m.StringValue)']").val('');
+        $("div[name='@Html.NameFor(m => m.StringValue)']").text('');
+        $("#@(fileUploadName.ToString())").removeClass("hidden");
+        $("#@(fileUploadValue.ToString())").addClass("hidden");
+    }
+</script>
+<div id="@fileUploadName" class="fileUploadContainer @(string.IsNullOrWhiteSpace(Model.StringValue)?"":"hidden")">
+    @Html.DevExpress().UploadControl(
+        settings =>
+        {
+            settings.Name = UploadControl;
+            settings.ShowProgressPanel = true;
+            settings.AutoStartUpload = true;
+            settings.UploadMode = UploadControlUploadMode.Standard;
+            settings.ShowUploadButton = false;
+            settings.Width = new System.Web.UI.WebControls.Unit("100%");
+            settings.CallbackRouteValues = new
+            {
+                Controller = "Flexpage",
+                Action = "UploadControl_ProcessingFileUpload",
+                uploadControlName = UploadControl
+            };
+            settings.ClientSideEvents.FileUploadComplete = "fp_FilesUploadComplete"+ id;
+            settings.ShowTextBox = true;
+        }
+    ).GetHtml()
+</div>
+<div id="@fileUploadValue" class="@(string.IsNullOrWhiteSpace(Model.StringValue)?"hidden":"")">
+    @Html.HiddenFor(m => m.StringValue)
+    <span name="@Html.NameFor(m=>m.StringValue)"> @Html.DisplayTextFor(m => m.StringValue)</span>
+    <img id="WebFormFileUploadControl_8_0_ClearBox0Img" title="Clear selection" class="dxWeb_ucClearButton_MetropolisBlue fp_cursor-pointer" 
+         src="/DXR.axd?r=1_58-FET9i" alt="Clear selection" style="display:inline;" onclick="fp_webFormClearInputFile@(id)();">
+    @Html.ValidationMessageFor(m=>m.StringValue)
+</div>
+
+

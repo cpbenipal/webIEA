@@ -1,0 +1,55 @@
+﻿@* @using Flexpage.Code.Helpers;
+    @using Flexpage.Models; *@
+@model Flexpage.Models.MediaPlaylistModel
+<div class="col-md-12">
+    <div class="col-md-6">
+        <h4>
+            Text
+        </h4>
+        @Html.EditorFor(m => m.Info, "_CmsText")
+    </div>
+    <div class="col-md-6">
+        <h4>
+            General options <i title="" class="fas fa-info-circle" data-original-title="General options" data-toggle="tooltip" data-placement="top"></i>
+        </h4>
+        <div class="col-md-12 element-center form-group">
+            @Html.EditorFor(m => m.DisplayTitle)
+            <label class="form-check-label">Display title</label>
+        </div>
+        <div class="col-md-12 element-center form-group">
+            @Html.EditorFor(m => m.DisplayDescription)
+            <label class="form-check-label">Display description</label>
+        </div>
+        <div class="col-md-12 element-center form-group">
+            @Html.EditorFor(m => m.AutoPlay)
+            <label class="form-check-label">Auto play</label>
+        </div>
+        <div class="col-md-12 element-center form-group">
+            @Html.EditorFor(m => m.DisplayControls)
+            <label class="form-check-label">Display controls</label>
+            <i title="" class="fas fa-info-circle" data-original-title="Disable only if 'Auto play' is on" data-toggle="tooltip" data-placement="top"></i>
+        </div>
+
+        <h4>
+            Size <i title="" class="fas fa-info-circle" data-original-title="Size options" data-toggle="tooltip" data-placement="top"></i>
+        </h4>
+        <div class="row">
+            <div class="col-md-12 form-group element-center">
+                @Html.EditorFor(m => m.ApplySizeConstraints)
+                <label class="form-check-label">
+                    Constrain proportions
+                </label>
+            </div>
+        </div>
+        <div class="col-md-12 form-group">
+            <h5>Width:</h5>
+        </div>
+        @Html.EditorFor(m => m.Width, "Dimension")
+        <div class="col-md-12 form-group">
+            <h5>Height:</h5>
+        </div>
+        @Html.EditorFor(m => m.Height, "Dimension")
+    </div>
+
+
+</div>

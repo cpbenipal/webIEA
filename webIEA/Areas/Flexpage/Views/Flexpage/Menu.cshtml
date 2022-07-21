@@ -1,0 +1,63 @@
+﻿@model Flexpage.Models.MenuModel
+
+@{ 
+    string cssClass = "level" + Model.Level.ToString();
+    cssClass += Model.Level > 0 ? " submenu" : "";
+    string display = Model.Level == 0 ? "" : "display:none";
+}
+
+@if(Model.Level == 0)
+{    
+    <div id="@Model.ClientID" class='@Model.CssClass'>
+        @if(Model.ShowName)
+        {
+            <h3>
+                @Model.Name
+            </h3>
+        }
+        <ul style="@display" level='@Model.Level' class='@cssClass @Model.CssClass nav navbar-nav'>
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/MenuItems.cshtml", Model)
+        </ul>
+    </div>
+
+    <script type='text/javascript'>
+        @*$(document).ready(function() {
+            FlexpageMenu.create('@Model.ClientID', {
+                showEffect: @Json.Encode(Model.Settings.ShowEffect),
+                hideEffect: @Json.Encode(Model.Settings.HideEffect),
+                duration: @Json.Encode(Model.Settings.Duration.HasValue ? Model.Settings.Duration : 0.5),
+                topOffset: @Json.Encode(Model.Settings.TopOffset.HasValue ? Model.Settings.TopOffset : 0),
+                topOffsetIE7: 0,
+                leftOffset: @Json.Encode(Model.Settings.LeftOffset ?? 0),
+                autocloseTimeout: @Json.Encode(Model.Settings.AutocloseTimeout.HasValue ? Model.Settings.AutocloseTimeout * 1000 : 100),
+                positionSubmenu: @Json.Encode(Model.Settings.PositionSubmenu ?? true),
+                oneSubmenuVisible: @Json.Encode(Model.Settings.OneSubmenuVisible ?? false),
+                mainMenuActive: @Json.Encode(Model.Settings.MainMenuActive ?? false),
+                allowForMobile: @Json.Encode(Model.Settings.AllowForMobile ?? false)
+                });
+        });*@
+        $(document).ready(function() {
+            FlexpageMenu.create('@Model.ClientID', {
+                showEffect: '',
+                hideEffect: '',
+                duration: 0.5,
+                topOffset: 2,
+                topOffsetIE7: 0,
+                leftOffset: 1,
+                autocloseTimeout: 100,
+                positionSubmenu: true,
+                oneSubmenuVisible: false,
+                mainMenuActive: false,
+                allowForMobile: false,
+                click:false  
+                });
+        });
+    </script>
+}
+else
+{
+    <ul style="@display" level='@Model.Level' class='@cssClass nav navbar-nav'>
+        
+        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/MenuItems.cshtml", Model)
+    </ul>
+}

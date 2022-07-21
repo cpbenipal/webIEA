@@ -1,0 +1,29 @@
+﻿@using Flexpage.Code.Helpers
+@using Flexpage.Models
+@using Flexpage.Code.Common
+
+@model Flexpage.Models.WebFormSectionModel
+@{
+    string currentBlockID = string.Format("webFormBlockSection_Form{0}ID_{1}", Model.FormID, Model.ID);
+}
+@*<li class="ui-state-default">*@
+@Html.HiddenFor(m => m.ID)
+@Html.HiddenFor(m => m.Index)
+@Html.HiddenFor(m => m.ReadOnly)
+@Html.HiddenFor(m => m.CurrentTitle)
+
+
+<div id="@currentBlockID" class="col-md-12 section-container">
+    <div class="col-md-12 section-title">
+        <h4>
+            @Model.CurrentTitle
+        </h4>
+    </div>
+
+    <div class="col-md-12 section-content">
+        @for (int i = 0; i < Model.FieldValues.Count; i++)
+        {
+            @Html.EditorFor(m => m.FieldValues[i], "../../../Areas/Flexpage/Views/Shared/EditorTemplates/_WebFormField")
+        }
+    </div>
+</div>

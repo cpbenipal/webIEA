@@ -1,0 +1,32 @@
+﻿@model Flexpage.Abstract.DTO.CmsTextEditorModel
+
+<script type="text/javascript">
+
+    function fp_cmsTextChangeLanguage(langCode) {
+        let isDirty = IsFormDirty('fp_CmsBlockEditorContainer');
+        fp_StoreFromHtmlEditorToHidden('FullText');
+        fp_PostAjaxForm('#fp_CmsBlockEditorContainer', { command: 'changelanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+
+    function fp_preSaveBlock() {
+        fp_StoreFromHtmlEditorToHidden('FullText');
+    }
+
+    fp_popupControlChangeTitle('CMS TEXT', '#fp_CmsBlockEditorContainer');
+</script>
+
+<div id="fp_CmsBlockEditorContainer" class="page-cms">
+    @using(Ajax.BeginForm("UpdateCmsText", "CmsTextBlock", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_CmsBlockEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_CmsBlockEditorForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.IncludeInSearch)
+
+        @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector2.cshtml", Model.LanguageSelector)
+        <div class="title">
+            <label>Title:</label>
+            @Html.EditorFor(m => m.Title, "LocalizedString")
+        </div>
+        @Html.EditorFor(m => m.FullText, "LocalizedText")
+    }
+</div>

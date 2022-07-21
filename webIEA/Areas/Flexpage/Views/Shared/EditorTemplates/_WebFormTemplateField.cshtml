@@ -1,0 +1,40 @@
+﻿@model Flexpage.Models.WebFormFieldModel
+
+<div class="panel-group">
+    <div class="panel panel-default" draggable="true" ondragstart="fp_webFormTemplateDrag(event, @Model.ID)">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#fp_WebFormCollapseFieldTemplate@(Model.ID)" class="align-box">@Model.Name</a>
+            </h4>
+        </div>
+        <div id="fp_WebFormCollapseFieldTemplate@(Model.ID)" class="col-md-12 panel-collapse collapse collapse-field-container" style="margin-bottom: 16px">
+            <div class="row">
+                <div class="col-md-4" style="text-align:right; padding-right: 8px">
+                    Title:
+                </div>
+                <div class="col-md-8" style="font-weight: normal">
+                    @Html.DisplayFor(m => m.Title, "LocalizedString", new { disabled = "", @class = "custom-control-input" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4" style="text-align:right; padding-right: 8px">
+                    Descr:
+                </div>
+                <div class="col-md-8" style="font-weight: normal">
+                    @Html.DisplayFor(m => m.Description, "LocalizedString", new { disabled = "", @class = "custom-control-input" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4" style="text-align:right;  padding-right: 8px">
+                    Type:
+                </div>
+                <div class="col-md-8" style="font-weight: normal">
+                    @Html.DisplayFor(m => m.TypeName, new { disabled = "", @class = "custom-control-input" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

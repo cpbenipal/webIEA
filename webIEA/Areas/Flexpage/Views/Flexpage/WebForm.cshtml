@@ -1,0 +1,53 @@
+﻿@model Flexpage.Models.WebFormModel
+@{
+    string currentBlockID = string.Format("webFormBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+}
+
+<div id="@currentBlockID" class="webform-container">
+    @using(Ajax.BeginForm("SubmitWebForm", "WebFormBlock", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = currentBlockID, InsertionMode = InsertionMode.Replace, OnSuccess = "fp_webFormSucessSubmit" },
+        new { id = currentBlockID, forTraking = "" }))
+    {
+        @Html.Partial("/Areas/Flexpage/Views/Flexpage/WebFormFields.cshtml", Model)
+        <div class="col-md-12">
+            @Html.EditorFor(m => m.SubmitButtonCaption, "../../../Areas/Flexpage/Views/Shared/EditorTemplates/_LocalizedStringData")
+            @Html.HiddenFor(m => m.SubmitButtonLayoutID)
+            @{
+
+                string cls = "text-left";
+                switch(Model.SubmitButtonLayoutID)
+                {
+                    case 0:
+                        cls = "text-right";
+                        break;
+                    case 1:
+                        cls = "text-left";
+                        break;
+                    case 2:
+                        cls = "text-right";
+                        break;
+                    case 3:
+                        cls = "text-left";
+                        break;
+                    case 4:
+                        cls = "text-center";
+                        break;
+                }
+            }
+            <div class="submit-container @cls">
+                <button class="btn submit-button submit-button@(currentBlockID)" type="button" style="margin-top: 16px">
+                    &nbsp; @(Model.SubmitButtonCaption == null ? "Submit" : Model.SubmitButtonCaption.Current)
+                </button>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    var fp_submitWebForm@(currentBlockID) = function (e) {
+        $(".submit-button@(currentBlockID)").off("click", fp_submitWebForm@(currentBlockID));
+        $(e.target).submit();
+        setTimeout(function () {
+            $(".submit-button@(currentBlockID)").on("click", fp_submitWebForm@(currentBlockID));
+        }, 2000);
+    }
+    $(".submit-button@(currentBlockID)").on("click", fp_submitWebForm@(currentBlockID));
+</script>

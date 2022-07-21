@@ -1,0 +1,124 @@
+﻿@model Flexpage.Models.FAQViewModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+               fp_loadScripts(EventManager.settings.PathJs.faq, 'EventManagerFAQ', function () {
+                 var args = { ID:@(Model.ID) };
+                        var faqEM@(Model.ID) = new EventManagerFAQ(args);
+               });
+            });
+        }, 0);
+    })();
+    function fp_submitFAQ@(Model.ID)(s, e) {
+        //$("#fp_faq-block-@(Model.ID)-form").submit();
+        EventManager.bus.publish(EventManager.settings.Events.faq.filter,
+                        { "ID": '@Model.ID.ToString()',s:s,e:e });
+    }
+
+</script>
+<style>
+    .fp_faq-question-header-text {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .fp_faq-question-answer {
+        font-size: 14px;
+    }
+</style>
+@using (Ajax.BeginForm("FAQFilter", "FAQBlock", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_faq-block-" + Model.ID, InsertionMode = InsertionMode.Replace },
+    new { id = "fp_faq-block-" + Model.ID + "-form" }))
+{
+    @Html.HiddenFor(m => m.ID);
+    if (Model.ShowSectionsFilter)
+    {
+        <div class="fp_flex fp_pb-15">
+            @Html.DevExpress().ComboBox(settings =>
+       {
+           settings.Name = "Section"+Model.ID;
+           settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+           settings.SelectedIndex = Model.AllSections.IndexOf(Model.Section);
+           settings.Properties.NullText = "Choose a section";
+           settings.Properties.TextField = "Text";
+           settings.Properties.ValueField = "ID";
+           settings.Properties.ValueType = typeof(int);
+
+           settings.Properties.ClientSideEvents.ValueChanged = "function(s,e) { fp_submitFAQ"+ Model.ID + "(s,e) }";
+       }).BindList(Model.AllSections).GetHtml()
+        </div>
+    }
+    if (Model.ShowSubsectionsFilter)
+    {
+        <div class="fp_flex fp_pb-15">
+            @Html.DevExpress().ComboBox(settings =>
+       {
+           settings.Name = "Subsection" + Model.ID;
+           settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+           settings.SelectedIndex = Model.AllSubsections.IndexOf(Model.Subsection);
+           settings.Properties.NullText = "Choose a subsection";
+           settings.Properties.TextField = "Text";
+           settings.Properties.ValueField = "ID";
+           settings.Properties.ValueType = typeof(int);
+           settings.Enabled = !Model.AllSectionsSelected;
+           settings.Properties.ClientSideEvents.ValueChanged = "function(s,e) { fp_submitFAQ" + Model.ID + "(s,e) }";
+       }).BindList(Model.AllSubsections).GetHtml()
+        </div>
+    }
+    <div class="fp_flex">
+        @if (Model.ShowCountriesFilter)
+        {
+            <div class="fp_pb-15 @(Model.ShowLanguagesFilter?"fp_w-50 fp_pr-10":"fp_w-100")  ">
+                @Html.DevExpress().ComboBox( settings =>
+           {
+               settings.Name = "Country" + Model.ID;
+               settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+               settings.SelectedIndex = Model.AllCountries.IndexOf(Model.Country);
+               settings.Properties.NullText = "Choose a country";
+               settings.Properties.TextField = "Name";
+               settings.Properties.ValueField = "ID";
+               settings.Properties.ValueType = typeof(int);
+               settings.Properties.ClientSideEvents.ValueChanged = "function(s,e) { fp_submitFAQ" + Model.ID + "(s,e) }";
+           }).BindList(Model.AllCountries).GetHtml()
+            </div>
+        }
+        @if (Model.ShowLanguagesFilter)
+        {
+            <div class="fp_pb-15 @(Model.ShowCountriesFilter?"fp_w-50":"fp_w-100")  ">
+                @Html.DevExpress().ComboBox(settings =>
+           {
+               settings.Name = "Language" + Model.ID;
+               settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+               settings.SelectedIndex = Model.AllLanguages.IndexOf(Model.Language);
+               settings.Properties.NullText = "Choose a language";
+               settings.Properties.TextField = "Name";
+               settings.Properties.ValueField = "ID";
+               settings.Properties.ValueType = typeof(int);
+               settings.Properties.ClientSideEvents.ValueChanged = "function(s,e) { fp_submitFAQ" + Model.ID + "(s,e) }";
+           }).BindList(Model.AllLanguages).GetHtml()
+            </div>
+        }
+    </div>
+    <div class="fp_faq-questions">
+        @foreach (var question in Model.Questions)
+        {
+            question.Question.SelectLanguage(Model.Language.Code);
+            question.Answer.SelectLanguage(Model.Language.Code);
+            <div class="fp_faq-question fp_pl-5 fp_pr-5 fp_pb-15">
+                <div class="fp_faq-question-header fp_w-100 fp_cursor-pointer fp_justify-content-space-between fp_flex fp_align-items-center">
+                    <div class="fp_faq-question-header-text fp_pl-10 fp_pr-10">
+                        @Html.Raw(question.Question.NotEmptyText)
+                    </div>
+                    <span class="fa fa-chevron-circle-down fp_pr-10 fp_custom-icon fp_custom-icon_down"></span>
+                    <span class="fa fa-chevron-circle-up fp_pr-10 fp_hidden fp_custom-icon fp_custom-icon_up"></span>
+                </div>
+                <div class="fp_faq-question-answer  fp_pl-10 fp_pr-10 fp_pb-10 fp_pt-10  fp_hidden">
+                    @Html.Raw(question.Answer.NotEmptyText)
+                </div>
+
+            </div>
+        }
+    </div>
+}

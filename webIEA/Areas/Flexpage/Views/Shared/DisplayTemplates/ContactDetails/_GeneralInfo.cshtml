@@ -1,0 +1,196 @@
+﻿@using System.Web.UI.WebControls
+
+@model Flexpage.Models.ContactDetailsModel
+@{
+    ViewBag.Edit = Model.Edit;
+    ViewBag.Languages = Model.Languages;
+    var name = "";
+    if (Model.PersonView != null)
+    {
+        name = Model.PersonView.Name1 + (string.IsNullOrEmpty(Model.PersonView.Name2) ? "" : ", " + Model.PersonView.Name2);
+    }
+    if (Model.CompanyView != null)
+    {
+        name = Model.CompanyView.Name1 + (string.IsNullOrEmpty(Model.CompanyView.Name2) ? "" : ", " + Model.CompanyView.Name2);
+    }
+    var type = Pluritech.Contact.Abstract.DTO.eContactType.None;
+    if (Model.PersonView != null)
+    {
+        type = Pluritech.Contact.Abstract.DTO.eContactType.Person;
+    }
+    if (Model.CompanyView != null)
+    {
+        type = Pluritech.Contact.Abstract.DTO.eContactType.Company;
+    }
+}
+@if (Model.PersonView != null || Model.CompanyView != null)
+{
+<script>
+        function fp_onSuccess@(Model.ID)(e) {
+            EventManager.bus.publish(EventManager.settings.Events.contactDetails.save,
+                {
+                    "event": e, "ID":@(Model.ID), "contactID":@(Model.ContactID),
+                    "contactType": "@(Model.ContactType)", "edit": false
+                });
+            EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.updateGeneralInfo,
+                {
+                    "event": e, "ID":@(Model.ID), "contactID":@(Model.ContactID),
+                    "contactType": "@(Model.ContactType)", "edit": @(Model.Edit.ToString().ToLower()),
+                    "name":"@(name)"
+                });
+        }
+        function fp_onFailure@(Model.ID)(e) {
+            fp_ConfirmDialog("Fail Save Contact Details", "No changes were saved", function () { });
+        }
+</script>
+
+    if (Model.Edit)
+    {
+        using (Ajax.BeginForm("ContactDetails_SaveGeneralInfo" + type.GetDisplay(), "ContactDetails", new { }, new AjaxOptions
+        {
+            UpdateTargetId = "tabControl" + Model.ID + "_C" + Model.SelectTabIndex + " div",
+            OnSuccess = "fp_onSuccess" + Model.ID.ToString(),
+            OnFailure = "fp_onFailure" + Model.ID.ToString(),
+            LoadingElementId = "LoadingPanel" + Model.ID.ToString()
+        }, new { @id = "formGeneralInfo" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.ContactID)
+            @Html.HiddenFor(m => m.ContactType)
+            @Html.HiddenFor(m => m.SelectTabIndex)
+            @Html.HiddenFor(m => m.SelectTab)
+
+            if (Model.PersonView != null)
+            {
+                <div class="col-xs-6" style="padding:0">
+                    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoPersonTitle.cshtml", Model.PersonView)
+                    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoPerson.cshtml", Model.PersonView)
+                    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoFull.cshtml", Model.PersonView)
+                </div>
+                <div class="col-xs-6" style="padding:0">
+                    <div class="col-xs-12 form-fields">
+                        <div class="col-xs-2">
+                            @Html.DisplayNameFor(m => m.PersonView.Notes)
+                        </div>
+
+                        <div class="col-xs-8">
+                            @Html.DevExpress().Memo(s =>
+                       {
+                           s.Name = "Notes";
+                           s.Text = Model.PersonView.Notes;
+                           s.Width = Unit.Percentage(100);
+                           s.Height = Unit.Pixel(100);
+                       }).GetHtml()
+                            @Html.ValidationMessageFor(model => model.PersonView.Notes)
+                        </div>
+                    </div>
+                </div>
+
+            }
+            else if (Model.CompanyView != null)
+            {
+                <div class="col-xs-6" style="padding:0">
+                    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoCompany.cshtml", Model.CompanyView)
+                    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoFull.cshtml", Model.CompanyView)
+                </div>
+                <div class="col-xs-6" style="padding:0">
+                    <div class="col-xs-12 form-fields">
+                        <div class="col-xs-2">
+                            @Html.DisplayNameFor(m => m.CompanyView.Notes)
+                        </div>
+
+                        <div class="col-xs-8">
+                            @Html.DevExpress().Memo(s =>
+                       {
+                           s.Name = "Notes";
+                           s.Text = Model.CompanyView.Notes;
+                           s.Width = Unit.Percentage(100);
+                           s.Height = Unit.Pixel(100);
+                           }).GetHtml()
+                            @Html.ValidationMessageFor(model => model.CompanyView.Notes)
+                        </div>
+                    </div>
+                </div>
+
+            }
+            if (Model.AllowEdit && (Model.AdminMode || (bool?)ViewBag.IsContactsAdmin == true))
+            {
+                    <div class="col-md-12 form-fields">
+
+                        <span class="fp_contactDetails-btn fp_contactDetails-btn__save">
+                            @Html.DevExpress().Button(settings =>
+                       {
+                           settings.Name = "Save";
+                           settings.Text = "Save";
+                           settings.RenderMode = ButtonRenderMode.Button;
+                       }).GetHtml()
+                        </span>
+                        <span class="fp_contactDetails-btn fp_contactDetails-btn__cancel">
+                            @Html.DevExpress().Button(settings =>
+                       {
+                           settings.Name = "Cancel";
+                           settings.Text = "Cancel";
+                           settings.RenderMode = ButtonRenderMode.Button;
+                       }).GetHtml()
+                        </span>
+                    </div>
+                }
+        };
+    }
+    else
+    {
+        if (Model.AllowEdit && (Model.AdminMode || (bool?)ViewBag.IsContactsAdmin == true))
+        {
+                    <div class="col-xs-12">
+                        <span class="fp_contactDetails-btn fp_contactDetails-btn__edit">
+                            @Html.DevExpress().Button(settings =>
+                       {
+                           settings.Name = "Edit";
+                           settings.Text = "Edit";
+                           settings.RenderMode = ButtonRenderMode.Button;
+                       }).GetHtml()
+                        </span>
+                    </div>
+        }
+        if (Model.PersonView != null)
+        {
+                    <div class="col-xs-6" style="padding:0">
+                        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoPersonTitle.cshtml", Model.PersonView)
+                        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoPerson.cshtml", Model.PersonView)
+                        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoFull.cshtml", Model.PersonView)
+                    </div>
+                    <div class="col-xs-6" style="padding:0">
+                        <div class="col-xs-12 form-fields">
+                            <div class="col-xs-2">
+                                @Html.DisplayNameFor(m => m.PersonView.Notes)
+                            </div>
+
+                            <div class="col-xs-8">
+                                @Html.DisplayFor(m => m.PersonView.Notes)
+                            </div>
+                        </div>
+                    </div>
+
+        }
+        else if (Model.CompanyView != null)
+        {
+                    <div class="col-xs-6" style="padding:0">
+                        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoCompany.cshtml", Model.CompanyView)
+                        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoFull.cshtml", Model.CompanyView)
+                    </div>
+                    <div class="col-xs-6" style="padding:0">
+                        <div class="col-xs-12 form-fields">
+                            <div class="col-xs-2">
+                                @Html.DisplayNameFor(m => m.CompanyView.Notes)
+                            </div>
+
+                            <div class="col-xs-8">
+                                @Html.DisplayFor(m => m.CompanyView.Notes)
+                            </div>
+                        </div>
+                    </div>
+
+        }
+    }
+}

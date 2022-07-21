@@ -1,0 +1,106 @@
+﻿@using System.Drawing
+@using System.Web.UI.WebControls
+@using System.Globalization
+@model Flexpage.Abstract.DTO.ICalendarModel
+@{
+    var langCode = Model.LanguageSelector.CurrentLangCode;
+    var cultureInfo = new CultureInfo(langCode);
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+}
+@if (Model.OnlyBigCalendar && Model.WidthType == Flexpage.Abstract.DTO.eCalendarSizeType.Custom)
+{
+    @Html.Raw(@String.Format("<div class=\"calendar-content\" style=\"width:{0}{1};\">", Model.CustomWidth.ToString(), (Model.CustomWidthUnit == Flexpage.Abstract.DTO.eCalendarSizeUnitType.Pixel ? "px" : "%")));
+}
+else
+{
+    @Html.Raw("<div class=\"calendar-content\">");
+}
+
+@if (Model.ShowTitle)
+{
+    <h3>@Model.LocalizedTitle.CurrentLocalization</h3>
+}
+@if (Model.OnlyBigCalendar)
+{
+    Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/CalendarBig.cshtml", Model);
+    <script type="text/javascript">
+        $(document).ready(function () {
+            fp_InitCalendarBig@(Model.ID)();
+        });
+    </script>
+}
+else
+{
+    <text>
+        <script type="text/javascript">
+            function fp_InitCalendarSmall@(Model.ID)(s, e) {
+                s.callbackCustomArgs = {};
+
+                s.BeginCallback.AddHandler(function (s, e) {
+                    var month = s.GetVisibleDate();
+                    s.callbackCustomArgs["date"] = month.toUTCString();
+                });
+            }
+            function fp_InitToltips@(Model.ID)() {
+                var tip = $(".tip");
+                for (var i = 0; i < tip.length; i++) {
+                    $(tip[i]).tooltip({
+                        html: true,
+                        container:"#calendar_@(Model.ID)",
+                        title: function() {
+                            var tooltipText = "";
+                            var curDate = $(this).data('date');
+                            if (curDate in flexpageCalendar.dateTitiel) {
+                                return flexpageCalendar.dateTitiel[curDate];
+                            } else {
+                                $.ajax({
+                                    url: '/Flexpage/GetDayTitles?date=' + curDate,
+                                    type: 'post',
+                                    async: false,
+                                    success: function(response) {
+                                        flexpageCalendar.dateTitiel[curDate] = response;
+                                        tooltipText = response;
+                                    }
+                                });
+                                return tooltipText;
+                            }
+                        }
+                    });
+                }
+            }
+            function fp_EndCallbackCalendarSmall@(Model.ID)(s, e) {
+                fp_InitToltips@(Model.ID)();
+            }
+            $(function() {
+                fp_InitToltips@(Model.ID)();
+            });
+        </script>
+    </text>
+
+    Html.RenderAction("SmallCalendar", "CalendarBlock", new { modelId = Model.ID, langCode = langCode });
+
+    if (Model.ShowBigCalendarFromSmall)
+    {
+        @(Html.DevExpress().PopupControl(settings =>
+                    {
+                        settings.Name = "calendar_big_" + Model.ID;
+                        settings.HeaderText = string.Empty;
+                        settings.Width = 600;
+                        settings.Height = 530;
+                        settings.PopupVerticalAlign = PopupVerticalAlign.WindowCenter;
+                        settings.PopupHorizontalAlign = PopupHorizontalAlign.WindowCenter;
+                        settings.AutoUpdatePosition = false;
+                        settings.MaxHeight = 530;
+                        settings.PopupAlignCorrection = PopupAlignCorrection.Disabled;
+                        settings.ControlStyle.CssClass = "PopupBigCalendar";
+                        settings.SetContent(() =>
+                        {
+                            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/CalendarBig.cshtml", Model);
+                        });
+
+                        settings.ClientSideEvents.PopUp = "function(s,e) { fp_InitCalendarBig" + Model.ID + "(s, e); }";
+                    }).GetHtml())
+    }
+}
+
+@Html.Raw("</div>")

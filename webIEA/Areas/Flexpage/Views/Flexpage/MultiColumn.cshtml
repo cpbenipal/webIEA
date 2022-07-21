@@ -1,0 +1,11 @@
+﻿@model Flexpage.Models.MultiColumnModel
+<div class="multicolumn @(Model.ContentInRows?"multicolumn_row":"multicolumn_column")" id="multicolumn-@Model.ID">
+    @{
+        foreach (var item in Model.Columns)
+        {
+            item.ShowHeader = Model.ShowHeaders;
+            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Column.cshtml", item);
+        }
+    }
+
+</div>

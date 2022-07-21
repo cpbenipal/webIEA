@@ -1,0 +1,62 @@
+﻿@model Flexpage.Models.ContentModel
+
+
+<!--Columns-->
+<div id="columns" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-12 fields-title">
+            <div class="col-md-4" style="width:32%">Input fields <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Default tooltip"></i></div>
+            <div class="col-md-2 text-center"  style="width:18%">Alignment</div>
+            <div class="col-md-1 text-center">Show in grid</div>
+            <div class="col-md-1 text-center">Show in detail</div>
+            <div class="col-md-1 text-center">Show as link</div>
+            <div class="col-md-2 text-center" style="width: 10%">Only for authorised users</div>
+        </div>
+        <div class="col-md-12 all-scroll sortable-folder-content" id="sortable-folder-content">
+            @for (int i = 0; i < Model.Columns.Count; i++)
+            {
+                @Html.EditorFor(m => m.Columns[i], "Content/_Settings_ColumnsGridRow", new { Allowed = Model.ColMappings })
+            }
+        </div>
+        <div class="new-field">
+            <div class="col-md-12">
+                <a href="javascript:fp_folderContent_addColumn()">+ Add field</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Sorting Settings-->
+<div id="sorting-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="form-fields">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label>Allow sort</label>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.EditorFor(m => m.AllowSort, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                        </div>
+                    </div>
+                </div>
+                <div class="opacity-activated">
+                    <div class="form-fields">
+                        <label for="orderDirection">Order direction:</label>
+                        @Html.DropDownListFor(m => m.OrderDirection, new SelectList(Model.AllowedOrderDirection), new { @class = "form-control" })
+                    </div>
+                    <div class="form-fields">
+                        <label for="orderBy">Order by:</label>
+                        @Html.DropDownListFor(m => m.OrderBy, new SelectList(Model.AllowedOrderBy), new { @class = "form-control" })
+                    </div>
+                    <!--
+                    <div class="form-fields">
+                        <label for="orderName">Order field name:</label>
+                        @Html.TextBoxFor(m => m.OrderFieldName, new { @class = "form-control" })
+                    </div>
+                    -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

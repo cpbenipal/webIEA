@@ -1,0 +1,12 @@
+﻿@{
+    string editorContainer = "fp_EmailOverridengContainer_" + Model.EditorPostfix;
+}
+@model Flexpage.Models.EmailOverridingModel
+@using (Ajax.BeginForm("SaveEmailOverriding", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = editorContainer, InsertionMode = InsertionMode.Replace }
+, new { id = "fp_EmailOverridengForm", forTraking = "all" }))
+{
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsEnumeration/_EmailEdit.cshtml", Model)
+}
+<script type="text/javascript">
+    fp_popupControlChangeTitle('Email Overriding', '#fp_EmailOverridengForm');
+</script>

@@ -1,0 +1,430 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Models
+@using Flexpage.Abstract.DTO
+@model CalendarViewModel
+
+<script>
+    function fp_changeLanguage(langCode) {
+        let isDirty = IsFormDirty('fp_CalendarBlockEditorForm');
+        fp_PostAjaxForm('#calendar-block-edit', { command: 'changelanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+</script>
+<div id="calendar-block-edit" class="flexpage">
+    @using (Ajax.BeginForm("UpdateCalendar", "CalendarBlock", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "calendar-block-edit", InsertionMode = InsertionMode.Replace }, new { id = "fp_CalendarBlockEditorForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => Model.ID)
+        @Html.HiddenFor(m => Model.Alias)
+        @Html.HiddenFor(m => Model.ListMode, new { id = "hiddenListMode" })
+
+        <div class="row">
+            <ul class="nav nav-pills tabs-navigation">
+                <li class="disabled"><a href="#calendar-type">Type</a></li>
+                <li class="active"><a data-toggle="pill" href="#calendar-settings">Settings</a></li>
+                <li><a data-toggle="pill" href="#calendar-multimonth">Multi month</a></li>
+                <li><a data-toggle="pill" href="#calendar-categories">Categories</a></li>
+                <li><a data-toggle="pill" href="#calendar-events">Events</a></li>
+            </ul>
+            <div class="tab-content">
+                <!--Tab TYPE-->
+                <div id="calendar-type" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="text-center title-type">Start by selecting the type of display</h5>
+                        </div>
+                        <div class="col-md-6 left">
+                            <div class="content-box list-mode" data-select="@(Model.ListMode ? 0 : 1)">
+                                <a data-toggle="modal" data-target="false">
+                                    <img src="~/Areas/Flexpage/Content/Images/icons/calendar/calendar.svg" alt="" class="img-main" />
+                                    <img src="~/Areas/Flexpage/Content/Images/icons/calendar/calendar-selected.svg" alt="" class="img-hover" />
+                                    <div class="block-title text-center  text-upper">Calendar</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a monthly<br />calendar with events</p>
+                        </div>
+                        <div class="col-md-6 right">
+                            <div class="content-box list-mode" data-select="@(Model.ListMode ? 1 : 0)">
+                                <a data-toggle="modal" data-target="true">
+                                    <img src="~/Areas/Flexpage/Content/Images/icons/calendar/event.svg" alt="" class="img-main" />
+                                    <img src="~/Areas/Flexpage/Content/Images/icons/calendar/event-selected.svg" alt="" class="img-hover" />
+                                    <div class="block-title text-center text-upper">Event list</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a list of<br />upcoming events</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Tab SETTINGS-->
+                <div id="calendar-settings" class="tab-pane active fade in form-type">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <h4>General options <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Title and size options"></i></h4>
+                                <div class="form-group element-center">
+                                    @Html.CheckBoxFor(m => Model.ShowTitle, new { id = "showTitle" })
+                                    <label class="form-check-label" for="showTitle">
+                                        Show title
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector2.cshtml", Model.LanguageSelector)
+                                </div>
+                                <div class="form-group">
+                                    <label>Title:</label>
+                                    @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+                                </div>
+                                <div class="form-group element-center">
+                                    @Html.CheckBoxFor(m => Model.ShowReadMoreLink, new { id = "rmLink" })
+                                    <label class="form-check-label" for="rmLink">
+                                        Show 'Read More' Link
+                                    </label>
+                                </div>
+                                <div class="form-group element-center">
+                                    @Html.CheckBoxFor(m => Model.AllowFavorites, new { id = "allowFavorites" })
+                                    <label class="form-check-label" for="allowFavorites">
+                                        Allow favorites
+                                    </label>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h5>Width:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(s => s.WidthType, eCalendarSizeType.Full, new { id = "WidthType" + eCalendarSizeType.Full.ToString() })
+                                            Full width
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="col-md-4 aligned-left">
+                                            <label class="radio-inline">
+                                                @Html.RadioButtonFor(s => s.WidthType, eCalendarSizeType.Custom, new { id = "WidthType" + eCalendarSizeType.Custom.ToString() })
+                                                Custom
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.CustomWidth, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(m => m.CustomWidthUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(eCalendarSizeUnitType)), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="display:none;">
+                                    <div class="col-md-12">
+                                        <h5>Height:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(s => s.HeightType, eCalendarSizeType.Full, new { id = "WidthHeightTypeType" + eCalendarSizeType.Full.ToString() })
+                                            Auto size
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="col-md-4 aligned-left">
+                                            <label class="radio-inline">
+                                                @Html.RadioButtonFor(s => s.HeightType, eCalendarSizeType.Custom, new { id = "HeightType" + eCalendarSizeType.Custom.ToString() })
+                                                Custom
+                                            </label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.TextBoxFor(m => m.CustomHeight, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(m => m.CustomHeightUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(eCalendarSizeUnitType)), new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-fields">
+                                        <label for="tagName">Categories</label>
+                                        @Html.DevExpress().TokenBox(
+                                            settings =>
+                                            {
+                                                settings.Name = "TagNameBlock";
+                                                settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                                settings.ControlStyle.CssClass = "form-control";
+                                                settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                                settings.Style.Add(HtmlTextWriterStyle.Display,"table");
+                                                settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                                                settings.Properties.ValueField = "Value";
+                                                settings.Properties.TextField = "Text";
+                                                settings.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+
+                                            }
+                                        ).BindList(Model.AllowedCategories).Bind(Model.Categories).GetHtml()
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>View options <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Calendar layout options"></i></h4>
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Show tooltips in small calendar</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.SmallCalendarTooltip)
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Show tooltips in big calendar</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.BigCalendarTooltip)
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Show big calendar by clicking on a day in small calendar</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.ShowBigCalendarFromSmall)
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Show only big calendar</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.OnlyBigCalendar)
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Show week numbers</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.ShowWeekNumbers)
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Tab Multi month-->
+                <div id="calendar-multimonth" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-9">
+                                        <label>Enable multi month view</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="toggle-switch">
+                                            <label class="switch">
+                                                @Html.CheckBoxFor(m => m.MultiMonthMode, new { @id = "cbMultiMonthMode" })
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label>Multi month view mode</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.DropDownListFor(m => m.MultimonthViewMode, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(eCalendarMultimonthViewMode)), new { @id = "ddlMultiMonthViewMode", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div id="MultiMonth" class="@(Model.MultimonthViewMode == eCalendarMultimonthViewMode.Quarters ? "MultiMonthDisabled": "")">
+                                    <div class="row form-group">
+                                        <div class="col-md-6">
+                                            <label style="margin-top: 8px">Start month offset:</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.DropDownListFor(m => Model.MonthOffset, new SelectList(new List<Object>
+                                            {
+                                                new {value = "0", text = "0"},
+                                                new {value = "1", text = "1"},
+                                                new {value = "2", text = "2"},
+                                                new {value = "3", text = "3"},
+                                                new {value = "4", text = "4"},
+                                                new {value = "5", text = "5"},
+                                                new {value = "6", text = "6"},
+                                                new {value = "7", text = "7"},
+                                                new {value = "8", text = "8"},
+                                                new {value = "9", text = "9"},
+                                                new {value = "10", text = "10"},
+                                                new {value = "11", text = "11"},
+                                                new {value = "12", text = "12"}
+                                            }, "value", "text"), new {@class = "form-control"})
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h4>Size <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Default tooltip"></i></h4>
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label>Rows:</label>
+                                            @Html.DropDownListFor(m => Model.Rows, new SelectList(new List<Object>
+                                            {
+                                                new {value = "1", text = "1"},
+                                                new {value = "2", text = "2"},
+                                                new {value = "3", text = "3"},
+                                                new {value = "4", text = "4"},
+                                                new {value = "5", text = "5"},
+                                                new {value = "6", text = "6"}
+                                            }, "value", "text"), new {@class = "form-control"})
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <label>Columns:</label>
+                                            @Html.DropDownListFor(m => Model.Columns, new SelectList(new List<Object>
+                                            {
+                                                new {value = "1", text = "1"},
+                                                new {value = "2", text = "2"},
+                                                new {value = "3", text = "3"},
+                                                new {value = "4", text = "4"},
+                                                new {value = "5", text = "5"},
+                                                new {value = "6", text = "6"}
+                                            }, "value", "text"), new {@class = "form-control"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    <!--Tab CATEGORIES-->
+    <div id="calendar-categories" class="tab-pane fade">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-8">
+                    <h4>Categories <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Event categories list"></i></h4>
+                </div>
+                <div class="col-md-2 col-md-offset-2">
+                    <div class="pull-right">
+                        <a data-toggle="modal" data-target="#category-add-new">
+                            <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command: 'add', blockType: 'EventCategory' }, fp_afterAddCategory)">
+                                Add new
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div id="AddCalendarCategoryContent">
+
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="table-calendar">
+                @Html.Action("Categories", "CalendarBlock", new { Command = eCalendarActionTypeEnum.CategoryGrid })
+            </div>
+        </div>
+    </div>
+    <!--Tab EVENTS-->
+    <div id="calendar-events" class="tab-pane fade">
+        <div class="row">
+            <div class="col-md-12">
+                <!--button-->
+                <div class="row records-button">
+                    <div class="col-md-10">
+                        <h4 class="title-main-block">Records <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="News records list"></i></h4>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="pull-right">
+                            <a data-toggle="modal" data-target="#news-add-new">
+                                <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command: 'add', blockType: 'CalendarEvent' }, fp_afterAddNewsRecord)">
+                                    Add new
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--records-->
+                <div class="flexpage records-field">
+                    @Html.Action("EventsGrid", "Events")
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+}
+    </div>
+    <script type="text/javascript">
+        flexpageCalendar.selectDefault();
+
+        fp_popupControlChangeTitle("CALENDAR", "#calendar-block-edit");
+    </script>
+
+    <script type="text/javascript">
+
+        function fp_initJS() {
+            window.fp_preSaveBlock = function () {
+            }
+        }
+
+        function fp_events_CustomButtonClick(s, e) {
+            if (e.buttonID == 'btnDelete')
+                fp_ConfirmDialog('Delete', 'Are you sure you want to delete the event?', function () { s.DeleteRow(e.visibleIndex); });
+            else if (e.buttonID == 'btnEdit')
+                fp_popupControlOpen({ command: 'edit', blockType: 'CalendarEvent', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true }, function () { fp_initJS(); s.PerformCallback(); });
+        }
+
+        function fp_eventCategories_CustomButtonClick(s, e) {
+            if (e.buttonID == 'btnDelete')
+                fp_ConfirmDialog('Delete', 'Are you sure you want to delete the category?', function () { s.DeleteRow(e.visibleIndex); });
+            else if (e.buttonID == 'btnEdit')
+                fp_popupControlOpen({ command: 'edit', blockType: 'EventCategory', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true }, function () { fp_initJS(); s.PerformCallback(); });
+        }
+
+        function fp_afterAddNewsRecord() {
+            fp_NewsBlock_Grid.PerformCallback();
+            fp_initJS();
+        }
+
+        function fp_afterAddCategory() {
+            fp_EventCategory_Grid.PerformCallback();
+            fp_initJS();
+        }
+
+        fp_popupControlChangeTitle('NEWS', '#fp_NewsBlockEditorContainer');
+        fp_initJS();
+
+        $(document).ready(function () {
+            let _controlsForTracking = [
+                '#IsHeaderLink',
+                '#ShowPager',
+                '#ShowAsGrid'
+            ];
+            //fp_ControlsForTracking(_controlsForTracking);
+        });
+    </script>

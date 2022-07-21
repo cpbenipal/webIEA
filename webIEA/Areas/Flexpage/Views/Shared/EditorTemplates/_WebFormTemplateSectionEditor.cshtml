@@ -1,0 +1,36 @@
+﻿@model Flexpage.Models.WebFormSectionModel
+
+<div class="panel-group">
+    <div class="panel panel-default" draggable="true" ondragstart="fp_webFormSectionDrag(event, @Model.ID)" style="box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.1)">
+        <div class="panel-heading" style="background-color: #E9E9E9">
+            <h4 class="class="@(Model.HasErrors  ? "block-error" : "panel-title")" style="font-weight: bold">
+                <a data-toggle="collapse" href="#fp_WebFormCollapseSectionTemplate@(Model.ID)" class="align-box @(Model.HasErrors  ? "block-error" : "")">@Model.Name</a>
+            </h4>
+        </div>
+        <div id="fp_WebFormCollapseSectionTemplate@(Model.ID)" class="col-md-12 panel-collapse collapse collapse-field-container" style="margin-bottom: 16px">
+            <div class="row">
+                <div class="col-md-4" style="text-align:right; padding-right: 8px">
+                    Title:
+                </div>
+                <div class="col-md-7" style="font-weight: normal">
+                    @Html.DisplayFor(m => m.Title, "LocalizedString", new { disabled = "", @class = "custom-control-input" })
+                </div>
+                <div class="col-md-1" style="font-weight: normal">
+                    @Html.DisplayFor(m => m.ShowTitle, new { disabled = "", @class = "custom-control-input" })
+                </div>
+            </div>
+
+            <div class="row">
+                <ul class="fp_webFormBlockTemplateSectionFieldsList">
+                    @{ 
+                        for (int fieldNum = 0; fieldNum < Model.Fields.Count; fieldNum++)
+                        {
+                            @Html.EditorFor(m => m.Fields[fieldNum], "_WebFormTemplateFieldEditor")
+                        }
+                    }
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

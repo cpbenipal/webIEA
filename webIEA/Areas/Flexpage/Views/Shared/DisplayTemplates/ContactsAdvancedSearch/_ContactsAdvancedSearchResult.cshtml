@@ -1,0 +1,39 @@
+﻿@using System;
+
+@model string
+@{ 
+    var guid =Guid.NewGuid();
+    HttpContext.Current.Response.Cookies[guid.ToString()].Value = HttpUtility.UrlEncode(Model);
+}
+
+<dev id="fp_resultAdvancedSearch">
+    @if (ViewData["EditError"] != null)
+    {
+        <span>@ViewData["EditError"]</span>
+    }
+    else if (!string.IsNullOrEmpty(Model))
+    {
+        @Html.Hidden("fp_resultAdvancedSearchGUID", guid)
+        if ((bool?)ViewBag.IsAdmin == true || (bool?)ViewBag.IsContactsAdmin == true)
+        {
+            <span class="fp_advancedSearch-btn fp_advancedSearch-btn__export">
+                @Html.DevExpress().Button(settings =>
+                {
+                    settings.Name = "Export";
+                    settings.Text = "Export";
+                    settings.RenderMode = ButtonRenderMode.Button;
+                }).GetHtml()
+            </span>
+
+            <span class="fp_advancedSearch-btn fp_advancedSearch-btn__export_to_xls">
+                @Html.DevExpress().Button(settings =>
+                {
+                    settings.Name = "ExportToXlsx";
+                    settings.Text = "Export to Excel";
+                    settings.RenderMode = ButtonRenderMode.Button;
+                }).GetHtml()
+            </span>
+        }
+        @Html.Action("BrowserContacts", "ContactsBrowser", new { alias = "pw_contactsAdvancedSearchV1" + (ViewData["type"] == null || ViewData["type"].ToString() == "None" ? "" : "_" + ViewData["type"]), id = ViewData["id"], type = ViewData["type"], shortcutID = ViewData["shortcutID"], xml = guid })
+    }
+</dev>

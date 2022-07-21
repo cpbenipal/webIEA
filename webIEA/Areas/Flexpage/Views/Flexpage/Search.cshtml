@@ -1,0 +1,21 @@
+﻿@model Flexpage.Service.DTO.SearchModel
+
+<h2>Search</h2>
+
+<script type="text/javascript">
+    function fp_doSearch() {
+        $('#fp_searchWrapper form').submit();
+    }
+
+    $(function () {
+    @if(Model.SearchResults == null) {
+        <text>
+        fp_doSearch();
+        </text>
+    }
+    });
+</script>
+
+<div id="fp_searchWrapper" class="fp_searchWrapper">
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/SearchPartial.cshtml", Model)
+</div>

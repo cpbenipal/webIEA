@@ -1,0 +1,57 @@
+﻿@model Flexpage.Models.LanguageSelectorModel
+@{ var fn = String.IsNullOrEmpty(Model.FunctionName) ? "fp_changeLanguage" : Model.FunctionName;
+    if (Model.LangCodes == null)
+    {
+        Model.LangCodes = new List<string>();
+    }
+}
+@if (Model.isLocalizedStringUsed == false && Model.LangCodes != null)
+{
+    for (int i = 0; i < Model.LangCodes.Count; i++)
+    {
+        var code = Model.LangCodes.ElementAt(i);
+        @Html.HiddenFor(m => code, new { @Name = string.Format("LanguageSelector.LangCodes[{0}]", i) })
+    }
+}
+
+@Html.HiddenFor(m => m.isLocalizedStringUsed)
+@Html.HiddenFor(m => m.FunctionName)
+<div class="flexpage languageSelector languages">
+    @foreach (var lang in Flexpage.Helpers.FlexpageSettings.Instance.AllowedLanguages)
+    {
+        string classes = "", action = "";
+        bool locExists = true;
+        bool? active = false;
+        if (Model.CurrentLangCode != null)
+        {
+            if (lang == Model.CurrentLangCode.ToLower())
+            {
+                active = null;
+                classes = "language-selected";
+                action = "return false;";
+            }
+            else
+            {
+                if (Model.LangCodes != null)
+                {
+                    locExists = Model.LangCodes.Contains(lang);
+                }
+                else
+                {
+                    locExists = false;
+                }
+                active = locExists;
+                classes = locExists ? "language-active" : "language-choose";
+                action = string.Format("{0}('{1}')", fn, lang);
+            }
+        }
+        <div class="language-select @classes" onmouseout="$('.tooltip').remove()" onclick='$("[data-toggle=\"tooltip\"]").tooltip("hide");  @action' data-code="@lang" data-toggle="tooltip" data-placement="top" data-container=".modal-content,#fp_PageEditorContainer"
+             title="@(active==null?"Selected language":(active==true?"Existing loclization":"Localization doesn't exist"))">
+            @if (!locExists)
+            {
+                <i class="fas fa-plus-circle add-icon"></i>
+            }
+            @lang.ToUpper()
+        </div>
+    }
+</div>

@@ -1,0 +1,18 @@
+﻿@model Flexpage.Abstract.DTO.EventViewModel
+
+<div class="">
+    <div class="news-container">
+        <div class="title" style="text-transform:uppercase;">@Model.StartDate.ToString("dd MMMM yyyy")</div>
+        <div class="sub-title">
+            <a class="newsRec-title fegra_link" href="@string.Format("{0}?newsRecordID={1}", Model.FullNewsPageUrl, Model.ID)">
+                @Model.Title
+            </a>
+        </div>
+        <div class="content">
+            @Html.Raw(Model.ViewText)
+        </div>
+        <div>
+            <a href="@string.Format("{0}?newsRecordID={1}", Model.FullNewsPageUrl, Model.ID)" class="standard-btn">Full news</a>
+        </div>
+    </div>
+</div>

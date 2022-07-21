@@ -1,0 +1,157 @@
+﻿@using Flexpage.Abstract.DTO
+@using System.Text.RegularExpressions
+@model Flexpage.Abstract.DTO.IBlockModel
+
+@{
+    string id = Model.ID.ToString();
+    string aliasNo = "b" + id;
+    string classes = "flexpage-blockWrapper fp" + Model.BlockType;
+    Model.ShowAdminControls = (bool?)(Session != null ? Session["ShowAdminControls"] : null) ?? true;
+    if (Model.AdminMode && Model.ShowAdminControls)
+    {
+        classes += " admin";
+    }
+    classes += (!string.IsNullOrEmpty(Model.CssClass) ? " " + Model.CssClass : "");
+    classes += Model.HasErrors ? " flexpage-block-error" : "";
+
+    if (Session != null)
+    {
+        var blockTypeName = (Model.BlockType ?? Model.GetType().Name).Replace("Model", "");
+        var blocks = Session["BlockTypes"] as HashSet<Flexpage.Abstract.DTO.eBlockType>;
+        if (blocks == null)
+        {
+            blocks = new HashSet<eBlockType>();
+        }
+        eBlockType parsedBlock;
+        if (Enum.TryParse<eBlockType>(blockTypeName, out parsedBlock))
+        {
+            blocks.Add(parsedBlock);
+        }
+        Session["BlockTypes"] = blocks;
+    }
+}
+@if ((Model.AdminMode || Model.Visible) && !string.IsNullOrWhiteSpace(Model.Css))
+{
+    var styles = Regex.Replace(Model.Css.Trim(), @"(\/\*)(.|\r|\n)*?(\*\/)|\s+\s+", String.Empty, RegexOptions.Multiline);
+    var imports = styles.Split(new string[] { ";" }, StringSplitOptions.None)
+        .Where(style => !string.IsNullOrWhiteSpace(style) && style.Contains("@import"))
+        .Select(style => string.Format("@import{0};", style.Split(new string[] { "@import" }, StringSplitOptions.None).Last())).ToList();
+
+    imports.ForEach(imp => { styles = styles.Replace(imp, ""); });
+
+    //not change. ask Anna
+    var queries = styles.Split(new string[] { "}}" }, StringSplitOptions.None)
+        .Where(style => !string.IsNullOrWhiteSpace(style) && style.Contains("@"))
+        .Select(style => string.Format("@{0}", style.Split(new string[] { "@" }, StringSplitOptions.None).Last()) + "}}").ToList();
+    //not change ask Anna
+    queries.ForEach(q => { styles = styles.Replace(q, ""); });
+
+    var keyframes = queries.Where(q => q.Contains("keyframes"));
+
+    Func<string, IEnumerable<string>> styleWrapper = (s) =>
+        Regex.Replace(s, @"{(?>[^{}]|(?<c>){|(?<-c>)})*(?(c)(?!))}", m => m.Value.Replace(",", "&comma;"))  // espace commas inside curly brackets
+        .Split(new string[] { "}", "," }, StringSplitOptions.None)
+        .Where(style => !string.IsNullOrWhiteSpace(style))
+        .Select(style => string.Format("#{0}.flexpage-blockWrapper {1}", aliasNo, style.Replace("&comma;", ",")) + (style.Contains("{") ? "}" : ","));
+
+    var media = queries.Where(q => q.Contains("media"))
+        .Select(m =>
+        {
+            var mediaSplit = m.Split(new string[] { "){" }, StringSplitOptions.None);
+            var mediaQuery = mediaSplit.First();
+            var styleInMediaQuery = styleWrapper(mediaSplit.Last() + "}");
+            return string.Join(") {\n", mediaQuery, string.Join("\n\n", styleInMediaQuery)) + "\n}";
+        }).ToList();
+
+    var resultStyle = styleWrapper(styles);
+
+    <style>
+    @string.Join("\n\n", imports)
+
+    @string.Join("\n\n", keyframes)
+
+   @Html.Raw(string.Join("\n\n", resultStyle))
+
+    @string.Join("\n\n", media)
+
+    </style>
+}
+@if (Model.AdminMode && Model.ShowAdminControls)
+{
+    <div class="flexpage">
+
+        <a name='@aliasNo' id='@aliasNo'></a>
+        <div id="@aliasNo" class='@classes'>
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/_BlockWrapper.cshtml", Model)
+            <div class="flexpage-block-container">
+                @{
+                    try
+                    {
+                        Html.RenderPartial(Model.FrontViewPath, Model);
+                    }
+                    catch (Exception ex)
+                    {
+                        Model.HasErrors = true;
+                        Model.ErrorsLog += String.Format("<b>Error in block {0}(ID {1}).</b> Please contact your administrator. <br><b>Message:</b> {2} <br><b>Stacktrace:</b> {3} <br><br>", Model.GetType().Name, Model.ID, ex.Message, ex.StackTrace);
+                    }
+                }
+            </div>
+            @if (Model.HasErrors)
+            {
+                @Html.Partial("~/Areas/Flexpage/Views/Shared/Error.cshtml", Model.ErrorsLog)
+            }
+            @if (!Model.IsStatic) // check for static here to remove 'add block' possibility to the static pages
+            {
+                @Html.Partial("~/Areas/Flexpage/Views/Flexpage/_BlockAddIcon.cshtml", Model);
+            }
+        </div>
+    </div>
+    if (!Model.IsStatic)
+    {
+        <div>
+            <div class="fp_insertBlockLine"></div>
+            <div class="fp_insertBlock">
+                <a href="javascript:void(0)">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+                <button class="btn btn-blue-fullcolor-radius" data-toggle="modal" data-target="#flexpage-popup-control"
+                        onclick="return fp_popupControlOpen({ command: 'add', blocklistID: '@Model.BlocklistID', blockAfter: '@Model.ID' })">
+                    <i class="fas fa-plus"></i> Add block here
+                </button>
+            </div>
+        </div>
+    }
+}
+else
+{
+    if (Model.Visible)
+    {
+        <a name='@aliasNo' id='@aliasNo'></a>
+        <div id="@aliasNo" class='@classes'>
+            <div class="flexpage-block-container" @(Model.HasErrors ? "style=\"background-color: #ffe7e7\"" : "")>
+                @{
+                    try
+                    {
+                        Html.RenderPartial(Model.FrontViewPath, Model);
+                    }
+                    catch (Exception ex)
+                    {
+                        Model.HasErrors = true;
+                        Model.ErrorsLog += String.Format("<b>Error in block {0}(ID {1}).</b> Please contact your administrator. <br><br>", Model.GetType().Name, Model.ID);
+                    }
+                }
+                @if (Model.HasErrors)
+                {
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/Error.cshtml", Model.ErrorsLog)
+                }
+            </div>
+        </div>
+    }
+}
+
+<script>
+$(document).ready(function () {
+    fp_initSetting('toggleBlockVisibilityUrl', '@Url.Action("ToggleBlockVisibility", "Block")');
+}
+)
+</script>

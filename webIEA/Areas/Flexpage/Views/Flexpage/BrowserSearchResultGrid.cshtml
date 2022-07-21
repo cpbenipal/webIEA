@@ -1,0 +1,185 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+
+@model Pluritech.Pluriworks.Service.DTO.BrowserSearchResultModel
+
+@Html.DevExpress().GridView(settings => 
+{
+    var name = "fp_BrowserSearchResult_Grid" + Model.BlockID + "_" + Model.TabIndex;
+    settings.Name = name;
+    settings.CustomJSProperties = (s, e) =>
+    {
+        var grid = s as MVCxGridView;
+        e.Properties["cpStatus"] = Model.Status;
+        e.Properties["cpTabIndex"] = Model.TabIndex;
+    };
+    settings.CallbackRouteValues = new
+    {
+        Controller = "Browser",
+        Action = "BrowserSearchResultGrid",
+        searchQuery = Model.SearchQuery,
+        inContent = Model.InContent,
+        inFileFolderName = Model.InFileFolderName,
+        inCustomFields = Model.InCustomFields,
+        tabIndex = Model.TabIndex,
+        blockID = Model.BlockID,
+        searchID = Model.SearchID
+    };
+
+    settings.CustomBindingRouteValuesCollection.Add(
+    GridViewOperationType.Sorting,
+    new {
+        Controller = "Browser",
+        Action = "BrowserSearch_SortingAction",
+        searchQuery = Model.SearchQuery,
+        inContent = Model.InContent,
+        inFileFolderName = Model.InFileFolderName,
+        inCustomFields = Model.InCustomFields,
+        tabIndex = Model.TabIndex,
+        blockID = Model.BlockID,
+        searchID = Model.SearchID,
+        name = name,
+    }
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Paging,
+        new {
+            Controller = "Browser",
+            Action = "BrowserSearch_PagingAction",
+            searchQuery = Model.SearchQuery,
+            inContent = Model.InContent,
+            inFileFolderName = Model.InFileFolderName,
+            inCustomFields = Model.InCustomFields,
+            tabIndex = Model.TabIndex,
+            blockID = Model.BlockID,
+            searchID = Model.SearchID,
+            name = name
+        }
+    );
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Filtering,
+        new {
+            Controller = "Browser",
+            Action = "BrowserSearch_FilteringAction",
+            searchQuery = Model.SearchQuery,
+            inContent = Model.InContent,
+            inFileFolderName = Model.InFileFolderName,
+            inCustomFields = Model.InCustomFields,
+            tabIndex = Model.TabIndex,
+            blockID = Model.BlockID,
+            searchID = Model.SearchID,
+            name = name
+        }
+    );
+
+    settings.KeyFieldName = "ID";
+    settings.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+    settings.Width = Unit.Percentage(100);
+
+    settings.Settings.ShowFilterRow = true;
+    settings.Settings.ShowFooter = false;
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRowMenu = true;
+
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Annotation";
+        c.Caption = "&nbsp;";
+        c.Width = Unit.Pixel(20);
+        c.PropertiesEdit.EncodeHtml = false;
+        c.ShowInFilterControl = false;
+        c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+        c.Settings.ShowFilterRowMenu = DefaultBoolean.False;
+        c.Settings.AllowAutoFilter = DefaultBoolean.False;
+    });
+    settings.Columns.Add(c => {
+        c.Caption = "Name";
+        c.FieldName = "TitleLink";
+        c.UnboundType = UnboundColumnType.String;
+        c.HeaderStyle.CssClass = "browser-search-no-bottom-border";
+        c.CellStyle.CssClass = "browser-search-no-bottom-border";
+        c.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        c.Columns.Add(child =>
+        {
+            child.HeaderStyle.CssClass = "browser-search-no-top-border";
+            child.CellStyle.CssClass = "browser-search-no-bottom-border";
+            child.FieldName = "Path";
+            child.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+    });
+
+    settings.Columns.Add(c=> 
+    {
+        c.Caption = "Size";
+        c.FieldName = "Size";
+        c.UnboundType = UnboundColumnType.String;
+        c.HeaderStyle.CssClass = "browser-search-no-bottom-border";
+        c.CellStyle.CssClass = "browser-search-no-bottom-border";
+        c.Columns.Add(child => {
+            child.HeaderStyle.CssClass = "browser-search-no-top-border";
+            child.CellStyle.CssClass = "browser-search-no-bottom-border";
+            child.FieldName = "Date";
+            child.Settings.AllowAutoFilterTextInputTimer = DefaultBoolean.False;
+        });
+    });
+
+    settings.CustomUnboundColumnData = (s, e) =>
+    {
+        switch(e.Column.FieldName )
+        {
+            case "TitleLink":
+                string link = Url.Action("DownloadFile", "Flexpage", new { revisionID = 0 });
+                var id = e.GetListSourceFieldValue("ID");
+                var fileID = e.GetListSourceFieldValue("FileID");
+                string title = (e.GetListSourceFieldValue("Title")).ToString();
+                string path = (e.GetListSourceFieldValue("Path")).ToString();
+                string extension = (e.GetListSourceFieldValue("Extension")).ToString();
+                e.Value = new MvcHtmlString(String.Format("<a href=\"{0}&id={5}\" data-rowId='{2}' data-path='{3}' data-id='{2}' class='fp_gridNameValue'>{1}.{4}</span></a>",
+                            link, title, id, path, extension, fileID));
+                break;
+            case "Annotation":
+                e.Value = e.GetListSourceFieldValue("Annotation");
+                break;
+            case "Size":
+                e.Value = e.GetListSourceFieldValue("Size");
+                break;
+            case "Path":
+                e.Value = e.GetListSourceFieldValue("Path");
+                break;
+            case "Date":
+                e.Value = e.GetListSourceFieldValue("Date");
+                break;
+        };
+    };
+
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = false;
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowSelectCheckbox = true;
+    settings.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.Page;
+    settings.CommandColumn.Width = Unit.Pixel(20);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.HtmlDataCellPrepared = (sender, e) =>
+    {
+        var id = e.GetValue("ID");
+        if (id == null)
+            return;
+
+        e.Cell.Attributes.Add("data-rowId", id.ToString());
+    };
+
+    settings.HtmlRowCreated += (s, e) =>
+    {
+        e.Row.Attributes["data-perm"] = e.GetValue("Permissions")?.ToString() ?? "";
+        var id = e.GetValue("ID");
+        if (id == null)
+            return;
+        e.Row.Attributes["data-rowId"] = id.ToString();
+    };
+
+    settings.ClientSideEvents.Init = "function(s, e) {fp_SetCallbackInterval(s, e); s.PerformCallback(); }";
+    settings.ClientSideEvents.ContextMenu = "fp_browserSearchContextMenu" + Model.BlockID.ToString();
+}).BindToCustomData(Model.GridModel).GetHtml()

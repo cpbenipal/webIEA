@@ -1,0 +1,36 @@
+﻿@using Flexpage.Domain.Enum;
+@model Flexpage.Models.AdvertisementModel
+
+
+@{
+    string imageWidth = "auto";
+    string imageHeight = "auto";
+    if (Model.WidthType == SizeType.Full)
+    {
+        imageWidth = "100%";
+    }
+    else if (Model.WidthType == SizeType.Custom)
+    {
+        imageWidth = Model.CreateSizeString(Model.CustomWidth, Model.CustomWidthUnit, imageWidth);
+    }
+    if (!Model.ConstrainProportions)
+    {
+        if (Model.HeightType == SizeType.Full)
+        {
+            imageHeight = "100%";
+        }
+        else if (Model.HeightType == SizeType.Custom)
+        {
+            imageHeight = Model.CreateSizeString(Model.CustomHeight, Model.CustomHeightUnit, imageHeight);
+        }
+    }
+    string pictureBlockStyle = string.Format("width:{0}; height:{1};", imageWidth, imageHeight);
+
+}
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <a href="@Model.Link" target="_blank" class="advertisementLink">
+            <img src="@Model.Image" alt="@Model.AlternateText" class="advertisementImage" style="@pictureBlockStyle" />
+        </a>
+    </div>
+</div>

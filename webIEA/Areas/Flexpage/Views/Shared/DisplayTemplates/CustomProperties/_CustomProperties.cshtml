@@ -1,0 +1,82 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.CustomPropertiesModel
+
+<script src="/Areas/Flexpage/Content/Scripts/PublisherLog.js"></script>
+<script>
+    function fp_customProperties_beginCallback@(Model.ID.ToString())(s, e) {
+        
+    }
+    function fp_customProperties_Init@(Model.ID.ToString())(s, e) {
+        s.PerformCallback()
+    }
+    function fp_customProperties_EndCallback@(Model.ID.ToString())(s, e) {
+        var args = { ID:@(Model.ID.ToString())};
+        if (typeof (EventManagerCustomProperties) != "undefined") {
+            EventManagerCustomProperties.unbind(args)
+            EventManagerCustomProperties.bind(args);
+        }
+
+    }
+    function SelectedTypeChanged(s, e) {
+        if (s.lastSuccessText == "Enum" || s.lastSuccessText == "MultiselectEnum" || s.lastSuccessText == "Tag") {
+            EnumIDEdit.SetEnabled(true);
+            return;
+        }
+        EnumIDEdit.SetValue(null);
+        EnumIDEdit.SetEnabled(false);
+    }
+
+    function InitTypeCombobox(s, e) {
+        s.RemoveItem(8); //remove Compound from selection
+        SelectedTypeChanged(s, e);
+    }
+
+    function fp_CustomProperties_CustomButtonClick(s, e) {
+        if (e.buttonID == "customDelete") {
+            var formData = new FormData();
+            var index = e.visibleIndex;
+            formData.append("propertyID", s.GetRowKey(index));
+            $.ajax({
+                url: '@Url.Action("CheckLinkedObjectPropertyValues", "Flexpage")',
+                data: formData,
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                cache: false,
+                success: function (data) {
+                    var dataObject = JSON.parse(data);
+
+                    if (dataObject.linkedValues == true) {
+                        fp_ConfirmDialog("Delete custom property", "@Resources.Strings.CustomProperty_DeleteWithLinkedObjectsConfirm", function () {
+                            s.DeleteRow(index);
+                        });
+                    }
+                    else {
+                        fp_ConfirmDialog("Delete custom property", "@Resources.Strings.CustomProperty_DeleteConfirm", function () {
+                            s.DeleteRow(index); 
+                        });
+                    }
+                },
+                error: function () {
+                    if (fp_settings.debug == true)
+                        console.log("Errror in retrieving linked objects for custom property");
+                }
+            });
+        }
+    }
+
+    function InitEnumIDCombobox(s, e) {
+        try {
+            TypeEdit.GetVisible()
+        }
+        catch (e) {
+            if (e instanceof ReferenceError) {
+                if (s.GetCurrentValue() == null) {
+                    s.SetEnabled(false);
+                }
+            }
+        }
+    }
+</script>
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/CustomProperties/_CustomPropertiesGrid.cshtml", Model)

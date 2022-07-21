@@ -1,0 +1,66 @@
+﻿@using Flexpage.Models
+@model Flexpage.Models.PermitRuleModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+@Scripts.Render("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js")
+@Scripts.Render("~/Flexpage/GeneralPermissionService")
+
+
+<script type="text/javascript">
+    (function () {
+        fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+            fp_loadScripts("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js");
+        });
+    })();
+
+    fp_popupControlChangeTitle('@Model.TypeContent', '#PermitRule');
+
+    function fp_saveBlock(idPostfix, blocklistID, blockAfter, parameters) {
+        $("#fp_popupPleaseWaitDiv").css("display", "block");
+        var result = [];
+        if (parameters == "AddPerson") {
+            var $rows = $("#fp_ContactsEnumeration_Grid" + @Model.ContactsEnumerationModel.ID)
+                .find("[class*='dxgvSelectedRow'] .fp_contactValue");
+            $rows.each(function(i, row) {
+                var id = $(row).attr("data-shortcut-id");
+                var contactType = $(row).attr("data-contactType");
+                var name = $(row).text();
+
+                result.push({ id: id, type: contactType, name: name });
+            });
+        } else {
+            result.push({ od:$("#PermitRule .list.owners a.select").data("id"), name: $("#PermitRule .list.owners a.select").text(),type: '@WhoPermissionsModel.NameTypeFolder' });
+        }
+
+        window.parent.parameters = result;
+        fp_beforeClosePopUp(this, idPostfix);
+    }
+
+    $(function() {
+        $("#PermitRule .list.owners a").click(function() {
+            $("#PermitRule .list.owners a.select").removeClass("select");
+            $(this).addClass('select');
+        });
+    });
+
+</script>
+<div id="PermitRule">
+    @if (Model.TypeContent.Equals("AddGroup"))
+    {
+        <div class="col-xs-12">
+            <div class="list owners">
+                <div class="col-xs-12">
+                    @foreach (var f in Model.Folders)
+                    {
+                        <a owner="@f.ID" href="javascript:" data-id="@f.ID">@f.Name</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-xs-12">
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.ContactsEnumerationModel)
+        </div>
+    }
+</div>

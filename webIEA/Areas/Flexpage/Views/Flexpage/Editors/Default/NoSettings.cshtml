@@ -1,0 +1,28 @@
+﻿@model Flexpage.Abstract.DTO.IBlockModel
+<script type="text/javascript">
+    fp_popupControlChangeTitle('Block settings', '#fp_BlockEditorContainer');
+    @if (Model == null || Model.BlockType != "BrowserContacts")
+    {
+        <text>
+        function fp_preSaveBlock() {
+            fp_closePopUp(null);
+        }
+        $(".fp_popupButtonsContainer a:first-child").remove();
+        </text>
+    }
+</script>
+
+<div id="fp_BlockEditorContainer">
+    @*Add other blocks without settings here to add ability to add static blocks*@   
+        @switch (Model.BlockType)
+        {
+            case "BrowserContacts":
+                using (Ajax.BeginForm("UpdateBrowserContacts", "Admin", new AjaxOptions() {HttpMethod = "POST", UpdateTargetId = "fp_BlockEditorContainer"}, new {id = "fp_BlockEditorForm"}))
+                    {
+                        @Html.HiddenFor(m => m.ID)
+                        @Html.HiddenFor(m => m.Alias)
+                    }
+                break;
+        }
+    <h2 style="text-align: center">No settings for this block</h2>
+</div>

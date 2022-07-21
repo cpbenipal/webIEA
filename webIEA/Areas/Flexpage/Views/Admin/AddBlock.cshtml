@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Flexpage.Abstract.DTO.BlockDefinition>
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('ADD NEW BLOCK', '#fp_AddNewBlockContainer');
+</script>
+
+<div class="blocks" id="fp_AddNewBlockContainer">
+    <div class="row icons-blocks">
+        @foreach(Flexpage.Abstract.DTO.BlockDefinition block in Model)
+        {
+            <div class="col-md-3 col-sm-4 col-xs-6" onclick="fp_popupControlRefresh(this, {command: '@(block.HasView?"add":"save")', blockType: '@block.BlockType'}, fp_reload)">
+                <img src="/areas/flexpage/content/images/icons/blocks/@(block.BlockType.ToLower()).svg" alt="" class="img-main">
+                <img src="/areas/flexpage/content/images/icons/blocks/@block.BlockType.ToLower()-selected.svg" alt="" class="img-hover">
+                <div class="block-title">@(block.BlockType.ToUpper() != "SITEMAPMENU" ? block.BlockType.ToUpper() : "MENU")</div>
+            </div>
+        }
+    </div>
+</div>

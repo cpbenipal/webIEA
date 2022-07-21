@@ -1,0 +1,61 @@
+﻿@model Flexpage.Abstract.DTO.StepInfo
+
+@{ 
+    bool orderable = ViewData["Orderable"] is bool && (bool)ViewData["Orderable"];
+    bool lastStep = ViewData["LastStep"] is bool && (bool)ViewData["LastStep"];
+}
+
+<div class="ui-state-default fp_fc_column">
+    <div class="row">
+        <div class="col-md-6">
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.BlockListID)
+            @Html.HiddenFor(m => m.Order)
+            @{
+                string title = Model.IsSummary ? "Summary" : (lastStep ? "Wizard Complete" : $"Step {(int)ViewData["StepIdx"] + 1}");
+                if(Model.BlockListID == 0)
+                {
+                    <p>@title</p>
+                }
+                else
+                {
+                    <a href="javascript:fp_wizard_getStepInfo(@Model.ID)">@title</a>
+                }
+            }
+        </div>
+        <div class="col-md-1 center-option">
+            @if(orderable)
+            {
+            <div class="trash">
+                <button onclick="return fp_wizard_deleteStep(@ViewData["StepIdx"])">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            }
+        </div>
+        <div class="col-md-2 center-option">
+            <label>
+                @if(!lastStep)
+                {
+                @Html.CheckBoxFor(m => m.IsActive, new { @class = "custom-control-input" })
+                }
+            </label>
+        </div>
+        <div class="col-md-2 center-option">
+            <label>
+                @if(!lastStep)
+                {
+                    @Html.CheckBoxFor(m => m.IsSummary, new { @class = "custom-control-input" })
+                }
+            </label>
+        </div>
+        <div class="col-md-1 all-scroll dnd-action">
+            @if(orderable)
+            {
+                <label>
+                    <i class="fa fa-bars all-scroll" aria-hidden="true"></i>
+                </label>
+            }
+        </div>
+    </div>
+</div>

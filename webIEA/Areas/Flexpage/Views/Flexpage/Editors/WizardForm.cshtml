@@ -1,0 +1,122 @@
+﻿@using Flexpage.Abstract.DTO
+@model WizardEditViewModel
+
+@{
+    bool stepMode = Model.Mode == eWizardEditMode.Step;
+}
+
+@using(Ajax.BeginForm("UpdateWizard", "WizardBlock", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_WizardBlockEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_WizardBlockEditorForm", forTraking = "" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.Alias)
+
+    <div class="row" id="folder-content">
+        <ul class="nav nav-pills tabs-navigation">
+            <li class="@(!stepMode ? "active" : "")"><a data-toggle="pill" href="#steps">Steps</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="steps" class="steps_list tab-pane fade @(!stepMode ? "in active" : "")">
+                <div class="row custom-tabs-row">
+                    <div class="col-md-12 fields-title">
+                        <div class="col-md-7">Steps</div>
+                        <div class="col-md-2 text-center">Is Active</div>
+                        <div class="col-md-2 text-center">Is Summary</div>
+                        <div class="col-md-1 text-center"></div>
+                    </div>
+                </div>
+                <div class="col-md-12 all-scroll sortable-steps-content" id="sortable-steps-content">
+                    @if(Model.StepsCount > 2)
+                    {
+                        for(int stepIdx = 0; stepIdx < Model.StepsCount - 2; stepIdx++)
+                        {
+                            @Html.EditorFor(m => m.Steps[stepIdx], "Content/_Wizard_StepRow", new { Orderable = true, StepIdx = stepIdx })
+                        }
+                    }
+                </div>
+                <div class="col-md-12 all-scroll">
+                    @for(int stepIdx = Model.StepsCount - 2; stepIdx < Model.StepsCount; stepIdx++)
+                    {
+                        @Html.EditorFor(m => m.Steps[stepIdx], "Content/_Wizard_StepRow", new { LastStep = stepIdx == (Model.StepsCount - 1), StepIdx = stepIdx })
+                    }
+                </div>
+               
+                <div class="new-field">
+                    <div class="col-md-12">
+                        <br />
+                        <a href="javascript:fp_wizard_addStep()" class="btn btn-orange">+ Add step</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step_settings" class="tab-pane fade @(stepMode ? "in active" : "")">
+                @Html.HiddenFor(m => m.CurrentStep)
+                @if(Model.Mode == eWizardEditMode.Step)
+                {
+                    if(!Model.CurrentStepInfo.IsSummary)
+                    {
+                        <div class="row custom-tabs-row">
+                            <div class="col-md-12 fields-title">
+                                <div class="col-md-7">Block</div>
+                                <div class="col-md-2 text-center">Is Repeatable</div>
+                                <div class="col-md-3 text-center">
+                                    <a class="btn btn-orange" href="/blocklist/blocklistbyid?id=@Model.CurrentStepInfo.BlockListID" target="_blank"
+                                       style="margin-bottom: 0;">Edit block list</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 all-scroll">
+                            @{
+                                int formsIdx = 0;
+                                for(int blockIdx = 0; blockIdx < Model.Blocks.Count; blockIdx++)
+                                {
+                                    var blockTypeName = Model.Blocks[blockIdx].GetType().Name.Replace("Model", "");
+                                    <div class="ui-state-default fp_fc_column">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <p>@blockTypeName (ID: @Model.Blocks[blockIdx].ID)</p>
+                                            </div>
+                                            <div class="col-md-2 center-option">
+                                                @if(Model.Blocks[blockIdx].BlockType == "WebForm")
+                                                {
+                                                    @Html.HiddenFor(m => m.FormSections[formsIdx].FormID)
+                                                    @Html.CheckBoxFor(m => m.FormSections[formsIdx].IsRepeatable, new { @class = "custom-control-input" })
+                                                    formsIdx++;
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row custom-tabs-row">
+                            <div class="col-md-12 fields-title">
+                                <div class="col-md-9">Block</div>
+                                <div class="col-md-2 text-center">Is Active</div>
+                                <div class="col-md-1 text-center"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 all-scroll sortable-steps-content">
+                            @{
+                                for(int sectionIdx = 0; sectionIdx < Model.SummaryFormSections.Count; sectionIdx++)
+                                {
+                                    @Html.EditorFor(m => m.SummaryFormSections[sectionIdx], "Content/_Wizard_SummaryFormSection")
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.sortable-steps-content').sortable({
+                handle: '.dnd-action',
+                cancel: ''
+            }).disableSelection();
+        });
+    </script>
+}

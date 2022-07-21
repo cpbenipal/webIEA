@@ -1,0 +1,67 @@
+﻿@using System.Web.UI.WebControls;
+@model Flexpage.Abstract.DTO.IHtmlEditorModel
+
+@Html.HiddenFor(m => m.Width)
+@Html.HiddenFor(m => m.Height)
+@Html.HiddenFor(m => m.Name, new { @class = "fp_htmlEditorName" })
+@Html.DevExpress().HtmlEditor(
+   settings =>
+   {
+       settings.Name = Model.Name ?? "fp_HtmlEditor";
+       settings.CallbackRouteValues = new { Controller = "Admin", Action = "HtmlEditorPartialCommand", Name = Model.Name ?? "fp_HtmlEditor" };
+       settings.SettingsDialogs.InsertImageDialog.SettingsImageUpload.UploadCallbackRouteValues = new
+       {
+           Controller = "Admin",
+           Action = "HtmlEditorPartial_ProcessingImageUpload",
+           folderPath = "~/Content/Images/"
+       };
+
+       settings.SettingsDialogs.InsertImageDialog.SettingsImageUpload.ValidationSettings.MaxFileSize = 30720;
+
+       settings.Height = Model.Height;
+       settings.Width = Model.Width;
+       settings.Html = Model.Text;
+       settings.ControlStyle.CssClass = "fp_LocalizedTextHTMLEditor";
+
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.Enabled = true;
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.UseAdvancedUploadMode = true;
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.CommonSettings.RootFolder = System.Configuration.ConfigurationManager.AppSettings["FP:UploadedFilesPath"].ToString(); //  "~/data/files";
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.EditingSettings.AllowCreate = true;
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.Enabled = true;
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.ValidationSettings.AllowedFileExtensions = new string[] { ".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx", ".ppt", ".pptx", ".rtf" };
+       settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadCallbackRouteValues = new
+       {
+           Controller = "Admin",
+           Action = "HtmlEditorPartial_DocumentUpload",
+           folderPath = System.Configuration.ConfigurationManager.AppSettings["FP:UploadedFilesPath"].ToString(),
+           name = Model.Name ?? "fp_HtmlEditor"
+       }; // "~/data/files/",
+
+       settings.SettingsHtmlEditing.EnablePasteOptions = true;
+       settings.SettingsHtmlEditing.AllowIFrames = true;
+       settings.SettingsHtmlEditing.AllowYouTubeVideoIFrames = true;
+       settings.SettingsHtmlEditing.AllowHTML5MediaElements = true;
+       settings.SettingsHtmlEditing.AllowScripts = true;
+
+       settings.CssFiles.Add("https://fonts.googleapis.com/css?family=Muli:300,400,600,700|Roboto:300,400,500,700&amp;subset=latin-ext");
+       settings.CssFiles.Add("https://use.fontawesome.com/releases/v5.0.13/css/all.css");
+       settings.CssFiles.Add("~/Areas/Flexpage/Content/bootstrap/flexpage-style.css");
+       //  settings.CssFiles.Add("~/Areas/Flexpage/Content/flexpage.css");
+       //this is the css with styles for html editor
+       //  settings.CssFiles.Add("~/Content/css/test.css");
+
+       settings.Toolbars.CreateDefaultToolbars();
+       settings.Toolbars[1].Items.RemoveAll(item => item.GetType() == typeof(ToolbarParagraphFormattingEdit));
+       settings.Toolbars[1].Items.Add<ToolbarCustomCssEdit>(edit =>
+       {
+           edit.Items.Add("Clear Style", "P", "");
+           edit.Items.Add("Title", "H1", "CommonTitle");
+           edit.Width = 120;
+           edit.VisibleIndex = 0;
+       });
+
+       settings.ClientSideEvents.Init = "fp_HtmlEditor_Init";
+       settings.ClientSideEvents.CommandExecuted = "fp_HtmlEditor_Command";
+       settings.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+
+   }).GetHtml()

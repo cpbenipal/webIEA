@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>blocks/breadcrumbs-selected</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="blocks/breadcrumbs-selected" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(1.000000, 16.000000)" fill="#23598E">
+            <path d="M3,10.50125 L13,10.50125 L13,5.50125 L3,5.50125 L3,10.50125 Z M14.25,3.00125 L1.75,3.00125 C1.06,3.00125 0.5,3.56 0.5,4.25125 L0.5,11.75125 C0.5,12.4425 1.06,13.00125 1.75,13.00125 L14.25,13.00125 C14.94,13.00125 15.5,12.4425 15.5,11.75125 L15.5,4.25125 C15.5,3.56 14.94,3.00125 14.25,3.00125 Z" id="Fill-2"></path>
+            <path d="M33,10.50125 L43,10.50125 L43,5.50125 L33,5.50125 L33,10.50125 Z M44.25,3.00125 L31.75,3.00125 C31.05875,3.00125 30.5,3.56 30.5,4.25125 L30.5,11.75125 C30.5,12.4425 31.05875,13.00125 31.75,13.00125 L44.25,13.00125 C44.94125,13.00125 45.5,12.4425 45.5,11.75125 L45.5,4.25125 C45.5,3.56 44.94125,3.00125 44.25,3.00125 Z" id="Fill-4"></path>
+            <polygon id="Fill-5" points="18.690875 15.940625 21.392125 15.940625 27.258375 0.061875 24.607125 0.061875"></polygon>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,68 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Abstract.DTO.PageModel>(settings =>
+{
+    settings.Name = "fp_Pages_Grid";
+    settings.CallbackRouteValues = new { Controller = "Page", Action = "PagesGrid" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Page", Action = "DeletePage", ID = ViewData["ID"] };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnPageEdit", Text = "Edit" });
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnPageDelete", Text = "Delete" });
+
+    settings.CommandColumn.Caption = "Actions";
+    settings.CommandColumn.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+    settings.CustomButtonInitialize = (s, e) =>
+    {
+        var grid = s as MVCxGridView;
+        if (e.Text == "Delete")
+        {
+            var val = grid.GetRowValues(e.VisibleIndex, "IsSystem");
+            if (val != null)
+                e.Visible = (bool)val ? DefaultBoolean.False : DefaultBoolean.True;
+        }
+    };
+    settings.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+
+    settings.Columns.Add(m => m.Name, column =>
+    {
+        column.ColumnType = MVCxGridViewColumnType.HyperLink;
+        ((HyperLinkProperties)column.PropertiesEdit).NavigateUrlFormatString = "/{0}";
+        ((HyperLinkProperties)column.PropertiesEdit).Target = "_blank";
+        column.Width = new Unit(40, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Page Name";
+    });
+    settings.Columns.Add(m => m.IsPublished, column =>
+    {
+        column.Width = new Unit(30, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Is Published";
+    });
+    settings.Columns.Add(m => m.VisibleRolesString, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Roles";
+    });
+    settings.Columns.Add(m => m.AdminRolesString, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "CMS Admin Roles";
+    });
+
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRow = settings.Settings.ShowFilterRowMenu = true;
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_pagesGrid_CustomButtonClick";
+}).Bind(Model).GetHtml())

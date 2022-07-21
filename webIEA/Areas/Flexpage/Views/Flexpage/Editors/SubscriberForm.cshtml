@@ -1,0 +1,78 @@
+﻿@model Flexpage.Models.SubscriberModel
+
+
+
+<div id="subscriber-block-edit" class="flexpage">
+    @using (Ajax.BeginForm("UpdateSubscriber", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "subscriber-block-edit", InsertionMode = InsertionMode.Replace }, new { id = "fp_CmsBlockEditorForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => Model.ID)
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Name</label>
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Seats count</label>
+                    @Html.TextBoxFor(m => m.Seats, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        @Html.CheckBoxFor(m => m.IsConfirmed, new { @id = "form-control" })
+                        <label>Is Confirmed</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.CheckBoxFor(m => m.IsNotified, new { @id = "form-control" })
+                        <label>Is Notified:</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.CheckBoxFor(m => m.Void, new { @id = "form-control" })
+                        <label>Void:</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Email:</label>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+                <div class="form-group fp_fixedPopapDateEdit">
+                    <label>Confirmation Date:</label>
+                    @Html.DevExpress().DateEdit(
+                        settings =>
+                        {
+                            settings.Name = "ConfirmationDate";
+                            settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                            settings.ControlStyle.CssClass = "flexpage calendar_MetropolisBlue";
+                            settings.Properties.EditFormat = EditFormat.Custom;
+                            settings.Properties.EditFormatString = "dd/MM/yyyy";
+                            settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                            settings.Properties.CalendarProperties.ShowClearButton = false;
+                            settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                            settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                        }
+                        ).Bind(Model.ConfirmationDate).GetHtml()
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Comment:</label>
+            @Html.TextBoxFor(m => m.Comment, new { @class = "form-control" })
+        </div>
+
+        for(int i = 0; i < Model.Fields.Count; i++)
+        {
+            <div class="form-group">
+                @Html.HiddenFor(m => Model.Fields[i].ID)
+
+                <label>@Model.Fields[i].Field:</label>
+                @Html.TextBoxFor(m => Model.Fields[i].Value, new { @class = "form-control" })
+            </div>
+        }
+
+    }
+</div>

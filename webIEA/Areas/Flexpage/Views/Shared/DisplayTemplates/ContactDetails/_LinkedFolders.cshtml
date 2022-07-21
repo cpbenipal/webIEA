@@ -1,0 +1,94 @@
+﻿@using System.Web.UI.WebControls
+
+@model Flexpage.Models.ContactDetailsModel
+@{ 
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_UpdateTab", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+        settings.Name = "сontactDetailsLinkedFolders" + Model.ID;
+        settings.KeyFieldName = "ID";
+        settings.Columns.Add(n =>
+        {
+            n.FieldName = "ID";
+            n.Caption = "Name";
+            n.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+
+                p.ValueField = "ID";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.Folders;
+                p.SetItemTemplateContent(t =>
+                {
+                    var types = DataBinder.Eval(t.DataItem, "Type").ToString().Split(',').ToList();
+                    ViewContext.Writer.Write("<div>");
+                    ViewContext.Writer.Write(DataBinder.Eval(t.DataItem, "TypeImg"));
+                    ViewContext.Writer.Write(" " + DataBinder.Eval(t.DataItem, "Name") + "</div>");
+                });
+
+            });
+        });
+        settings.Columns.Add("Type");
+        settings.SetDataItemTemplateContent(c =>
+        {
+            if (c.Column.FieldName == "Type")
+            {
+                c.Text.Split(',').ToList().ForEach(img =>
+                {
+                    if (!string.IsNullOrWhiteSpace(img) && img != "&nbsp;")
+                    {
+                        ViewContext.Writer.Write("<img class='fp_textTreeListNodeImg' src='" + img + "' />");
+                    }
+                });
+            }
+            else
+            {
+                ViewContext.Writer.Write(c.Text);
+            }
+        });
+        if (Model.AllowEdit)
+        {
+            settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_LinkedFoldersAdd", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_LinkedFoldersDelete", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+            settings.SettingsBehavior.ConfirmDelete = true;
+            settings.CommandColumn.Visible = (bool?)ViewBag.isAdmin == true || (bool?)ViewBag.IsContactsAdmin == true;
+            settings.CommandColumn.ShowNewButton = true;
+            settings.CommandColumn.ShowDeleteButton = false;
+
+            var bDelete = new GridViewCommandColumnCustomButton()
+            {
+                ID = "bDelete",
+                Text = "Delete",
+            };
+
+            bDelete.Image.IconID = IconID.EditDelete16x16office2013;
+            settings.ClientSideEvents.CustomButtonClick = "function(s, e){  if (e.buttonID == 'bDelete') deleteRowInDevexpressGrid(сontactDetailsLinkedFolders" + Model.ID + ", e.visibleIndex); }";
+
+            settings.CommandColumn.CustomButtons.Add(bDelete);
+
+            settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+            settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+            settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+            settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+            settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+            settings.EditFormLayoutProperties.ColCount = 2;
+            settings.EditFormLayoutProperties.Items.Add(new MVCxGridViewColumnLayoutItem() { ColumnName = "Name", ColSpan = 2 });
+
+            settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+            {
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+            });
+
+            settings.ClientSideEvents.EndCallback = "fp_changeTelecoms" + Model.ID.ToString();
+        }
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsBehavior.AllowDragDrop = false;
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.LinkedFolders).GetHtml()

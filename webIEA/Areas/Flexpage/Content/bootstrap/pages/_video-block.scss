@@ -1,0 +1,138 @@
+@import "../variables";
+
+.page-video-block {
+  .tab-content {
+    margin-top: -21px;
+  }
+  .modal-body {
+    padding-bottom: 0
+  }
+  .nav-pills {
+    margin-top: -16px;
+  }
+  .video-type {
+  h5 {
+    font-size: 16px;
+    margin: 50px 0;
+  }
+}
+  .content-box {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+    padding: 30px;
+    position: relative;
+
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    .img-hover {
+      margin: 0 auto;
+      display: none;
+    }
+  }
+  .content-box:hover {
+    background-color: $white-two;
+    border-radius: 10px;
+
+    .img-hover {
+      display: block;
+    }
+    .img-main {
+      display: none;
+    }
+    a {
+      color: $dusk-blue;
+    }
+  }
+  .block-title {
+    font-family: 'Muli', sans-serif;
+    font-weight: 600;
+    margin-top: 15px;
+    text-decoration: none;
+  }
+  .modal-body {
+      .video-type {
+        margin-bottom: 50px;
+      }
+    p {
+      margin-top: 20px;
+      font-weight: 400;
+    }
+  }
+  input[type='radio']:after {
+    border: 3px solid $gray-light;
+  }
+  label {
+    font-weight: 400;
+  }
+  .add-image-field {
+    width: 130px;
+    display: block;
+    margin: 10px 0;
+  }
+  .nav-tabs {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .nav-tabs > li.active > a {
+    background: $gray-light;
+  }
+  .tab-content .tab-pane {
+    margin-top: 20px;
+  }
+  .mce-panel {
+    background-color: $white-clear;
+    margin-top: -23px;
+  }
+  .nav-tabs > li.active > a {
+    background: $gray-light;
+  }
+  .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    background-color: $gray-light;
+  }
+  .mce-container-body {
+    background: $gray-light;
+  }
+  .page-video-block .nav-tabs > li.active > a, .page-video-block .nav-tabs > li.active > a:focus, .page-video-block .nav-tabs > li.active > a:hover {
+    background-color: $gray-soft;
+  }
+  .tabs {
+    margin-top: 20px;
+  }
+  .mce-statusbar .mce-container-body {
+    position: relative;
+    font-size: 11px;
+    display: none;
+  }
+  h5 {
+    font-weight: 400;
+  }
+  .btn-orange {
+    margin-bottom: 0;
+  }
+  .language-buttons {
+    margin-top: 20px;
+  }
+
+}
+.image-details {
+  .addImage {
+    background: transparent;
+    display: block;
+  }
+}
+.add-image {
+     .addImage {
+       background: transparent;
+       display: block;
+     }
+   }
+.added-image {
+  .addImage {
+    background: transparent;
+    display: block;
+  }
+}

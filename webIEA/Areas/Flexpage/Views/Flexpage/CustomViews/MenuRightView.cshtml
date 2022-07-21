@@ -1,0 +1,44 @@
+﻿@model Flexpage.Models.MenuModel
+
+@helper CreateMenuItems(IEnumerable<Flexpage.Models.MenuItemModel> items)
+{
+    foreach(Flexpage.Models.MenuItemModel item in items)
+    {
+        if(!item.IsVisible)
+        {
+            continue;
+        }
+        string target = string.IsNullOrEmpty(item.Target) ? "_self" : item.Target;
+        string href = !string.IsNullOrEmpty(item.Url) ? string.Format("{0}", item.Url) : "javascript:void(0)";
+
+        if(Model.Level == 0)
+        {
+            <a href="@href" target="@target">@item.Text</a>
+        }
+        else
+        {
+            <a href="@href" target="@target"><span class="arrow">></span>@item.Text</a>
+        }
+
+        if(item.SubMenu != null)
+        {
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/CustomViews/MenuRightView.cshtml", item.SubMenu)
+        }
+    }
+}
+
+@if(Model.Level == 0)
+{
+    <div class="right">
+        <div class="aside-nav" style="border-top: none; padding-top: 0;">
+            @CreateMenuItems(Model.Items)
+        </div>
+    </div>
+}
+else
+{
+    <div class="inner">
+        @CreateMenuItems(Model.Items)
+    </div>
+}
+

@@ -1,0 +1,53 @@
+﻿@model Flexpage.Abstract.DTO.EventViewModel
+
+@Html.Partial("~/Areas/Flexpage/Views/Flexpage/NewsTemplates/NewsFull.cshtml", Model)
+
+<!--Calendar -->
+<div class="dropdown">
+    <button class="btn btn-blue-fullcolor-radius dropdown-toggle" type="button" id="calendarDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Add to Calendar
+    </button>
+    <div class="dropdown-menu bg-event-green" aria-labelledby="dropdownMenuButton" style="padding:5px;">
+        <button class="dropdown-item btn-blue-fullcolor-radius add-to-calendar" data-calendar-type="google" style="margin-top:10px;width:100px;">Google</button>
+        <br />
+        <button class="dropdown-item btn-blue-fullcolor-radius add-to-calendar" data-calendar-type="outlook" style="margin-top:10px;width:100px;">Outlook</button>
+        <br />
+        <button class="dropdown-item btn-blue-fullcolor-radius add-to-calendar" data-calendar-type="apple" style="margin-top:10px;width:100px;">Apple</button>
+    </div>
+</div>
+<!--end Calendar -->
+
+<script type="text/javascript">
+    $(function () {
+        //Calendar
+        $('[data-calendar-type]').on('click', function () {
+            var calType = $(this).attr('data-calendar-type');
+            @*var webcalUrl = '@Url.Action("Calendar", "Flexpage", new RouteValueDictionary (new { area = "Flexpage", id = Model.ID }), "webcal", Request.Url.Host + ":" + Request.Url.Port)';
+            var fullUrl = '@Url.Action("Calendar", "Flexpage", new { area = "Flexpage", id = Model.ID }, Request.Url.Scheme)';*@
+
+            var webcalUrl = '@Url.Action("Calendar", "News", new RouteValueDictionary (new { area = "Flexpage", model = Model}), "webcal", Request.Url.Host + ":" + Request.Url.Port)';
+            var fullUrl = '@Url.Action("Calendar", "News", new { area = "Flexpage", model = Model}, Request.Url.Scheme)';
+
+
+            switch (calType) {
+            case 'google':
+                {
+                    window.open('https://calendar.google.com/calendar/r?cid=' + fullUrl, '_blank');
+                }
+                break;
+            case 'outlook':
+                {
+                    window.open(webcalUrl, '_blank');
+                }
+                break;
+            case 'apple':
+                {
+                    window.open(webcalUrl, '_blank');
+                }
+                break;
+            default:
+                break;
+            }
+        });
+    });
+</script>

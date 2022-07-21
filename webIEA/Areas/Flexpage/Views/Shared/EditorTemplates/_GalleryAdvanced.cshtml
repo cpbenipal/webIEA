@@ -1,0 +1,244 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Domain.Enum
+@using Flexpage.Models;
+@model Flexpage.Models.GalleryModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+
+}
+
+<div class="row" style="margin: 0">
+    <div class="col-md-12">
+        <!--Size-->
+            <div class="panel panel-default">
+                <div class="panel-heading  panel-page">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse11" class="align-box">
+                            Images and Paging 
+                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Number of visible images and pager settings"></i>
+                            <span class="pull-right">
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </span>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse11" class="panel-collapse collapse collapse-field-container">
+                    <!--Size content-->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="fp_flex">
+                                <div class="fp_flex fp_flex-direction-column fp_pb-10">
+                                    <label for="cpp">Columns per page:</label>
+                                    @*<input type="text" class="form-control" id="ColumnsPerPage" name="ColumnsPerPage" value="@Model.ColumnsPerPage" />*@
+                                    @Html.TextBoxFor(m => m.ColumnsPerPage, new { @class = "form-control" })
+                                </div>
+                                <div class="fp_flex fp_flex-direction-column fp_pb-10 fp_pl-10">
+                                    <div class="col-md-12 fp_p-0">
+                                        <label>Rows per page:</label>
+                                    </div>
+                                    <div class="fp_flex fp_align-items-center fp_justify-content-center">
+                                        <div class=" fp_pr-10">
+                                            <label class="radio-inline">
+                                                @Html.RadioButtonFor(u => u.AllImages, true) All
+                                            </label>
+                                        </div>
+                                        <div class=" fp_pr-10">
+                                            <label class="radio-inline">
+                                                @Html.RadioButtonFor(u => u.AllImages, false) Custom:
+                                            </label>
+                                        </div>
+                                        @Html.TextBoxFor(m => m.RowsPerPage, new { @class = "form-control fp_w-50" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fp_flex fp_align-items-center fp_pl-0 fp_pb-10">
+                                @Html.EditorFor(u => u.EnablePaging)
+                                <label class="form-check-label fp_m-0 fp_pl-10" for="EnablePaging">
+                                    Enable paging
+                                </label>
+                            </div>
+                            <div id="fp_gallery-style" class="col-md-6 form-group @(Model.EnablePaging?"":"fp_hidden") fp_p-0">
+                                <label for="style">Style:</label>
+                                @Html.DropDownListFor(m => m.PagingStyles, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(GalleryPagingStyle)), "Choose...", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--Image options-->
+            <div class="panel panel-default">
+                <div class="panel-heading  panel-page">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse22" class="align-box">Image options <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="General options"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse22" class="panel-collapse collapse collapse-field-container">
+                    <!--Image options content-->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="fp_flex fp_flex-direction-column fp_pb-10">
+                                <label for="thumb">Align thumbnails:  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Gallery thumbnails row alignment"></i></label>
+                                @Html.DropDownListFor(m => m.AlignThumbnails, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(GalleryThumbnailsAlignment)), new { @class = "form-control fp_w-50" })
+                            </div>
+                            <div class="fp_flex">
+                                <h5>Thumbnail size:</h5>
+                            </div>
+                            <div class="fp_flex ">
+                                <div class="fp_flex fp_align-items-center thumbnail-width @(Model.GalleryBlockType == GalleryBlockType.JustifiedGallery ? "thumbnail-width-hide": string.Empty )">
+                                    <label class="fp_m-0">Width:</label>
+                                    <span class="aligned-field-input fp_ml-10"><input type="text" class="form-control fp_w-50" id="ThumbnailWidth" name="ThumbnailWidth" value="@Model.ThumbnailWidth" /><span class="input-size">px</span></span>
+                                </div>
+                                <div class="fp_flex fp_align-items-center ">
+                                    <label class="fp_m-0">Height:</label>
+                                    <span class="aligned-field-input fp_ml-10"><input type="text" class="form-control fp_w-50" id="ThumbnailHeight" name="ThumbnailHeight" value="@Model.ThumbnailHeight" /><span class="input-size">px</span></span>
+                                </div>
+                                <div class="fp_flex fp_align-items-center fp_w-50  thumbnails-alignment @(Model.GalleryBlockType == GalleryBlockType.JustifiedGallery ? "thumbnails-alignment-hide" : string.Empty )">
+                                    @Html.CheckBoxFor(u => u.RenderThumbnailActualSize, new { @class = "form-control" })
+                                    <label class="form-check-label fp_pl-10 fp_m-0" for="enbZoom">Actual size </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="fp_flex fp_pb-10 fp_align-items-center">
+                                <label class="fp_m-0" for="thumb">Select between gallery or Slider: </label>
+                                @{ var galleryTypes = new List<SelectListItem>();
+                                    galleryTypes.Add(new SelectListItem
+                                    {
+                                        Text = "Justified Gallery",
+                                        Value = "3"
+                                    });
+                                    galleryTypes.Add(new SelectListItem
+                                    {
+                                        Text = "Slider",
+                                        Value = "4"
+
+                                    });
+                                    galleryTypes.Add(new SelectListItem
+                                    {
+                                        Text = "Gallery",
+                                        Value = "5"
+                                    });
+                                }
+                                @Html.DropDownListFor(m => m.GalleryBlockType, galleryTypes, new { @class = "form-control" })
+                            </div>
+                            <div class="fp_flex fp_align-items-center  fp_pb-10">
+                                @Html.EditorFor(u => u.EnableClickToEnlarge)
+                                <label class="form-check-label  fp_pl-10 fp_m-0" for="enbClick">
+                                    Enable to click to enlarge
+                                </label>
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Allows to click a thumbnail to see the image preview"></i>
+                            </div>
+                            <div class="fp_flex fp_align-items-center fp_pb-10">
+                                @Html.EditorFor(u => u.EnableZoom)
+                                <label class="form-check-label fp_pl-10 fp_m-0" for="galleryZoom">
+                                    Enable zoom
+                                </label>
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Enables zoom effect on mouse hover"></i>
+                            </div>
+                            <div id="fp_zoom" class="fp_flex fp_align-items-center fp_pb-10 @(Model.EnableZoom?"":"fp_hidden")">
+                                <label class="fp_m-0" for="menu-name">Zoom factor:</label>
+                                <input type="text" class="form-control fp_ml-10 fp_w-25" id="ZoomFactor" name="ZoomFactor" value="@Model.ZoomFactor" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--Display-->
+            <div class="panel panel-default">
+                <div class="panel-heading  panel-page">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse33" class="align-box">Display <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Gallery options"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse33" class="panel-collapse collapse collapse-field-container mutuallyExclusiveElementsContainer">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="form-check element-center">
+                                @Html.EditorFor(m => m.FixedImages, new { @class = "form-control mutuallyExclusiveElement", @onclick = "javascript: mutuallyExclusive(this);" })
+                                <label class="form-check-label" for="FixedImages">
+                                    Fixed images  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Fixed order of the gallery images"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="form-check element-center">
+                                @Html.EditorFor(m => m.RandomImageAtLoad, new { @class = "form-control mutuallyExclusiveElement", @onclick = "javascript: mutuallyExclusive(this);" })
+                                <label class="form-check-label" for="RandomImageAtLoad">
+                                    Random images on page load  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Random order of the gallery images"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <div class="form-check element-center">
+                                @Html.EditorFor(m => m.RandomImages, new { @class = "form-control mutuallyExclusiveElement", @onclick = "javascript: mutuallyExclusive(this);" })
+                                <label class="form-check-label" for="RandomImages">
+                                    Random images  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Not supported"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 form-group align-left-row">
+                            <div class="col-md-12"><label>Duration: </label></div>
+                            <div class="col-md-10">
+                                <span class="aligned-field-input">
+                                    <input type="text" name="ImagesChangeInterval" id="ImagesChangeInterval" class="form-control" value="@Model.ImagesChangeInterval" />
+                                    <span class="input-size">ms </span>
+                                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Slider transition duration" data-container=".modal-content"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-7 form-group aligned-left">
+                            <div class="col-md-12"><label>Transition:</label></div>
+                            <div class="col-md-6 element-center">
+                                @Html.DropDownListFor(m => m.ImageEffect, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(GalleryTransitionEffects)), new { @class = "form-control" })
+                                <i class="fas fa-info-circle align-element-top" data-toggle="tooltip" data-placement="top" title="Slider transition effect" data-container=".modal-content"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--Watermark-->
+            <div class="panel panel-default">
+                <div class="panel-heading  panel-page">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse44" class="align-box">Watermark <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Allows to show watermark text on every image"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse44" class="panel-collapse collapse collapse-field-container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="element-center form-group">
+                                @Html.EditorFor(u => u.AddWaterMark, new { @class = "form-check-input" })
+
+                                <label class="form-check-label" for="AddWaterMark">Show watermark</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="WatermarkText" name="WatermarkText" value="@Model.WatermarkText" placeholder="Enter watermark text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    $("#EnablePaging").on("change", function (e) {
+        $("#fp_gallery-style").toggleClass("fp_hidden");
+    })
+    $("#EnableZoom").on("change", function (e) {
+        $("#fp_zoom").toggleClass("fp_hidden");
+    })
+</script>

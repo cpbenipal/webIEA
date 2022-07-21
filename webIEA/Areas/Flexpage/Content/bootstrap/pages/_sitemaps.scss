@@ -1,0 +1,137 @@
+@import "../variables";
+
+.page-sitemaps {
+    .left {
+        padding-top: 30px;
+
+        .panel-default {
+            border-left: 1px solid $gray-soft;
+            border-right: 1px solid $gray-soft;
+            box-shadow: none;
+            border-radius: 4px;
+        }
+
+        .pages-list {
+            padding: 5px 15px;
+            background: $white-clear;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    }
+
+    .right {
+        background: $gray-light;
+        padding: 30px 20px 30px 20px;
+
+        .panel-default {
+            border-color: $gray-soft;
+        }
+
+        .panel-default > .panel-heading {
+            background-image: none;
+            background-color: $gray-light;
+        }
+    }
+
+    .modal-body {
+        padding: 0 15px 0 15px !important;
+    }
+
+    table.flexpage input[type=text].dxeEditArea {
+        border-right: none !important;
+    }
+
+    table.flexpage.combobox td.dxeButton.dxeButtonEditButton {
+        border-left: none !important;
+    }
+}
+.panel-title .fa-minus {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.panel-collapse .pages-list:first-child {
+    margin-top: 25px;
+}
+/*-- -------- Sortable jQuery --------- --*/
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+  border: none;
+  background: transparent;
+  font-weight: normal;
+}
+#sitemapSortable .ui-state-default {
+    margin-bottom: 20px;
+}
+.all-scroll {
+    cursor: all-scroll;
+}
+
+#right-homepage {
+  display: none;
+
+  .form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: left;
+  }
+}
+.active-sitemap {
+    display: block;
+
+    .form-horizontal {
+        .form-group:not(:first-child) {
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-top: 15px;
+        }
+
+        .form-group:first-child {
+            margin-top: 0px;
+        }
+    }
+}
+
+#right-sitemap {
+  display: block;
+}
+
+.page-sitemaps {
+  #right-homepage {
+    .panel-heading {
+      padding: 10px 0;
+    }
+  }
+  .filter-option {
+    font-family: Roboto, sans-serif !important;
+  }
+}
+.sitemap-viewer {
+    div#SiteMapTreeContainer .remove {
+        display: none;
+    }
+
+    div#SiteMapTreeContainer .initadd {
+        display: none;
+    }
+}
+
+.sitemapHeader {
+    background-image: -webkit-linear-gradient(top, #e8e8e8 0%, #a9a9a9 100%) !important;
+    background-image: -o-linear-gradient(top, #e8e8e8 0%, #a9a9a9 100%) !important;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#e8e8e8), to(#a9a9a9)) !important;
+    background-image: linear-gradient(to bottom, #e8e8e8 0%, #a9a9a9 100%) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe8e8e8', endColorstr='#ffa9a9a9', GradientType=0) !important;
+}
+#sitemapSortable {
+    margin-left: 10px;
+    margin-top: 30px;
+    padding-left: 0;
+}
+
+#sitemapSortable > li > .panel{
+    margin-top: 20px;
+    margin-bottom: 0px;
+}

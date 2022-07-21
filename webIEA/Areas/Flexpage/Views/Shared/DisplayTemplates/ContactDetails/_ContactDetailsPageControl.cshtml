@@ -1,0 +1,158 @@
+﻿@using System.Web.UI.WebControls
+
+@model Flexpage.Models.ContactDetailsModel
+
+@Html.DevExpress().PageControl(
+    panelSettings =>
+    {
+        panelSettings.Name = "tabControl" + Model.ID;
+        //panelSettings.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetailsPageControl", ID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.Edit };
+        panelSettings.Width = Unit.Percentage(100);
+        panelSettings.Height = 100;
+        if (Model.Company != null)
+        {
+            var index = (Model.ShowAddresses ? 1 : 0) + (Model.ShowTelecoms ? 1 : 0)
+            + (Model.ShowBankAccounts ? 1 : 0) + (Model.ShowLinkedPersons ? 1 : 0)
+            + (Model.ShowLinkedCompanies ? 1 : 0) + (Model.ShowLinkedFolders ? 1 : 0)
+            + (Model.ShowCustomProperties ? 1 : 0) + (Model.ShowCustomProperties ? 1 : 0);
+            Model.SelectTabIndex = Model.SelectTabIndex > (index) ? 0 : Model.SelectTabIndex;
+        }
+        if (Model.SelectTabIndex == 0)
+        {
+            Model.SelectTab = "GeneralInfo";
+        }
+        panelSettings.ActiveTabIndex = Model.SelectTabIndex;
+
+        panelSettings.EnableTabScrolling = true;
+        panelSettings.ClientSideEvents.TabClick = "function(s,e) { fp_activeTabChanging" + Model.ID + "(s,e) }";
+        if (Model.ShowGeneralInfo)
+        {
+            panelSettings.TabPages.Add("General Info", "GeneralInfo").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "GeneralInfo")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_" + Model.SelectTab + ".cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowAddresses)
+        {
+            panelSettings.TabPages.Add("Addresses", "Addresses").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "Addresses")
+                {
+
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowTelecoms)
+        {
+            panelSettings.TabPages.Add("Telecoms", "Telecoms").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "Telecoms")
+                {
+                    using (Html.BeginForm())
+                    {
+                        Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                    }
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowBankAccounts)
+        {
+            panelSettings.TabPages.Add("Bank Accounts", "BankAccounts").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "BankAccounts")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowLinkedPersons)
+        {
+            panelSettings.TabPages.Add("Linked Persons", "LinkedPersons").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "LinkedPersons")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowLinkedCompanies)
+        {
+            panelSettings.TabPages.Add("Linked Companies", "LinkedCompanies").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "LinkedCompanies")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowLinkedFolders)
+        {
+            panelSettings.TabPages.Add("Linked Folders", "LinkedFolders").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "LinkedFolders")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowCustomProperties)
+        {
+            panelSettings.TabPages.Add("Custom properties", "CustomProperties").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "Customproperties")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_Form.cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+        if (Model.ShowAdministration && Model.Person != null)
+        {
+            panelSettings.TabPages.Add("Credentials", "Administration").SetContent(() =>
+            {
+                if (!string.IsNullOrWhiteSpace(Model.SelectTab) && Model.SelectTab == "Administration")
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_" + Model.SelectTab + ".cshtml", Model);
+                }
+                else
+                {
+                    ViewContext.Writer.Write("");
+                }
+            });
+        }
+    }).GetHtml()

@@ -1,0 +1,59 @@
+﻿@using Flexpage.Models;
+@model NewsModel
+
+<div class="news-with-tabs">
+    <div class="tab-content">
+        @{
+
+            for (int recNumber = 0; recNumber < Model.Records.Count; recNumber++)
+            {
+                EventModel rec = Model.Records[recNumber];
+                <div class='newsRec-container tab-pane @(recNumber == 0 ? "active" : "" )' id="news-record-@recNumber">
+                    @{
+                        if (Model.AdminMode)
+                        {
+                            <table class="flexpage" cellpadding='0' cellspacing='0'>
+                                <tr>
+                                    <td>
+                                        <a href='javascript:void(0)' data-toggle="modal" data-target="#flexpage-popup-control"
+                                           onclick="fp_popupControlOpen({ command: 'edit', blockType: 'Event', blockID: @rec.ID }, fp_reload)">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href='javascript:void(0)' onclick="fp_deleteNewsRecord(this, '@rec.ID')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                    }
+                    @Html.Partial(string.Format("~/Areas/Flexpage/Views/Flexpage/NewsTemplates/{0}.cshtml", Model.TemplateView), rec)
+                </div>
+                        }
+        }
+    </div>
+
+    <ul class="nav nav-pills">
+
+        @for (int i = 0; i < Model.Records.Count; i++)
+        {
+            <li class='@(i == 0? "active" : "")'><a data-toggle="pill" href="#news-record-@i">@((i + 1).ToString("0#"))</a></li>
+        }
+    </ul>
+
+</div>
+@{ if (Model.AdminMode)
+    {
+        <div class="flexpage">
+            <div class="row text-center">
+                <button class="btn btn-blue-fullcolor-radius" data-toggle="modal" data-target="#flexpage-popup-control"
+                        onclick="fp_popupControlOpen({ command:'add', blockType: 'Event' }, fp_reload)">
+                    <i class="fas fa-plus"></i> Add new record
+                </button>
+            </div>
+        </div>
+    }
+}
+

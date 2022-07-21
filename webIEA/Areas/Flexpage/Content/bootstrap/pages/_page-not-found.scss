@@ -1,0 +1,42 @@
+@import "../variables";
+
+.container-not-found {
+  height: 70vh;
+  width: 430px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+
+  .btn-go-to-home {
+    width: 150px;
+    padding: 10px 0;
+    margin-top: 30px;
+  }
+  h1 {
+    text-transform: uppercase;
+    color: $dusk-blue;
+    font-size: 34px;
+    font-weight: 600;
+    margin-bottom: 50px;
+    letter-spacing: 1px;
+  }
+  p {
+    color: $warm-grey;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .error-code {
+    color: $warm-grey;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 30px 0 20px 0;
+  }
+}
+@media(max-width: 500px) {
+  .container-not-found {
+    width: 100%;
+  }
+}

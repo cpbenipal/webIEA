@@ -1,0 +1,186 @@
+﻿@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+@model Flexpage.Models.MaintenanceModel
+
+
+@{
+
+}
+
+<script type="text/javascript">
+
+    fp_popupControlChangeTitle('WEBSITE MAINTENANCE', '#fp_maintenanceContainer');
+    function fp_updateMaintenanceDateTime() {
+
+    }
+    $(document).ready(function () {
+        if (Boolean('@(ViewBag.SuccessValidation)'))
+            alert('The form has been submitted successfully.');
+    });
+
+</script>
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+<style>
+
+</style>
+<div id="fp_maintenanceContainer" class="page-maintenance flexpage row">
+
+    @using (Ajax.BeginForm("UpdateMaintenance", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_maintenanceContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_maintenanceForm" }))
+    {
+        <div class="col-md-12 page-maintenance__container">
+            <div class="col-md-12 maintenance-date-time flex-container">
+                <div class="pull-left maintenance-date-time__btnCheckBox">
+                    @Html.CheckBox("Active", new { @class = "" })
+                </div>
+                <div class="pull-left maintenance-date-time__title">
+                    Put website in maintenance from:
+                </div>
+                <div class="pull-left maintenance-date">
+                    @Html.DevExpress().FormLayout(settings =>
+               {
+                   settings.SettingsItemCaptions.VerticalAlign = FormLayoutVerticalAlign.Middle;
+                   settings.Name = "Picker";
+                   settings.RequiredMarkDisplayMode = RequiredMarkMode.None;
+                   settings.SettingsItemCaptions.Location = LayoutItemCaptionLocation.Top;
+                   settings.ControlStyle.CssClass = "fp_maintenance_label";
+                   settings.UseDefaultPaddings = false;
+                   settings.SettingsAdaptivity.AdaptivityMode = FormLayoutAdaptivityMode.SingleColumnWindowLimit;
+                   settings.SettingsAdaptivity.SwitchToSingleColumnAtWindowInnerWidth = 600;
+                   settings.Width = new System.Web.UI.WebControls.Unit(480, System.Web.UI.WebControls.UnitType.Pixel);
+                   var pickerGroup = settings.Items.AddGroupItem(i =>
+                   {
+                       i.Caption = "Date Range Picker";
+                       i.ColCount = 2;
+                       i.UseDefaultPaddings = false;
+                       i.GroupBoxDecoration = GroupBoxDecoration.None;
+                   });
+                   pickerGroup.ParentContainerStyle.CssClass = "";
+                   pickerGroup.Items.Add(m => m.Start, i => i.NestedExtension().DateEdit(date =>
+                   {
+                       date.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                       date.ShowModelErrors = true;
+                       date.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                       date.Properties.ClientSideEvents.DateChanged = "fp_updateMaintenanceDateTime";
+                       date.ControlStyle.CssClass = "flexpage calendar start-date fp_maintenance_label";
+                       date.Properties.DisplayFormatString = date.Properties.EditFormatString = "dd'.'MM'.'yyyy HH:mm";
+                       date.Properties.ValidationSettings.Display = Display.Dynamic;
+                       date.Properties.ValidationSettings.SetFocusOnError = true;
+                       date.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                       date.Properties.ValidationSettings.CausesValidation = true;
+                       date.Properties.CalendarProperties.Columns = 1;
+                       date.Properties.MinDate = DateTime.Now;
+                       date.Properties.TimeSectionProperties.Visible = true;
+                       date.Properties.TimeSectionProperties.Adaptive = true;
+                       date.Style.Add(HtmlTextWriterStyle.Display, "table");
+                       date.Properties.CalendarProperties.ShowClearButton = false;
+                       date.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                       date.Properties.CaptionStyle.Font.Size = new System.Web.UI.WebControls.FontUnit(14, System.Web.UI.WebControls.UnitType.Pixel);
+                       date.Properties.CaptionStyle.Font.Name = "sans-serif";
+                       date.ControlStyle.Width = new System.Web.UI.WebControls.Unit(170, System.Web.UI.WebControls.UnitType.Pixel);
+                       date.Width = new System.Web.UI.WebControls.Unit(200, System.Web.UI.WebControls.UnitType.Pixel);
+                   }));
+                   pickerGroup.Items.Add(m => m.End, i => i.NestedExtension().DateEdit(date =>
+                   {
+                       date.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                       date.Properties.Caption = "to:";
+                       date.Properties.CaptionSettings.VerticalAlign = EditorCaptionVerticalAlign.Middle;
+                       date.ShowModelErrors = true;
+                       date.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                       date.Properties.ClientSideEvents.DateChanged = "fp_updateMaintenanceDateTime";
+                       date.ControlStyle.CssClass = "flexpage calendar end-date";
+                       date.Properties.DisplayFormatString = date.Properties.EditFormatString = "dd'.'MM'.'yyyy HH:mm";
+                       date.Properties.ValidationSettings.Display = Display.Dynamic;
+                       date.Properties.ValidationSettings.SetFocusOnError = true;
+                       date.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                       date.Properties.ValidationSettings.CausesValidation = true;
+                       date.Properties.CalendarProperties.Columns = 1;
+                       date.Properties.MinDate = DateTime.Now;
+                       date.Properties.TimeSectionProperties.Visible = true;
+                       date.Properties.TimeSectionProperties.Adaptive = true;
+                       date.Style.Add(HtmlTextWriterStyle.Display, "table");
+                       date.Properties.CalendarProperties.ShowClearButton = false;
+                       date.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                       date.Properties.CaptionStyle.Font.Size= new System.Web.UI.WebControls.FontUnit(14, System.Web.UI.WebControls.UnitType.Pixel);
+                       date.Properties.CaptionStyle.Font.Name = "sans-serif";
+                       date.Properties.CaptionStyle.CssClass = "fb_maintenance_captionStyle";
+                       date.Properties.PopupHorizontalAlign = PopupHorizontalAlign.RightSides;
+                       date.ControlStyle.Width = new System.Web.UI.WebControls.Unit(170, System.Web.UI.WebControls.UnitType.Pixel);
+                       date.Width = new System.Web.UI.WebControls.Unit(200, System.Web.UI.WebControls.UnitType.Pixel);
+                   }));
+
+                   pickerGroup.Items.Add(i =>
+                   {
+                       i.NestedExtensionType = FormLayoutNestedExtensionItemType.ValidationSummary;
+                       i.ShowCaption = DefaultBoolean.False;
+                       i.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                       i.Height = new System.Web.UI.WebControls.Unit(50, System.Web.UI.WebControls.UnitType.Percentage);
+                   });
+               }).GetHtml()
+                            </div>
+            </div>
+            <div class="col-md-12 maintenance-redirect">
+                @if (Model.RedirectionType == MaintenanceRedirectionType.Standard)
+                {
+                    @Html.RadioButtonFor(x => x.RedirectionType, 0, new { @class = "maintenance-redirect__btnRadio", @checked = true })
+                }
+                else
+                {
+                    @Html.RadioButtonFor(x => x.RedirectionType, 0, new { @class = "maintenance-redirect__btnRadio" })
+                }
+                <span class="maintenance-redirect__title">
+                    Redirect all requests to standard maintenance page
+                </span>
+            </div>
+            <div class="col-md-12">
+                @Html.TextAreaFor(x => x.MaintenanceText, new { @class = "form-control" })
+            </div>
+            <div class="col-md-12 maintenance-redirect ">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="pull-left">
+                                @if (Model.RedirectionType == MaintenanceRedirectionType.Standard)
+                                {
+                                    @Html.RadioButtonFor(x => x.RedirectionType, 1, new { @class = "maintenance-redirect__btnRadio" })
+                                }
+                                else
+                                {
+                                    @Html.RadioButtonFor(x => x.RedirectionType, 1, new { @class = "maintenance-redirect__btnRadio", @checked = true })
+                                }
+                                <span class="maintenance-redirect__title">
+                                    Redirect all requests to custom maintenance page
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pull-left maintenance-pages-select">
+                                @{
+                                    var selectPage = "";
+                                    if (Model.RedirectionType == MaintenanceRedirectionType.Custom)
+                                    {
+                                        selectPage = Model.MaintenancePage;
+                                    }
+                                }
+                                @Html.DevExpress().ComboBox(
+                                    settings =>
+                                    {
+                                        settings.Name = "MaintenancePage";
+                                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                        settings.ControlStyle.CssClass = "form-control";
+                                        settings.Properties.DropDownRows = 4;
+                                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                        settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                                    }
+                                ).BindList(Model.AvailablePages).Bind(selectPage).GetHtml()
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+</div>

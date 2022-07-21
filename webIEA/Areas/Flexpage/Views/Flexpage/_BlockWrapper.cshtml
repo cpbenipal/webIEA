@@ -1,0 +1,136 @@
+﻿@model Flexpage.Abstract.DTO.IBlockModel
+
+@{
+    string anchor = String.Format("{0}#{1}", ViewBag.alias, "b" + Model.ID);
+    string guid = Guid.NewGuid().ToString().Replace("-","");
+}
+
+<div class="flexpage-block-settings">
+    <div class="flexpage-blockControls">
+        <div class="block-icons-top">
+            <div class="row">
+                <div class="col-md-12 pull-right">
+                    @if (Model.ID > 0)
+                    {
+                        if (!Model.IsStatic)
+                        {
+                            <div class="col-md-3">
+                                <a href='javascript:void(0)' onclick="fp_deleteBlock(this, '@Model.ID', '@Model.BlockType', '@Model.BlocklistID')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        }
+
+                        <div class="col-md-3">
+                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-icons-menu">
+                                <div class="row">
+                                    @if (!Model.IsStatic)
+                                    {
+                                        <div class="col-md-3">
+                                            <a href='javascript:void(0)' onclick="fp_moveBlock('@Model.ID', '@Model.BlocklistID', 'down')">
+                                                <img data-toggle="tooltip" data-placement="top"
+                                                     title="Move down" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/move-down.svg" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href='javascript:void(0)' onclick="fp_moveBlock('@Model.ID', '@Model.BlocklistID', 'up')">
+                                                <img data-toggle="tooltip" data-placement="top"
+                                                     title="Move up" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/move-up.svg" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href='javascript:void(0)' onclick="fp_moveBlock('@Model.ID', '@Model.BlocklistID', 'bottom')">
+                                                <img data-toggle="tooltip" data-placement="top"
+                                                     title="Move bottom" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/move-bottom.svg" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href='javascript:void(0)' onclick="fp_moveBlock('@Model.ID', '@Model.BlocklistID', 'top')">
+                                                <img data-toggle="tooltip" data-placement="top"
+                                                     title="Move top" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/move-top.svg" alt="">
+                                            </a>
+                                        </div>
+                                    }
+                                    <div class="col-md-3">
+                                        <a href='javascript:void(0)' onclick="fp_toggleBlockVisibility(this, '@Model.ID')">
+                                            <img data-toggle="tooltip" data-placement="top"
+                                                 title="Hide" style='@(Model.Visible?"":"display:none")' class="flexpage-icon-menu flexpage-icon-menu__show" src="/areas/flexpage/content/images/icons/menu/visibility-on.svg" alt="">
+                                            <img data-toggle="tooltip" data-placement="top"
+                                                 title="Show" style='@(Model.Visible?"display:none":"")' class="flexpage-icon-menu flexpage-icon-menu__hide" src="/areas/flexpage/content/images/icons/menu/visibility-off.svg" alt="">
+                                        </a>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <a href="#" onclick="fp_popupControlOpen({ command: 'add', blockID: '@Model.ID', controller: 'Schedule', action: 'LoadManagerForLinkBlock', blockType: 'Schedule', title: 'Link the block to schedule' })">
+                                            <img data-toggle="tooltip" data-placement="top"
+                                                 title="Scheduler" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/schedule.svg" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @*<a href='javascript:void(0)' onclick="fp_popupControlOpen({ command: 'addCss', blockID: '@Model.ID', blockType: '@Model.BlockType' }, fp_reload)">*@
+                                        <a href='javascript:void(0)' onclick="fp_popupControlOpen({ command: 'addCss', blockID: '@Model.ID', blockType: '@Model.BlockType' })">
+                                                <img data-toggle="tooltip" data-placement="top"
+                                                     title="Style" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/css.svg" alt="">
+                                            </a>
+</div>
+                                    <div class="col-md-3">
+                                        <a href="@anchor">
+                                            <img data-toggle="tooltip" data-placement="top"
+                                                 title="Anchor" class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/link.svg" alt="">
+                                        </a>
+                                    </div>
+                                    @if (Model.BlockType == "CmsText")
+                                    {
+                                        <div class="col-md-3">
+                                            <a data-toggle="tooltip" data-placement="top"
+                                               title="Rss" href='javascript:void(0)' onclick="fp_addToRss('@Model.ID')"><img class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/rss-on.svg" alt=""></a>
+                                        </div>
+                                    }
+                                    @if (!Model.IsStatic)
+                                    {
+                                        <div class="col-md-3">
+                                            <a data-toggle="tooltip" data-placement="top"
+                                               title="Сut" href='javascript:void(0)' onclick="fp_cutBlock('@Model.ID','@Model.BlocklistID')"><img class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/cut.svg" alt=""></a>
+                                        </div>
+                                    }
+                                    @if (Model.IsCopyable)
+                                    {
+                                        <div class="col-md-3">
+                                            <a data-toggle="tooltip" data-placement="top"
+                                               title="Сopy" href='javascript:void(0)' onclick="fp_copyBlock('@Model.ID','@Model.BlocklistID')"><img class="flexpage-icon-menu" src="/areas/flexpage/content/images/icons/menu/copy.svg" alt=""></a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    @if (Model.IsEdit || Model.ID < 1)
+                    {
+                        <div class="col-md-3">
+                            <a id="fp_editBtn@(guid)" class="fp_editBtn" href='javascript:void(0)' data-toggle="modal" data-target="#flexpage-popup-control">
+                                <i class="far fa-edit"></i>
+                            </a>
+                        </div>
+                    }
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function fp_edit@(guid)(e) {
+        $("#fp_editBtn@(guid)").off("click", fp_edit@(guid));
+        fp_popupControlOpen({ command: 'edit', blocklistID: '@Model.BlocklistID', blockType: '@Model.BlockType', blockAlias: '@Model.Alias', blockID: '@Model.ID' })
+        setTimeout(function () {
+            $("#fp_editBtn@(guid)").on("click", fp_edit@(guid))
+        }, 2000);
+    }
+
+    $("#fp_editBtn@(guid)").on("click", fp_edit@(guid))
+</script>

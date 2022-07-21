@@ -1,0 +1,668 @@
+@using System.Web.UI.WebControls
+@using Flexpage.Models
+@model Flexpage.Models.ObjectPropertiesModel
+@{
+    var permsValues = Enum.GetValues(typeof(Pluritech.Permissions.Abstract.DTO.ePermissions));
+    var permsNames = Enum.GetNames(typeof(Pluritech.Permissions.Abstract.DTO.ePermissions));
+    if (Model.Type == ObjectPropertiesTypeEnum.ContactsShortcut || Model.Type == ObjectPropertiesTypeEnum.FileShortcut)
+    {
+        permsValues = permsValues.OfType<Pluritech.Permissions.Abstract.DTO.ePermissions>().ToList().Take(3).ToArray();
+        permsNames = permsNames.Take(3).ToArray();
+    }
+    var disabledClass = Model.IsEdit ? "" : "opacity-activated";
+    var disabledPropertyClass = Model.IsEdit || Model.AllowCustomPropertiesEdit ? "" : "opacity-activated";
+}
+<script type="text/javascript">
+    var _fp_objectproperties_permissions = [@Html.Raw(string.Join(",", permsNames
+        .Select(p => string.Format("'{0}'", p))))];
+    var _fp_objectproperties_parentPermData = [];
+    var _fp_objectproperties_permData = @Html.Raw(Model.Permissions.Permissions);
+    var _fp_objectproperties_permData_toDel = @Html.Raw(Model.Permissions.ToDelete);
+    var _fp_objectproperties_selOwner;
+
+    $(function () {
+        $("#groups .list.owners a").on("click", fp_objectpropertiesgroup_clickOwner);
+        fp_popupControlChangeTitle('@Model.Title', '#fp_objectPropertiesEditorContainer');
+        var dlg = $('#fp_objectPropertiesEditorContainer #permissions .owners');
+        _fp_objectproperties_permData.forEach(p => {
+            dlg.append(`<a href='javascript:fp_objectproperties_changeOwner(${p.OwnerID})' owner='${p.OwnerID}'>${p.OwnerName}</a>`);
+        });
+    });
+
+
+
+    function fp_objectproperties_changeOwner(ownerID) {
+        var dlg = $('#fp_objectPropertiesEditorContainer #permissions .owners');
+        dlg.find('a').removeClass('selected');
+        $(".permissions-box-no-select").addClass("hidden");
+        $(".permissions-box").removeClass("hidden");
+
+        //read prev perm
+        fp_objectproperties_readCurrentOwnerPermCheckboxes();
+        //set new one
+        var owner = _fp_objectproperties_permData.filter(p => p.OwnerID === ownerID).pop();
+        
+        _fp_objectproperties_selOwner = owner;
+        dlg.find(`a[owner=${ownerID}]`).addClass('selected');
+        fp_objectproperties_setCurrentOwnerPermCheckboxes();
+    }
+
+    function fp_objectproperties_readCurrentOwnerPermCheckboxes() {
+        if(_fp_objectproperties_selOwner) {
+            fp_objectproperties_readPermCheckboxes(_fp_objectproperties_selOwner.Allowed, 'Allow');
+            fp_objectproperties_readPermCheckboxes(_fp_objectproperties_selOwner.Denied, 'Deny');
+        }
+    }
+
+    function fp_objectproperties_setCurrentOwnerPermCheckboxes() {
+        if(_fp_objectproperties_selOwner) {
+            fp_objectproperties_setPermCheckboxes(_fp_objectproperties_selOwner.Allowed, 'Allow');
+            fp_objectproperties_setPermCheckboxes(_fp_objectproperties_selOwner.Denied, 'Deny');
+        }
+    }
+
+    function fp_objectproperties_setPermCheckboxChecked(ch, value) {
+        if(value) {
+            ch.SetCheckState(value === 2 ? 'Checked' : (value === 1 ? 'Indeterminate' : 'Unchecked'));
+        } else {
+            ch.SetCheckState('Unchecked');
+        }
+        ch.SetEnabled(value !== 1);
+    }
+
+    function fp_objectproperties_setPermCheckboxes(data, prefix) {
+        _fp_objectproperties_permissions.forEach((p) => {
+            fp_objectproperties_setPermCheckboxChecked(eval(`Perm${prefix}_${p}`), data[p]);
+
+        });
+    }
+
+    function fp_objectproperties_readPermCheckboxes(data, prefix) {
+        _fp_objectproperties_permissions.forEach((p) => {
+            var state = eval(`Perm${prefix}_${p}`).GetCheckState();
+            data[p] = state === 'Checked' ? 2 : (state === 'Indeterminate' ? 1 : 0);
+        });
+    }
+
+    function fp_objectproperties_removeOwner() {
+        if(_fp_objectproperties_selOwner) {
+            fp_ConfirmDialog('Delete',
+                'Are you sure want to delete this?',
+                function() {
+                    _fp_objectproperties_permData_toDel.push(_fp_objectproperties_selOwner.OwnerID);
+                    $(`#fp_objectPropertiesEditorContainer #permissions .owners a[owner=${_fp_objectproperties_selOwner
+                        .OwnerID}]`).detach();
+                    _fp_objectproperties_permData =
+                        _fp_objectproperties_permData.filter(p => p.OwnerID != _fp_objectproperties_selOwner.OwnerID);
+                });
+        }
+    }
+    function fp_objectproperties_addOwnerPopover(ownerID) {
+        console.log(ownerID);
+    }
+    function showGroupsPersons() {
+        $("#fp_popupPleaseWaitDiv").css("display", "block");
+        $(".tabs-navigation .permissions").addClass("hidden");
+        $(".tabs-navigation .properties").addClass("hidden");
+        $(".tabs-navigation .general-tab").addClass("hidden");
+        $("#permissions").addClass("hidden");
+        $("#general-tab").addClass("hidden");
+        $("#properties").addClass("hidden");
+        $(".tabs-navigation .groups").removeClass("hidden");
+        $(".tabs-navigation .persons").removeClass("hidden");
+        $("#groups").removeClass("hidden");
+        $("#persons").removeClass("hidden");
+        $(".tabs-navigation .groups").addClass("in");
+        $(".tabs-navigation .groups").addClass("active");
+        $("#groups").addClass("in");
+        $("#groups").addClass("active");
+        $(".tabs-navigation .persons").removeClass("in");
+        $(".tabs-navigation .persons").removeClass("active");
+        $("#persons").removeClass("in");
+        $("#persons").removeClass("active");
+
+        $(`.fp_popupButtonsContainer [aria-label="Close"]`).attr("onclick", "hideGroupsPerson()");
+        $(".fp_popupButtonsContainer a:first-child").addClass("hidden");
+        $("#fp_popupPleaseWaitDiv").css("display", "none");
+    }
+    function hideGroupsPerson() {
+        $("#fp_popupPleaseWaitDiv").css("display", "block");
+        $(".tabs-navigation .groups").addClass("hidden");
+        $(".tabs-navigation .persons").addClass("hidden");
+        $(".tabs-navigation .general-tab").removeClass("hidden");
+        $("#groups").addClass("hidden");
+        $("#persons").addClass("hidden");
+        $("#general-tab").removeClass("hidden");
+        $(".tabs-navigation .permissions").removeClass("hidden");
+        $(".tabs-navigation .properties").removeClass("hidden");
+        $("#permissions").removeClass("hidden");
+        $("#properties").removeClass("hidden");
+        $(".tabs-navigation .permissions").addClass("in");
+        $(".tabs-navigation .permissions").addClass("active");
+        $("#permissions").addClass("in");
+        $("#permissions").addClass("active");
+        $(".tabs-navigation .properties").removeClass("in");
+        $(".tabs-navigation .properties").removeClass("active");
+        $("#properties").removeClass("in");
+        $("#properties").removeClass("active");
+
+        $(`.fp_popupButtonsContainer [aria-label="Close"]`).attr("onclick", "fp_beforeClosePopUp()");
+        $(".fp_popupButtonsContainer a:first-child").removeClass("hidden");
+        $("#fp_popupPleaseWaitDiv").css("display", "none");
+
+    }
+    function fp_objectproperties_addOwner(rowId) {
+
+        showGroupsPersons();
+    }
+
+    function fp_objectproperties_clickOwner(elem, ownerID) {
+        var ownerName = elem.text();
+        var owner = _fp_objectproperties_permData.filter(p => p.OwnerID === ownerID).pop();
+        if (owner) {
+            fp_WarningDialog("Error", "This person or security group is already added as a permission owner. Please choose another one.", function() {});
+            return;
+        }
+        var object = { OwnerID: ownerID, OwnerName: ownerName, Allowed: {}, Denied: {}};
+        _fp_objectproperties_permData.push(object);
+        var dlg = $('#fp_objectPropertiesEditorContainer #permissions .owners');
+        dlg.append(`<a href='javascript:fp_objectproperties_changeOwner(${object.OwnerID})' owner='${object.OwnerID}'>${object.OwnerName}</a>`);
+        dlg = $('#fp_objectPropertiesEditorContainer #permissions .owners');
+        fp_objectproperties_changeOwner(ownerID);
+
+        hideGroupsPerson();
+        return dlg;
+    }
+    function fp_objectpropertiesgroup_clickOwner(e) {
+        var ownerID = parseInt($(e.target).attr("owner"));
+        $(e.target).toggleClass("selected");
+        var dlg = fp_objectproperties_clickOwner($(e.target), ownerID);
+
+    }
+    function fp_objectpropertiesperson_clickOwner(e) {
+        var ownerID = $(e.htmlEvent.target).attr("data-shortcut-id") || $(e.htmlEvent.target).find(".fp_contactValue").attr("data-shortcut-id") || $(e.htmlEvent.target).closest(".fp_contactValue").attr("data-shortcut-id");
+        ownerID = parseInt(ownerID);
+        var dlg =  fp_objectproperties_clickOwner($(e.htmlEvent.target), ownerID);
+    }
+    function fp_preSaveBlock() {
+        fp_objectproperties_readCurrentOwnerPermCheckboxes();
+        $('#fp_objectPropertiesEditorContainer input[type=hidden][name="Permissions.Permissions"]').val(JSON.stringify(_fp_objectproperties_permData));
+        $('#fp_objectPropertiesEditorContainer input[type=hidden][name="Permissions.ToDelete"]').val(JSON.stringify(_fp_objectproperties_permData_toDel));
+    }
+
+    function fp_objectproperties_parentInherit_clicked(obj) {
+        obj = $(obj);
+        if(obj.is(':checked')) {
+            // get the parent permissions
+            fp_PopupTogglePleaseWaitDiv(obj, 'block');
+            $.ajax({
+                url: '/admin/GetPermissionsForParentObject',
+                data: { objectID: @(Model.Permissions.ObjectID) },
+                method: 'GET',
+                dataType: "json",
+                success: function (data) {
+                    _fp_objectproperties_parentPermData = eval(data);
+                    fp_objectproperties_parentInherit_set();
+                    fp_PopupTogglePleaseWaitDiv(obj, 'none');
+                },
+                error: function () {
+                    fp_PopupTogglePleaseWaitDiv(obj, 'none');
+                }
+            });
+        } else {
+            $('#fp_ObjectProperties_Warning').modal();
+        }
+    }
+
+    function fp_objectproperties_SetInheritPermFromParent(permObject, parentPermObject) {
+        for(var perm in parentPermObject) {
+            if(parentPermObject[perm] > 0 && (!permObject[perm] || permObject[perm] < 2)) {
+                permObject[perm] = 1;
+            }
+        }
+    }
+
+    function fp_objectproperties_parentInherit_set() {
+        fp_objectproperties_readCurrentOwnerPermCheckboxes();
+        _fp_objectproperties_permData.forEach(p => {
+            var parent = _fp_objectproperties_parentPermData.filter(o => o.OwnerID === p.OwnerID).pop();
+            if(parent) {
+                fp_objectproperties_SetInheritPermFromParent(p.Allowed, parent.Allowed);
+                fp_objectproperties_SetInheritPermFromParent(p.Denied, parent.Denied);
+            }
+        });
+        fp_objectproperties_setCurrentOwnerPermCheckboxes();
+    }
+
+    function fp_objectproperties_parentInherit_copy() {
+        _fp_objectproperties_parentPermData = [];
+        _fp_objectproperties_permData.forEach(p => {
+            fp_objectproperties_SetAllInheritPermWithNewValue(p.Allowed, 2);
+            fp_objectproperties_SetAllInheritPermWithNewValue(p.Denied, 2);
+        });
+        fp_objectproperties_setCurrentOwnerPermCheckboxes();
+        $('#fp_ObjectProperties_Warning').modal('toggle');
+    }
+
+    function fp_objectproperties_SetAllInheritPermWithNewValue(permObject, value) {
+        for(var perm in permObject) {
+            if(permObject[perm] === 1) {
+                permObject[perm] = value;
+            }
+        }
+    }
+
+    function fp_objectproperties_parentInherit_remove() {
+        _fp_objectproperties_parentPermData = [];
+        _fp_objectproperties_permData.forEach(p => {
+            fp_objectproperties_SetAllInheritPermWithNewValue(p.Allowed, 0);
+            fp_objectproperties_SetAllInheritPermWithNewValue(p.Denied, 0);
+        });
+        fp_objectproperties_setCurrentOwnerPermCheckboxes();
+        $('#fp_ObjectProperties_Warning').modal('toggle');
+    }
+
+    function fp_objectproperties_parentInherit_cancel() {
+        $('#fp_ObjectProperties_Warning').modal('toggle');
+        $('#fp_objectPropertiesEditorContainer input[name="Permissions.InheritFromParent"]').prop('checked', true);
+    }
+    function getParent(){
+        var parent = _fp_objectproperties_permData.filter(o => _fp_objectproperties_selOwner.OwnerName.indexOf(o.OwnerName) > -1
+            && _fp_objectproperties_selOwner.OwnerName != o.OwnerName).pop();
+        return parent;
+    }
+
+    function fp_openBrowserPopup(key, id) {
+        console.log("fp_openBrowserPopup");
+        window.flexpage.fp_afterObjectSelected = function (obj) {
+            console.log("fp_afterObjectSelected");
+            var o = obj[0];
+            var controls = ASPxClientControl.GetControlCollection();
+            var ftb = controls.GetByName('FileTextBox' + key);
+            var idtb = controls.GetByName('file' + key);
+            idtb.SetText(o.id);
+            var n = o.name;
+            if (typeof fp_selectedFolderName !== 'undefined') {
+                n = fp_selectedFolderName + n + o.ext;
+            }
+            ftb.SetText(n);
+
+            $("#FileIDHidden" + key).val(o.id);
+
+
+        };
+        fp_popupControlOpen({
+            command: 'browserchoose',
+            blockType: 'BrowserSelector',
+            action: 'BrowserSelectorNew',
+            controller: 'FlexPage',
+            alwaysCallOnClose: true,
+            parameters: '{selectedFileID:'+ id +'}'
+        }, function () { });
+    }
+
+    function fp_objectproperties_permission_clicked(s) {
+        var parent = getParent();
+        if(!s.GetChecked() && $('#fp_objectPropertiesEditorContainer input[name="Permissions.InheritFromParent"]').is(':checked')
+            && _fp_objectproperties_selOwner && parent) {
+                var permName = s.name.split('_')[1];
+                var perm = s.name.indexOf('PermAllow_') === 0 ? perm = parent.Allowed[permName] : perm = parent.Denied[permName];
+                if(perm > 0) {
+                    fp_objectproperties_setPermCheckboxChecked(s, 1);
+                }
+        }
+    }
+    (function () {
+        fp_loadScripts("/Areas/Flexpage/Content/Scripts/CustomProperties/EditCustomProperties.js");
+    })();
+</script>
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+    (function () {
+
+        function showRecursiveMessage(callback) {
+            @if(Model.Type == ObjectPropertiesTypeEnum.Folder)
+                    {
+                        <text>
+                            fp_ConfirmDialog('Versioning', "Do you want to change this setting for all folder's subobjects?", function() {
+                                $("#IsRecursive").val("True");
+                                if (callback)
+                                    callback();
+                            }, function() {
+                                $("#IsRecursive").val("False");
+                            });
+                        </text>
+                    }
+        }
+        $('#IsSupportVersion').change(function() {
+                var that = this;
+                if (this.checked) {
+                    that.checked = false;
+                    showRecursiveMessage();
+                    $("#SupportVersion").prop('readonly', false);
+                    that.checked = true; 
+                } else {
+                    that.checked = true; 
+                    fp_ConfirmDialog('Versioning', "You have chosen to remove versioning support from file or folder. All previous versions of the file(s) will be deleted. After you press 'Ok' or 'Apply' you will not be able to undo your step. Are you sure you want to do this?", function() {
+                        showRecursiveMessage();
+                        $("#SupportVersion").prop('readonly', true);
+                        $("#SupportVersion").val(0);
+                        that.checked = false; 
+                    });
+                }
+            }
+        );
+
+        $('#SupportVersion').on('input', function (event) { 
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        $('#SupportVersion').on('focusin', function(){
+            console.log("Saving value " + $(this).val());
+            $(this).data('val', $(this).val());
+        });
+
+        var messageRecursiveIsShow = false;
+        var messageConfirmIsShow = false;
+
+        $('#SupportVersion').on('change', function(){
+            var prev = $(this).data('val'),
+                current = $(this).val();
+            var that = $(this);
+            if (parseInt(prev) > parseInt(current)) {
+                if(!messageConfirmIsShow){
+                    fp_ConfirmDialog('Versioning', "You are going to decrease the number of versions stored. All versions of the file(s) which is older when number of you choice will be deleted. After you press “Ok” you will not be able to undo your step. Are you sure you want to do this?", function() {
+                        that.val(current);
+                        that.data('val',current);
+                    });
+                    messageConfirmIsShow = !messageConfirmIsShow;
+                }
+                else {
+                    that.data('val',current);
+                    that.val(current);
+                }
+            } else {
+                if (!messageRecursiveIsShow) {
+                    showRecursiveMessage(function() { that.val(current); that.data('val',current); });
+                    messageRecursiveIsShow = !messageRecursiveIsShow;
+                } else {
+                    that.data('val',current);
+                    that.val(current);
+                }
+            }   
+        });
+    })();
+
+    $(function() {
+        $("#fp_BlockEditorForm").submit(function () {
+            AddEditCustomPropertyService.GenerateProperties();
+        });
+        $("#ShowAllAvailableProperties").on("change",fp_showAllAvailableProperties_clicked);
+    })
+    function fp_showAllAvailableProperties_clicked(obj) {
+        EditCustomProperty.ShowAllAvailableProperties(obj,@Model.Properties.ObjectID);
+    }
+</script>
+@{
+    object objSettings;
+
+    if (Model.IsSupportVersion)
+    {
+        objSettings = new {@class = "form-control col-md-6", @type = "number", @min = 0, @style = "width:150px; float:right"};
+    }
+    else
+    {
+        objSettings = new {@readonly = "readonly", @class = "form-control col-xs-6", @type = "number", @min = 0, @style = "width:150px;  float:right"};
+    }
+
+}
+<div id="fp_objectPropertiesEditorContainer" class="flexpage">
+    @using (Ajax.BeginForm("UpdateObjectProperties", "Flexpage", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "fp_objectPropertiesEditorContainer" }, new { @id = "fp_BlockEditorForm", @role = "form" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Type)
+        @Html.HiddenFor(m => m.Permissions.ObjectID)
+        @Html.HiddenFor(m => m.Permissions.Permissions)
+        @Html.HiddenFor(m => m.Permissions.ToDelete)
+        @Html.HiddenFor(m => m.Properties.Properties)
+        @Html.HiddenFor(m => m.Properties.ToDelete)
+        @Html.HiddenFor(m => m.Properties.ObjectID)
+        @Html.HiddenFor(m => m.IsRecursive)
+        <div class="row" id="folder-content">
+            <ul class="nav nav-pills tabs-navigation">
+                @if (Model.Type != ObjectPropertiesTypeEnum.ContactsShortcut)
+                {
+                    <li class="active general-tab"><a data-toggle="pill" href="#general-tab">General</a></li>
+                    <li class="permissions"><a data-toggle="pill" href="#permissions">Permissions</a></li>
+                    <li class="properties"><a data-toggle="pill" href="#properties">Custom properties</a></li>
+                    if (Model.Type == ObjectPropertiesTypeEnum.FileShortcut
+                        && Model.FolderParent?.Object?.ObjectPropertyValues?.FirstOrDefault(o=>o.ObjectProperty.Name== "PublishingFolder")!=null)
+                    {
+                    <li class="publication"><a data-toggle="pill" href="#publication">Publication</a></li>
+                    }
+                    <li class="groups hidden"><a data-toggle="pill" href="#groups">Groups</a></li>
+                    <li class="persons hidden"><a data-toggle="pill" href="#persons">Persons</a></li>
+                }
+                else
+                {
+                    <li class="active permissions"><a data-toggle="pill" href="#permissions">Permissions</a></li>
+                    <li class="properties"><a data-toggle="pill" href="#properties">Custom properties</a></li>
+                }
+            </ul>
+            <div class="tab-content">
+                @if (Model.Type != ObjectPropertiesTypeEnum.ContactsShortcut)
+                {
+                    <div id="general-tab" class="tab-pane fade in active">
+                        <div class="row custom-tabs-row @disabledClass">
+                            <div class="col-xs-4">
+                                <div class="col-md-9 col-xs-12">
+                                    <label>Supports versioning:</label>
+                                </div>
+                                <div style="margin-top: -28px">
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(m => m.IsSupportVersion, "SliderCheckbox")
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-2" style="height: 30px"></div>
+                            <div class="col-xs-6">
+                                <div class="col-xs-9">
+                                    <label style="margin-top: 3px;">Max versions:</label>
+                                    @Html.TextBoxFor(m => m.SupportVersion, objSettings)
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model.Type != ObjectPropertiesTypeEnum.Folder)
+                        {
+                            <div class="row custom-tabs-row" style="padding: 0 36px">
+                                <div class="col-xs-12">
+                                    <label>@Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "Language")</label>
+                                    @Model.LanguageName
+                                </div>
+                            </div>
+
+                            <div class="row custom-tabs-row" style="padding-top: 10px;">
+                                <div class="col-xs-12" style="margin-left: 17px">
+                                    <label>@Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "LinkedShortcuts")</label>
+                                </div>
+                                <div class="col-xs-12" style="margin-left: 17px">
+                                    @Html.DevExpress().GridView(settings =>
+                               {
+                                   settings.Name = "fp_LinkedShortcuts";
+                                   settings.Width = Unit.Percentage(100);
+                                   settings.SettingsBehavior.AllowSort = false;
+
+                                   settings.Columns.Add(column =>
+                                   {
+                                       column.FieldName = "Key";
+                                       column.Caption = "File name";
+                                       column.Visible = true;
+                                   });
+
+
+                                   settings.Columns.Add(column =>
+                                   {
+                                       column.FieldName = "Value";
+                                       column.Caption = "Folder";
+                                       column.Visible = true;
+                                   });
+
+                               }).Bind(Model.LinkedShortcuts.ToList()).GetHtml()
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                <div id="permissions" class="tab-pane @if (Model.Type == ObjectPropertiesTypeEnum.ContactsShortcut) {<text>fade in active</text> } ">
+                    <div class="row custom-tabs-row">
+                        <div class="col-xs-12">Group or user names:</div>
+
+                        <div class="col-xs-12">
+                            <div class="list owners"></div>
+                        </div>
+                        <div class="col-xs-12">
+                        @if (Model.IsEdit)
+                            {
+                                <button type="button" class="btn btn-orange" onclick="fp_objectproperties_addOwner(@Model.ID)">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-orange" onclick="fp_objectproperties_removeOwner()">
+                                    Remove
+                                </button>
+                            }
+                        </div>
+                        <div style="clear: both;"></div>
+                        <br />
+                        <div class="permissions-box-no-select">
+                            Please choose or add a permission owner (group or user) at the top
+                        </div>
+                        <div class="permissions-box hidden @disabledClass">
+                            <div class="col-xs-12 fields-title">
+                                <div class="col-xs-8">Permission</div>
+                                <div class="col-xs-2 text-center">Allow</div>
+                                <div class="col-xs-2 text-center">Deny</div>
+                            </div>
+                            <div class="col-xs-12 perm_checkboxes">
+                                @foreach (Pluritech.Permissions.Abstract.DTO.ePermissions perm in permsValues)
+                                {
+                                    @Html.EditorFor(m => perm, "Content/_Settings_Permissions")
+                                }
+                            </div>
+                            <div class="col-xs-6" style="margin-top: 10px;">
+                                @Html.CheckBoxFor(m => m.Permissions.InheritFromParent, new { onclick = "fp_objectproperties_parentInherit_clicked(this)" })
+                                <label>Inherit the permissions from parent object</label>
+                            </div>
+                            <div class="col-xs-6" style="margin-top: 10px;">
+                                @Html.CheckBoxFor(m => m.Permissions.InheritForChilds)
+                                <label>Inherit the permissions for child objects</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="properties" class="tab-pane fade">
+                    <div class="row custom-tabs-row">
+                        @Html.HiddenFor(m => m.EditProperties)
+                        <div class="col-xs-12 content-grid">
+                            @if (Model.IsEdit)
+                            {
+                                <div style="padding: 10px 0">
+                                    <span style="vertical-align: top; font-weight: normal; float: left;">
+                                        Show all available properties:
+                                    </span>
+                                    <span style="margin-left: 51px; float: left; margin-top: 3px;">
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(m => m.ShowAllAvailableProperties, "SliderCheckbox")
+                                        </div>
+                                    </span>
+                                </div>
+                            }
+                            <div id="BrowserCustomPropertiesGrid" class="@disabledPropertyClass">
+                                @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/_BrowserCustomPropertiesGrid.cshtml", Model.Properties)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.Type == ObjectPropertiesTypeEnum.FileShortcut
+                        && Model.FolderParent?.Object?.ObjectPropertyValues?.FirstOrDefault(o => o.ObjectProperty.Name == "PublishingFolder") != null)
+                {
+                <div id="publication" class="tab-pane fade">
+                    <div class="row custom-tabs-row">
+
+                        <div class="col-md-12 content-grid">
+
+                            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/_BrowserCustomPublicationGrid.cshtml", Model.Publication, new ViewDataDictionary() { { "ID", Model.ID } })
+                        </div>
+                    </div>
+                </div>
+                }
+                <div id="groups" class="tab-pane fade hidden">
+                    <div class="col-xs-12">
+                        <div class="list owners">
+                            <div class="col-xs-12">
+                                @foreach (var f in Model.Folders)
+                                {
+                                    <a owner="@f.ID" href="javascript:">@f.Name</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="persons" class="tab-pane fade hidden">
+                    <div class="col-xs-12">
+                        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.ContactsEnumerationModel)
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal fade not-removable" id="fp_ObjectProperties_Warning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Attention</h3>
+            </div>
+            <div class="modal-body">
+                <p>Selection this option means that the parent permission entries that apply to child objects will no longer apply to this object.</p>
+                <p>- To copy the permission entries that were previously applied from the parent to this object, click Copy.</p>
+                <p>- To remove the permission entries that were previously applied from the parent and keep only those permissions explicitly defined here, click Remove.</p>
+                <p>- To cancel this action, click Cancel.</p>
+            </div>
+            <div class="modal-footer not-replace">
+                <div class="col-md-6 pull-right right fp_popupButtonsContainer">
+                    <a href="javascript:fp_objectproperties_parentInherit_copy()">COPY</a>
+                    <a href="javascript:fp_objectproperties_parentInherit_remove()">REMOVE</a>
+                    <a href="javascript:fp_objectproperties_parentInherit_cancel()" aria-label="Close">CANCEL</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="popup-menu-custom-properties">
+    @Html.DevExpress().PopupMenu(
+        settings =>
+        {
+            settings.Name = "PopupMenuCustomProperties";
+            settings.AllowSelectItem = false;
+            settings.Items.Add(item =>
+            {
+                item.Text = "Add";
+                item.Name = "AddProperty";
+                item.Image.IconID = IconID.ActionsAdd16x16office2013;
+            });
+
+            settings.Items.Add(item =>
+            {
+                item.Text = "Delete";
+                item.Name = "DeleteProperty";
+                item.Image.IconID = IconID.ActionsDelete16x16office2013;
+                item.ClientEnabled = false;
+            });
+                
+            settings.ClientSideEvents.ItemClick = ("function(s, e){ EditCustomProperty.popupMenuItemClick(s,e, 'ñontactDetailsCustomProperties" + Model.Properties.ObjectID+"')}");
+
+        }).GetHtml()
+</div>

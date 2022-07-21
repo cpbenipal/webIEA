@@ -1,0 +1,21 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.ContactsAdvancedSearchModel
+
+
+@Html.DevExpress().PageControl(
+    panelSettings =>
+    {
+        panelSettings.Name = "tabControl";
+        panelSettings.Width = Unit.Percentage(100);
+        panelSettings.Height = 100;
+        panelSettings.TabPages.Add("Diagram", "Diagram").SetContent(() =>
+        {
+            Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsAdvancedSearch/_ContactsAdvancedSearch.cshtml", Model);
+        });
+        panelSettings.TabPages.Add("Result", "Result").SetContent(() =>
+        {
+            Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsAdvancedSearch/_ContactsAdvancedSearchResult.cshtml", "");
+        });
+    }).GetHtml()
+
+

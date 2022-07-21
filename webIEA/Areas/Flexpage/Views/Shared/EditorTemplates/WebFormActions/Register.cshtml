@@ -1,0 +1,79 @@
+﻿@model Flexpage.Models.WebFormActionModel
+@{
+    bool correctJSON = false;
+    var p = Model.ParseParameter(new { LoginField = "", PasswordField = "", FirstNameField = "", LastNameField = "", EMailField = "", ConfirmPasswordField = "", CompanyNameField = "" }, out correctJSON);
+    var actionIndex = Model.Form.FormActions.IndexOf(Model);
+    var parameterFieldID = String.Format("WebFormAction_Register_ParameterField{0}", actionIndex);
+    var editorID = String.Format("WebFormAction_Register{0}", actionIndex);
+    var emailComboboxName = String.Format("WebFormAction_Register_EmailFieldCombo{0}", actionIndex);
+    var loginComboboxName = String.Format("WebFormAction_Register_LoginFieldCombo{0}", actionIndex);
+    var passwordComboboxName = String.Format("WebFormAction_Register_PasswordFieldCombo{0}", actionIndex);
+    var confirmPasswordComboboxName = String.Format("WebFormAction_Register_ConfirmPasswordFieldCombo{0}", actionIndex);
+    var firstNameComboboxName = String.Format("WebFormAction_Register_FirstNameFieldCombo{0}", actionIndex);
+    var lastNameComboboxName = String.Format("WebFormAction_Register_LastNameFieldCombo{0}", actionIndex);
+    var companyNameComboboxName = String.Format("WebFormAction_Register_CompanyNameFieldCombo{0}", actionIndex);
+}
+@Html.HiddenFor(m => m.Parameter, new { @class = "form-control", @readonly = "readonly", @id = parameterFieldID })
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with e-mail", Model.ReadOnly, emailComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "email").Select(e => e.Name).ToList(), p.EMailField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with login", Model.ReadOnly, loginComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "string").Select(e => e.Name).ToList(), p.LoginField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with password", Model.ReadOnly, passwordComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "password").Select(e => e.Name).ToList(), p.PasswordField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with password confirm", Model.ReadOnly, confirmPasswordComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "password").Select(e => e.Name).ToList(), p.ConfirmPasswordField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with first name", Model.ReadOnly, firstNameComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "string").Select(e => e.Name).ToList(), p.FirstNameField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with last name", Model.ReadOnly, lastNameComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "string").Select(e => e.Name).ToList(), p.LastNameField as string))
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with company name", Model.ReadOnly, companyNameComboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "string").Select(e => e.Name).ToList(), p.CompanyNameField as string))
+
+
+@if (!Model.ReadOnly)
+{
+    <script language="JavaScript">
+            actionEditors.push({
+                Name: '@editorID',
+                Refresh: function (formFields) {
+                    console.log("Register.Refresh");
+                    var emailFields = fp_webFormGetFieldNamesByType(formFields, 'email');
+                    var stringFields = fp_webFormGetFieldNamesByType(formFields, 'string');
+                    var passwordFields = fp_webFormGetFieldNamesByType(formFields, 'password');
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + emailComboboxName + ", emailFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + loginComboboxName + ", stringFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + firstNameComboboxName + ", stringFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + lastNameComboboxName + ", stringFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + companyNameComboboxName + ", stringFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + passwordComboboxName + ", passwordFields);");
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + confirmPasswordComboboxName + ", passwordFields);");
+                },
+
+                Update: function () {
+                    console.log("Register.Update");
+                    @Html.Raw("var lv = fp_webFormToString(" + loginComboboxName + ".GetValue());");
+                    @Html.Raw("var pv = fp_webFormToString(" + passwordComboboxName + ".GetValue());");
+                    @Html.Raw("var fnv = fp_webFormToString(" + firstNameComboboxName + ".GetValue());");
+                    @Html.Raw("var lnv = fp_webFormToString(" + lastNameComboboxName + ".GetValue());");
+                    @Html.Raw("var cpv = fp_webFormToString(" + confirmPasswordComboboxName + ".GetValue());");
+                    @Html.Raw("var ev = fp_webFormToString(" + emailComboboxName + ".GetValue());");
+                    @Html.Raw("var cnv = fp_webFormToString(" + companyNameComboboxName + ".GetValue());");
+                    $('#@parameterFieldID').val('{LoginField:"' + lv + '", PasswordField:"' + pv + '", FirstNameField:"' + fnv + '", LastNameField: "' + lnv + '", EMailField:"' + ev + '", ConfirmPasswordField:"' + cpv + '", CompanyNameField:"' + cnv + '"}');
+                }
+            });
+    </script>
+}

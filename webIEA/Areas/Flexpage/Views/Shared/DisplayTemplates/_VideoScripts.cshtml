@@ -1,0 +1,124 @@
+﻿@model string
+    
+
+<script type="text/javascript">
+
+    function fp_videoSetCurrentTab(tab) {
+        $("#fp_videoCurrentTab").val(tab);
+    }
+
+    function fp_preSaveBlock() {
+
+    }
+
+    function fp_videoChangeVideoLanguage(langCode) {
+        fp_PostAjaxForm('#@Model', { command: 'changevideolanguage', parameters: langCode });
+    }
+    function fp_videoChangeInfoLanguage(langCode) {
+        fp_PostAjaxForm('#@Model', { command: 'changevideoinfolanguage', parameters: langCode });
+    }
+
+    function fp_videoVideoUploaded(sender, event) {
+        fp_PostAjaxForm('#@Model', { command: 'videouploaded', parameters: event.callbackData });
+    }
+
+    function fp_videoThumbUploaded(sender, event) {
+        fp_PostAjaxForm('#@Model', { command: 'thumbuploaded', parameters: event.callbackData });
+    }
+
+    function fp_videoOnThumbLoad() {
+        var externalDropZone = $("#externalThumbDropZone");
+        var uploadedImage = $("#uploadedThumb");
+        if (uploadedImage.attr("src") != null && uploadedImage.attr("src") != "")
+            setElementVisible("dragZone", false);
+    }
+
+    function fp_videoOnVideoLoad() {
+        var externalDropZone = $("#externalVideoDropZone");
+        var uploadedVideo = $("#uploadedVideo");
+        if (uploadedVideo.attr("src") != null && uploadedVideo.attr("src") != "")
+            setElementVisible("dragZone", false);
+    }
+
+    function setElementVisible(elementId, visible) {
+        var el = $("#" + elementId);
+        if (visible)
+            el.show();
+        else
+            el.hide();
+    }
+
+    function fp_videoVideoDropZoneEnter(sender, event) {
+        if (event.dropZone.id == 'externalVideoDropZone')
+            setElementVisible('videoDropZone', true);
+    }
+
+    function fp_videoVideoDropZoneLeave(sender, event) {
+        if (event.dropZone.id == 'externalVideoDropZone')
+            setElementVisible('videoDropZone', false);
+    }
+
+    function fp_videoThumbDropZoneEnter(sender, event) {
+        if (event.dropZone.id == 'externalThumbDropZone')
+            setElementVisible('thumbDropZone', true);
+    }
+
+    function fp_videoThumbDropZoneLeave(sender, event) {
+        if (event.dropZone.id == 'externalThumbDropZone')
+            setElementVisible('thumbDropZone', false);
+    }
+
+    function fp_videoDeleteThumb() {
+        // $("#uploadedThumb").attr("src", "");
+        // $('#videoManagerContainer input[type=hidden]#LocalizedThumb_CurrentLocalization').val(null);
+        // onImageLoad();
+        fp_PostAjaxForm('#@Model', { command: 'deletethumb' });
+    }
+
+    function fp_videoDeleteVideo() {
+        // $("#uploadedVideo").attr("src", "");
+        // $('#videoManagerContainer input[type=hidden]#LocalizedThumb_CurrentLocalization').val(null);
+        // onVideoLoad();
+        fp_PostAjaxForm('#@Model', { command: 'deletevideo' });
+    }
+
+    $(function () {
+
+        $('div.colorpicker-component').each(function (index, element) {
+            element = $(element);
+            element.colorpicker();
+        });
+
+        $('#ConstrainProportions').change(function () {
+            if (this.checked) {
+                $('#HeightType[value="Auto"]').prop("checked", true);
+            }
+        });
+
+        $('input[type="radio"][name="HeightType"]').each(function (index, element) {
+            $(element).change(function () {
+                if (this.checked && $(this).prop("value") != "Auto") {
+                    $('#ConstrainProportions').prop("checked", false);
+                }
+            })
+        });
+
+        jQuery("input.square-data[type=hidden]").each(function (index, el) {
+            el = jQuery(el);
+            el.parent().find('.blue-square').remove();
+            el.parent().find("div[data-position='" + el.val() + "']").append("<div class='blue-square'></div>");
+        });
+
+        // onImageLoad();
+
+        jQuery(".position").find(".square").click(function (event) {
+            if (!jQuery(this).closest(".position").hasClass('disabled')) {
+                jQuery(this).closest(".position").find("input").val(jQuery(this).attr("data-position"));
+                jQuery(this).closest(".position").find('.blue-square').remove();
+                jQuery(this).append("<div class='blue-square'></div>");
+            }
+        });
+
+    });
+
+</script>

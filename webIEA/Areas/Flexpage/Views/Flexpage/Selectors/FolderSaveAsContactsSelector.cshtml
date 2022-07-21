@@ -1,0 +1,18 @@
+﻿@model Flexpage.Models.FolderSaveAsContactsSelectorModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<div class="fp_empty fp_browser-empty">Please wait while loading</div>
+<div class="fp_folderSaveAsContactsSelector hidden-visbility">
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Selectors/FolderSaveContactsSelector.cshtml", Model)
+    <div class="fp_folderSaveAsContactsSelector__NameFile">
+        <span class="fp_folderSaveAsContactsSelector__NameFile_Span"> File Name: </span> @Html.TextBoxFor(m => m.Name, new { @class = "form-control fp_folderSaveAsContactsSelector__NameFile_Input" })
+    </div>
+</div>
+
+<script type="text/javascript">
+    var _selectedFolder = '';
+    function fp_getSelectedObject(e) {
+        var name = $(".fp_folderSaveAsContactsSelector__NameFile_Input").val();
+        var path = $("[class*='dxtlFocusedNode'] .fp_textTreeListNode[data-path]").attr("data-path");
+        return { path: path, id:@Model.FolderTreeListModel.ID, name: name };
+    }
+</script>

@@ -1,0 +1,95 @@
+﻿@model Pluritech.FileSystem.Abstract.DTO.FileHistoryModel
+
+<style>
+    .isDisabled {
+        color: currentColor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        text-decoration: none;
+    }
+</style>
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('@Model.Title', '#fp_objectPropertyHistoryEditorContainer');
+
+    var historyService = {
+        selectId: 0,
+        actualVersion: @Model.ActualVersion,
+        currentVersion: 0,
+        url: '/Flexpage/RemoveFileHistory',
+        checkRemove: function() {
+            return this.selectId == this.actualVersion;
+        },
+        removeHistory: function(fileId, revisionId) {
+            var that = this;
+
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete revision?', function() {
+                $.ajax({
+                    type: "POST",
+                    url: that.url,
+                    data: { fileId: fileId, revisionId: revisionId },
+                    error: function(data) {
+                        console.log("An error occurred.");
+                    },
+                    success: function(data) {
+                        fp_FileHistoryGrid.Refresh();
+                    }
+                });
+            });
+        },
+        getActualVersion: function(fileId) {
+            var that = this;
+            $.ajax({
+                type: "POST",
+                url: "/Flexpage/GetActualRevisionId",
+                async: false,
+                data: { fileId: fileId },
+                error: function(data) {
+                    console.log("An error occurred.");
+                },
+                success: function(data) {
+                    that.currentVersion = data;
+                }
+            });
+        }
+
+    }
+    historyService.getActualVersion(@Model.ID);
+
+    function SelectionChangedRow(s, e) {
+        s.GetSelectedFieldValues("RevisionID", GetSelectedFieldValuesCallback);
+    }
+
+    function GetSelectedFieldValuesCallback(values) {
+        historyService.selectId = values;
+        $(".isDisabled").removeClass("isDisabled");
+
+        if (historyService.selectId != historyService.currentVersion) {
+            $("#btn-remove").removeClass("isDisabled");
+        }
+        else{
+            $("#btn-remove").addClass("isDisabled");
+        }
+    }
+
+    function removeHistory() {
+        if ($("#btn-remove").hasClass("isDisabled"))
+            return;
+        historyService.removeHistory(@Model.ID, historyService.selectId);
+
+        if (historyService.checkRemove || historyService.selectId > 0)
+            return;
+
+        fp_ConfirmDialog('Delete', 'Selected versions of the file will be removed?', function() {
+            historyService.removeHistory(@Model.ID, historyService.selectId);
+        });
+    }
+
+    function downloadHistory() {
+        window.location = '/flexpage/DownloadFile?id=@Model.ID&revisionID=' + historyService.selectId;
+    }
+</script>
+@Html.Action("AddButtonControlToFileHistoryDialog", "flexpage")
+<div id="fp_objectPropertyHistoryEditorContainer" class="flexpage">
+    @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FolderContent/_FileHistoryGrid.cshtml", Model);}
+</div>

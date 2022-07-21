@@ -1,0 +1,50 @@
+﻿@model Flexpage.Models.FileUploaderModel
+
+@Html.DevExpress().UploadControl(
+    settings =>
+    {
+        settings.Name = Model.Name;
+
+        if (Model.DialogTriggerID != null)
+            settings.DialogTriggerID = Model.DialogTriggerID;
+
+        settings.ShowProgressPanel = Model.ShowProgressPanel;
+        settings.AutoStartUpload = Model.AutoStartUpload;
+        settings.UploadMode = Model.UploadMode;
+        settings.Styles.TextBox.CssClass = "flexpage " + Model.TextBoxCssClass;
+        settings.Styles.BrowseButton.CssClass = "flexpage " + Model.BrowseButtonCssClass;
+
+        settings.AdvancedModeSettings.EnableDragAndDrop = Model.EnableDragAndDrop;
+        settings.AdvancedModeSettings.EnableFileList = Model.EnableFileList;
+        settings.AdvancedModeSettings.EnableMultiSelect = Model.EnableMultiSelect;
+
+        settings.ShowUploadButton = Model.ShowUploadButton;
+        
+        if(!string.IsNullOrEmpty(Model.BrowseButtonText))
+            settings.BrowseButton.Text = Model.BrowseButtonText;
+
+        if (Model.EnableDragAndDrop)
+        {
+            settings.AdvancedModeSettings.ExternalDropZoneID = Model.ExternalDropZoneID;
+            settings.AdvancedModeSettings.DropZoneText = Model.DropZoneText;
+        }
+
+        settings.ValidationSettings.AllowedFileExtensions = Model.AllowedFileExtensions;
+
+        settings.CallbackRouteValues = new
+        {
+            Controller = Model.Controller,
+            Action = Model.Action,
+            folderPath = Model.DestinationFolder,
+            uploadControlName = Model.Name,
+            index=Model.Index
+        };
+        settings.ClientSideEvents.FileUploadComplete = Model.OnFileUploaded;
+
+        settings.ClientSideEvents.DropZoneEnter = Model.OnDropZoneEnter;
+        settings.ClientSideEvents.DropZoneLeave = Model.OnDropZoneLeave;
+        settings.ClientSideEvents.TextChanged = Model.TextChanged;
+        settings.ShowAddRemoveButtons = Model.ShowAddRemoveButtons;
+        settings.ShowTextBox = Model.ShowTextBox;
+    }
+).GetHtml()

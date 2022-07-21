@@ -1,0 +1,9 @@
+﻿@model Flexpage.Models.WebFormFieldValueModel
+
+@Html.DevExpress().Captcha(settings => {
+    settings.Name = "captcha_" + Model.FieldID;
+    settings.CallbackRouteValues = new { Controller = "Editors", Action = "CaptchaPartial" };
+    settings.TextBox.Position = DevExpress.Web.Captcha.ControlPosition.Bottom;
+    settings.CodeLength = 5;
+    settings.CharacterSet = "abcdefhjklmnpqrstuvxyz23456789";
+}).GetHtml()

@@ -1,0 +1,57 @@
+﻿@using Flexpage.Code.Common;
+@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+
+@model Flexpage.Models.PlayerModel
+
+@{
+    string w = Model.Width.CreateSizeString();
+    string h = Model.Height.CreateSizeString();
+
+    string videoBlockStyle = string.Format("width:{0}; height:{1};", w, h);
+    string audioBlockStyle = string.Format("width:{0}; height:{1};", w, (h == "100%" ? "" : h));
+    string opacityStr = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.00}", (decimal)Model.Opacity / 100);
+}
+
+
+<div class="videoplayer-container" style="@videoBlockStyle">
+    @if (!string.IsNullOrEmpty(Model.MediaUrl))
+    {
+        if (Model.MediaType.Name ==MediaTypeName.Video.GetDisplay())
+        {
+            <video class="video-js videoplayer" preload="metadata" @(Model.DisplayControls ? "controls" : "") @(Model.AutoPlay ? "autoplay muted" : "") @(Model.Loop ? "loop" : "") data-setup='{"preload": "auto"}'
+                   poster="@Model.ThumbUrl">
+                <source src="@Model.MediaUrl" type='@MimeTypeMap.GetMimeType(Path.GetExtension(Model.MediaUrl))' />
+                @if (Model.DisplayTitle)
+                {
+                    <track kind=captions srclang='en' label="@Model.Title" default />
+                }
+                <p class="vjs-no-js videoplayer-alt">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video>
+        }
+        else if(Model.MediaType.Name == MediaTypeName.Audio.GetDisplay())
+        {
+            <audio @(Model.DisplayControls ? "controls" : "") @(Model.AutoPlay ? "autoplay" : "") @(Model.Loop ? "loop" : "") data-setup='{"preload": "auto"}' width="@w" height="@(h== "100%"?"":h)" style="@audioBlockStyle"
+                   poster="@Model.ThumbUrl">
+                <source src="@Model.MediaUrl" type='@MimeTypeMap.GetMimeType(Path.GetExtension(Model.MediaUrl))' />
+                @if (Model.DisplayTitle)
+                {
+                    <track kind=captions srclang='en' label="@Model.Title" default />
+                }
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </audio>
+        }
+    }
+    @if (Model.Color != null && Model.Opacity > 0)
+    {
+        <div class="videoplayer-overlay" style="background-color: @Model.Color; opacity: @opacityStr">
+        </div>
+    }
+</div>

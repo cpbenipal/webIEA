@@ -1,0 +1,218 @@
+﻿@using System.Web.Configuration
+@model Flexpage.Abstract.DTO.BreadcrumbsModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('BREADCRUMBS', '#fp_BreadcrumbsBlockEditorContainer');
+</script>
+
+<style type="text/css">
+    .reduceHeight{
+        height:102px;
+    }
+</style>
+
+<div id="fp_BreadcrumbsBlockEditorContainer" class="page-breadcrumbs-block">
+    @using (Ajax.BeginForm("UpdateBreadcrumbs", "BreadcrumbsBlock", null,
+    new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_BreadcrumbsBlockEditorContainer" },
+    new { id = "fp_BreadcrumbsBlockEditorForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.SeparatorImage, new { id = "SeparatorImageSource" })
+
+        <!--folder content modal-->
+        <script type="text/javascript">
+            //devexpress uploadcontrol functions
+            function onUploadControlFileUploadComplete(s, e) {
+                if (e.isValid)
+                    $("#uploadedImage").attr("src", e.callbackData);
+                setElementVisible("uploadedImage", e.isValid);
+            }
+            function onImageLoad() {
+                var externalDropZone = $("#externalDropZone");
+                var uploadedImage = $("#uploadedImage");
+                //uploadedImage.css({
+                //    left: (externalDropZone.width() - uploadedImage.width()) / 2,
+                //    top: (externalDropZone.height() - uploadedImage.height()) / 2
+                //});
+                setElementVisible("dragZone", false);
+                document.getElementById("uploadedImage").value = document.getElementById("uploadedImage").src;
+            }
+            function setElementVisible(elementId, visible) {
+                var el = $("#" + elementId);
+                if (visible)
+                    el.show();
+                else
+                    el.hide();
+            }
+
+        </script>
+
+
+        <script type="text/javascript">
+            //selecting&updating separator
+            function setChar(newChar) {
+                document.getElementById("SeparatorChar").value = newChar;
+                updateExample();
+            }
+            function updateExample() {
+                let newSeparator;
+                if (document.getElementById("character-separator-button").checked) {
+                    newSeparator = document.getElementById("SeparatorChar").value;
+                }
+                else {
+                    newSeparator = '<img src="' + document.getElementById("uploadedImage").src + '" width = "10" height = "10">';
+                    document.getElementById("SeparatorImageSource").value = newSeparator;
+                }
+                document.getElementById("separator-example").innerHTML = "Preview: Home " + newSeparator + " Menu " + newSeparator + " Example Page";
+            }
+
+            function prepareExample() {
+                let separator;
+                if (document.getElementById("character-separator-button").checked) {
+                    separator = document.getElementById("SeparatorChar").value;
+                }
+                else {
+                    //newSeparator = '<img src="' + document.getElementById("uploadedImage").src + '" width = "10" height = "10">';
+                    separator = $('#SeparatorImageSource').val();
+                    if (separator) {
+                        $('#uploadedImage').attr('src', $(separator).attr('src'));
+                        setElementVisible("dragZone", false);
+                        setElementVisible("uploadedImage", true);
+                    }
+                }
+                document.getElementById("separator-example").innerHTML = "Preview: Home " + separator + " Menu " + separator + " Example Page";
+            }
+            $(document).ready(function () {
+                prepareExample();
+            });
+        </script>
+
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>General</h4>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.SiteMap)
+                        @Html.DropDownListFor(m => m.SiteMap, new SelectList(Model.SiteMaps), new { id = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group element-center submenu-breadcrumbs">
+                        @Html.EditorFor(m => m.Submenu)
+                        @Html.LabelFor(m => m.Submenu)
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <h4>Separator</h4>
+                </div>
+                <div class="col-md-12 preview-breadcrumbs">
+                    <span id="separator-example">
+                        Preview: Home / Menu / Example Page
+                    </span>
+                </div>
+                <br />
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.ImageSeparator, "false", new { id = "character-separator-button", onchange = "updateExample()" })
+                                Character
+                            </label>
+                            <div class="element-center">
+                                @Html.TextBoxFor(m => m.SeparatorChar, new { onChange = "updateExample(this.innerHTML)", id = "SeparatorChar", Value = Model.SeparatorChar == null ? "/" : Model.SeparatorChar })
+                                <i class="fas fa-info-circle align-element-top" data-toggle="tooltip" data-placement="top" title="Write a character separator manually, choose it fron the library below or upload an image"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h5>Characters library</h5>
+                            <div class="characters-library">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td onclick="setChar(this.innerHTML)">/</td>
+                                            <td onclick="setChar(this.innerHTML)">\</td>
+                                            <td onclick="setChar(this.innerHTML)">•</td>
+                                            <td onclick="setChar(this.innerHTML)">▭</td>
+                                            <td onclick="setChar(this.innerHTML)">○</td>
+                                            <td onclick="setChar(this.innerHTML)">■</td>
+                                            <td onclick="setChar(this.innerHTML)">-</td>
+                                            <td onclick="setChar(this.innerHTML)">+</td>
+                                            <td onclick="setChar(this.innerHTML)">*</td>
+                                            <td onclick="setChar(this.innerHTML)">◊</td>
+                                        </tr>
+                                        <tr>
+                                            <td onclick="setChar(this.innerHTML)"><</td>
+                                            <td onclick="setChar(this.innerHTML)">></td>
+                                            <td onclick="setChar(this.innerHTML)">«</td>
+                                            <td onclick="setChar(this.innerHTML)">»</td>
+                                            <td onclick="setChar(this.innerHTML)">▶</td>
+                                            <td onclick="setChar(this.innerHTML)">:</td>
+                                            <td onclick="setChar(this.innerHTML)"></td>
+                                            <td onclick="setChar(this.innerHTML)"></td>
+                                            <td onclick="setChar(this.innerHTML)"></td>
+                                            <td onclick="setChar(this.innerHTML)"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(m => m.ImageSeparator, "true", new { id = "character-separator-button", onchange = "updateExample()" })
+                        Image
+                    </label>
+                    @*<div class="upload-image">
+                            <a data-toggle="pill" href="#gallery_images_imageNum_None" class="gallery_images_list">
+                                <img src="~/areas/Flexpage/Content/Images/images/add-image.svg" height="100" width="100"/>
+                            </a>
+                            <p>
+                                Image should be in PNG format, no larger than 100 x 100px
+                            </p>
+                        </div>*@
+                    <div id="externalDropZone" class="dropZoneExternal reduceHeight">
+                        <div id="dragZone">
+                            <a data-toggle="pill" href="#gallery_images_imageNum_None" class="gallery_images_list">
+                                <img src="~/areas/Flexpage/Content/Images/images/add-image.svg" height="100" width="100" />
+                            </a>
+                        </div>
+                        <img id="uploadedImage" src="#" alt="" style="display: none; width:100px; height:100px;" onload="onImageLoad(); updateExample();" onChange="" />
+                        <div id="dropZone" style="display: none">
+                            <span class="dropZoneText">Drop an image here</span>
+                        </div>
+                    </div>
+                    <style>
+                        .dropZoneExternalBreadcrumbs {
+                            width: 100px;
+                            height: 100px;
+                        }
+                    </style>
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+               {
+                   Name = "separatorImageUpload",
+                   OnFileUploaded = "onUploadControlFileUploadComplete",
+                   DialogTriggerID = "externalDropZone",
+                   EnableDragAndDrop = true,
+                   EnableFileList = false,
+                   EnableMultiSelect = false,
+                   ExternalDropZoneID = "externalDropZone",
+                   UploadMode = UploadControlUploadMode.Standard,
+                   OnDropZoneEnter = "function(s, e) { if(e.dropZone.id == 'externalDropZone') setElementVisible('dropZone', true); }",
+                   OnDropZoneLeave = "function(s, e) { if(e.dropZone.id == 'externalDropZone') setElementVisible('dropZone', false); }",
+                   ShowUploadButton = false,
+                   BrowseButtonCssClass = "pictureFileUpload",
+                   DestinationFolder = "/Content/Images/User/",
+                   AllowedFileExtensions = new string[] { ".png" },
+               })
+                </div>
+            </div>
+        </div>
+
+        <!--#folder content modal-->
+    }
+</div>

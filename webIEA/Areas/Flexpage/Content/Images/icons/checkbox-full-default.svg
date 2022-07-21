@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>ic/checkbox-full-default</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="ic/checkbox-full-default" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle-6-Copy-5" fill="#D5D5D5" x="0" y="0" width="20" height="20" rx="4"></rect>
+        <polygon id="Path-3" fill="#FFFFFF" fill-rule="nonzero" points="14.6625303 5 16.7838506 7.12132034 8.50404913 15.4011218 4 10.8970727 6.12132034 8.77575237 8.50404913 11.1584812"></polygon>
+    </g>
+</svg>

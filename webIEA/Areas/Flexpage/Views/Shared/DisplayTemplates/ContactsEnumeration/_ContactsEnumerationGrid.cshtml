@@ -1,0 +1,192 @@
+﻿@using System.Web.UI.WebControls
+@using System.Text.RegularExpressions
+@using Pluritech.Shared.Abstract.DTO.Extensions;
+@model Flexpage.Models.ContactsEnumerationModel
+ 
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_ContactsEnumeration_Grid" + Model.ID.ToString();
+    if((bool?)(ViewBag.InitPerformCallback) != false)
+        settings.CallbackRouteValues = new
+        {
+            Controller = "ContactsEnumeration",
+            Action = "ContactsEnumerationGrid",
+            SelectFolderName = Model.SelectFolderName,
+            TypeContextMenu = Model.TypeContextMenu,
+            ContactID = Model.ContactID,
+            ContactShortcutID = Model.ContactShortcutID,
+            ShowContacts = Model.ShowContacts,
+            xml = Model.Xml
+        };
+    settings.SettingsSearchPanel.Visible = Model.ShowSearchControl;
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Sorting,
+        new { Controller = "ContactsEnumeration", Action = "ContactsEnumeration_SortingAction", SelectFolderName = Model.SelectFolderName, TypeContextMenu = Model.TypeContextMenu, xml = Model.Xml }
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Paging,
+        new { Controller = "ContactsEnumeration", Action = "ContactsEnumeration_PagingAction", SelectFolderName = Model.SelectFolderName, TypeContextMenu = Model.TypeContextMenu, xml = Model.Xml }
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Filtering,
+        new { Controller = "ContactsEnumeration", Action = "ContactsEnumeration_FilteringAction", SelectFolderName = Model.SelectFolderName, TypeContextMenu = Model.TypeContextMenu, xml = Model.Xml }
+    );
+
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+
+    foreach (Flexpage.Abstract.GridColumnModel col in Model.Columns)
+    {
+        settings.Columns.Add(column =>
+        {
+            column.CellStyle.HorizontalAlign = col.Alignment == Flexpage.Abstract.Alignment.Centered.ToString() ? HorizontalAlign.Center
+                : (col.Alignment == Flexpage.Abstract.Alignment.Left.ToString() ? HorizontalAlign.Left : HorizontalAlign.Right);
+            column.Caption = col.ColumnCaption ?? col.FieldName;
+            column.FieldName = col.FieldName;
+            column.Visible = col.ShowInGrid;
+
+            if (col.Name == "Date" || col.Name == "EntryDate")
+            {
+                column.ColumnType = MVCxGridViewColumnType.DateEdit;
+                column.UnboundType = DevExpress.Data.UnboundColumnType.DateTime;
+                column.SettingsHeaderFilter.DateRangePickerSettings.ClearButtonText = "Clear";
+            }
+            else
+                column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+
+            column.SetDataItemTemplateContent(c =>
+            {
+                Pluritech.Shared.Abstract.DTO.ObjectInfo data = (Pluritech.Shared.Abstract.DTO.ObjectInfo)c.DataItem;
+
+                if(data != null)
+                {
+                    var type = Model.GetObjectPropertyValue(data, "PersonCompany.Type").ToString() == "Person" ? 1 : 2;
+                    var ID = Model.GetObjectPropertyValue(data, "PersonCompany.ID");
+                    var shortcutID = data.ID.ToString();
+
+                    c.Column.CellStyle.CssClass = "fieldName-" + c.Column.FieldName.Replace(".", "");
+                    //manually replace for hightlight
+                    string newText = c.Text;
+                    if(!string.IsNullOrWhiteSpace(newText) && !string.IsNullOrWhiteSpace(Model.Search))
+                    {
+                        foreach(string part in Model.Search.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            newText = Regex.Replace(newText, part, @"<span class='dxgvHL'>$0</span>", RegexOptions.IgnoreCase);
+                        }
+                    }
+
+                    string resValue = "<div class='fp_contactValue' data-rowId=" + ID + "  data-id=" + Model.ID + " data-shortcut-id=" + shortcutID + " data-contactType=" + type + " > " + newText + "</div>";
+                    var expand = Model.ExpandAllDetailsOnLoad;
+                    var btnDetails = "";
+
+                    if(Model.ShowDetailButtons && Model.ShowDetailRow && c.Column.Index == 0)
+                    {
+                        btnDetails = "<span class=\"dxgvDetailButton "
+                                     + (expand ? "dxgvDetailButtonExpanded " : "")
+                                     + (Model.AllowOnlyOneDetailRow ? "allowOnlyOneDetailRow " : "") + "\"" +
+                                     " onclick=\" fp_DetailToggleButton" + Model.ID.ToString() + "(this);\" >"
+                                     + "<span class=\"dx-acc dxGridView_gvDetailExpandedButton_MetropolisBlue\"> <img src=\" / DXR.axd?r=1_58-FET9i\" alt=\"Expand\"></span>"
+                                     + "<span class=\" dx-acc dxGridView_gvDetailCollapsedButton_MetropolisBlue\"><img src=\"/DXR.axd?r=1_58-FET9i\" alt=\"Collapse\"></span></span>";
+                    }
+
+                    if(c.Column.Index == 0)
+                    {
+                        resValue = btnDetails + resValue;
+                    }
+                    ViewContext.Writer.Write(resValue);
+                };
+            });
+        });
+    }
+
+    settings.Styles.SearchPanel.CssClass = "fp_SearchPanel_Contacts";
+    if (!string.IsNullOrEmpty(Model.Search))
+    {
+        settings.SearchPanelEditorInitialize = (s, e) =>
+        {
+            e.Editor.Value = Model.Search;
+            e.Editor.CssClass = "fp_Search_contacts";
+        };
+    }
+    else
+    {
+        settings.SearchPanelEditorInitialize = (s, e) =>
+        {
+            e.Editor.CssClass = "fp_Search_contacts";
+        };
+    }
+
+    settings.CustomUnboundColumnData = (s, e) =>
+    {
+        MVCxGridView grid = (MVCxGridView)s;
+        Pluritech.Shared.Abstract.DTO.ObjectInfo data = grid.GetRow(grid.VisibleStartIndex + e.ListSourceRowIndex) as Pluritech.Shared.Abstract.DTO.ObjectInfo;
+        if (data != null)
+        {
+            e.Value = data.GetPropertyValue(e.Column.FieldName);
+        };
+    };
+
+    settings.Settings.ShowColumnHeaders = Model.ShowHeaderRow;
+    settings.Settings.ShowFilterRow = Model.ShowFilterRow;
+
+    //clear button
+    settings.CommandColumn.Width = 35;
+    settings.CommandColumn.Visible = Model.ShowClearColumn ;
+    settings.CommandColumn.ShowClearFilterButton = Model.ShowClearColumn;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.ClearFilterButton.Image.IconID = IconID.FilterClearfilter16x16office2013;
+
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.CommandColumn.Visible = Model.ShowSelectionBoxes;
+    settings.CommandColumn.ShowSelectCheckbox = Model.ShowSelectionBoxes;
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = !Model.ShowSelectionBoxes;
+
+    settings.SettingsDetail.ShowDetailButtons = false;
+    settings.SettingsDetail.ShowDetailRow = Model.ShowDetailRow;
+    settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = false;
+
+    if (Model.ShowDetailRow)
+    {
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            string ADD_ITEM_TEMPLATE = "<div class='fc_detail_item fc_{0}'><label>{1}</label><span>{2}</span></div>";
+            string ADD_ITEM_TEMPLATE_AUTH = "<div class='fc_detail_item fc_{0}'>{1}</div>";
+
+            string details = "";
+            foreach(Flexpage.Abstract.GridColumnModel col in Model.Columns)
+            {
+                if(!col.ShowInDetail)
+                    continue;
+
+                Pluritech.Shared.Abstract.DTO.ObjectInfo objectData = c.Grid.GetRow(c.VisibleIndex) as Pluritech.Shared.Abstract.DTO.ObjectInfo;
+
+                object value = Model.GetObjectPropertyValue(objectData, col.FieldName);
+
+                if (col.OnlyForAuthorized)
+                    details += string.Format(ADD_ITEM_TEMPLATE_AUTH, col.FieldName, value);
+                else
+                    details += string.Format(ADD_ITEM_TEMPLATE, col.FieldName, col.ColumnCaption, value);
+            }
+
+            ViewContext.Writer.Write(details);
+        });
+
+        settings.BeforeGetCallbackResult = (s, e) =>
+        {
+            MVCxGridView g = (MVCxGridView)s;
+            g.DetailRows.ExpandAllRows();
+        };
+    }
+    settings.ClientSideEvents.Init ="function(s,e) {  s.PerformCallback() }";
+
+    settings.ClientSideEvents.RowClick = "function (s, e) { fp_rowClick" + Model.ID.ToString() + "(s, e); }";
+    settings.ClientSideEvents.SelectionChanged = "function (s, e) { fp_selectionChanged" + Model.ID.ToString() + "(s, e); }";
+    settings.ClientSideEvents.BeginCallback = "function (s, e) {e.customArgs['ID'] = " + Model.ID.ToString() + "; fp_beginCallback" + Model.ID.ToString() + "(s, e); }";
+    settings.ClientSideEvents.ContextMenu = "fp_contextMenu" + Model.ID.ToString();
+    settings.ClientSideEvents.EndCallback = "function(s,e) { fp_browserContacts_EndCallback" + Model.ID.ToString() + "(); fp_rowClick" + Model.ID.ToString() + "(s, e); fp_implementFilter(); }";
+}).BindToCustomData(Model.GridModel).GetHtml()

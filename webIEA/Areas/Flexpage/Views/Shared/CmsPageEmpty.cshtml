@@ -1,0 +1,26 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "CmsPageEmpty";
+}
+<br/>
+
+<script type="text/javascript">
+    window.history.replaceState({}, null, "/@Model")
+</script>
+<div class="row container-not-found emptyPage">
+    <div class="col-xs-12 col-md-12">
+        <h1>
+            Page not found
+        </h1>
+        <p>
+            This page has been moved or never existed.<br>Please check your spelling or use <a href="/flexpage/search">our search tool</a>.
+        </p>
+        <div class="error-code">
+            Error code: 404
+        </div>
+        <button onclick="window.location.href = '/'" class="btn btn-orange btn-go-to-home" >
+            GO TO HOME
+        </button>
+    </div>
+</div>

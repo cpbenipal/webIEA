@@ -1,0 +1,66 @@
+﻿@model Flexpage.Models.EnumListModel
+
+<script type="text/javascript">
+
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_enumListCustomButtonClick(s, e) {
+        if (e.buttonID == 'bDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the enum?', function() { s.DeleteRow(e.visibleIndex); });
+        else
+        if (e.buttonID == 'btnItems')
+            fp_popupControlOpen({ command: 'edit', blockType: 'Enum', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true, allowSave: 0 }, function () { fp_initJS(); s.PerformCallback(); });
+    }
+
+    function fp_enumListAfterAddEnum() {
+        fp_EnumList_Grid.PerformCallback();
+        fp_initJS();
+    }
+
+    fp_popupControlChangeTitle('ENUM MANAGER', '#fp_EnumManagerContainer');
+    // fp_PopupToggleButtonsContainer("#fp_EnumManagerContainer", "none");
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        //fp_ControlsForTracking(_controlsForTracking);
+    });
+    function fp_enumEndCallback(s, e) {
+        if (s.cpEditError && s.cpEditError != "")
+            fp_ConfirmDialog('Delete error', s.cpEditError, function () { });
+    }
+</script>
+
+<div class="flexpage" id="fp_EnumManagerContainer">
+    @using(Ajax.BeginForm("UpdateEnums", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_EnumManagerContainer" }, new { id = "fp_EnumManagerForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @*<div class="row records-button">
+            <div class="col-md-10">
+                <h4 class="title-main-block">Records</h4>
+            </div>
+            <div class="col-md-2">
+                <div class="pull-right">
+                    <a data-toggle="modal" data-target="#news-add-new">
+                        <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command:'add', blockType: 'Enum' }, fp_enumListAfterAddEnum)">
+                            Add new
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>*@
+        <!--records-->
+        <div class="flexpage records-field">
+            @Html.Action("EnumsGrid", "Admin")
+            @*@Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/NewsGrid.cshtml", new List<Flexpage.Models.EventModel>())*@
+        </div>
+    }
+</div>

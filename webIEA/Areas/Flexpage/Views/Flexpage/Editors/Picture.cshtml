@@ -1,0 +1,403 @@
+﻿@using Flexpage.Models;
+@model Flexpage.Models.PictureModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+}
+<script type="text/javascript">
+    function fp_changePictureLanguage(langCode) {
+        let isDirty = IsFormDirty('pictureManagerContainer');
+        fp_PostAjaxForm('#pictureManagerContainer', { command: 'changePictureLanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+    function fp_changeDescrLanguage(langCode) {
+        let isDirty = IsFormDirty('pictureManagerContainer');
+        fp_PostAjaxForm('#pictureManagerContainer', { command: 'changeDescrLanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+
+    function fp_picture_ImageUploaded(sender, event) {
+        $('#pictureManagerContainer input[type=hidden]#LocalizedImage_CurrentLocalization').val(event.callbackData);
+        if (event.isValid)
+            $("#uploadedImage").attr("src", event.callbackData);
+        setElementVisible("uploadedImage", event.isValid);
+    }
+
+    function onImageLoad() {
+        var externalDropZone = $("#externalDropZone");
+        var uploadedImage = $("#uploadedImage");
+        if (uploadedImage.attr("src") != null && uploadedImage.attr("src") != "")
+            setElementVisible("dragZone", false);
+    }
+
+    function setElementVisible(elementId, visible) {
+        var el = $("#" + elementId);
+        if (visible)
+            el.show();
+        else
+            el.hide();
+    }
+    function fp_Picture_DropZoneEnter(sender, event) {
+        if (event.dropZone.id == 'externalDropZone')
+            setElementVisible('dropZone', true);
+    }
+
+    function fp_Picture_DropZoneLeave(sender, event) {
+        if (event.dropZone.id == 'externalDropZone')
+            setElementVisible('dropZone', false);
+    }
+
+    function fp_DeleteImage() {
+        $("#uploadedImage").attr("src", "");
+        $('#pictureManagerContainer input[type=hidden]#LocalizedImage_CurrentLocalization').val(null);
+        $('#dragZone').css('display', '');
+        onImageLoad();
+    }
+
+    function simpleToggle(elem) {
+        const activeClass = "item-active-modal";
+        $(".header-modal-menu ." + activeClass).removeClass(activeClass);
+        $(elem).addClass(activeClass);
+    }
+
+</script>
+
+<div id="pictureManagerContainer" class="pictureManagerContainer page-gallery-block gallery-block">
+    <div id="in-editor-modal-header-content" style="display:none">
+        <div class="col-md-7">
+            <h3 class="modal-title">IMAGES AND SLIDERS</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="header-modal-menu">
+                <a onclick="javascript: jQuery('#pictureManagerContainer').find('#EditorType').val(1); simpleToggle(this); useSimple(); return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Simple?"item-active-modal":"" )">Simple <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Mostly used image options"></i></a>
+                <a onclick="javascript: jQuery('#pictureManagerContainer').find('#EditorType').val(2); simpleToggle(this); useAdvanced(); return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Advanced?"item-active-modal":"" )">Advanced <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Advanced image options" data-container=".modal-content"></i></a>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="fp_beforeClosePopUp(this)">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        @using(Ajax.BeginForm("UpdatePicture", "Admin", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "pictureManagerContainer" }, new { @id = "fp_BlockEditorForm", role = "form", forTraking = "all" }))
+        {
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.Alias)
+            @Html.HiddenFor(m => m.EditorType)
+            @Html.HiddenFor(m => m.Step)
+
+            <input id="GalleryBlockType" name="GalleryBlockType" type="hidden" value="@type" />
+
+            <ul class="nav nav-pills tabs-navigation">
+                @{
+                    if(type == 0)
+                    {
+                        <li class="active">
+                            <a data-toggle="pill" href="#gallery-type-single-simple">Type</a>
+                        </li>
+                        <li class="disabled"><a href="#">Settings</a></li>
+                        <li class="disabled">
+                            <a href="#">Items</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="disabled"><a href="#">Type</a></li>
+                        <li class='@(Model.Step == WidgetStep.Step2?"active":"")'><a data-toggle="pill" href="#gallery-settings" onclick="jQuery('#Step').val('Step2');">Settings</a></li>
+                        <li class='@(Model.Step == WidgetStep.Step3?"active":"")'><a data-toggle="pill" href="#gallery-items-single-simple" onclick="jQuery('#Step').val('Step3');">Items</a></li>
+                    }
+                }
+            </ul>
+
+            <div class="tab-content">
+                <!--Tab TYPE-->
+                @{
+                    if(type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-type-single-simple' class='tab-pane fade in active gallery-type'>")
+                    }
+                    else
+                    {
+                        @Html.Raw("<div id='gallery-type-single-simple' class='tab-pane fade in  gallery-type'>")
+                    }
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="text-center">Start by selecting the type of display</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-4 left">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('1'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/single.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/single-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">SINGLE IMAGE</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a single image in the picture block</p>
+                        </div>
+                        <div class="col-md-4 middle">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('2'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/gallery.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/gallery-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">GALLERY</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a gallery of selected images</p>
+                        </div>
+                        <div class="col-md-4 right">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('3'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/slider.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/slider-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">SLIDER</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Use the slider to display images or references </p>
+                        </div>
+                    </div>
+                </div>
+                @Html.Raw("</div>")
+
+                @{
+                    if(type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-settings' class='tab-pane fade gallery-settings-simple'>")
+                    }
+                    else
+                    {
+                        if(Model.Step == WidgetStep.Step2)
+                        {
+                            @Html.Raw("<div id='gallery-settings' class='tab-pane fade in active gallery-settings-simple'>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<div id='gallery-settings' class='tab-pane fade gallery-settings-simple'>")
+                        }
+                    }
+                }
+                <div class="row" style="margin: 0">
+                    <div class="col-md-12">
+                        <!--Tab SETTINGS-->
+                        @if(Model.EditorType == Flexpage.Models.EditorType.Simple)
+                        {
+                            Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_PictureSimple.cshtml", Model);
+                        }
+                        else
+                        {
+                            Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_PictureAdvanced.cshtml", Model);
+                        }
+                    </div>
+                </div>
+                @Html.Raw("</div>")
+
+                <!--Tab ITEMS-->
+                @{
+                    if(type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade gallery-items-simple'>")
+                    }
+                    else
+                    {
+                        if(Model.Step == WidgetStep.Step3)
+                        {
+                            @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade in active gallery-items-simple'>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade gallery-items-simple'>")
+                        }
+                    }
+                }
+                <!--Items Details - Image Details-->
+                <div class="row" style="margin: 0">
+                    <div class="col-md-12" style="padding-right:0">
+                        <div class="col-md-6">
+                            <h4>
+                                Image
+                            </h4>
+                            <div class="languages">
+                                @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.LanguageSelector)
+                                @Html.HiddenFor(m => m.LocalizedImage.CurrentLangCode)
+                                @foreach(string key in Model.LocalizedImage.Localizations.Keys)
+                                {
+                                    @Html.Hidden(string.Format("LocalizedImage.Localizations[{0}]", key), Model.LocalizedImage.Localizations[key])
+                                }
+                            </div>
+
+                            <div id="externalDropZone" class="dropZoneExternal">
+                                <div id="dragZone">
+                                    <span class="dragZoneText">Drag an image here</span>
+                                </div>
+                                <img id="uploadedImage" src="@Model.LocalizedImage.CurrentLocalization" alt="" class="picture-uploaded-image"
+                                     style='@(!string.IsNullOrEmpty(Model.LocalizedImage.CurrentLocalization)?"":"display:none;")' onload="onImageLoad()" />
+                                <div id="dropZone" style='display:none;'>
+                                    <span class="dropZoneText">Drop an image here</span>
+                                </div>
+                            </div>
+                            <div class="uploadContainer">
+                                @Html.HiddenFor(m => m.LocalizedImage.CurrentLocalization, new { id = "LocalizedImage_CurrentLocalization" })
+                                @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                                {
+                                    Name = "fu_LocalizedImage_CurrentLocalization",
+                                    OnFileUploaded = "fp_picture_ImageUploaded",
+                                    DialogTriggerID = "externalDropZone",
+                                    EnableDragAndDrop = true,
+                                    EnableFileList = false,
+                                    EnableMultiSelect = false,
+                                    ExternalDropZoneID = "externalDropZone",
+                                    UploadMode = UploadControlUploadMode.Auto,
+                                    OnDropZoneEnter = "fp_Picture_DropZoneEnter",
+                                    OnDropZoneLeave = "fp_Picture_DropZoneLeave",
+                                    ShowUploadButton = false,
+                                    BrowseButtonCssClass = "pictureFileUpload",
+                                })
+                            </div>
+                            <div class="form-group">
+                                <a href="#" onclick="fp_DeleteImage();">Delete image</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 image-details">
+                            <h4>
+                                Image details
+                            </h4>
+                            <div class="languages">
+                                @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.DescLanguageSelector)
+                            </div>
+                            <div class="form-fields">
+                                <label>URL:</label>
+                                <div class="input-group custom-folder-field">
+                                    @Html.EditorFor(m => m.LocalizedUrl, "LocalizedString")
+                                </div>
+                            </div>
+                            <div class="form-group form-fields">
+                                <label for="img-title">Title:</label>
+                                @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+                            </div>
+                            <div class="form-group form-fields">
+                                <label for="alt-text">Alt text:</label>
+                                @Html.EditorFor(m => m.LocalizedAlternateText, "LocalizedString")
+                            </div>
+                            <div class="form-group form-fields">
+                                <label for="description">Description:</label>
+                                @Html.EditorFor(m => m.LocalizedDescription, "LocalizedString")
+                            </div>
+                            @if(Model.EditorType == Flexpage.Models.EditorType.Simple)
+                            {
+                                @Html.Raw("<div style='display:none'>")
+                            }
+                                <div class="form-group form-fields">
+                                    <label for="Slogan_Text">Slogan text:</label>
+                                    @Html.EditorFor(m => m.LocalizedSloganText, "LocalizedString")
+                                </div>
+                                <div class="form-group">
+                                    <label for="CallToAction_Text">Call to action text:</label>
+                                    @Html.EditorFor(m => m.LocalizedCallToActionText, "LocalizedString")
+                                </div>
+                            @if(Model.EditorType == Flexpage.Models.EditorType.Simple)
+                            {
+                                @Html.Raw("</div>")
+                            }
+                        </div>
+                    </div>
+                </div>
+                @Html.Raw("</div>")
+            </div>
+
+            <script type="text/javascript">
+                $(function () {
+                    $('div.colorpicker-component').each(function (index, element) {
+                        element = $(element);
+                        element.colorpicker();
+                    });
+
+                    $('#ConstrainProportions').change(function () {
+                        if (this.checked) {
+                            $('#HeightType[value="Auto"]').prop("checked", true);
+                        }
+                    });
+
+                    $('input.slider[type="range"]').change(function () {
+                        //    alert($(this).val());
+                        var inp = $(this);
+                        var spn = inp.parent().find('span.opacity-percentage');
+                        if (spn != null)
+                            spn.html(inp.val() + '%');
+                    });
+
+                    $('input[type="radio"][name="HeightType"]').each(function (index, element) {
+                        $(element).change(function () {
+                            if (this.checked && $(this).prop("value") != "Auto") {
+                                $('#ConstrainProportions').prop("checked", false);
+                            }
+                        })
+                    });
+
+                    $('select#CallToAction_DisplayPosition').change(function () {
+                        if ($(this).val() == '2') {
+                            $('div#call-to-action-position').removeClass('disabled');
+                        }
+                        else {
+                            $('div#call-to-action-position').addClass('disabled');
+                        }
+                    });
+                    $('select#CallToAction_DisplayPosition').change();
+
+                    $('#CallToAction_Page').change(function () {
+                        var me = $(this);
+                        if (me.val() != null && me.val() != '') {
+                            $('#CallToAction_UseUrl[value="False"]').click();
+                        }
+                    });
+
+                    $('#CallToAction_Url').change(function () {
+                        var me = $(this);
+                        if (me.val() != null && me.val() != '') {
+                            $('#CallToAction_UseUrl[value="True"]').click();
+                        }
+                    });
+
+                    $('#CallToAction_Page').change();
+                    $('#CallToAction_Url').change();
+                    $('input.slider[type="range"]').change();
+                });
+
+                function useAdvanced() {
+                    fp_PostAjaxForm('#pictureManagerContainer', { command: 'changeEditorType', parameters: 'Advanced' }, 'fp_TrackInitialize(' + false + ')');
+                }
+                function useSimple() {
+                    fp_PostAjaxForm('#pictureManagerContainer', { command: 'changeEditorType', parameters: 'Simple' }, 'fp_TrackInitialize(' + false + ')');
+                }
+
+                function fp_preSaveBlock() {
+                }
+
+                jQuery(document).ready(function () {
+                    jQuery("input.square-data[type=hidden]").each(function (index, el) {
+                        el = jQuery(el);
+                        el.parent().find('.blue-square').remove();
+                        el.parent().find("div[data-position='" + el.val() + "']").append("<div class='blue-square'></div>");
+                    });
+
+                    onImageLoad();
+                });
+                function fp_customSaveBlock() {
+                    fp_PostAjaxForm('#pictureManagerContainer', { command: 'save' });
+                    fp_AfterSave();
+                }
+
+                jQuery(".position").find(".square").click(function (event) {
+                    if (!jQuery(this).closest(".position").hasClass('disabled')) {
+                        jQuery(this).closest(".position").find("input").val(jQuery(this).attr("data-position"));
+                        jQuery(this).closest(".position").find('.blue-square').remove();
+                        jQuery(this).append("<div class='blue-square'></div>");
+                    }
+                });
+
+            </script>
+        }
+    </div>
+</div>

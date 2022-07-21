@@ -1,0 +1,39 @@
+﻿@model Flexpage.Models.BrowserContactsModel
+@{
+    Model.ContactsEnumerationModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.Contacts;
+    string scriptsPath = Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString();
+}
+@Scripts.Render(@scriptsPath)
+<style>
+    .fpBrowserContacts .fpContactsEnumeration.admin {
+        padding-top: 30px;
+    }
+</style>
+<script>
+    function fp_ActiveTabChanged@(Model.ContactsEnumerationModel.Alias)(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.browser.updateByPathFolder, { s: s, e: e});
+    }
+    (function () {
+        setTimeout(function () {
+        fp_loadScripts('@scriptsPath', 'EventManager', function () {
+            fp_loadScripts(EventManager.settings.PathJs.browserContacts, 'EventManagerBrowserContacts', function () {
+                var args = { ID:@(Model.ID) };
+                var browserEM@(Model.ID) = new EventManagerBrowserContacts(args);
+            });
+
+            });
+        }, 4000);
+    })();
+
+
+</script>
+<div class="fp_empty fp_browserContacts-empty">Please wait while loading</div>
+<div class="fp_browserContacts hidden-visbility ">
+    <div class="col-xs-12" style="padding: 0">
+        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.ContactsEnumerationModel)
+    </div>
+    <div class="col-xs-12" style="padding:10px 0">
+        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.ContactDetailsModel)
+    </div>
+
+</div>

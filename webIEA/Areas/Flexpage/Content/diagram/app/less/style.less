@@ -1,0 +1,381 @@
+.fp_advancedSearch{
+    position: relative;
+  
+  #canvas {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 600px;
+    bottom: 0;
+    height:600px;
+    
+  }
+  .djs-container{
+    padding-left: 20px;
+    position: relative;
+  }
+  
+    #canvas > div {
+        height: 100%;
+    } 
+  
+  
+    .toolbar .entry {
+        display: none;
+    }
+  .menu-overlay {
+    
+    font-size: 12px;
+  
+    color: white;
+    display: block;
+    min-width: 200px;
+  }
+  .menu-overlay.expanded{
+   
+  }
+  .selected .menu-overlay,
+  .menu-overlay.settings {
+    display: block;
+  }
+  
+  .menu-overlay .edit {
+    
+    color: black;
+    background:none;
+      
+  }
+   .menu-overlay_select{
+     min-width:130px; 
+  }
+  .menu-overlay_operation{
+    min-width:49px; 
+    margin-left: 9px;
+    .settings-input{
+      width: 100%;
+    }
+ }
+  .settings-row{
+    width: 100%;
+    float: left;
+      padding: 5px 0;
+  }
+  .settings-input{
+    width: 68%;
+    float: left;
+  }
+  .settings-input *{
+    width: 100%;
+  }
+  .settings-lable{
+    width: 32%;
+    float: left;
+  }
+  .settings-button-ok,.settings-button-cancel{
+    display: inline-block;
+  }
+  .menu-overlay .edit textarea {
+    border: none;
+    margin: 0;
+  }
+  
+  .menu-overlay .icon-comment:hover {
+    color: #EEE;
+  }
+  
+  .menu-overlay .comment {
+    border-top-color: white;
+  }
+  .menu-overlay {
+    background:none;
+    padding: 0;
+    border-radius: 0;
+  }
+  
+  .menu-overlay.expanded {
+    z-index: 100;
+    position: absolute; /* for z-index to work */
+  }
+  
+  .menu-overlay .toggle {
+    white-space: nowrap;
+  }
+  
+  .menu-overlay.expanded .comment-count,
+  .menu-overlay .content {
+    display: block;
+  }
+  
+  .menu-overlay .comment-count {
+    display: inline;
+  }
+  
+  .menu-overlay.expanded .content {
+    
+  }
+  
+  .menu-overlay .comment {
+    border-top: dotted 1px #666;
+    margin-top: 4px;
+    padding-top: 4px;
+    white-space: pre-wrap;
+  
+    position: relative; 
+  }
+  
+  .menu-overlay .comment .delete {
+    position: absolute;
+    right: 3px;
+    top: 3px;
+  
+    text-decoration: none;
+  
+    display: none;
+  }
+  
+  .menu-overlay .comment:hover .delete {
+    display: block;
+  }
+  
+  .djs-container > svg {
+    border: 3px solid #337ab7;
+    border-top:solid 24px #0072C6;
+  }
+  .fp_toolbar-buttons{
+    position: absolute;
+    left: 180px;
+    top: 2px;
+    z-index: 1;
+  
+  }
+  .fp_toolbar-buttons__button{
+    cursor: pointer;
+    display: inline-block;
+    color: white;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    margin-right: 7px;
+    .fp_toolbar-buttons__button-icon{
+      background-size: 90% 90%;
+       width: 16px;
+       height: 16px;
+      // background-color: #0072C6;
+       background-repeat: no-repeat;
+       background-position: center;
+    }
+    
+    &_search .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/search.png");
+    }
+    &_new .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/new.png");
+    }
+    &_open .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/open.png");
+    }
+    &_save .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/save.png");
+    }
+    &_layout .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/layout.png");
+    }
+    &_undo .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/undo.png");
+    }
+    &_redo .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/redo.png");
+    }
+    &_inactive .fp_toolbar-buttons__button-icon{
+      opacity:0.5;
+    }
+    &_open .fp_toolbar-buttons__button-icon,
+    &_save .fp_toolbar-buttons__button-icon{
+      background-size: 110%;
+    }
+    &_menu .fp_toolbar-buttons__button-icon{
+      background-image: url("/Areas/Flexpage/Content/diagram/dist/img/menu.png");
+      background-size: 120%;
+    }
+    &_import .fp_toolbar-buttons__button-icon{
+    }
+    &_export .fp_toolbar-buttons__button-icon{
+    }
+   
+    &:hover{
+      
+    }
+    &_menu{
+      &:hover{
+         .fp_toolbar-buttons__ul_hidden{
+          display: block;
+        }
+      }
+    }
+  }
+  .fp_toolbar-buttons__ul{
+    position: absolute;
+    background: #0072C6;
+    list-style: none;
+    padding:0px;
+    padding-top: 10px;
+    width: 152px;
+    &_hidden{
+      display: none;
+    }
+  }
+  .fp_toolbar-buttons__li{
+     padding:0 10px 10px 10px;
+  }
+  .djs-palette,.djs-palette.two-column.open{
+    width: 170px;
+    background: none;
+    border:0;
+    border-right: solid 3px #0072C6;
+    border-radius: 0;
+    //border-top:solid 24px #0072C6;
+    padding: 0px;
+    padding-right: 10px;
+    left: 0;
+      top: 0;
+      bottom:0;
+      background: white;
+      
+     
+  }
+  .djs-palette-entries{
+    position: relative;
+    padding: 10px;
+    border: solid 3px #0072C6;
+    border-top:solid 24px #0072C6;
+  }
+  .djs-palette-entries::before{
+      content:"Query building blocks";
+      position: absolute;
+      color: white;
+      top: -20px;
+      font-weight: 500;
+  }
+  .djs-palette .bpmn-icon-button-search,
+  .djs-palette .bpmn-icon-button-new,
+  .djs-palette .bpmn-icon-button-open,
+  .djs-palette .bpmn-icon-button-save,
+  .djs-palette .bpmn-icon-button-arrange{
+    width: 80%;
+    font-size: 14px;
+    margin: 10%;
+    border-radius: 12px;
+    border:1px solid #000;
+  }
+  
+  .djs-context-pad .entry {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+  }
+  .bpmn-icon-start-event-none,
+  .bpmn-icon-task{
+    position: relative;
+  }
+  [data-group="buttons"] .entry::after{
+  content: attr(title);
+  }
+  .bpmn-icon-start-event-none,
+  .bpmn-icon-task{
+    float: left;
+    font-size: 30px;
+  }
+  .bpmn-icon-start-event-none[title]:after,
+  .bpmn-icon-task[title]:after{
+    content: attr(title);
+    position: absolute;
+    top: 2px;
+    left: 10%;
+    right: 10%;
+    font-size: 9px;
+  }
+  .djs-overlay-context-pad{
+    width: 120px;
+  }
+  .djs-context-pad{
+    z-index: 1;
+  }
+  .djs-context-pad .bpmn-icon-start-event-none[title]:after,
+  .djs-context-pad .bpmn-icon-task[title]:after{
+    top: 10px;
+  }
+  .djs-palette .entry,.djs-context-pad .entry{
+    &.operation-image,&.condition-image,&.link-image{
+      width: 100%;
+      background-size: contain;
+      
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+   
+    // &:hover{
+    //   background-color: rgba(255,255,255,0);
+    // }
+  }
+  .djs-palette .entry.link-image{
+    margin-bottom: 5px;
+  }
+  .djs-palette .entry.link-image,.djs-context-pad .entry.link-image{
+    background-image: url("/Areas/Flexpage/Content/diagram/dist/img/link.png");
+    height: 80px;
+  }
+  .djs-palette .entry.condition-image{
+    margin-bottom: 5px;
+  }
+  .djs-palette .entry.condition-image,.djs-context-pad .entry.condition-image{
+    background-image: url("/Areas/Flexpage/Content/diagram/dist/img/condition.png");
+    height: 77px;
+    
+  }
+  .djs-palette .entry.operation-image{
+    margin-bottom: 5px;
+  }
+  .djs-palette .entry.operation-image,.djs-context-pad .entry.operation-image{
+    background-image: url("/Areas/Flexpage/Content/diagram/dist/img/operation.png");
+    height: 55px;
+  }
+  
+  .djs-context-pad .entry.link-image,.djs-context-pad .entry.condition-image,.djs-context-pad .entry.operation-image{
+    width: 120px;
+  }
+   .group[data-group='tools']{
+    text-align: center;
+     .entry{
+      float: none;
+      display: inline-block;
+    }
+  }
+  .hidden{
+    display: none !important; 
+  }
+  .djs-shape.connect-error .djs-visual > :nth-child(1){
+    fill: #f9dee5 /* light-red */ !important;
+  }
+  .bjs-powered-by{
+    display: none;
+  }
+  .djs-shape.connect-ok.connect-error .djs-visual > :nth-child(1),
+  .djs-shape.drop-ok.connect-error .djs-visual > :nth-child(1) {
+    fill: #dcfecc /* light-green */ !important;
+  }
+  .djs-minimap{
+    top:30px;
+  }
+
+  .djs-minimap:not(.open) .toggle:before {
+    content: 'Open mini-map';
+  }
+  .djs-minimap:not(.open) .toggle{
+    width: 114px;
+  
+  }
+  .djs-element{
+    cursor: pointer;
+  }
+}

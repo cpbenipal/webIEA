@@ -1,0 +1,52 @@
+﻿@using System.Web.UI.WebControls
+@using System.Globalization
+@model Flexpage.Models.FAQModel
+
+@(Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_FAQSection" + Model.ID + "_" + Model.SectionID;
+    settings.CallbackRouteValues = new { Controller = "FAQBlock", Action = "SubSectionsGrid", BlockID = Model.ID, SectionID = Model.SectionID };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "FAQBlock", Action = "FAQSectionAdd", BlockID = Model.ID, SectionID = Model.SectionID };
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "FAQBlock", Action = "FAQSectionEdit", BlockID = Model.ID, SectionID = Model.SectionID };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "FAQBlock", Action = "FAQSectionDelete", BlockID = Model.ID, SectionID = Model.SectionID };
+
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowNewButton = true;
+    settings.CommandColumn.ShowDeleteButton = true;
+    settings.CommandColumn.ShowEditButton = true;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.CommandColumn.Width = Unit.Pixel(120);
+    settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+    settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+    settings.SettingsCommandButton.DeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+    settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+    settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+    settings.SettingsBehavior.ConfirmDelete = true;
+    settings.SettingsText.ConfirmDelete =
+        "You are going to remove the subsection. For all questions of this subsection, the subsection field will be cleared. Do you really want to do this?";
+
+    var cultureInfo = new CultureInfo(Model.LanguageSelector.CurrentLangCode);
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    settings.Width = Unit.Percentage(100);
+    settings.Settings.ShowColumnHeaders = true;
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+    settings.Settings.ShowFilterRow = false;
+    settings.SettingsBehavior.AllowSort = false;
+    settings.KeyFieldName = "ID";
+    settings.Styles.LoadingPanel.HorizontalAlign = HorizontalAlign.Center;
+    settings.Styles.LoadingPanel.VerticalAlign = VerticalAlign.Middle;
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Text";
+        column.Caption = "Subsection title";
+    });
+    //settings.Columns.Add(column =>
+    //{
+    //    column.FieldName = "Value";
+    //    column.Caption = "Value";
+    //    column.ColumnType = MVCxGridViewColumnType.SpinEdit;
+    //});
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+}).Bind(Model.SubSections).GetHtml())

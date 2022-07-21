@@ -1,0 +1,25 @@
+﻿@model Flexpage.Models.WebFormActionModel
+
+<li class="ui-state-default">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.HiddenFor(m => m.ActionID)
+            @Html.HiddenFor(m => m.Index)
+            @Html.HiddenFor(m => m.FormID)
+            <div class="panel-group" style="margin-bottom: 4px">
+                <div class="panel panel-default" draggable="true" ondragstart="fp_webFormActionDrag(event, @Model.ActionID)">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="panel-title @(Model.HasErrors  ? "block-error" : "")">
+                                    @Model.Description
+                                </h4>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>

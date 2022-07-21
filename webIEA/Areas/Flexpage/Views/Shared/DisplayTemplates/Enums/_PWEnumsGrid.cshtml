@@ -1,0 +1,77 @@
+﻿@using System.Web.UI.WebControls;
+
+@{
+    var grid = Html.DevExpress().GridView<Pluritech.Pluriworks.Service.DTO.EnumModel>(settings =>
+    {
+        settings.Name = "fp_PWEnumManager_Grid";
+        settings.CallbackRouteValues = new { Controller = "Admin", Action = "PWEnumsGrid" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PWDeleteEnum", ID = ViewData["ID"] };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "PWAddEnum" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "PWUpdateEnum" };
+        settings.Width = Unit.Percentage(100);
+
+        settings.Styles.AlternatingRow.CssClass = "alternate_row";
+        settings.Styles.Row.CssClass = "main_row";
+        settings.Styles.CommandColumn.CssClass = "command";
+
+        settings.KeyFieldName = "ID";
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = false;
+        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+        GridViewCommandColumnCustomButton ItemsButton = new GridViewCommandColumnCustomButton() { ID = "btnItems", Text = "Items" };
+        ItemsButton.Image.IconID = IconID.FilterelementsTreeview16x16;
+
+        var bDelete = new GridViewCommandColumnCustomButton()
+        {
+            ID = "bDelete",
+            Text = "Delete",
+        };
+        settings.CommandColumn.CustomButtons.Add(bDelete);
+        settings.CommandColumn.CustomButtons.Add(ItemsButton);
+        bDelete.Image.IconID = IconID.EditDelete16x16office2013;
+        settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+        settings.SettingsCommandButton.DeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+        settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+        settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+        settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+        settings.CommandColumn.Caption = "Actions";
+        settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+
+        settings.Columns.Add(m => m.Name, column =>
+        {
+            column.Width = new Unit(50, UnitType.Percentage);
+            column.SortIndex = 0;
+            column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        });
+
+        settings.Columns.Add(m => m.Prompt, column =>
+        {
+            column.Width = new Unit(50, UnitType.Percentage);
+            column.SortIndex = 1;
+            column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        });
+
+        //settings.Columns.Add(m => m.ID, column =>
+        //{
+        //    column.Width = new Unit(50, UnitType.Percentage);
+        //    column.ReadOnly = true;
+        //});
+
+        settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+        settings.ClientSideEvents.EndCallback = "fp_enumEndCallback";
+        settings.ClientSideEvents.CustomButtonClick = "fp_enumListCustomButtonClick";
+        settings.CustomJSProperties = (sender, e) =>
+        {
+            if (ViewData["EditError"] != null)
+                e.Properties["cpEditError"] = ViewData["EditError"];
+            else
+                e.Properties["cpEditError"] = "";
+        };
+    });
+}
+@grid.Bind(Model).GetHtml()

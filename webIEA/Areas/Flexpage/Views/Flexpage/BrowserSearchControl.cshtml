@@ -1,0 +1,215 @@
+﻿@model Pluritech.Pluriworks.Service.DTO.BrowserSearchResultModel
+<script>
+    function fp_appendBrowserSearchResult(data, destTabContent, loadingPanel) {
+        fp_detachLoadingPanel(destTabContent, loadingPanel);
+        document.getElementById("fp_browser-search-error@(Model.BlockID.ToString())").innerText = '';
+        destTabContent.html(data);
+    }
+
+    function fp_processAjaxFailure(xhr, destTabContent, loadingPanel, index) {
+        fp_detachLoadingPanel(destTabContent, loadingPanel);
+        fp_closeBrowserSearchTab(index);
+        document.getElementById("fp_browser-search-error@(Model.BlockID.ToString())").innerText = xhr.responseJSON;
+    }
+    function fp_closeBrowserSearchTab(i) {
+        eval('fp_browserSearchTabs' + @Model.BlockID.ToString()).SetActiveTabIndex(0);
+        var destTab = eval('fp_browserSearchTabs' + @Model.BlockID.ToString()).tabs[i];
+        var destTabContent = $("#fp_browserSearchTabs" + @Model.BlockID.ToString() + "_C" + i);
+        destTabContent.html("");
+        destTab.SetVisible(false);
+    }
+
+    function fp_detachLoadingPanel(destTabContent, loadingPanel) {
+        if (loadingPanel.parent()[0] == destTabContent[0]) {
+            loadingPanel.appendTo($("#fp_browser-loading-container"));
+            BrowserSearchResultLoadingPanel@(Model.BlockID.ToString()).Hide();
+        }
+    }
+
+    var targets = {};
+    var timers = {};
+
+    function fp_SetCallbackInterval(s, e) {
+        var tab = s.cpTabIndex;
+        targets[tab] = document.getElementById("browser-search-result-message-" + tab);
+        timers[tab] = setInterval(function() { fp_customCallback(s, tab) }, 1000);
+    }
+
+    function fp_customCallback(s, tab) {
+        var target = targets[tab];
+        s.PerformCallback();
+        var status = s.cpStatus;
+        switch (status) {
+        case "New":
+            target.innerText = "Your search has started. Please wait for it to finish";
+            break;
+        case "InProgress":
+            target.innerText = "Your search is in progress. It will update automatically";
+            break;
+        case "Finished":
+            target.innerText = "The search is complete";
+            break;
+        case "Error":
+            target.innerText = "Some error happend during the search.";
+            break;
+        }
+        if (status === "Finished" || status === "Error") {
+            clearInterval(timers[tab]);
+        }
+    }
+
+    function fp_CheckBrowserSearchResultTimer(tabIndex, date) {
+        if (eval("tabTimerStart" + tabIndex) === date) {
+            alert("Results of your file search on tab " + tabIndex + " are no longer valid. Please make another search.");
+            eval("fp_BrowserSearchResult_Grid" + @Model.BlockID + "_" + @Model.TabIndex).PerformCallback();
+        }
+    };
+
+    $(function() {
+        var searchForm = $('#fp_browser-search-form@(Model.BlockID.ToString())');
+        $(searchForm).submit(function(e) {
+            e.preventDefault();
+            $('#fp_browser-search-form@(Model.BlockID.ToString()) #TabIndex').val(eval('fp_browserSearchTabs' + @Model.BlockID.ToString()).tabs.findIndex(tab => tab.GetVisible() === false));
+            var searchFormData = searchForm.serialize();
+            var destTab = eval('fp_browserSearchTabs' + @Model.BlockID.ToString()).tabs.find(tab => tab.GetVisible() === false);
+            var destTabContent = $("#fp_browserSearchTabs" + @Model.BlockID.ToString() + "_C" + destTab.index);
+            var loadingPanel = $("#fp_browser-loading-wrapper");
+            loadingPanel.appendTo(destTabContent);
+            destTab.SetVisible(true);
+            eval('fp_browserSearchTabs' + @Model.BlockID.ToString()).SetActiveTab(destTab);
+            BrowserSearchResultLoadingPanel@(Model.BlockID.ToString()).Show();
+            $.ajax({
+                type: 'POST',
+                url: '/Browser/BrowserSearch',
+                data: searchFormData,
+                success: function (data) { fp_appendBrowserSearchResult(data, destTabContent, loadingPanel) },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    fp_processAjaxFailure(xhr, destTabContent, loadingPanel, destTab.index);
+                }
+            });
+        })
+    })
+</script>
+
+<style>
+    .fp_browser-search-text-input {
+        width: 99%;
+        height: 35px;
+        padding-right: 50px;
+        padding-left: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 2px solid #337ab7;
+    }
+
+    .fp_browser-search-submit-button {
+        padding: 0px;
+        position: relative;
+        bottom: 2px;
+        margin-left: -30px;
+        height: 20px;
+        width: 20px;
+        background: #337ab7;
+        color: white;
+        border: 0;
+        border-radius: 50%;
+        font-size: 10px;
+    }
+
+    .fp_browser-search-label {
+        color: #0072C6;
+        font: 14px arial;
+        display:inline-block;
+    }
+
+    .fp_browser-search-error{
+        float:right;
+        font-style: italic;
+    }
+    .fp_browser-loading-wrapper{
+        height: 100px !important;
+        width: 100%;
+    }
+    .fp_browser-loading-panel {
+        left: 50% !important;
+        top: 130px !important;
+    }
+
+    .fp_browser-tab-link {
+        display: inline-flex !important;
+        align-items: center;
+    }
+    .fp_browser-search-wrapper, .fp_browserSearch-control {
+        margin-bottom: 30px;
+    }
+    .fp_browser-search-first-tab{
+        margin-left: 10px !important;
+    }
+    .fp_browserSearch-tools{
+        min-height:35px;
+    }
+    .fp_browserSearch-tools_item.toggle-switch {
+        margin-right: 7px;
+    }
+</style>
+<div id="fp_browser-search-wrapper" class="fp_browser-search-wrapper">
+    <div id="fp_browser-search-container@(Model.BlockID.ToString())" class="fp_browser-search-container">
+        <form id="fp_browser-search-form@(Model.BlockID.ToString())" class="fp_browser-search-form">
+            @Html.HiddenFor(m => m.TabIndex)
+            @Html.HiddenFor(m => m.BlockID)
+            <div class="col-xs-12 col-md-6 fp_browserSearch-control  fp_p-0">
+                @Html.TextBoxFor(m => m.SearchQuery,new { placeholder= "Search for", @class= "fp_browser-search-text-input" })
+                <input type="submit" name="submit" class="fp_browser-search-submit-button" value="GO" />
+            </div>
+            <div class="col-xs-12 col-md-6 fp_p-0 fp_browserSearch-tools fp_flex fp_align-items-center">
+                <div class="fp_browserSearch-tools_item fp_ml-15">
+                    Search in
+                </div>
+                <div class="toggle-switch fp_browserSearch-tools_item">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.InContent, new { name = "ShowAdminControls" })
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="fp_browser-search-label fp_mr-15 fp_browserSearch-tools_item">
+                    content
+                </div>
+                <div class="toggle-switch fp_browserSearch-tools_item">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.InCustomFields, new { name = "ShowAdminControls" })
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="fp_browser-search-label fp_mr-15 fp_browserSearch-tools_item">
+                    custom fields
+                </div>
+                <div class="toggle-switch fp_browserSearch-tools_item">
+                    <label class="switch">
+                        @Html.CheckBoxFor(m => m.InFileFolderName, new { name = "ShowAdminControls" })
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="fp_browser-search-label fp_mr-15 fp_browserSearch-tools_item">
+                    file/folder name
+                </div>
+
+            </div>
+            <div class="col-xs-12 fp_p-0">
+                <span id="fp_browser-search-error@(Model.BlockID.ToString())" class="fp_browser-search-error"></span>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="fp_browser-loading-container" style="display: none"><div class='fp_browser-loading-wrapper' id='fp_browser-loading-wrapper'></div></div>
+    @Html.DevExpress().LoadingPanel(
+        settings => {
+            settings.Name = "BrowserSearchResultLoadingPanel"+ Model.BlockID.ToString();
+            settings.Modal = true;
+            settings.Enabled = true;
+            settings.ContainerElementID = "fp_browser-loading-wrapper";
+            settings.ControlStyle.CssClass = "fp_browser-loading-panel";
+        }
+        ).GetHtml()
+@{
+    Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BrowserSearchPopup.cshtml", Model.BlockID);
+}

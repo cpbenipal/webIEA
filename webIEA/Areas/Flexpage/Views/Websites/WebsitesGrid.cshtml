@@ -1,0 +1,36 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Abstract.DTO.WebsiteInfoModel>(settings =>
+{
+    settings.Name = "fp_Websites_Grid";
+    settings.CallbackRouteValues = new { Controller = "Websites", Action = "WebsitesGrid" };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+
+    settings.Columns.Add(m => m.Name, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Width = new Unit(33, UnitType.Percentage);
+    });
+
+    settings.Columns.Add(m => m.Url, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Width = new Unit(33, UnitType.Percentage);
+    });
+    settings.Columns.Add(m => m.DownloadLink, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Width = new Unit(33, UnitType.Percentage);
+    });
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+}).Bind(Model).GetHtml())

@@ -1,0 +1,129 @@
+﻿@model Flexpage.Abstract.DTO.EventEditorModel
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        fp_popupControlChangeTitle('EVENT', '#fp_EventEditorContainer');
+        let _controlsForTracking = [
+            '#IsVisible'
+        ];
+
+        fp_ControlsForTracking(_controlsForTracking);
+    });
+
+    function fp_changeLanguage(langCode) {
+        //store cur localized texts from HtmlEditors to HiddenFields
+        let isDirty = IsFormDirty('fp_EventEditorContainer');
+        fp_StoreFromHtmlEditorToHidden('ShortText');
+        fp_StoreFromHtmlEditorToHidden('FullText');
+        fp_PostAjaxForm('#fp_EventEditorContainer', { command: 'changelanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+
+    function fp_preSaveBlock() {
+        fp_StoreFromHtmlEditorToHidden('ShortText');
+        fp_StoreFromHtmlEditorToHidden('FullText');
+        $('#fp_EventEditorContainer input[type=hidden][name=CategoryName]').val(CategoryID.GetText());
+    }
+
+    function fp_newsRecord_ImageUploaded(s, e) {
+        $('#fp_EventEditorContainer input[type=hidden][name=ImageUrl]').val(e.callbackData);
+        $('#fp_EventEditorContainer span[imgpath]').html(e.callbackData);
+    }
+
+</script>
+
+<div id="fp_EventEditorContainer">
+    @using (Ajax.BeginForm("UpdateEvent", "Events", null,
+        new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_EventEditorContainer" }, new { id = "fp_NewsRecordBlockEditorForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.ID, new { Value = Model.ID })
+        @Html.HiddenFor(m => m.EndDate, new { Value = Model.EndDate })
+        @Html.HiddenFor(m => m.ShortViewCmsTextID, new { Value = Model.ShortViewCmsTextID })
+        @Html.HiddenFor(m => m.FullViewCmsTextID, new { Value = Model.FullViewCmsTextID })
+        @Html.HiddenFor(m => m.CategoryName)
+        <div id="HiddenLocalizedModels" style="display:none">
+            @Html.EditorFor(m => m.LocalizedPlace, "LocalizedString")
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="form-fields">
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+                    </div>
+                </div>
+                <div class="form-fields">
+                    <div class="title">
+                        <label>Short description:</label>
+                    </div>
+                    @Html.EditorFor(m => m.ShortText, "LocalizedText")
+                </div>
+                <div class="form-fields">
+                    <div class="title">
+                        <label>Description:</label>
+                    </div>
+                    @Html.EditorFor(m => m.FullText, "LocalizedText")
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-fields">
+                    <label>Date:</label>
+                    @Html.DevExpress().DateEdit(
+                    settings =>
+                    {
+                        settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                        settings.Name = "StartDate";
+                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                        settings.ControlStyle.CssClass = "flexpage calendar";
+                        settings.Properties.EditFormat = EditFormat.Custom;
+                        settings.Properties.EditFormatString = "dd/MM/yyyy";
+                        settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                        settings.Properties.CalendarProperties.ShowClearButton = false;
+                        settings.Style.Add(HtmlTextWriterStyle.Display,"table");
+                        settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                    }
+                ).Bind(Model.StartDate).GetHtml()
+                </div>
+                <div class="form-fields">
+                    <label>Category:</label>
+                    @Html.DevExpress().ComboBox(
+                        settings =>
+                        {
+                            settings.Name = "CategoryID";
+                            settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                            settings.ControlStyle.CssClass = "form-control";
+                            settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                            settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                            settings.Style.Add(HtmlTextWriterStyle.Display,"table");
+                            settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                            settings.Properties.ValueField = "Key";
+                            settings.Properties.ValueType = typeof(int);
+                            settings.Properties.TextField = "Value";
+                        }
+                        ).BindList(Model.AllowedCategories).Bind(Model.CategoryID).GetHtml()
+                </div>
+                <div class="form-fields">
+                    <label>Keywords: <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" data-container="body" title="Use ',' or ';' as separator"></i></label>
+                    @Html.EditorFor(m => m.LocalizedKeywords, "LocalizedString")
+                </div>
+                <div class="form-fields">
+                    <label>Cover image:</label>
+                    <span imgpath="">@Model.ImageUrl</span>
+                    @Html.HiddenFor(m => m.ImageUrl)
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                    {
+                        Name = "fu_CoverImage",
+                        OnFileUploaded = "fp_newsRecord_ImageUploaded"
+                    })
+                </div>
+                <div class="form-fields">
+                    <label>Languages:</label>
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector2.cshtml", Model.LanguageSelector)
+                </div>
+                <div class="form-fields">
+                    <label>Is Visible:</label>
+                    @Html.EditorFor(m => Model.IsVisible)
+                </div>
+            </div>
+        </div>
+    }
+</div>

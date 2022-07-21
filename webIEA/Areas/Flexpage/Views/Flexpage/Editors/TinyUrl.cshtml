@@ -1,0 +1,48 @@
+﻿@model Flexpage.Models.TinyUrlModel
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        fp_popupControlChangeTitle('Tiny URL', '#fp_TinyUrlBlockEditorContainer');
+    });
+</script>
+
+<div id="fp_TinyUrlBlockEditorContainer">
+    @using (Ajax.BeginForm("UpdateTinyUrl", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_TinyUrlBlockEditorContainer" }, new { id = "fp_TinyUrlBlockEditorForm" }))
+    {
+        @Html.HiddenFor(m => m.ID, new { Value = Model.ID })
+        <div class="row">
+            <div class="col-md-4 form-fields">
+                <label for="ShortUrl">Short Url:</label>
+                @Html.TextBoxFor(m => m.ShortUrl, new { @class = "form-control" })
+            </div>
+            <div class="col-md-5 form-fields">
+                <label for="LanguageID">Language:</label>
+                @Html.DropDownListFor(m => Model.LanguageID, new SelectList(ViewData["LanguageList"] as List<KeyValuePair<int, string>>, "Key", "Value"), new { @class = "form-control" })
+            </div>
+            <div class="col-md-3 form-fields">
+                <label for="IsDisabled">Is disabled:</label>
+                @Html.CheckBoxFor(m => Model.IsDisabled, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="NavigateUrl">Navigate Url:</label>
+                    @Html.TextBoxFor(m => m.NavigateUrl, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="col-md-1" style="margin: 0; padding: 0;width: 20px;">
+                        @Html.CheckBoxFor(m => m.IsShowDestinationUrl, new {@class = "form-control"})
+                    </div>
+                    <div class="col-md-11">
+                        <label class="form-check-label" for="IsShowDestinationUrl">
+                            Display the destination URL visitor's browser
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

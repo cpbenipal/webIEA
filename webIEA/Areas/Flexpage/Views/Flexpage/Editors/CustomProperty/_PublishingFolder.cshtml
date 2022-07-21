@@ -1,0 +1,106 @@
+﻿@using Flexpage.Models
+@{
+    Layout = "~/Areas/Flexpage/Views/Shared/_PopupLayout.cshtml";
+}
+
+@model PublishingFolderModel
+
+<script type="text/javascript">
+    (function () {
+        EditCustomProperty.SetData($('#PropertyValue').val());
+    })();
+</script>
+<div class="modal fade" id="modal-props" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Publishing Folder</h3>
+                <button type="button" class="close" aria-label="Close" onclick="fp_beforeClosePopUp(this, 'modal-props')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body" style="min-height:400px;">
+            @using (Ajax.BeginForm("UpdatePublishingFolderObjectProperties", "Flexpage", null, new AjaxOptions {HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "model-body"}, new {@id = "fp_BlockEditorForm", @role = "form"}))
+            {
+                <div class="col-md-6">
+                    @Html.HiddenFor(m => m.FolderID)
+                    @Html.HiddenFor(m => m.ObjectPropertyID)
+                    @Html.HiddenFor(m => m.IsSelect)
+                    @Html.HiddenFor(m => m.IsDefault)
+                    @Html.HiddenFor(m => m.PropertyValue)
+                    <br/>
+                    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/CustomProperty/_PublishingFolderGrid.cshtml", Model)
+                </div>
+                <div class="col-md-6">
+                    <br/>
+                    <div class="form-group">
+                        <label for="Abbreviation">Abbreviation:</label>
+                        @Html.TextBox("Abbreviation", null, new {@class = "form-control"})
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label for="Abbreviation">E-mail notification:</label>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label class="radio-inline">
+                                @Html.RadioButton("EmailNotification", Pluritech.Contact.Abstract.DTO.Notification.None) None
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="radio-inline">
+                                @Html.RadioButton("EmailNotification", Pluritech.Contact.Abstract.DTO.Notification.Warn) Warn
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="radio-inline">
+                                @Html.RadioButton("EmailNotification", Pluritech.Contact.Abstract.DTO.Notification.Push) Push
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+            <div class="modal-footer" id="flexpage-modal-footer_1">
+                <div class="col-md-6 pull-left left">
+                </div>
+                <div class="col-md-6 pull-right right">
+                    <a href="javascript:void(0)" id="savePublishingProperty">SAVE</a>
+                    <a href="javascript:void(0)" aria-label="Close" onclick="fp_beforeClosePopUp(this, 'modal-props')">CANCEL</a>
+                </div>
+            </div>
+        </div>
+        <div style="display: none; z-index: 1000; position: absolute;  top: 50%; left: 50%; transform: perspective(1px) translateY(-50%) translateX(-50%); text-align: center; width: 256px; height: 100px; opacity: 0.8; background-color: #23598e" id="pleaseWaitDiv">
+            <span style="display: block; opacity: 1; color: #ffffff; font-size: x-large; padding-top: 33px">
+                Please, wait ...
+            </span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var popup = $('.modal');
+        popup.modal();
+
+        $('#savePublishingProperty').click(function() {
+            $('#pleaseWaitDiv').show();
+            $('#PropertyValue').val(EditCustomProperty.GetData());
+            $('#fp_BlockEditorForm').submit();
+            setTimeout(function() {
+                    fp_beforeClosePopUp(this, 'modal-props');
+                },
+                500);
+        });
+
+    });
+
+    $("#Abbreviation").on("keyup",
+        function() {
+            EditCustomProperty.OnChangeAbbreviation($(this).val());
+        });
+
+    $('input[type=radio][name=EmailNotification]').change(function() {
+        console.log($(this).val());
+        EditCustomProperty.OnChangeEmailNotification($(this).val());
+
+    });
+</script>

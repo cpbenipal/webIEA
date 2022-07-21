@@ -1,0 +1,24 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.EnumsModel
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+   (function () {
+        setTimeout(function () {
+        fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+            fp_loadScripts(EventManager.settings.PathJs.enums, 'EventManagerEnums', function () {
+             var args = { ID:@(Model.ID) };
+                var enumsEM@(Model.ID) = new EventManagerEnums(args);
+                $(".fp_enums").removeClass("hidden-visbility");
+                $(".fp_enums-empty").addClass("hidden");
+            });
+            });
+        }, 4000);
+    })();
+
+</script>
+<div class="fp_empty fp_enums-empty">Please wait while loading</div>
+<div class="fp_enums hidden-visbility ">
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/Enums/_Enums.cshtml", Model)
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/Enums/_EnumsValues.cshtml", Model)
+</div>

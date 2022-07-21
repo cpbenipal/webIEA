@@ -1,0 +1,31 @@
+﻿@using Flexpage.Abstract.DTO
+@model WizardEditViewModel
+
+<script type="text/javascript">
+    function fp_wizard_deleteStep(idx) {
+        fp_PostAjaxForm('#fp_WizardBlockEditorContainer', { command: 'deleteStep', parameter: idx });
+    }
+
+    function fp_wizard_addStep() {
+        fp_PostAjaxForm('#fp_WizardBlockEditorContainer', { command: 'addStep' });
+    }
+
+    function fp_wizard_getStepInfo(id) {
+        fp_PostAjaxForm('#fp_WizardBlockEditorContainer', { command: 'stepSettings', parameter: id });
+        // window.open(`/blocklist/blocklist?id=${id}`, '_blank');
+    }
+
+    function fp_wizard_setOrders(container) {
+        $('#fp_WizardBlockEditorContainer '+ container +' .fp_fc_column').each(function (i, el) {
+            $(el).find('input[name$="].Order"]').val(i);
+        });
+    }
+
+    function fp_preSaveBlock() {
+        fp_wizard_setOrders('#steps');
+        fp_wizard_setOrders('#step_settings');
+    }
+</script>
+<div id="fp_WizardBlockEditorContainer">
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/WizardForm.cshtml", Model)
+</div>

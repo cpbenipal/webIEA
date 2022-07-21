@@ -1,0 +1,247 @@
+﻿@using EditorType = Flexpage.Models.EditorType
+@model Flexpage.Models.TabContainerModel
+
+@{
+    string editorContainer = "fp_BlockEditorContainer_" + Model.EditorPostfix;
+    ViewData["Count"] = Model.Tabs.Count;
+}
+<script src="~/Areas/Flexpage/Content/Scripts/TabContainer.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        initContent();
+    });
+    function simpleToggle(elem) {
+        const activeClass = "item-active-modal";
+        $(".header-modal-menu ." + activeClass).removeClass(activeClass);
+        $(elem).addClass(activeClass);
+    }
+    function useAdvanced() {
+        fp_PostAjaxForm('#tabManager', { command: 'changeEditorType', parameters: 'Advanced' }, 'fp_TrackInitialize(' + false + ')');
+    }
+
+    function useSimple() {
+        fp_PostAjaxForm('#tabManager', { command: 'changeEditorType', parameters: 'Simple' }, 'fp_TrackInitialize(' + false + ')');
+    }
+    function getLocation() {
+        var location = window.parent.location;
+        location = location.toString().split('?');
+        return location[0].toString();
+    }
+
+    function fp_tabContainer_AddTab() {
+        fp_PostAjaxForm('#@editorContainer', { command: 'addtab', parameters: '' }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_tabContainer_DeleteTab(index) {
+        fp_PostAjaxForm('#@editorContainer', { command: 'deletetab', parameters: index.toString() }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_tabContainer_SelectLanguage(lang) {
+        fp_PostAjaxForm('#@editorContainer', { command: 'changelanguage', parameters: lang }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_tabContainer_MoveUp(index) {
+        fp_PostAjaxForm('#@editorContainer', { command: 'orderup', parameters: index }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_tabContainer_MoveDown(index) {
+        fp_PostAjaxForm('#@editorContainer', { command: 'orderdown', parameters: index }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_success(data) {
+        alert(JSON.stringify(data));
+    }
+
+    function fp_generateMenuCode() {
+        fp_PostAjaxForm('#@editorContainer', { command: 'generatemenucode', parameters: getLocation() });
+    }
+    function fp_tabContainer_Copy(id) {
+        /* Get the text field */
+        var copyText = document.getElementById(id);
+
+        /* Select the text field */
+        copyText.select();
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text */
+        //  alert("Copied the text: " + copyText.value);
+    }
+
+
+    function fp_preSaveBlock() {
+    }
+
+    function setProperyIdOrLinck(objHide,objShow) {
+        objHide.hide();
+        objShow.show();
+    }
+
+    function setTextIdOrLink(id) {
+        var textPreviewElem = $(".text-preview-" + id),
+            newText = textPreviewElem.data("text"),
+            text = textPreviewElem.text();
+
+        if (newText && text) {
+            textPreviewElem.text(newText);
+            textPreviewElem.data("text",text);
+        }
+    }
+
+    function fpSwitchingIdOrLink(id) {
+        var modalId = $(".modal-id-" + id),
+            htmlCode = $(".html-code-" + id);
+
+        htmlCode.val(getLocation()+"?ID="+id);
+
+        if (modalId.data("show") == 0) {
+            setProperyIdOrLinck(htmlCode, modalId);
+            $(".copy-icon-" + id).hide();
+            modalId.data("show", "1");
+        }
+        else {
+            setProperyIdOrLinck(modalId, htmlCode);
+            $(".copy-icon-" + id).show();
+            modalId.data("show", "0");
+        }
+
+        setTextIdOrLink(id);
+    }
+
+    fp_popupControlChangeTitle('TAB CONTAINER', '#fp_BlockEditorForm');
+
+</script>
+<div id="tabManager" class="flexpage">
+    <div id="in-editor-modal-header-content" style="display: none">
+        <div class="col-md-7">
+            <h3 class="modal-title">TAB CONTAINER</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="header-modal-menu">
+                <a onclick="javascript: jQuery('#fp_BlockEditorForm').find('#EditorType').val(1);useSimple();simpleToggle(this);return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Simple ? "item-active-modal" : "")">Simple <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show mostly used image options"></i></a>
+                <a onclick="javascript: jQuery('#fp_BlockEditorForm').find('#EditorType').val(2);useAdvanced();simpleToggle(this);return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Advanced ? "item-active-modal" : "")">Advanced <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show advanced image options" data-container=".modal-content"></i></a>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="fp_beforeClosePopUp(this)">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            @using (Ajax.BeginForm("UpdateTabContainer", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = editorContainer, InsertionMode = InsertionMode.Replace }, new { id = "fp_BlockEditorForm", forTraking = "all" }))
+            {
+                @Html.HiddenFor(m => m.EditorType)
+                @Html.HiddenFor(m => m.Alias)
+                @Html.HiddenFor(m => m.BlockType)
+                @Html.HiddenFor(m => m.AdminMode)
+                @Html.HiddenFor(m => m.CssClass)
+                @Html.HiddenFor(m => m.ID)
+                @Html.HiddenFor(m => m.EditorPostfix)
+                @Html.HiddenFor(m => m.PageUrl)
+
+
+                <div class="row" id="tabs-container">
+                    <div class="col-md-12">
+                        <span class="main-title">General options <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Default tooltip"></i></span>
+
+                        <div class="row general-options">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(e => Model.ShowHeaders, new { @id = "showHeaders", @class = "form-check-input" })
+                                    <label class="form-check-label" for="showHeaders">Show headers</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="defaultTab">Default Tab:</label>
+                                    @Html.DropDownListFor(e => Model.DefaultTab, Model.TabsDropDown, new { @id = "defaultTab", @class = "form-control" })
+                                </div>
+                            </div>
+                            @if (Model.ID > 0)
+                            {
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="txt-icon">
+                                            <span class="text-preview-@Model.ID" data-text="ID:">HTML Code for Menu:</span>
+                                            <span>
+                                                <i class="far fa-copy copy-icon-@Model.ID" onclick="fp_tabContainer_Copy('HTMLCodeForMenuTextBox')"></i>
+                                                <i class="fas fa-cog" onclick="fp_generateMenuCode()"></i>
+                                            </span>
+                                        </label>
+                                        <br />
+
+                                        @* @Html.TextAreaFor(e => Model.HTMLCodeForMenu, new { @class = "form-control" }) *@
+                                        @Html.TextBox("HTMLCodeForMenuTextBox", Model.HTMLCodeForMenu, new { @class = $"form-control html-code-{Model.ID}", @readonly = "readonly", id = "HTMLCodeForMenuTextBox" })
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        @if (Model.EditorType == EditorType.Advanced)
+                        {
+                            <br/>
+                            <span class="main-title">Behaviour <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Default tooltip"></i></span>
+
+                            <div class="advanced-settings">
+                                <div class="col-md-12">
+                                    <div class="col-md-9">
+                                        <label>Enable automatic transition</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.EditorFor(m => m.SwitchAutomatically, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                    </div>
+                                    <div class="advanced-elements opacity-activated">
+                                        <div class="col-md-6">
+                                            @Html.Label("Delay (ms)")
+                                            @Html.EditorFor(m => m.SwitchDelay)
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.Label("Transition Type")
+                                            @Html.EnumDropDownListFor(m => m.SwitchTransition, new {})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.SwitchAutomatically)
+                            @Html.HiddenFor(m => m.SwitchDelay)
+                            @Html.HiddenFor(m => m.SwitchTransition)
+                        }
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="main-title">Tabs <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Default tooltip"></i></span>
+                            </div>
+                            <div class="languages" style="margin-bottom: 6px; float: right; margin-right: 5px">
+                                @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+                            </div>
+                        </div>
+                        @for (var i = 0; i < Model.Tabs.Count; i++)
+                        {
+                            Model.Tabs[i].Index = i;
+                            Model.Tabs[i].Last = i == Model.Tabs.Count - 1;
+                            @Html.EditorFor(m => Model.Tabs[i], "Tab")
+                        }
+                        <div class="row">
+                            <div class="col-md-12 add-column">
+                                <a href="#" onclick="fp_tabContainer_AddTab()">
+                                    <strong>+ Add tab</strong>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@model Flexpage.Models.SitemapEntryModel
+
+
+@{
+    string nodeID = "sitemapTreeNode" + Model.ID;
+    string hrefID = "#collapsePanel" + Model.ID;
+    string subitemsID = "collapsePanel" + Model.ID;
+    string nodeDisplayName = string.IsNullOrWhiteSpace(Model.DefaultTitle) ? "(no_name)" : Model.DefaultTitle;
+}
+<li class="ui-state-default all-scroll" sitemap-node-id="@Model.ID" id="@nodeID">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading  panel-page">
+                <h4 class="panel-title">
+                    <span data-toggle="collapse" href="@hrefID" onclick="sitemapNodeClicked('@Model.ID')" class="align-box sitemapTreeNodeLink">
+                        @nodeDisplayName
+                        @if (Model.HasChildren)
+                        {
+                            <span class="pull-right"><i class="fa fa-chevron-down rotate"></i></span>
+                        }
+                    </span>
+                </h4>
+            </div>
+        </div>
+    </div>
+    @*don’t move or change, otherwise the drag and drop will break*@
+    <ol id="@subitemsID" class="panel-collapse collapse collapse-field-container sitemap-subnodes-container">
+        @if (Model.HasChildren && Model.SiteMapManager != null)
+        {
+            foreach (Flexpage.Models.SitemapEntryModel entry in Model.SiteMapManager.GetSubnodes(Model.ID))
+            {
+                Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Editors/SitemapNodePartial.cshtml", entry);
+            }
+        }
+    </ol>
+</li>

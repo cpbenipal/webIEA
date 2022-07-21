@@ -1,0 +1,11 @@
+﻿
+<h2> Success Instagram authentication!</h2>
+
+<script>
+    var accessToken = window.location.href.substring(window.location.href.indexOf('=') + 1, window.location.href.length);
+    localStorage.setItem(INSTAGRAM_LOCAL_SOTRAGE_TOKEN_KEY, accessToken);
+    $.get("https://api.instagram.com/v1/users/self/?access_token=" + accessToken, function (response) {                         
+        localStorage.setItem(INSTAGRAM_LOCAL_SOTRAGE_USERNAME_KEY, response.data.username);    
+        window.location.replace('/Admin/PagesManager');
+    }, 'jsonp');
+</script>

@@ -1,0 +1,23 @@
+﻿@model List<Flexpage.Abstract.DTO.WebsiteSettingsModel>
+@{
+    ViewBag.Title = "WebsiteSettings";
+}
+
+<h2>WebsiteSettings</h2>
+
+<script>
+    function websiteSettingsOnFailure() {
+        alert("Failed saving settings");
+    }
+</script>
+@using (Ajax.BeginForm("UpdateWebsiteSettings", "Admin", new AjaxOptions {OnFailure = "websiteSettingsOnFailure" }))
+{
+    for (int i = 0; i < Model.Count; i++)
+    {
+        var item = Model[i];
+        @Html.HiddenFor(m => m[i].ID)
+        @Html.Label(item.Description)
+        @Html.DevExpress().TextBoxFor(model => model[i].Value).GetHtml()
+    }
+    <button type="submit">Save</button>
+}

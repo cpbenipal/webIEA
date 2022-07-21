@@ -1,0 +1,29 @@
+﻿﻿#fp_generalPermission {
+    #general-permissions {
+        padding-top: 15px;
+
+        .list-grid {
+            tr {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+#PermitRule {
+    .list.owners {
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+
+        a {
+            display: block;
+        }
+
+        a.select {
+            font-weight: bold;
+        }
+    }
+}

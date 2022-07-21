@@ -1,0 +1,139 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Domain.Enum
+@using Flexpage.Models;
+@model Flexpage.Models.GalleryModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+}
+
+<div class="row" style="margin: 0">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <h4>
+                Images and Paging <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Number of visible images and pager settings"></i>
+            </h4>
+            <div class="fp_flex">
+                <div class="fp_flex fp_flex-direction-column fp_pb-10">
+                    <label for="cpp">Columns per page:</label>
+                    @*<input type="text" class="form-control" id="ColumnsPerPage" name="ColumnsPerPage" value="@Model.ColumnsPerPage" />*@
+                    @Html.TextBoxFor(m => m.ColumnsPerPage, new { @class = "form-control" })
+                </div>
+                <div class="fp_flex fp_flex-direction-column fp_pb-10 fp_pl-10">
+                    <div class="col-md-12 fp_p-0">
+                        <label>Rows per page:</label>
+                    </div>
+                    <div class="fp_flex fp_align-items-center fp_justify-content-center">
+                        <div class=" fp_pr-10">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(u => u.AllImages, true) All
+                            </label>
+                        </div>
+                        <div class=" fp_pr-10">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(u => u.AllImages, false) Custom:
+                            </label>
+                        </div>
+                        @Html.TextBoxFor(m => m.RowsPerPage, new { @class = "form-control fp_w-50" })
+                    </div>
+                </div>
+            </div>
+            <div class="fp_flex fp_align-items-center fp_pl-0 fp_pb-10">
+                @Html.EditorFor(u => u.EnablePaging)
+                <label class="form-check-label fp_m-0 fp_pl-10" for="EnablePaging">
+                    Enable paging
+                </label>
+            </div>
+            <div id="fp_gallery-style" class="col-md-6 form-group @(Model.EnablePaging?"":"fp_hidden")  fp_p-0">
+                <label for="style">Style:</label>
+                @Html.DropDownListFor(m => m.PagingStyles, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(GalleryPagingStyle)), "Choose...", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>
+                Image options <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="General options"></i>
+            </h4>
+            <div class="fp_flex fp_flex-direction-column">
+                <div class="fp_flex fp_pb-10 fp_align-items-center">
+                    <label class="fp_m-0" for="thumb">Select between gallery or Slider: </label>
+                    @{ var galleryTypes = new List<SelectListItem>();
+                        galleryTypes.Add(new SelectListItem
+                        {
+                            Text = "Justified Gallery",
+                            Value = "3"
+                        });
+                        galleryTypes.Add(new SelectListItem
+                        {
+                            Text = "Slider",
+                            Value = "4"
+
+                        });
+                        galleryTypes.Add(new SelectListItem
+                        {
+                            Text = "Gallery",
+                            Value = "5"
+                        });
+                    }
+                    @Html.DropDownListFor(m => m.GalleryBlockType, galleryTypes, new { @class = "form-control" })
+                </div>
+                <div class="fp_flex fp_align-items-center  fp_pb-10">
+                    @Html.EditorFor(u => u.EnableClickToEnlarge)
+                    <label class="form-check-label  fp_pl-10 fp_m-0" for="enbClick">
+                        Enable to click to enlarge
+                    </label>
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Allows to click a thumbnail to see the image preview"></i>
+                </div>
+                <div class="fp_flex fp_align-items-center fp_pb-10">
+                    @Html.EditorFor(u => u.EnableZoom)
+                    <label class="form-check-label fp_pl-10 fp_m-0" for="galleryZoom">
+                        Enable zoom
+                    </label>
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Enables zoom effect on mouse hover"></i>
+                </div>
+                <div id="fp_zoom" class="fp_flex fp_align-items-center fp_pb-10 @(Model.EnableZoom?"":"fp_hidden")">
+                    <label class="fp_m-0" for="menu-name">Zoom factor:</label>
+                    <input type="text" class="form-control fp_ml-10 fp_w-25" id="ZoomFactor" name="ZoomFactor" value="@Model.ZoomFactor" />
+                </div>
+                <div class="fp_flex fp_flex-direction-column fp_pb-10">
+                    <label for="thumb">Align thumbnails:  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Gallery thumbnails row alignment"></i></label>
+                    @Html.DropDownListFor(m => m.AlignThumbnails, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(GalleryThumbnailsAlignment)), new { @class = "form-control fp_w-50" })
+                </div>
+                <div class="fp_flex">
+                    <h5>Thumbnail size:</h5>
+                </div>
+                <div class="fp_flex ">
+                    <div class="fp_flex fp_align-items-center thumbnail-width @(Model.GalleryBlockType == GalleryBlockType.JustifiedGallery ? "thumbnail-width-hide": string.Empty )">
+                        <label class="fp_m-0">Width:</label>
+                        <span class="aligned-field-input fp_ml-10"><input type="text" class="form-control fp_w-50" id="ThumbnailWidth" name="ThumbnailWidth" value="@Model.ThumbnailWidth" /><span class="input-size">px</span></span>
+                    </div>
+                    <div class="fp_flex fp_align-items-center ">
+                        <label class="fp_m-0">Height:</label>
+                        <span class="aligned-field-input fp_ml-10"><input type="text" class="form-control fp_w-50" id="ThumbnailHeight" name="ThumbnailHeight" value="@Model.ThumbnailHeight" /><span class="input-size">px</span></span>
+                    </div>
+                    <div class="fp_flex fp_align-items-center fp_w-50  thumbnails-alignment @(Model.GalleryBlockType == GalleryBlockType.JustifiedGallery ? "thumbnails-alignment-hide" : string.Empty )">
+                        @Html.CheckBoxFor(u => u.RenderThumbnailActualSize, new { @class = "form-control" })
+                        <label class="form-check-label fp_pl-10 fp_m-0" for="enbZoom">Actual size </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(u => u.FixedImages)
+    @Html.HiddenFor(u => u.RandomImages)
+    @Html.HiddenFor(u => u.RandomImageAtLoad)
+    @Html.HiddenFor(u => u.ImagesChangeInterval)
+    @Html.HiddenFor(m => m.ImageEffect)
+    @Html.HiddenFor(u => u.WatermarkText)
+    @Html.HiddenFor(u => u.AddWaterMark)
+    @Html.HiddenFor(u => u.PreferActualSize)
+</div>
+<script>
+    $("#EnablePaging").on("change", function (e) {
+        $("#fp_gallery-style").toggleClass("fp_hidden");
+    })
+    $("#EnableZoom").on("change", function (e) {
+        $("#fp_zoom").toggleClass("fp_hidden");
+    })
+</script>

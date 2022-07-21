@@ -1,0 +1,403 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+@using Pluritech.Properties.Abstract.DTO
+
+@model Flexpage.Models.ContactDetailsModel
+@functions{
+    object GetRow(ASPxGridView grid)
+    {
+        return grid.GetRow(grid.EditingRowVisibleIndex);
+    }}
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.CallbackRouteValues = new
+        {
+            Controller = "ContactDetails",
+            Action = "ContactDetails_UpdateTab",
+            blockID = Model.ID,
+            contactID = Model.ContactID,
+            contactType = Model.ContactType,
+            selectTabIndex = Model.SelectTabIndex,
+            selectTab = Model.SelectTab,
+            edit = Model.AllowEdit
+        };
+        settings.Name = "сontactDetailsAddress" + Model.ID;
+        settings.KeyFieldName = "ID";
+        settings.Columns.Add("Street", MVCxGridViewColumnType.TextBox);
+        settings.Columns.Add("Zip", MVCxGridViewColumnType.TextBox);
+        settings.Columns.Add("City", MVCxGridViewColumnType.TextBox);
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "CountryID";
+            c.Caption = "Country";
+            c.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+                p.ValueField = "ID";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.Countries;
+            });
+        });
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Description";
+            c.Caption = "Description";
+            c.ColumnType = MVCxGridViewColumnType.TextBox;
+        });
+        foreach (var column in Model.Columns.Where(c => c.Name.StartsWith("Address.") && c.ShowInGrid))
+        {
+            settings.Columns.Add(c =>
+            {
+                c.FieldName = column.Caption == "LinkedContact" ? "SourceContactName" : column.Caption;
+                c.Caption = column.Caption == "LinkedContact" ? "Linked from" : column.Caption;
+                c.ColumnType = MVCxGridViewColumnType.TextBox;
+            });
+        }
+        foreach (var column in Model.Columns.Where(c => c.Name.StartsWith("CustomProperty.") && c.ShowInGrid))
+        {
+            settings.Columns.Add(c =>
+            {
+                c.Caption = column.Caption;
+                c.FieldName = column.Caption;
+                c.UnboundType = UnboundColumnType.String;
+                c.EditorProperties().TextBox(p =>
+                {
+
+                });
+            });
+        }
+        settings.CustomUnboundColumnData = (s, e) =>
+        {
+            IList<CustomPropertyInfo> properties = (IList<CustomPropertyInfo>
+                )e.GetListSourceFieldValue("CustomProperties");
+            if (properties == null)
+            {
+                e.Value = "";
+                return;
+            }
+            var source = properties.FirstOrDefault(opv => e.Column.FieldName == opv.Name);
+
+            e.Value = new MvcHtmlString("<span data-column-name=\"" + e.Column.FieldName + "\">" +
+                                        (source == null ?
+                                            "" : (source.Type == ObjectPropertyType.Bool ?
+                                                (source.Value == "C" ?
+                                                    "true" : "false") : source.Value)) +
+                                        "</span>");
+        };
+        settings.SettingsDetail.ShowDetailButtons = Model.Columns.Any(c => c.ShowInDetail);
+        settings.SettingsDetail.ShowDetailRow = Model.Columns.Any(c =>  c.ShowInDetail);
+        settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            var value = (string)DataBinder.Eval(c.DataItem, "SourceContactName");
+            string details = "";
+
+            var id = (int)DataBinder.Eval(c.DataItem, "ID");
+            var address = Model.Address.First(lc => lc.ID == id);
+            var columns = Model.Columns.Where(col => col.ShowInDetail && col.Name.StartsWith("CustomProperty."));
+            foreach (var column in columns)
+            {
+                details += "<div>";
+                details += column.Caption + ": ";
+                var property = address.CustomProperties.FirstOrDefault(p => p.Name == column.Caption);
+                details += property == null ? "" : property.Value;
+                details += "</div>";
+            }
+
+            // if more columns for address are added, they should start with "Address." prefix and you should cycle through them.
+            // The following code is for Address.Linked Contact column
+            foreach (var column in Model.Columns.Where(col => col.Name.StartsWith("Address.") && col.ShowInDetail))
+            {
+                details += "<div>";
+                details += "Linked from the following contact: ";
+                details += value;
+                details += "</div>";
+            }
+            ViewContext.Writer.Write(details);
+        });
+        if (Model.AllowEdit)
+        {
+            settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_AddressAdd", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_AddressEdit", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_AddressDelete", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+            settings.SettingsBehavior.ConfirmDelete = true;
+            settings.CommandColumn.Visible = (bool?)ViewBag.isAdmin == true || (bool?)ViewBag.IsContactsAdmin == true;
+            settings.CommandColumn.ShowNewButton = true;
+            settings.CommandColumn.ShowDeleteButton = false;
+            settings.CommandColumn.ShowEditButton = true;
+            settings.CommandColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            settings.CommandColumn.CellRowSpan = 1;
+            settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+            var bDelete = new GridViewCommandColumnCustomButton()
+            {
+                ID = "bDelete",
+                Text = "Delete",
+            };
+
+            bDelete.Image.IconID = IconID.EditDelete16x16office2013;
+            settings.ClientSideEvents.CustomButtonClick = "function(s, e){  if (e.buttonID == 'bDelete') deleteRowInDevexpressGrid(сontactDetailsAddress" + Model.ID + ", e.visibleIndex); }";
+            settings.CommandColumn.CustomButtons.Add(bDelete);
+
+            settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+            settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+            settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+            settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+            settings.SetEditFormTemplateContent(c =>
+            {
+                var row = c.Grid.GetRow(((DevExpress.Web.Data.WebDataRow)c.DataItem).VisibleIndex) as Pluritech.Contact.Abstract.DTO.AddressView;
+                Html.DevExpress().FormLayout(flSettings =>
+                {
+                    flSettings.Name = "contactDetailsAddress" + Model.ID + "_Edit";
+                    flSettings.ColCount = 2;
+                    flSettings.Width = Unit.Percentage(100);
+
+                    flSettings.Items.Add(i =>
+                    {
+                        var customEditors = Model.Columns.Count(col => col.Name.StartsWith("CustomProperty.") && (col.ShowInGrid || col.ShowInDetail));
+                        i.ClientVisible = row == null;
+                        i.ShowCaption = DefaultBoolean.False;
+                        i.FieldName = "IsAddressLinked";
+                        i.NestedExtension().RadioButton(s =>
+                        {
+                            s.GroupName = "RadioButtonAddressGroup";
+                            s.Text = "Import address from a linked contact";
+                            s.Properties.ClientSideEvents.Init = "function(s, e) {EventManagerContactDetails.toggleAddressCheckbox(s, " + customEditors + ")}";
+                            s.Properties.ClientSideEvents.ValueChanged = "function(s, e) {EventManagerContactDetails.toggleAddressCheckbox(s, " + customEditors + ")}";
+                            s.Checked = false;
+                        });
+                    });
+
+                    if (row == null || row.IsAddressLinked)
+                    {
+                        flSettings.Items.Add(i =>
+                        {
+                            i.ShowCaption = DefaultBoolean.False;
+                            i.FieldName = "SourceAddressID";
+                            i.NestedExtension().ComboBox(s =>
+                            {
+                                s.Width = Unit.Percentage(100);
+                                s.Properties.TextField = "ViewText";
+                                s.Properties.ValueField = "ID";
+                                s.Properties.ValueType = typeof(int);
+                                s.Properties.DataSource = Model.AllAddressViews;
+                                s.Properties.EnableClientSideAPI = true;
+                                s.CustomJSProperties = (sender, e) =>
+                                {
+                                    e.Properties["cpAllAddressViewsJson"] = Model.AllAddressViewsJson;
+                                };
+                                s.Properties.ClientSideEvents.ValueChanged = "function(s, e){EventManagerContactDetails.setAddressValue(s)}";
+                                s.Properties.ClientInstanceName = "LinkedAddressSource";
+                            });
+                        });
+                    }
+                    if (row == null)
+                    {
+                        flSettings.Items.Add(i =>
+                        {
+                            i.ShowCaption = DefaultBoolean.False;
+                            i.NestedExtension().RadioButton(s =>
+                            {
+                                s.Name = "RadioButtonNewAddress";
+                                s.GroupName = "RadioButtonAddressGroup";
+                                s.Text = "Create new address for this contact";
+                                s.Checked = !row?.IsAddressLinked ?? true;
+                                s.Properties.EnableClientSideAPI = true;
+                                s.Properties.ClientInstanceName = "RadioButtonNewAddress";
+                            });
+                        });
+                    }
+                    flSettings.Items.Add(i =>
+                    {
+                        i.Caption = "Street";
+                        i.FieldName = "Street";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.ClientEnabled = (row == null || !row.IsAddressLinked);
+                            s.Properties.EnableClientSideAPI = true;
+                            s.Properties.ClientInstanceName = "StreetTextBox";
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.Caption = "Zip";
+                        i.FieldName = "Zip";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.ClientEnabled = (row == null || !row.IsAddressLinked);
+                            s.Properties.EnableClientSideAPI = true;
+                            s.Properties.ClientInstanceName = "ZipTextBox";
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.Caption = "City";
+                        i.FieldName = "City";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.ClientEnabled = (row == null || !row.IsAddressLinked);
+                            s.Properties.EnableClientSideAPI = true;
+                            s.Properties.ClientInstanceName = "CityTextBox";
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.Caption = "Description";
+                        i.FieldName = "Description";
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.ClientEnabled = (row == null || !row.IsAddressLinked);
+                            s.Properties.EnableClientSideAPI = true;
+                            s.Properties.ClientInstanceName = "DescriptionTextBox";
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.Caption = "Country";
+                        i.FieldName = "CountryID";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.ClientEnabled = (row == null || !row.IsAddressLinked);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "ID";
+                            s.Properties.EnableClientSideAPI = true;
+                            s.Properties.ClientInstanceName = "CountryComboBox";
+                            s.Properties.DataSource = Model.Countries;
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.FieldName = "SourceContactShortcutID";
+                        i.Caption = "";
+                        i.SetNestedContent(() => {
+                            ViewContext.Writer.Write(Html.Hidden("SourceContactShortcutID").ToHtmlString());
+                        });
+                    });
+                    var index = 0;
+                    foreach (var column in Model.Columns.Where(col => col.Name.StartsWith("CustomProperty.") && (col.ShowInGrid || col.ShowInDetail)))
+                    {
+                        var value = row != null && row.CustomProperties.Any(p => p.Name == column.Caption) ? row.CustomProperties.First(p => p.Name == column.Caption).Value : "";
+                        var type = Model.AllowedPropertiesObjectLink.First(p => p.Name == column.Caption).Type;
+                        string enums = "";
+
+                        if (type == ObjectPropertyType.Void)
+                        {
+                            continue;
+                        }
+                        flSettings.Items.Add(i =>
+                        {
+                            i.FieldName = column.Caption;
+                            switch (type)
+                            {
+                                case ObjectPropertyType.Bool:
+                                    i.NestedExtension().CheckBox(s =>
+                                    {
+                                        s.Properties.ClientInstanceName = "CustomPropertyEditor_" + index;
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "' == 'C' ? true : false);}";
+                                    });
+                                    break;
+                                case ObjectPropertyType.Enum:
+                                    i.NestedExtension().ComboBox(s =>
+                                    {
+                                        s.Properties.ClientInstanceName = "CustomPropertyEditor_" + index;
+                                        column.AllowedValues.Select(v => ($"{{\"id\":{v.Key},\"value\":\"{v.Value}\"}}")).ToList().ForEach(v => enums += v + ",");
+                                        enums = ("[" + enums.TrimEnd(',') + "]").Replace("\"{", "{").Replace("}\"", "}");
+                                        var script = "function(s, e) {var source = '" + enums + "';  var value = ('" + value + "');" +
+                                        " var lang = '" + Model.Language + "'; " +
+                                        "        JSON.parse(source).forEach(v => {	 " +
+                                        "            if (v.value.Localizations) { " +
+                                        "                if ((v.value.Localizations[lang] || v.value.Localizations[\"en\"])) { " +
+                                        "                    v.value = v.value.Localizations[lang] || v.value.Localizations[\"en\"]; " +
+                                        "                } else { " +
+                                        "                    v.value = \"(none)\"; " +
+                                        "                } " +
+                                        "            } " +
+                                        "			s.AddItem(v.value, v.id); " +
+                                        "	s.SetValue(value);	});	 " +
+                                        "}";
+                                        s.Properties.ClientSideEvents.Init = script;
+                                    });
+                                    break;
+                                case ObjectPropertyType.Int:
+                                case ObjectPropertyType.Float:
+                                    i.NestedExtension().SpinEdit(s =>
+                                    {
+                                        s.Properties.ClientInstanceName = "CustomPropertyEditor_" + index;
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "');}";
+                                    });
+                                    break;
+                                default:
+                                    i.NestedExtension().TextBox(s =>
+                                    {
+                                        s.Properties.ClientInstanceName = "CustomPropertyEditor_" + index;
+                                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                                        s.ShowModelErrors = true;
+                                        s.Width = Unit.Percentage(100);
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "');}";
+                                    });
+                                    break;
+                            }
+                            index++;
+                        });
+
+                    }
+
+                    if (row != null)
+                    {
+                        flSettings.Items.Add(i =>
+                        {
+                            i.FieldName = "OldSourceAddressID";
+                            i.Caption = "";
+                            i.SetNestedContent(() => {
+                                ViewContext.Writer.Write(Html.Hidden("OldSourceAddressID", row.ID).ToHtmlString());
+                            });
+                        });
+                    }
+                    flSettings.Items.Add(i =>
+                    {
+                        i.ShowCaption = DefaultBoolean.False;
+                    }).SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write("<div style='float:right'>");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnUpdate";
+                            btnSettings.Text = "Update";
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ сontactDetailsAddress" + Model.ID + ".UpdateEdit(); }";
+                        }).Render();
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnCancel";
+                            btnSettings.Text = "Cancel";
+                            btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ сontactDetailsAddress" + Model.ID + ".CancelEdit(); }";
+                        }).Render();
+                        ViewContext.Writer.Write("</div>");
+                    });
+                })
+                .Bind(GetRow(c.Grid))
+                .Render();
+            });
+
+            settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+            {
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            });
+
+        }
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsBehavior.AllowDragDrop = false;
+    });
+
+    grid.SetEditErrorText("");
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.Address).GetHtml()

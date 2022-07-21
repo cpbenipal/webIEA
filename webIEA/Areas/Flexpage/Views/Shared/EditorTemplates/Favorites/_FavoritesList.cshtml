@@ -1,0 +1,6 @@
+﻿@model Flexpage.Abstract.DTO.FavoritesViewModel
+
+@foreach(var item in Model.FavoriteItems)
+{
+    <p><a href='@item.Url'>@item.Name</a></p>
+}

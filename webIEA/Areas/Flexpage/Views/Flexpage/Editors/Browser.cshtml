@@ -1,0 +1,68 @@
+﻿@using System.Web.Configuration
+@model Flexpage.Models.BrowserModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('FILES BROWSER', '#fp_BrowserBlockEditorContainer');
+</script>
+
+<div id="fp_BrowserBlockEditorContainer" class="page-browser-block">
+    @using (Ajax.BeginForm("UpdateBrowser", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_BrowserBlockEditorContainer" }, new { id = "fp_BrowserBlockEditorForm" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.ContactEnumerationAlias)
+        @Html.HiddenFor(m => m.FolderContentAlias)
+        @Html.HiddenFor(m => m.FolderTreeListAlias)
+        <div class="modal-body">
+            <div class="row form-group">
+                <div class="col-md-12">
+                    <h4>General</h4>
+                </div>
+                <div class="col-md-12">
+                    <div class="row form-group">
+                        <div class="col-md-4">
+                            <label>Show search control</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    @Html.CheckBoxFor(m => m.BrowserSearch)
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4">
+                            <label>Enable contacts tab</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    @Html.CheckBoxFor(m => m.Contacts)
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4">
+                            <label>Enable context menu</label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    @Html.CheckBoxFor(m => m.ContextMenu)
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--#folder content modal-->
+    }
+</div>

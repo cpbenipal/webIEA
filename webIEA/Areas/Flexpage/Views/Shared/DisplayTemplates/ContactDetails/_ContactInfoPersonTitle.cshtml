@@ -1,0 +1,33 @@
+﻿@model Pluritech.Contact.Abstract.DTO.PersonViewModel
+
+@if ((bool?)ViewBag.Edit == true)
+{
+    if (Model.Type == Pluritech.Contact.Abstract.DTO.eContactType.Person)
+    {
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Title)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DevExpress().ButtonEditFor(m => m.Title).GetHtml()
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+        </div>
+    }
+}
+else
+{
+    if (Model.Type == Pluritech.Contact.Abstract.DTO.eContactType.Person)
+    {
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Title)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.Title)
+            </div>
+        </div>
+    }
+}

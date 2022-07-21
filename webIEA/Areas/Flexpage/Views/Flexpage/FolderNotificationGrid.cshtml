@@ -1,0 +1,100 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+
+@model List<Pluritech.Notifications.Abstract.DTO.FolderNotificationsEditorModel>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "FolderNotificationGrid";
+    settings.CallbackRouteValues = new { Controller = "Notifications", Action = "FolderNotificationsGrid" };
+
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Link;
+    settings.CommandColumn.ShowClearFilterButton = true;
+    settings.CommandColumn.ShowDeleteButton = false;
+    settings.CommandColumn.ShowEditButton = false;
+    settings.CommandColumn.ShowNewButton = false;
+
+    var button = new GridViewCommandColumnCustomButton()
+    {
+        ID = "customEditBtn",
+        Text = "Edit",
+    };
+    settings.CommandColumn.CustomButtons.Add(button);
+
+    button = new GridViewCommandColumnCustomButton()
+    {
+        ID = "customDeleteBtn",
+        Text = "Delete",
+    };
+
+    settings.CommandColumn.CustomButtons.Add(button);
+
+    settings.SettingsText.EmptyDataRow = "No notifications are enabled at the time. Use Pluriworks browser to add one.";
+
+    settings.KeyFieldName = "FolderID";
+    settings.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+    settings.Settings.ShowFilterRow = true;
+    settings.Settings.ShowFooter = false;
+
+    settings.SettingsBehavior.ConfirmDelete = true;
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Path";
+        column.Caption = "Folder";
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Notification";
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Settings.AllowSort = DefaultBoolean.False;
+        column.SetDataItemTemplateContent(c =>
+        {
+            int i = 0;
+            if ((bool?)DataBinder.Eval(c.DataItem, "IsNew") == true){
+                Html.DevExpress().Image(img =>
+                {
+                    img.Name = "Img" + c.VisibleIndex + "_" + i;
+                    i++;
+                    img.Properties.EmptyImage.IconID = "actions_additem_16x16office2013";
+                }).Render();
+            }
+            if ((bool?)DataBinder.Eval(c.DataItem, "IsEdited") == true){
+                Html.DevExpress().Image(img =>
+                {
+                    img.Name = "Img" + c.VisibleIndex + "_" + i;
+                    i++;
+                    img.Properties.EmptyImage.IconID = "edit_edit_16x16office2013";
+                }).Render();
+            }
+            if ((bool?)DataBinder.Eval(c.DataItem, "IsDeleted") == true){
+                Html.DevExpress().Image(img =>
+                {
+                    img.Name = "Img" + c.VisibleIndex + "_" + i;
+                    i++;
+                    img.Properties.EmptyImage.IconID = "actions_removeitem_16x16office2013";
+                }).Render();
+            }
+        });
+    });
+
+    settings.CustomUnboundColumnData += (s, e) =>
+    {
+        if (e.Column.FieldName == "Notification")
+        {
+            string value = "";
+            if((bool)e.GetListSourceFieldValue("IsNew"))
+                value += "(+) ";
+            if ((bool)e.GetListSourceFieldValue("IsEdited"))
+                value += "(*) ";
+            if ((bool)e.GetListSourceFieldValue("IsDeleted"))
+                value += "(-) ";
+            e.Value = value;
+        }
+    };
+
+    settings.ClientSideEvents.CustomButtonClick = "function(s,e){NotificationsCustomButtonClick(s,e)}";
+
+}).Bind(Model).GetHtml()

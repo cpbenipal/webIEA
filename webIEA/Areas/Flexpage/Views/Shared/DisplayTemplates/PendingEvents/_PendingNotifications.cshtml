@@ -1,0 +1,72 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Domain.Enum
+@using Flexpage.Helpers;
+@using Pluritech.Contact.Abstract.DTO;
+
+@model List<PublishingQueueEmail>
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_PendingEvents_Notification_Grid";
+    settings.CallbackRouteValues = new
+    {
+        Controller = "Admin",
+        Action = "PendingEvents_NotificationUpdate",
+    };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PendingEvents_NotificationDelete" };
+    settings.Width = Unit.Percentage(100);
+    settings.KeyFieldName = "FileID";
+
+    settings.Columns.Add(column =>
+    {
+        column.Visible = false;
+        column.Name = "FileID";
+        column.FieldName = "FileID";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Visible = false;
+        column.Name = "ContactID";
+        column.FieldName = "ContactID";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Date";
+        column.FieldName = "Date";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "File Name";
+        column.FieldName = "FileName";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Contact";
+        column.FieldName = "ContactName";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Address";
+        column.FieldName = "Address";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Notification";
+        column.FieldName = "Notification";
+    });
+    settings.HtmlDataCellPrepared = (sender, e) =>
+    {
+        var id = e.GetValue("FileID");
+        if (id == null)
+            return;
+        var ContactID = e.GetValue("ContactID");
+        var Address = e.GetValue("Address");
+        e.Cell.Attributes.Add("data-rowId", id.ToString());
+        e.Cell.Attributes.Add("data-contactID", ContactID.ToString());
+        e.Cell.Attributes.Add("data-address", Address.ToString());
+    };
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    if ((bool?)ViewBag.IsAdmin == true)
+    {
+        settings.ClientSideEvents.ContextMenu = "fp_contextMenuNotifications";
+    }
+}).Bind(Model).GetHtml()

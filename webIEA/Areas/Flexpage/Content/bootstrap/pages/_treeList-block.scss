@@ -1,0 +1,58 @@
+@import "../variables";
+
+.treeList-block {
+ }
+
+#fp_FolderTreeListEditorContainer {
+    .image {
+        display: flex;
+
+        .ImageFileNameLabel {
+            padding-top: 4px;
+            margin-right: 5px;
+        }
+
+        .remove {
+            padding-top: 4px;
+            margin-left: 5px;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        #fu_CollapseImage, #fu_ExpandImage, #fu_NoExpandImage {
+            display: inline-block;
+
+            #fu_CollapseImage_AddUploadR, #fu_ExpandImage_AddUploadR, #fu_NoExpandImage_AddUploadR,
+            #fu_CollapseImage_AddUploadPanelR, #fu_ExpandImage_AddUploadPanelR, #fu_NoExpandImage_AddUploadPanelR {
+                display: none;
+            }
+
+            [class*=' dxucBrowseButton'], [class^='dxucBrowseButton'] {
+                margin-top: 4px;
+                font-size: 14px;
+
+                a:hover {
+                    color: #000 !important;
+                }
+            }
+
+            [class*=' dxucTextBox'], [class^='dxucTextBox'] {
+                &.fileUpload {
+                    display: none;
+                }
+            }
+
+            [class*=' dxucInputs'], [class^='dxucInputs'] {
+                padding-top: 3px;
+            }
+
+            [class*=' dxucInputs'], [class^='dxucInputs'], [class*=' dxucButton'], [class^='dxucButton'] {
+                display: inline-block;
+
+                tr {
+                    display: inline;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿@model Flexpage.Models.FAQModel
+
+
+<!--General settings-->
+<div id="general" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show sections filter</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowSectionsFilter, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show subsections filter</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowSubsectionsFilter, "SliderCheckbox")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show languages filter</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowLanguagesFilter, "SliderCheckbox")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

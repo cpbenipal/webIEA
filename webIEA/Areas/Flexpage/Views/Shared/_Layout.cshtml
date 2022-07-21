@@ -1,0 +1,197 @@
+﻿@using System.Web.Configuration
+<!DOCTYPE html>
+<html>
+<head>
+    @*
+        !!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!
+
+        In this file you need to specify an area explicitly for Html.Action helper.
+
+        Example: Html.Action("ActionName", "ControllerName", new { area = "Flexpage" })
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    *@
+
+
+    @{
+        var googleAnalyticsId = WebConfigurationManager.AppSettings["GoogleAnalyticsId"];
+        var url = Request.Path.Substring(1);
+        var route = ((Route)RouteTable.Routes["Default"]).Defaults;
+        if(string.IsNullOrEmpty(url) || url.Equals(route["controller"].ToString(), StringComparison.OrdinalIgnoreCase))
+        {
+            url = $"{route["controller"]}/{route["action"]}";
+        }
+        var admin = Html.Action("IsAdmin", "Layout", new { area = "Flexpage" }).ToHtmlString();
+    }
+
+    @Html.Action("GenerateMetatags", "Page", new { area = "Flexpage", alias = url })
+
+    @if(!string.IsNullOrEmpty(googleAnalyticsId))
+    {
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsId"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '@googleAnalyticsId');
+        </script>
+    }
+
+    @Styles.Render("~/bundles/Flexpage/bootstrap/css")
+    @Styles.Render("~/bundles/Flexpage/Content/css")
+    @Scripts.Render("~/bundles/Flexpage/jquery")
+    @Scripts.Render("~/bundles/Flexpage/jqueryunob")
+    @Scripts.Render("~/bundles/Flexpage/bootstrap")
+    @Scripts.Render("~/bundles/Flexpage/jqueryval")
+    @Scripts.Render("~/bundles/Flexpage/keyframes")
+    @Scripts.Render("~/bundles/Flexpage/colorpicker")
+    @Scripts.Render("~/bundles/Flexpage/datepicker")
+    @Scripts.Render("~/bundles/Flexpage/dropzone")
+    @Scripts.Render("~/bundles/Flexpage/cookie-manager")
+
+    @Html.Action("GenerateCustomCss", "CSSSettings", new { area = "Flexpage" })
+    @Html.Action("GenerateCustomJs", "Page", new { area = "Flexpage", alias = url })
+    @Html.Action("GenerateCustomCss", "Page", new { area = "Flexpage", alias = url })
+
+</head>
+<body class="@(admin=="True"?"admin":"")">
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+    @*required by image effects*@
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+        <filter id="blur">
+            <feGaussianBlur stdDeviation="3" />
+        </filter>
+    </svg>
+
+    @Scripts.Render("~/bundles/Flexpage/respond")
+    @Scripts.Render("~/bundles/Flexpage/popper")
+
+    @Scripts.Render("~/bundles/Flexpage/coockescript")
+    @Styles.Render("~/bundles/Flexpage/coockestyle")
+
+    @* Devexpress resources (with the exception of navigation and layout) are moved to the database resources (flexpage.BlockResource).
+        If a block is working incorrectly, do not uncomment them and instead add the required resource to the database.
+        Exceptions can be made for static controls without blockwrappers.
+        If a resource is required for creating a block, consider adding it to _PopupLayout.cshtml instead.*@
+    @Html.DevExpress().GetStyleSheets(
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout }
+    )
+
+    @Html.DevExpress().GetScriptsEx(
+            new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout }
+
+        )
+
+    <script type="text/javascript">
+        var fp_settings = {};
+        fp_settings['debug'] = @(WebConfigurationManager.AppSettings["Web:Debug"]);
+        fp_settings['isAdmin'] = "@(Html.Action("IsAdmin", "Layout", new { area = "Flexpage" }))" == "True";
+        fp_settings['isContactsAdmin'] ="@(Html.Action("IsContactsAdmin", "Layout", new { area = "Flexpage" }))"== "True";
+    </script>
+
+    @Scripts.Render("~/Flexpage/Content/js")
+    @Scripts.Render("~/Flexpage/Content/ImageGallery/js")
+
+
+    @Html.Action("NavigationBar", "NavigationBar", new { area = "Flexpage", alias = url })
+
+
+    <nav class="message-area" id="message-area">
+        <div class="message-area-text" id="message-area-text"></div>
+    </nav>
+
+    @*   <!--menu navigation-->
+        <nav class="navbar navbar-default fp_navbar">
+            <div class="container fp_flex fp_align-items-center fp_justify-content-center fp_toolbar">
+                <div class="fp_flex fp_align-items-center fp_justify-content-center fp_logo">
+                    @Html.Action("Picture", "PictureBlock", new { area = "Flexpage", alias = "LogoVer1" })
+                </div>
+                <div class="fp_flex fp_align-items-center fp_justify-content-center fp_sitemapMenu">
+                    @Html.Action("SitemapMenu", "MenuBlock", new { alias = "TopmostMenu", area = "Flexpage", isStatic = true })
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <!--menu nav end-->
+    *@
+
+    @if ((string)System.Configuration.ConfigurationManager.AppSettings["EnableSessionTimeoutWarning"] == "true")
+    {
+        <script type="text/javascript">
+        @{int? timeout; }
+        @try
+        {
+            timeout = Session.Timeout;
+        }
+        catch (NullReferenceException e)
+        {
+            timeout = null;
+        }
+        var global_sess_expirationSeconds = @(timeout == null ? 20 : Session.Timeout)*60;
+        var global_sess_warningSeconds = @System.Configuration.ConfigurationManager.AppSettings["SessionWarningDelaySecond"].ToString();
+        var global_LogoutUrl = '@Url.Action("Logout", "Account")';
+        var global_sess_resetPage = '@Url.Action("RenewSession", "Session")';
+        var global_sess_serverCheckDelaySeconds = @System.Configuration.ConfigurationManager.AppSettings["SessonTimeoutCheckDelaySecond"].ToString();
+        var isUserLoggedIn = new Boolean (@Request.IsAuthenticated.ToString().ToLower());
+        </script>
+    }
+    <script>
+        function displayMessage(text) {
+            document.getElementById("message-area").style.display = "block";
+            document.getElementById("message-area-text").innerHTML = text;
+        }
+        function hideMessage() {
+            //document.getElementsByClassName("navbar")[0].style.marginTop = "20px";
+            document.getElementById("message-area").style.display = "none";
+            document.getElementById("message-area-text").innerHTML = "";
+        }
+
+    </script>
+
+    <div class="row">
+        <div class="col-md-12 container center">
+            @{
+                string maintenanceText = ViewBag._Maintenance;
+            }
+            @if (maintenanceText != null)
+            {
+                @Html.Partial("~/Areas/Flexpage/Views/Shared/Maintenance.cshtml", maintenanceText)
+            }
+            @Html.Action("GenerateResources", "Layout", new { area = "Flexpage" })
+            @RenderBody()
+            <hr />
+            <footer class="fp_footer">
+            </footer>
+        </div>
+
+    </div>
+    @Html.Action("Disclaimer", "Layout", new { area = "Flexpage" })
+
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+        jQuery(".align-box").click(function () {
+            jQuery(this).find(".rotate").toggleClass("down");
+        });
+        jQuery('body').on('click', '.disabled', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        });
+        jQuery(document).ready(function () {
+            jQuery('[data-toggle="tooltip"]').tooltip({
+                placement: 'top'
+            });
+        });
+    </script>
+
+    @if ((string)System.Configuration.ConfigurationManager.AppSettings["EnableSessionTimeoutWarning"] == "true")
+    {
+        <script src="~/Areas/Flexpage/Content/Scripts/session-timeout.es5.min.js"></script>
+    }
+
+
+</body>
+</html>

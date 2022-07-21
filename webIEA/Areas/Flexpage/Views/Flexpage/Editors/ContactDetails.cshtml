@@ -1,0 +1,38 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+
+<script>
+    fp_popupControlChangeTitle('CONTACT DETAILS', '#fp_ContactDetailsBlockEditorContainer');
+    (function () {
+        fp_loadScripts("/Areas/Flexpage/Content/Scripts/ContactDetails/contactDetailsEdit.es5.min.js");
+    })();
+    var fp_typeBlock = '@Model.BlockType';
+    var fp_blockEditorContainer = 'fp_' + fp_typeBlock + 'BlockEditorContainer';
+</script>
+
+
+<div id="fp_ContactDetailsBlockEditorContainer" class="flexpage page-cms">
+    @using (Ajax.BeginForm("UpdateContactDetails", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_ContactDetailsBlockEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_ContactDetailsBlockEditorForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+
+        <div class="row" id="folder-content">
+            <ul class="nav nav-pills tabs-navigation">
+                <li class="active"><a data-toggle="pill" href="#sources-settings">Sources settings</a></li>
+                <li><a data-toggle="pill" href="#general-settings">General settings</a></li>
+                @if (Model.ColMappings.Count > 0)
+                {
+                    <li><a data-toggle="pill" href="#columns">Columns</a></li>
+                }
+            </ul>
+            <div class="tab-content">
+                @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactDetails/_Sources.cshtml", Model);}
+                @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactDetails/_General.cshtml", Model);}
+                @if (Model.ColMappings.Count > 0)
+                {
+                    {Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/ContactDetails/_Columns.cshtml", Model);}
+                }
+                </div>
+        </div>
+    }
+</div>

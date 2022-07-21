@@ -1,0 +1,115 @@
+﻿@using Flexpage.Models
+@using System.Web.UI.WebControls
+@using Flexpage.Helpers;
+
+@model Flexpage.Models.PendingEventsModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+    var loadScripts = false;
+    var endCallbackGrid = false;
+     (function () {
+        setTimeout(function () {
+                fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                    fp_loadScripts(EventManager.settings.PathJs.pendingEvents, 'EventManagerPendingEvents', function () {
+                        var args = { ID:@(Model.ID) };
+                        var pendingEventsEM@(Model.ID) = new EventManagerPendingEvents(args);
+                        loadScripts = true; 
+                        if (loadScripts && endCallbackGrid) {
+                            visible();
+                        }
+                });
+            });
+         }, 2000);
+
+    })();
+    function visible() {
+        setTimeout(function () {
+            $(".fp_pendingEvents").removeClass("hidden-visbility");
+            $(".fp_pendingEvents-empty").addClass("hidden");
+        },2000);
+    }
+    function endCallback() {
+        endCallbackGrid = true;
+        if (loadScripts && endCallbackGrid) {
+            visible();
+        }
+    }
+    function fp_contextMenuFiles(s, e) {
+           
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.showContextMenu,
+            { "ID": '@Model.ID.ToString()', "pageY": e.pageY, "pageX": e.pageX, "event": e, "typeBlock":"PendingEvents_File" });
+            return false;
+    }
+    function fp_contextMenuNotifications(s, e) {
+           
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.showContextMenu,
+            { "ID": '@Model.ID.ToString()', "pageY": e.pageY, "pageX": e.pageX, "event": e, "typeBlock": "PendingEvents_Notification" });
+            return false;
+    }
+    function fp_initPopupMenu@(Model.ID.ToString())(s, e) {
+    }
+        
+    function fp_popupMenuItemClick@(Model.ID.ToString())(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.clickContextMenu,
+            { "ID": '@Model.ID.ToString()', "event": e });
+        EventManager.bus.publish(EventManager.settings.Events.hideAllContextMenu, { "event": e });
+    }
+</script>
+@if ((bool?)ViewBag.IsAdmin == true) { 
+    <div class="fp_pendingEvents-settings">
+        @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/PendingEvents/_PendingSettings.cshtml", Model)
+    </div>
+}
+<span class="fp_pendingEvents-block" style="padding-left:15px;">
+    <span class="fp_pendingEvents-label">
+        Refresh every
+    </span>
+    <span class="fp_pendingEvents-edit">
+        @Html.DevExpress().SpinEdit(settings =>
+        {
+            settings.Name = "RefreshEvery";
+            settings.Number = 60;
+            settings.Width = 60;
+         }).GetHtml()
+    </span>
+    <span class="fp_pendingEvents-label">
+        seconds
+    </span>
+</span>
+@Html.DevExpress().PageControl(
+    panelSettings =>
+    {
+        panelSettings.Name = "tabControl" + Model.ID;
+        panelSettings.Width = Unit.Percentage(100);
+        panelSettings.Height = 100;
+
+        panelSettings.TabPages.Add("Pending files", "PendingFiles").SetContent(() =>
+        {
+            @Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/PendingEvents/_PendingFiles.cshtml", Model.Files);
+        });
+
+        panelSettings.TabPages.Add("Pending notifications", "PendingNotifications").SetContent(() =>
+        {
+            @Html.RenderPartial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/PendingEvents/_PendingNotifications.cshtml", Model.Emails);
+        });
+
+
+    }).GetHtml()
+<div class="fp_pendingEventsPopupMenu">
+    @Html.DevExpress().PopupMenu(
+        settings =>
+        {
+            settings.Name = "PopupMenu" + Model.ID.ToString();
+            if((bool?)ViewBag.IsAdmin == true) {
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Delete";
+                    item.Name = "Delete";
+                    item.Image.IconID = IconID.EditDelete16x16office2013;
+                });
+            }
+            settings.ClientSideEvents.Init = ("fp_initPopupMenu" + Model.ID.ToString());
+            settings.ClientSideEvents.ItemClick = ("fp_popupMenuItemClick" + Model.ID.ToString());
+
+        }).GetHtml()
+</div>

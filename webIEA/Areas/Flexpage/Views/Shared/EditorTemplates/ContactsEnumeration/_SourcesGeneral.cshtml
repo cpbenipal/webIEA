@@ -1,0 +1,142 @@
+﻿@model Flexpage.Models.ContactsEnumerationModel
+@{ 
+    var sourceType = 1;
+    if(Model.SourceType == 0)
+    {
+        sourceType = 0;
+    }
+    if(Model.SourceType == 1 || Model.SourceType == 2)
+    {
+        sourceType = 1;
+    }
+    if(Model.FileSource == 2 || Model.SourceType == 3)
+    {
+        sourceType = 3;
+    }
+}
+<!--Sources settings-->
+<div id="sources-settings" class="tab-pane fade in active">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            @Html.HiddenFor(m => m.FilderLogin)
+            @Html.HiddenFor(m => m.FilderFolder)
+            <div class="col-md-12">
+                <label for="fileSource" style="margin-bottom:0">@Model.ContentType.GetDisplay() Source:</label>
+                <div class="form-fields">
+                    <label class="radio-inline col-xs-12">
+                        <input type="radio" name="SourceType" value="1" @(sourceType == 1  ? "checked='checked'" : "") />Use this Pluriworks folder:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see contacts from the specified folder"></i>
+                    </label>
+
+                    <div class="input-group custom-folder-field sourceType @(sourceType== 1  ? "" : "dissable")" for="SourceType1">
+                        @Html.TextBoxFor(m => m.PWFolderName, new { @class = "form-control" })
+                        <label class="input-group-btn">
+                            <span class="btn" onclick="fp_folderContent_chooseFolder()">
+                                <i class="far fa-folder"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-fields sourceType @(sourceType== 1  ? "" : "dissable")" for="SourceType1">
+                    <label class="checkbox col-xs-12" style="margin-left: 15px;">
+                        <input class="checkbox" type="checkbox" name="WithParameter" value="@((sourceType== 1 &&Model.WithParameter).ToString().ToLower())" @(sourceType == 1 && Model.WithParameter ? "checked='checked'" : "") />With parameter:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Advanced option: enable this checkbox to add a filter parameter into the folder name. Ex: \path\{year}\"></i>
+                    </label>
+                    @Html.TextBoxFor(m => m.Filter, new { @class = "form-control" })
+                </div>
+                <div class="form-fields">
+                    <label for="file-source col-xs-12">
+                        Enumerate:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show contacts from specified folder only or from it's subfolders"></i>
+                    </label>
+                </div>
+                <div class="form-fields sourceType @(sourceType== 1 ? "" : "dissable")" for="SourceType1">
+                    @Html.DropDownListFor(m => m.FileSource, new SelectList(new List<object>
+                    {
+                        new {value = "0", text = "Specific Folder"},
+                        new {value = "1", text = "Folder and Subfolders"}
+                    }, "value", "text"), new { @class = "form-control" })
+                </div>
+                <div class="form-fields">
+                    <label class="radio-inline col-xs-12">
+                        <input type="radio" name="SourceType" value="0" @(sourceType == 0 ? "checked='checked'" : "") />Link this block to the following TreeList block:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see contacts from a folder selected in the linked tree list block"></i>
+                    </label>
+                </div>
+                <div class="form-fields sourceType @(sourceType == 0  ? "" : "dissable")" for="SourceType0">
+                    @Html.Hidden("SourceBlockAliasValue", Model.SourceBlockAlias)
+                    @Html.DropDownListFor(m => m.SourceBlockAlias, new SelectList(new List<string>())
+                        , new {@class = "form-control"})
+                </div>
+                <label class="radio-inline col-xs-12">
+                    <input type="radio" name="SourceType" value="3" @(sourceType == 3 ? "checked='checked'" : "") />Entire Site
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see the all contacts"></i>
+                </label>
+            </div>
+        </div>
+
+        @*
+        function fp_contactsEnumerationDisableFields(source) {
+            switch (source) {
+                case 'FileSource_Contacts': {
+                    $("#fp_contact_enumeration_sourceCriteria").toggle();
+                    $("#fp_contact_enumeration_lastDocQnty").toggle();
+                }
+            }
+        }
+        $(document).ready(function () {
+            $("#FileSource").change(function (e) {
+                alert($("#fp_contact_enumeration_sourceCriteria").length);
+                alert($("#fp_contact_enumeration_lastDocQnty").length);
+                $("#fp_contact_enumeration_sourceCriteria").toggle();
+                $("#fp_contact_enumeration_lastDocQnty").toggle();
+            });
+        });*@
+
+        @*@{Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Shared/EditorTemplates/Content/_ContentSources.cshtml", Model);}*@
+        <div class="col-md-6">
+            <div class="col-md-12">
+                
+               
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!--General settings-->
+<div id="general-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="row form-fields">
+                <div class="col-md-12">
+                    <label>Name:</label>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Text input" })
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Contacts</label>
+                </div>
+                <div class="col-md-12">
+                    <label class="radio-inline ">
+                        <input type="radio" name="ShowContacts" value="1" @(Model.ShowContacts ==Pluritech.Contact.Abstract.DTO.eContactType.Person ? "checked='checked'" : "") />Persons
+                    </label>
+                </div>
+                <div class="col-md-12">
+                    <label class="radio-inline">
+                        <input type="radio" name="ShowContacts" value="2" @(Model.ShowContacts == Pluritech.Contact.Abstract.DTO.eContactType.Company ? "checked='checked'" : "") />Companies
+                    </label>
+                </div>
+                <div class="col-md-12">
+                    <label class="radio-inline">
+                        <input type="radio" name="ShowContacts" value="0" @(Model.ShowContacts == Pluritech.Contact.Abstract.DTO.eContactType.None ? "checked='checked'" : "") />Both
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+</div>

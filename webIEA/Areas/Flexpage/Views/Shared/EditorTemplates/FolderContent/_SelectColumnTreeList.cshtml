@@ -1,0 +1,31 @@
+﻿@using System.Web.Mvc.Html
+@model Pluritech.Properties.Abstract.DTO.ContactsTreeList
+
+@using System.Web.UI.WebControls
+@using Pluritech.Pluriworks.Service.SelectColumn
+
+@Html.DevExpress().TreeList(settings =>
+{
+    settings.Name = "SettingsTreeList";
+    settings.CallbackRouteValues = new { Controller = "Export", Action = "SelectColumns", folderId = Model.FolderID, exportSearchQuery = Model.ExportSearchQuery, type = Model.type};
+    settings.Width = Unit.Percentage(100);
+    settings.SettingsSelection.Enabled = true;
+    settings.AutoGenerateColumns = false;
+    settings.KeyFieldName = "Id";
+    settings.ParentFieldName = "ParentId";
+
+    var baseColumn = new BaseColumn();
+    var nodes = Model.SelectColumnTreeList.Where(n => baseColumn.TelecomsChildColumns.Contains(n.Name) || baseColumn.AddressColumns.Contains(n.Name));
+    var parentNodes = Model.SelectColumnTreeList.Where(n => baseColumn.TelecomsNodes.Contains(n.Name) || baseColumn.MainAddressNodes.Contains(n.Name));
+    settings.CustomJSProperties = (sender, e) =>
+    {
+        e.Properties["cpNodes"] = Newtonsoft.Json.JsonConvert.SerializeObject(nodes.Select(n => new {Id = n.Id, ParentId = n.ParentId}));
+        e.Properties["cpParentNodes"] = Newtonsoft.Json.JsonConvert.SerializeObject(parentNodes.Select(n => new { Id = n.Id, ParentId = n.ParentId, Name = n.Name, ParentType = n.ParentType}));
+    };
+    settings.SettingsSelection.Recursive = true;
+    settings.Columns.Add("Name", "Name");
+    settings.Columns.Add("ParentType", "Parent Type").Visible = false;
+    settings.ClientSideEvents.Init ="(s, e) => fp_exportInit(s, e)";
+    settings.ClientSideEvents.NodeClick = "function(s, e){s.SelectNode(e.nodeKey, !(s.GetNodeCheckState(e.nodeKey) == \"Checked\"));}";
+    settings.ClientSideEvents.SelectionChanged = "function(s, e){}";
+}).Bind(Model.SelectColumnTreeList).GetHtml()

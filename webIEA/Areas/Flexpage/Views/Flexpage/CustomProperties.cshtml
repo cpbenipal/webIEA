@@ -1,0 +1,23 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.CustomPropertiesModel
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+   (function () {
+        setTimeout(function () {
+        fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+            fp_loadScripts(EventManager.settings.PathJs.customProperties, 'EventManagerCustomProperties', function () {
+             var args = { ID:@(Model.ID) };
+                var customPropertiesEM@(Model.ID) = new EventManagerCustomProperties(args);
+                $(".fp_customProperties").removeClass("hidden-visbility");
+                $(".fp_customProperties-empty").addClass("hidden");
+            });
+            });
+        }, 4000);
+    })();
+
+</script>
+<div class="fp_empty fp_customProperties-empty">Please wait while loading</div>
+<div class="fp_customProperties hidden-visbility ">
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/CustomProperties/_CustomProperties.cshtml", Model)
+</div>

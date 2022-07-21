@@ -1,0 +1,26 @@
+﻿@using Flexpage.Models
+@using Flexpage.Domain.Enum;
+@model Flexpage.Models.DimensionModel
+
+<div class="row">
+    <div class="col-md-2">
+        <label class="radio-inline form-label">
+            @Html.RadioButtonFor(m => m.Type, SizeType.Full, new { Checked = "checked" })Full
+        </label>
+    </div>
+    <div class="col-md-3">
+        <label class="radio-inline form-label">
+            @Html.RadioButtonFor(m => m.Type, SizeType.Custom)Custom
+        </label>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.EditorFor(m => m.CustomValue, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.CustomValueUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+        </div>
+    </div>
+</div>

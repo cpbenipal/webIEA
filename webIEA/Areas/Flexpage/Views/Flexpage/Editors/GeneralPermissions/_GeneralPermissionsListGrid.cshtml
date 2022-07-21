@@ -1,0 +1,29 @@
+﻿@using System.Web.UI.WebControls
+@model List<Flexpage.Models.ListPermissionsModel>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_ListPermissions";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "GetListPermissions", Id = 1 };
+    settings.Width = Unit.Percentage(100);
+    settings.KeyFieldName = "Id";
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = true; 
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Id";
+        column.Visible = false;
+    });
+
+    
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Permission";
+        column.Visible = true;
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.RowClick = "function(s,e) { generalPermissionService.clickRowListPermission(s,e);}";
+
+}).Bind(Model).GetHtml()

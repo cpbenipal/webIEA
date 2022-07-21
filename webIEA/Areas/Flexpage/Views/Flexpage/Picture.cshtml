@@ -1,0 +1,288 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+@using System;
+@using System.Globalization;
+@model Flexpage.Models.PictureModel
+
+
+@{
+
+    string cssClass = "";
+    string tintColor = "";
+    CultureInfo provider = new CultureInfo("en-us");
+    if (Model.Tint)
+    {
+        decimal opacity = ((decimal)(Model.TintOpacity != 0 ? Model.TintOpacity : 50)) / 100;
+        tintColor = string.Format(" style='--tint-color-var:{0};--tint-opacity-color-var:{1}; width:{2};height:{3}'"
+            , (!string.IsNullOrEmpty(Model.TintColor) ? Model.TintColor : "#7d7d7d")
+            , opacity.ToString(provider).Replace(',', '.')
+            , "100%"
+            , "100%");
+    }
+    if (Model.Blur)
+    {
+        cssClass += " picture-effect--blur";
+    }
+    if (Model.BlackAndWhite)
+    {
+        cssClass += " picture-effect--black-and-white";
+    }
+
+    string imageWidth = "auto";
+    string imageHeight = "auto";
+    if (Model.WidthType == SizeType.Full)
+    {
+        imageWidth = "100%";
+    }
+    else if (Model.WidthType == SizeType.Custom)
+    {
+        imageWidth = Model.CreateSizeString(Model.CustomWidth, Model.CustomWidthUnit, imageWidth);
+    }
+
+    if (!Model.ConstrainProportions)
+    {
+        if (Model.HeightType == SizeType.Full)
+        {
+            imageHeight = "100%";
+        }
+        else if (Model.HeightType == SizeType.Custom)
+        {
+            imageHeight = Model.CreateSizeString(Model.CustomHeight, Model.CustomHeightUnit, imageHeight);
+        }
+    }
+
+    string pictureBlockStyle = string.Format("width:{0}; height:{1};", imageWidth, imageHeight);
+
+    #region Texts Both Settings
+
+    bool sloganWithCallToAction = Model.ShowSlogan && Model.ShowCallToAction && Model.CallToAction.DisplayPosition != AlignedDisplayPosition.AlignPosition;
+
+    #endregion
+
+    #region Slogan settings
+
+    string sloganPadding = "0px";
+    sloganPadding = Model.CreateIndentString(Model.Slogan.Padding, sloganPadding);
+
+    string sloganMargin = "0px";
+    sloganMargin = Model.CreateIndentString(Model.Slogan.Margin, sloganMargin);
+
+    string sloganPositionClass = Model.GetPositionCssClass(Model.Slogan.Position);
+
+    string sloganEffectGlow = "";
+    string sloganCss = "";
+
+    string sloganOpacity = "";
+
+
+    sloganOpacity = (((decimal)(Model.Slogan.EffectOpacity != 0 ? Model.Slogan.EffectOpacity : 50)) / 100).ToString(provider);
+
+    switch (Model.Slogan.Effect)
+    {
+        case TextEffect.Glow:
+            {
+                decimal glowOpacity = ((decimal)(Model.Slogan.EffectOpacity != 0 ? Model.Slogan.EffectOpacity : 50)) / 100;
+                sloganEffectGlow = string.Format("--glow-color-var:{0};",
+                    !string.IsNullOrEmpty(Model.Slogan.EffectColor) ? Model.ToRGBA(Model.Slogan.EffectColor, glowOpacity) : string.Format("rgba(125, 125, 125, {0})", glowOpacity));
+                sloganCss = "text-effect--glow";
+            }
+            break;
+        case TextEffect.Shadow:
+            sloganCss = "text-effect--shadow";
+            break;
+    }
+
+    #endregion
+
+    #region Call to action settings
+
+    string callToActionPadding = "0px";
+    callToActionPadding = Model.CreateIndentString(Model.CallToAction.Padding, callToActionPadding);
+
+    string callToActionMargin = "0px";
+    callToActionMargin = Model.CreateIndentString(Model.CallToAction.Margin, callToActionMargin);
+
+    string callToActionPositionClass = !sloganWithCallToAction ? Model.GetPositionCssClass(Model.CallToAction.Position) : "";
+
+    string callToActionEffectGlow = "";
+    string callToActionCss = "";
+
+
+    string call2ActionOpacity = "";
+
+
+
+    call2ActionOpacity = (((decimal)(Model.CallToAction.EffectOpacity != 0 ? Model.CallToAction.EffectOpacity : 50)) / 100).ToString(provider);
+
+    switch (Model.CallToAction.Effect)
+    {
+        case TextEffect.Glow:
+            {
+                decimal glowOpacity = ((decimal)(Model.CallToAction.EffectOpacity != 0 ? Model.CallToAction.EffectOpacity : 50)) / 100;
+                callToActionEffectGlow = string.Format("--glow-color-var:{0};",
+                    !string.IsNullOrEmpty(Model.CallToAction.EffectColor) ? Model.ToRGBA(Model.CallToAction.EffectColor, glowOpacity) : string.Format("rgba(125, 125, 125, {0})", glowOpacity));
+                callToActionCss = "text-effect--glow";
+            }
+            break;
+        case TextEffect.Shadow:
+            callToActionCss = "text-effect--shadow";
+            break;
+    }
+
+    #endregion
+
+    string currentBlockID = string.Format("pictureBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+}
+
+@helper CreateSlogan(string padding, string margin, string color, string bgColor, string sloganOpacity, string cssClass, string sloganEffectGlow)
+{
+    <div style="padding:@padding; margin:@margin; background-color:@bgColor; opacity:@sloganOpacity"><span class='picture-slogan @cssClass' style='color:@color;@sloganEffectGlow'>@Model.LocalizedSloganText.NotEmptyLocalization</span></div>
+}
+
+@helper CreateSloganWithDiv(string sloganPositionClass, string padding, string margin, string color, string bgColor, string sloganOpacity, string cssClass, string sloganEffectGlow)
+{
+    @Html.Raw(string.Format("<div class='{0}'>", sloganPositionClass))
+    @CreateSlogan(padding, margin, color, bgColor, sloganOpacity, cssClass, sloganEffectGlow)
+    @Html.Raw("</div>")
+}
+
+@helper CreateCallToAction(string callToActionPositionClass, string padding, string margin, string color, string bgColor, string call2ActionOpacity, string cssClass, string effectGlow)
+{
+    @Html.Raw(string.Format("<div class='{0}' style='padding:{1}; margin:{2}; background-color:{3}; opacity:{4}'>", callToActionPositionClass, padding, margin, bgColor, call2ActionOpacity))
+    if (!string.IsNullOrEmpty(Model.CallToAction.Url) || !string.IsNullOrEmpty(Model.CallToAction.Page))
+    {
+        @Html.Raw(string.Format("<a href='{0}' target='_blank'", !string.IsNullOrEmpty(Model.CallToAction.Url) ? Model.CallToAction.Url : Model.CallToAction.Page))
+    }
+    @Html.Raw(string.Format("<span class='picture-calltoaction {2}' style='color:{1}; {3}'>{0}</span>", Model.LocalizedCallToActionText.NotEmptyLocalization, color, cssClass, effectGlow))
+    if (!string.IsNullOrEmpty(Model.CallToAction.Url) || !string.IsNullOrEmpty(Model.CallToAction.Page))
+    {
+        @Html.Raw("</a>")
+    }
+    @Html.Raw("</div>")
+}
+
+<div id="@currentBlockID" class="">
+    <div class="picture-block" style="@pictureBlockStyle">
+        @if (!string.IsNullOrEmpty(Model.LocalizedImage.NotEmptyLocalization))
+        {
+            if (!string.IsNullOrEmpty(Model.LocalizedUrl.NotEmptyLocalization))
+            {
+                @Html.Raw("<a href='" + Model.LocalizedUrl.NotEmptyLocalization + "'>")
+            }
+            if (Model.Tint)
+            {
+                @Html.Raw($"<figure id='figure-{Model.ID}' class='picture-effect--tint'" + tintColor + ">")
+            }
+
+            string url = String.Empty;
+            if (Model.WidthType == SizeType.Custom || Model.HeightType == SizeType.Custom)
+            {
+                url = "/GetThumb.ashx?img=" + System.Web.HttpUtility.UrlEncode(Model.LocalizedImage.NotEmptyLocalization);
+                if (Model.WidthType == SizeType.Custom)
+                {
+                    url += "&w=" + Model.CustomWidth;
+                }
+                if (Model.HeightType == SizeType.Custom)
+                {
+                    url += "&h=" + Model.CustomHeight;
+                }
+            }
+            else
+            {
+                url = Model.LocalizedImage.NotEmptyLocalization;
+            }
+
+            @Html.Raw(string.Format("<img src='{0}' alt='{1}' width='{2}' height='{3}' class='{4}' title='{5}' />",
+                url, Model.AlternateText
+                , (imageWidth == "auto" ? imageWidth : "100%")
+                , (imageHeight == "auto" ? imageHeight : "100%")
+                , cssClass
+                , Model.LocalizedTitle.NotEmptyLocalization))
+            if (Model.Tint)
+            {
+                @Html.Raw("</figure>")
+            }
+            if (!string.IsNullOrEmpty(Model.LocalizedUrl.NotEmptyLocalization))
+            {
+                @Html.Raw("</a>")
+            }
+
+            if (Model.ShowSlogan)
+            {
+                if (Model.ShowCallToAction)
+                {
+                    if (sloganWithCallToAction)
+                    {
+                        @Html.Raw(string.Format("<div class='{0}'>", sloganPositionClass))
+                        switch (Model.CallToAction.DisplayPosition)
+                        {
+                            case AlignedDisplayPosition.AboveSlogan:
+                                @CreateCallToAction(callToActionPositionClass, callToActionPadding, callToActionMargin, Model.CallToAction.ForeColor, Model.CallToAction.BackColor, call2ActionOpacity,
+                                    callToActionCss, callToActionEffectGlow)
+                                @CreateSlogan(sloganPadding, sloganMargin, Model.Slogan.ForeColor, Model.Slogan.BackColor, sloganOpacity, sloganCss, sloganEffectGlow)
+                                break;
+                            case AlignedDisplayPosition.BelowSlogan:
+                                @CreateSlogan(sloganPadding, sloganMargin, Model.Slogan.ForeColor, Model.Slogan.BackColor, sloganOpacity, sloganCss, sloganEffectGlow)
+                                @CreateCallToAction(callToActionPositionClass, callToActionPadding, callToActionMargin, Model.CallToAction.ForeColor, Model.CallToAction.BackColor, call2ActionOpacity,
+                                    callToActionCss, callToActionEffectGlow)
+                                break;
+                        }
+                        @Html.Raw("</div>")
+                    }
+                    else
+                    {
+                        @CreateSloganWithDiv(sloganPositionClass, sloganPadding, sloganMargin, Model.Slogan.ForeColor, Model.Slogan.BackColor, sloganOpacity, sloganCss, sloganEffectGlow)
+                        @CreateCallToAction(callToActionPositionClass, callToActionPadding, callToActionMargin, Model.CallToAction.ForeColor, Model.CallToAction.BackColor, call2ActionOpacity,
+                            callToActionCss, callToActionEffectGlow)
+                    }
+                }
+                else
+                {
+                    @CreateSloganWithDiv(sloganPositionClass, sloganPadding, sloganMargin, Model.Slogan.ForeColor, Model.Slogan.BackColor, sloganOpacity, sloganCss, sloganEffectGlow)
+                }
+            }
+            else if (Model.ShowCallToAction)
+            {
+                @CreateCallToAction(callToActionPositionClass, callToActionPadding, callToActionMargin, Model.CallToAction.ForeColor, Model.CallToAction.BackColor, call2ActionOpacity,
+                    callToActionCss, callToActionEffectGlow)
+            }
+        }
+        else
+        {
+            @Html.Raw("Empty")
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    (function() {
+        var addCssRule = function( selector, rule) {
+            if (document.styleSheets) {
+                if (!document.styleSheets.length) {
+                    var head = document.getElementsByTagName('head')[0];
+                    head.appendChild(bc.createEl('style'));
+                }
+
+                var i = document.styleSheets.length-1;
+                var ss = document.styleSheets[i];
+
+                var l=0;
+                if (ss.cssRules) {
+                    l = ss.cssRules.length;
+                } else if (ss.rules) {
+                    // IE
+                    l = ss.rules.length;
+                }
+
+                if (ss.insertRule) {
+                    ss.insertRule(selector + ' {' + rule + '}', l);
+                } else if (ss.addRule) {
+                    // IE
+                    ss.addRule(selector, rule, l);
+                }
+            }
+        };
+
+        addCssRule('#figure-@Model.ID:before', 'margin: 0 -'+ ($('#figure-@Model.ID img').width() / 2) +'px');
+    }());
+</script>

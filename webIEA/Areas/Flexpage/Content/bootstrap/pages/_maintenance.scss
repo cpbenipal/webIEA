@@ -1,0 +1,65 @@
+@import "../variables";
+
+.page-maintenance {
+    .pull-left {
+        float: left;
+    }
+
+    &__container {
+        padding-top: 20px;
+        min-height: 355px;
+    }
+
+    .maintenance-date-time {
+        padding: 15px 0;
+
+        &__title {
+            padding: 0 10px;
+            margin-top: 7px;
+        }
+
+        &__btnCheckBox {
+            margin-top: 7px;
+        }
+    }
+
+    .dxeCaptionCell.dxeCaptionVATSys.dxeTextEditCTypeSys {
+        padding-top: 9px;
+    }
+
+    .maintenance-date {
+        position: fixed;
+        z-index: 1201;
+        margin-left: 250px;
+
+        .dxpcDropDown {
+            top: 31px !important;
+            left: 11px !important;
+        }
+
+        .dxflCaptionCellSys {
+            display: none;
+        }
+    }
+    .fb_maintenance_captionStyle{
+        margin-bottom:0;
+    }
+    .maintenance-redirect {
+        padding: 15px 0;
+
+        &__title {
+            padding: 0 10px;
+        }
+
+        &__btnRadio {
+            margin-top: 10px;
+        }
+    }
+
+    .maintenance-pages-select {
+        position: fixed;
+        width: 200px;
+        z-index: 1200;
+        margin-top: -13px;
+    }
+}

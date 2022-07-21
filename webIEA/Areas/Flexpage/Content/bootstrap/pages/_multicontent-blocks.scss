@@ -1,0 +1,240 @@
+@import "../variables";
+
+.page-multicontent-block {
+
+  #multicontent-block {
+
+    .modal-body {
+      margin-bottom: 50px;
+
+      .left {
+        a {
+          text-decoration: none;
+          color: $warm-grey;
+        }
+      }
+      .right {
+        a {
+          text-decoration: none;
+          color: $warm-grey;
+        }
+      }
+
+      h5 {
+        font-size: 16px;
+        margin: 50px 0;
+      }
+
+      .block-title {
+        font-family: 'Muli', sans-serif;
+        font-weight: 600;
+        margin-top: 15px;
+        text-decoration: none;
+      }
+      .content-box {
+        width: 200px;
+        display: block;
+        margin: 0 auto;
+        padding: 30px;
+        position: relative;
+
+        img {
+          display: block;
+          margin: 0 auto;
+        }
+
+        .img-hover {
+          margin: 0 auto;
+          display: none;
+        }
+      }
+      .content-box:hover {
+        background-color: $white-two;
+        border-radius: 10px;
+
+        .img-hover {
+          display: block;
+        }
+        .img-main {
+          display: none;
+        }
+        a {
+          color: $dusk-blue;
+        }
+      }
+      p {
+        margin-top: 20px;
+      }
+    }
+  }
+  label {
+    font-weight: 400;
+  }
+  #multicolumn-block {
+    input[type='radio'] {
+      background-color: $white-clear;
+      border: 2px solid $gray-soft;
+    }
+    .languages {
+      margin-bottom: 20px;
+    }
+    .right {
+      .add-column {
+        margin: 20px 0;
+      }
+    }
+    .layout-predefined {
+      a {
+        img {
+          padding: 10px;
+          width: 120px;
+        }
+      }
+    }
+    .left {
+      .layout-predefined {
+        img {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}
+.panel-default {
+  border: none;
+  border-radius: 5px;
+}
+.panel-heading {
+  border-bottom: none;
+  border-radius: 5px;
+}
+.panel-collapse {
+  margin-top: -3px;
+}
+.multicolumn-created {
+  margin: 50px 0;
+  padding: 50px;
+  border: 2px solid $dusk-blue-60;
+
+  .add-new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+
+    button {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+
+      .fa-plus-circle {
+        font-size: 40px;
+        color: $dusk-blue;
+        text-align: center;
+        display: block;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+.multicolumn-content {
+  border: 2px solid $dusk-blue-60;
+  padding: 20px;
+  min-height: 200px;
+}
+.align-box {
+  width: 100%;
+  display: block;
+}
+.align-items-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#tabbed-block {
+  input[type='radio'] {
+    background-color: $white-clear;
+    border: 2px solid $gray-soft;
+  }
+  .align-box {
+    width: auto;
+    display: block;
+  }
+  .tabbed-collapse {
+    background: transparent;
+    color: $white-clear;
+    border: none;
+    box-shadow: none;
+
+    .fa-chevron-down {
+      margin-left: 10px;
+    }
+  }
+  .txt-icon {
+    display: flex;
+    justify-content: space-between;
+
+    i {
+      margin-left: 5px;
+    }
+  }
+}
+.tabbed-collapse-content {
+  background: $gray-light;
+  margin-top: -15px;
+  padding-top: 15px;
+  margin-bottom: 16px;
+}
+.add-cms-block-tab {
+  button {
+    display: block;
+    margin: 80px auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    .fa-plus-circle {
+      color: $dusk-blue;
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  }
+}
+.config-cms-block{
+  margin-top: 15px;
+}
+.gear-white {
+  i {
+    color: $white-clear !important;
+    font-size: 16px !important;
+  }
+}
+.tabbed-content-nav {
+  margin-top: -16px;
+}
+.config-content{
+  background: $gray-light;
+  padding-top: 20px;
+
+  .delete-tab {
+      color: $warm-grey;
+  }
+  i {
+    margin-right: 10px;
+  }
+  .generate-id {
+    font-weight: 400;
+  }
+}
+.add-cms-buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 15px;
+  button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+}

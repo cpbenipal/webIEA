@@ -1,0 +1,19 @@
+﻿@model Flexpage.Models.LocalizedTextModel
+
+<div class="fp_LocalizedText">
+
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.CurrentLanguage)
+    @Html.HiddenFor(m => m.CurrentText, new { @class = "fp_LocalizedTextCurrentText" })
+    @Html.HiddenFor(m => m.Width)
+    @Html.HiddenFor(m => m.Height)
+    @Html.HiddenFor(m => m.ParentModelFieldName)
+    @if (Model != null)
+    {
+        foreach (string key in Model.Texts.Keys)
+        {
+            @Html.HiddenFor(m => m.Texts[key].Text)
+        }
+    }
+    @Html.EditorFor(m => m.HtmlEditor, "_HtmlEditor")
+</div>

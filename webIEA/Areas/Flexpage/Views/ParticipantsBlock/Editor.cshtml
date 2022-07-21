@@ -1,0 +1,201 @@
+﻿@using Flexpage.Abstract.Enum
+@model Flexpage.Abstract.DTO.ParticipantsOptionsModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('PARTICIPANTS', '#fp_ParticipantsEditorContainer');
+
+    function fp_folderContent_chooseFolder() {
+        fp_popupControlOpen({ command: 'choose', blockType: 'FolderSelector', alwaysCallOnClose: true }, function () { });
+    }
+
+    window.flexpage = window.flexpage || {};
+
+    window.flexpage.fp_afterObjectSelected = function (obj) {
+        
+        $('input[name=SourceFolder]').val(obj.name);
+    }
+
+    $(document).ready(function () {
+        updateImageOptions();
+
+        $('[name=ContactType]').change(function () {
+            updateImageOptions();
+        });
+
+    });
+
+    function updateImageOptions() {
+        $.ajax({
+            type: "POST",
+            url: '/ParticipantsBlock/GetParicipantImageProperty/',
+            data: { contactType: $('[name=ContactType]:checked').val() },
+            error: function (data) {
+                console.log("An error occurred during extraction of available properties.");
+            },
+            beforeSend: function () {
+            },
+            success: function (data) {
+
+                $('#imagePropertyList').find('option')
+                    .remove()
+                    .end();
+
+                if (data && data.length > 0) {
+                    $(data).each(function (i, item) {
+                        $('#imagePropertyList').append(`<option value="${item.Name}">${item.Caption}</>`)
+                    });
+                }
+            }
+        });
+    }
+</script>
+
+<style>
+    #ImageProperty {
+        
+    }
+</style>
+
+<div class="advertisement-block" id="fp_ParticipantsEditorContainer">
+    <div class="tab-content">
+
+        @using (Ajax.BeginForm("Update", "ParticipantsBlock", new { area = "" }, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_ParticipantsEditorContainer" }, new { id = "fp_ParticipantsBlockEditorForm", forTraking = "all" }))
+        {
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.Alias)
+            @Html.HiddenFor(m => m.BlockType)
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row form-fields">
+                    <div class="col-md-12">
+                        <label>Source folder:</label>
+                    </div>
+                    <div style="height: 40px;">
+                        <div class="input-group custom-folder-field">
+                            @Html.TextBoxFor(m => m.SourceFolder, new { @class = "form-control" })
+                            <label class="input-group-btn">
+                                <span class="btn" onclick="fp_folderContent_chooseFolder()">
+                                    <i class="far fa-folder"></i>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-fields">
+                    <div class="form-group element-center" style="margin-top:15px;">
+                        <label class="form-check-label" for="IsAutoScroll">
+                            Image
+                        </label>
+
+                        @Html.DropDownListFor(m => m.ImageProperty, new List<SelectListItem>(), new { @class = "form-control", id = "imagePropertyList" })
+                    </div>
+
+                </div>
+                <div class="form-fields">
+                    <div class="form-group element-center">
+                        @Html.CheckBoxFor(m => m.IsRandomOrder, new { @class = "form-control" })
+                        <label class="form-check-label" for="IsRandomOrder">
+                            Randomize contacts order
+                        </label>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-fields">
+                    <div class="row">
+                        <label>Show:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.ContactType, (int)ParticipantsContactType.Persons,
+                                new { id = "ShowType" + ParticipantsContactType.Persons.ToString() })Persons
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.ContactType, (int)ParticipantsContactType.Companies,
+                                new { id = "ShowType" + ParticipantsContactType.Companies.ToString() })Companies
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.ContactType, (int)ParticipantsContactType.Both,
+                                new { id = "ShowType" + ParticipantsContactType.Both.ToString() })Both
+                        </label>
+                    </div>
+
+                </div>
+
+                <div style="clear:both;"></div>
+
+                <div class="form-group" style="margin-top:10px;">
+                    <div class="row">
+                        <label class="form-check-label" for="IsAutoScroll">
+                            Autoscroll
+
+                        </label>
+                        @Html.CheckBoxFor(m => m.IsAutoScroll, new { @class = "form-control", style="display:inline-block; vertical-align:text-bottom;" })
+
+                        <label>
+                            every
+                        </label>
+                        @Html.TextBoxFor(m => m.Interval, new { @class = "form-control", style = "width:100px; display:inline-block" })
+                        <label>
+                            seconds
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" style="margin-top:10px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Number of contacts per page:</label>
+                        </div>
+                        <div style="height: 40px;" class="col-md-3 ">
+                            <div class="input-group custom-folder-field">
+                                @Html.TextBoxFor(m => m.ContactsPerPage, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 element-center">
+                            @Html.CheckBoxFor(m => m.ShowFilter, new { @class = "form-control" })
+                            <label class="form-check-label" for="ShowFilter">
+                                Show filter
+                            </label>
+                        </div>
+                        <div class="col-md-3 element-center">
+                            @Html.CheckBoxFor(m => m.ShowCountry, new { @class = "form-control" })
+                            <label class="form-check-label" for="ShowCountry">
+                                Show country
+                            </label>
+                        </div>
+                        <div class="col-md-3 element-center">
+                            @Html.CheckBoxFor(m => m.ShowFavorite, new { @class = "form-control" })
+                            <label class="form-check-label" for="ShowFavorite">
+                                Show favorite
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        }
+
+    </div>
+</div>
+

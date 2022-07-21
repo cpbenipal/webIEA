@@ -1,0 +1,289 @@
+﻿@model Flexpage.Models.FAQQuestionModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script type="text/javascript">
+        (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.faqEdit, 'EventManagerFAQEdit', function () {
+                 var args = { ID:@(Model.ID) };
+                        var faqEM@(Model.ID) = new EventManagerFAQEdit(args);
+                });
+            });
+        }, 0);
+    })();
+
+    function fp_faqUpdateLocalizedTexts(container) {
+        $(container).find(".fp_LocalizedText").each(function() {
+            var n = $(this).find(".fp_htmlEditorName").val();
+            var html = eval(n + '.GetHtml()');
+            $(this).find(".fp_LocalizedTextCurrentText").val(html);
+        });
+    }
+
+    function fp_preUpdateQuestion() {
+        fp_faqUpdateLocalizedTexts("#question");
+        fp_faqUpdateLocalizedTexts("#answer");
+    }
+
+    function fp_preSaveQuestion() {
+    }
+
+    function fp_changeQuestionLanguage(lang) {
+        fp_preUpdateQuestion();
+        EventManager.bus.publish(EventManager.settings.Events.faqEdit.changeLanguageQuestionEdit,
+            { lang: lang, ID: @(Model.FAQID) });
+    }
+    var textSeparator = ";";
+    function fp_Countries_UpdateText() {
+        var selectedItems = CountriesListBox.GetSelectedItems();
+        CountriesDropDowndit.SetText(fp_Countries_GetSelectedItemsText(selectedItems));
+    }
+    function fp_Countries_SynchronizeListBoxValues(dropDown, args) {
+        CountriesListBox.UnselectAll();
+        var texts = dropDown.GetText().split(textSeparator);
+        var values = fp_Countries_GetValuesByTexts(texts);
+        CountriesListBox.SelectValues(values);
+        fp_Countries_UpdateText(); // for remove non-existing texts
+    }
+    function fp_Countries_GetSelectedItemsText(items) {
+        var texts = [];
+        for (var i = 0; i < items.length; i++)
+            texts.push(items[i].text);
+        return texts.join(textSeparator);
+    }
+    function fp_Countries_GetValuesByTexts(texts) {
+        var actualValues = [];
+        var item;
+        for (var i = 0; i < texts.length; i++) {
+            item = CountriesListBox.FindItemByText(texts[i]);
+            if (item != null)
+                actualValues.push(item.value);
+        }
+        return actualValues;
+    }
+    function fp_preSaveBlock() {
+        fp_preSaveQuestion();
+        fp_preUpdateQuestion();
+    }
+</script>
+
+<div id="fp_QuestionEditorContainer">
+    @using (Ajax.BeginForm("CreateQuestion", "FAQBlock", null,
+        new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_QuestionEditorContainer" }, new { id = "fp_NewsRecordBlockEditorForm", forTraking = "" }))
+
+    {
+
+        @Html.DevExpress().SpinEditFor(m => m.QuestionNo, settings =>
+        {
+            settings.Name = "QuestionNo";
+            settings.Attributes.Add("hidden", "true");
+            settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+            settings.Properties.NumberType = SpinEditNumberType.Integer;
+        }).GetHtml()
+
+        @Html.DevExpress().TextBoxFor(m => m.FAQID, settings =>
+        {
+            settings.Name = "FAQID";
+            settings.Attributes.Add("hidden", "true");
+            settings.Attributes.Add("Value", Model.FAQID.ToString());
+        }).GetHtml()
+
+        @Html.DevExpress().TextBoxFor(m => m.ID, settings =>
+        {
+            settings.Name = "ID";
+            settings.Attributes.Add("hidden", "true");
+            settings.Attributes.Add("Value", Model.ID.ToString());
+        }).GetHtml()
+
+        <div class='fp_flex fp_w-50 fp_align-items-center'>
+            <div class='fp_pr-10 fp_w-25'>Description</div>
+            <div class=' fp_w-75 fp_pr-10'>
+                @Html.DevExpress().TextBoxFor(m => m.Description, settings =>
+                {
+                settings.Name = "Description";
+                settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                }).GetHtml()
+            </div>
+
+        </div>
+
+        <div class='fp_flex fp_pt-15'>
+            <div class='fp_flex fp_w-50 fp_align-items-center'>
+                <div class='fp_pr-10 fp_w-25'>Section</div>
+                <div class=' fp_w-75 fp_pr-10'>
+                    @Html.DevExpress().ComboBoxFor(m => m.SectionID, settings =>
+                    {
+                    settings.Name = "SectionID";
+                    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    settings.Properties.ClientInstanceName = "SectionID";
+                    settings.Properties.TextField = "Text";
+                    settings.Properties.ValueField = "ID";
+                    settings.Properties.ValueType = typeof(int);
+                    settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                    settings.Properties.Buttons.Add("Add new section");
+                    settings.Properties.ClientSideEvents.ButtonClick = "function(s, e){fp_AddItemToSection(s, e)}";
+                    settings.Properties.ClientSideEvents.ValueChanged = "function(s, e){fp_UpdateSubsections(s, e)}";
+                    settings.Properties.ClientSideEvents.Init = "function(s, e){fp_InitSubsections(s, e)}";
+                    }).BindList(Model.AllSections).GetHtml()
+                </div>
+
+            </div>
+
+            <div class='fp_flex fp_w-50 fp_align-items-center'>
+                <div class='fp_pr-10 fp_w-25'>Subsection</div>
+                <div class=' fp_w-75 fp_pr-10'>
+                    @Html.DevExpress().ComboBoxFor(m => m.SubsectionID, settings =>
+                    {
+                        settings.Name = "SubsectionID";
+                        settings.Properties.ClientInstanceName = "SubsectionID";
+                        settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        settings.Properties.TextField = "Text";
+                        settings.Properties.ValueField = "ID";
+                        settings.Properties.ValueType = typeof(int);
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                        settings.Properties.Buttons.Add("Add new subsection");
+                        settings.Properties.ClientSideEvents.ButtonClick = "function(s, e){fp_AddItemToSubSection(s, e)}";
+                        settings.Properties.EnableClientSideAPI = true;
+                    }).BindList(Model.AllSubsections).GetHtml()
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class='fp_flex fp_pt-15'>
+
+            <div class='fp_flex fp_w-50 fp_align-items-center'>
+                <div class='fp_pr-10 fp_w-25'>IsVisible</div>
+                <div class=' fp_w-75 fp_pr-10'>
+                    @Html.DevExpress().CheckBoxFor(m => m.IsVisible, settings =>
+                    {
+                    settings.Name = "IsVisible";
+                    }).GetHtml()
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+        <div id='question-edit'>
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FAQ/_QuestionEditTexts.cshtml", Model)
+        </div>
+        <div class='fp_flex fp_pt-15 fp_justify-content-center'>
+
+            <div class='fp_flex'>
+
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_afterAddFAQRecord() {
+        var ifr = window.parent.document.getElementsByTagName('iframe').namedItem('dialog-iframe');
+        var win = ifr.contentWindow;
+        var grid = eval("fp_FAQQuestion" + @Model.FAQID);
+        grid.PerformCallback();
+        fp_initJS();
+    }
+
+    function fp_AddItemToSection(s, e) {
+        var value = s.GetText();
+        if (value.length === 0)
+            return;
+        $.ajax({
+            url: '/FAQBlock/FAQSectionAddCombo?text=' + value,
+            type: "POST",
+            success: function(data) {
+                var ID = JSON.parse(data).ID;
+                var text = JSON.parse(data).Text;
+                var index = s.AddItem(text, ID);
+                s.SelectIndex(index);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseJSON);
+            }
+        });
+    }
+
+    function fp_AddItemToSubSection(s, e) {
+        var value = s.GetText();
+        if (value.length === 0)
+            return;
+        var sectionID = SectionID.GetSelectedItem().value;
+        $.ajax({
+            url: '/FAQBlock/FAQSectionAddCombo?text=' + value + '&sectionID=' + sectionID,
+            type: "POST",
+            success: function(data) {
+                var ID = JSON.parse(data).ID;
+                var text = JSON.parse(data).Text;
+                var index = s.AddItem(text, ID);
+                s.SelectIndex(index);
+                var win = window.parent;
+                var grid = win.eval("fp_FAQQuestion" + @Model.FAQID);
+                var arr = JSON.parse(grid.cpAllSubsections);
+                arr.push({ ID: ID, Text: value });
+                grid.cpAllSubsections = JSON.stringify(arr);
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseJSON);
+            }
+        });
+    }
+
+    function fp_UpdateSubsections() {
+        var win = window.parent;
+
+        var subsections = JSON.parse(win.eval("fp_FAQQuestion" + @Model.FAQID).cpAllSubsections);
+        SubsectionID.ClearItems();
+        var sectionID = SectionID.GetValue();
+        if (!sectionID) {
+            SubsectionID.SetEnabled(false);
+            return;
+        }
+        SubsectionID.SetEnabled(true);
+        if (subsections) {
+            subsections = subsections.filter(el => sectionID === el.SectionID);
+            if (subsections.length > 0) {
+                subsections.forEach(el => SubsectionID.AddItem(el.Text, el.ID));
+            }
+        }
+    }
+
+    function fp_InitSubsections() {
+        //var ifr = window.parent.document.getElementsByTagName('iframe').namedItem('dialog-iframe');
+        //var win = ifr.contentWindow;
+        var win = window.parent;
+        var subsections = JSON.parse(win.eval("fp_FAQQuestion" + @Model.FAQID).cpAllSubsections);
+        console.log('subsections', subsections);
+
+        var sectionID = SectionID.GetValue();
+        if (!sectionID) {
+            SubsectionID.SetEnabled(false);
+            return;
+        }
+        SubsectionID.SetEnabled(true);
+        if (subsections) {
+            subsections = subsections.filter(el => sectionID !== el.SectionID);
+            if (subsections.length > 0) {
+                subsections.forEach(el => fp_RemoveItem(el.ID));
+            }
+        }
+    }
+
+    function fp_RemoveItem(value) {
+        var index = SubsectionID.FindItemByValue(value).index;
+        SubsectionID.RemoveItem(index);
+    }
+
+
+</script>

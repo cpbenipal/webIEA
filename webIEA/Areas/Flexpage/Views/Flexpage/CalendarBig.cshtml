@@ -1,0 +1,119 @@
+﻿@using System.Globalization
+@model Flexpage.Abstract.DTO.ICalendarModel
+
+<div id="calendar-block-edit" class="page-calendar">
+    <div class="row calendar-container calendar-@Model.ID">
+        <div class="col-md-12 calendar-block">
+            <div id='calendar-event'></div>
+        </div>
+    </div>
+</div>
+@{
+    var langCode = Model.LanguageSelector.CurrentLangCode;
+    var cultureInfo = new CultureInfo(langCode);
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    var formatDateNow = DateTime.Now.ToString("MMMM yyyy", cultureInfo);
+
+}
+<script>
+    var events = [];
+    @foreach (var item in Model.CalendarEvents)
+    {
+        var endDate = item.EndDate.HasValue ? item.EndDate.Value.AddDays(1).ToString("yyyy-MM-dd") : item.StartDate.AddDays(1).ToString("yyyy-MM-dd");
+        <text>
+            events.push({
+                title: '@HttpUtility.JavaScriptStringEncode(item.Title)',
+                start: '@item.StartDate.ToString("yyyy-MM-dd")',
+                end: '@endDate',
+                backgroundColor: '@item.Category.BgColor !important',
+                borderColor: '@item.Category.BorderColor',
+                textColor: '@item.Category.TextColor !important',
+                isprime: '@item.IsPrimary'
+            });
+        </text>
+    }
+    function fp_InitCalendarBig@(Model.ID)(s, e) {
+        var selectedDate = s ? moment(eval("calendar_@(Model.ID)").GetSelectedDate()) : null;
+        if (selectedDate) {
+            selectedDate.locale('@langCode')
+        }
+        var defaultDate = s ? selectedDate.format("YYYY-MM-DD") : '@DateTime.Now.ToString("yyyy-MM-dd")';
+        var datepickerDate = s ? selectedDate.format("MMMM YYYY")  : '@formatDateNow';
+        $('.calendar-@Model.ID #calendar-event').fullCalendar({
+            locale: '@langCode',
+            header: {
+                left: '',
+                center: '',
+                right: 'prev,next'
+            },
+            footer: {
+                center: 'today'
+            },
+            defaultView: '@(Model.ListMode ? "listDay" : "month")',
+            defaultDate: defaultDate,
+            navLinks: false, // can click day/week names to navigate views
+            selectable: true,
+            selectHelper: true,
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            weekNumbers: "@Model.ShowWeekNumbers"=="True",
+            events: events,
+            firstDay: 1,
+
+            select: function(start, end) {
+                //$("#add-event").modal();
+            },
+            dayClick: function (date, jsEvent, view) {
+                flexpageCalendar.openDialogShowEvents(date, @Model.ID);
+            },
+            eventClick: function (calEvent, jsEvent, view) {
+                    flexpageCalendar.openDialogShowEvents(calEvent.start, @Model.ID);
+            },
+
+            eventAfterRender: function (event, element) {
+                @if (Model.BigCalendarTooltip)
+                {
+                    <text>
+                        $(element).tooltip({
+                            template:
+                                '<div id="tooltip-big-calendar" data-isprime="' + event.isprime + '" class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+                            container: '.calendar-@Model.ID',
+                            title: event.title
+                        });
+                    </text>
+                }
+            }
+        });
+        $('.calendar-@Model.ID #calendar-event').fullCalendar('gotoDate', defaultDate);
+        $(".need-delete-@Model.ID").remove();
+
+        $(".calendar-@Model.ID .fc-right").append(
+            '<input type="text" class="form-control datepicker">'
+        );
+
+        $('.calendar-@Model.ID .datepicker').datepicker({
+            format: "MM yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            language: '@langCode'
+        }).on('changeDate',function(ev) {
+            $('.calendar-@Model.ID #calendar-event')
+                .fullCalendar('gotoDate', ev.date);
+
+            $(this).datepicker('hide');
+        });
+
+        $('.calendar-@Model.ID .datepicker').val(datepickerDate);
+
+        $(".calendar-@Model.ID .fc-right")
+            .append('<button class="print-calendar need-delete-@Model.ID"><i class="fas fa-print"></i></button>');
+        $(".fc-today-button").click(function () {
+        });
+        $('.calendar-@Model.ID .datepicker').val(datepickerDate);
+        $(".calendar-@Model.ID .fc-next-button, .calendar-@Model.ID .fc-prev-button").click(function (ev) {
+            var date = moment($(".calendar-@Model.ID #calendar-event").fullCalendar('getDate'));
+            date.locale('@langCode')
+            $('.calendar-@Model.ID .datepicker').val(date.format("MMMM YYYY"));
+        });
+    }
+</script>

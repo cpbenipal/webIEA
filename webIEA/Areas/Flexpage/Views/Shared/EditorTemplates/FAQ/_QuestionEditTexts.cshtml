@@ -1,0 +1,30 @@
+﻿@model Flexpage.Models.FAQQuestionModel
+<div id='question-edit'>
+    <div class='fp_flex fp_pt-15'>
+        <div class='fp_flex fp_w-50 fp_align-items-center'>
+            <div class='fp_pr-10'>Languages</div>
+            <div class=''>
+                @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+            </div>
+        </div>
+    </div>
+    
+    <div id='question'>
+        <div class='fp_flex fp_pt-15'>
+            <div class='fp_flex fp_w-100' >
+                <div class='fp_pr-10'>Question</div>
+            </div>
+        </div>
+        @Html.EditorFor(m => m.Question, "_LocalizedText")
+    </div>
+    
+    <div id='answer'>
+        <div class='fp_flex fp_pt-15'>
+            <div class='fp_flex fp_w-100' >
+                <div class='fp_pr-10'>Answer</div>
+            </div>
+        </div>
+        @Html.EditorFor(m => m.Answer, "_LocalizedText")
+    </div>
+
+</div>

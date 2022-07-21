@@ -1,0 +1,68 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+@using Flexpage.Models
+
+@model Flexpage.Models.RecycleBinModel
+
+@Html.DevExpress().GridView(settings => {
+    settings.Name = "RecycleBinGrid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "RecycleBinGrid" };
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Sorting,
+        new { Controller = "Admin", Action = "RecycleBin_SortingAction"}
+    );
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Paging,
+        new {Controller = "Admin", Action = "RecycleBin_PagingAction"}
+    );
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        GridViewOperationType.Filtering,
+        new { Controller = "Admin", Action = "RecycleBin_FilteringAction"}
+    );
+
+    settings.KeyFieldName = "Id";
+    settings.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+    settings.Width = Unit.Percentage(100);
+
+    settings.Settings.ShowFilterRow = true;
+    settings.Settings.ShowFooter = true;
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRowMenu = true;
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "ObjectType";
+        c.Caption = "&nbsp;";
+        c.Width = Unit.Pixel(20);
+        c.UnboundType = UnboundColumnType.String;
+        c.PropertiesEdit.EncodeHtml = false;
+        c.ShowInFilterControl = false;
+        c.Settings.AllowHeaderFilter = DefaultBoolean.False;
+        c.Settings.ShowFilterRowMenu = DefaultBoolean.False;
+        c.Settings.AllowAutoFilter = DefaultBoolean.False;
+    });
+    settings.Columns.Add("Name");
+    
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = false;
+    settings.SettingsBehavior.AllowSelectByRowClick = false;
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowSelectCheckbox = true;
+    settings.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.Page;
+    settings.CommandColumn.Width = Unit.Pixel(20);
+    settings.CustomUnboundColumnData += (s, e) =>
+    {
+        if (e.Column.FieldName == "ObjectType")
+        {
+            var value = e.GetListSourceFieldValue("Type").ToString();
+            if (value == "1")
+                e.Value = "<i class=\"fa fa-folder\" aria-hidden=\"true\" style=\"color:#FFA500\"></i>";
+            else if (value == "2")
+                e.Value = "<i class=\"fa fa-file-image\" style=\"color:#DCDCDC\" aria-hidden=\"true\"></i>";
+            else
+                e.Value = string.Empty;
+        }
+    };
+    settings.ClientSideEvents.Init = "function(s, e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.ContextMenu = "RecycleBinClass.ContextMenu";
+    settings.ClientSideEvents.RowClick = "RecycleBinClass.RowClick";
+}).BindToCustomData(Model.GridModel).GetHtml()

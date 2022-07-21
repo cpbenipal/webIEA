@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA", "webIEA\webIEA.csproj", "{EF6828D5-4E2E-41F6-A55F-54A068CF5627}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.Entities", "webIEA.Entities\webIEA.Entities.csproj", "{5B44172C-3C78-4309-951E-276526F194C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.Interactor", "webIEA.Interactor\webIEA.Interactor.csproj", "{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.Contracts", "webIEA.Contracts\webIEA.Contracts.csproj", "{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.Repositories", "webIEA.Repositories\webIEA.Repositories.csproj", "{55204440-6F4C-469E-AC8B-601DF09F6D1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.DataBaseContext", "webIEA.DataBaseContext\webIEA.DataBaseContext.csproj", "{CDB9E1B9-1889-4227-A08A-BF058551AFAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webIEA.Dtos", "webIEA.Dtos\webIEA.Dtos.csproj", "{209C47F3-E8BB-4FE5-A420-3BF23C814343}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF6828D5-4E2E-41F6-A55F-54A068CF5627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF6828D5-4E2E-41F6-A55F-54A068CF5627}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF6828D5-4E2E-41F6-A55F-54A068CF5627}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF6828D5-4E2E-41F6-A55F-54A068CF5627}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B44172C-3C78-4309-951E-276526F194C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B44172C-3C78-4309-951E-276526F194C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B44172C-3C78-4309-951E-276526F194C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B44172C-3C78-4309-951E-276526F194C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55204440-6F4C-469E-AC8B-601DF09F6D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55204440-6F4C-469E-AC8B-601DF09F6D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55204440-6F4C-469E-AC8B-601DF09F6D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55204440-6F4C-469E-AC8B-601DF09F6D1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB9E1B9-1889-4227-A08A-BF058551AFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB9E1B9-1889-4227-A08A-BF058551AFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB9E1B9-1889-4227-A08A-BF058551AFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB9E1B9-1889-4227-A08A-BF058551AFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{209C47F3-E8BB-4FE5-A420-3BF23C814343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{209C47F3-E8BB-4FE5-A420-3BF23C814343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{209C47F3-E8BB-4FE5-A420-3BF23C814343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{209C47F3-E8BB-4FE5-A420-3BF23C814343}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {01C3B692-C03C-446F-AA0C-B394EEF49C96}
+	EndGlobalSection
+EndGlobal

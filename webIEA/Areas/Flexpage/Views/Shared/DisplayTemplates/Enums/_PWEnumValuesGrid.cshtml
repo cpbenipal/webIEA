@@ -1,0 +1,69 @@
+﻿@model List<Flexpage.Models.EnumValueModel>
+@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Models.EnumValueModel>(settings =>
+{
+    settings.Name = "fp_EnumValues_Grid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "PWEnumValuesGrid" };
+    // settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "DeleteEnumValues", ID = ViewData["ID"] };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "PWAddEnumValue" };
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "PWUpdateEnumValue" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PWDeleteEnumValue" };
+
+    //settings.SettingsEditing.BatchUpdateRouteValues = new { Controller = "Admin", Action = "BatchUpdateEnumValues" };
+    //settings.SettingsEditing.BatchEditSettings.EditMode = GridViewBatchEditMode.Row;
+    //settings.SettingsEditing.BatchEditSettings.StartEditAction = GridViewBatchStartEditAction.Click;
+    //settings.SettingsEditing.BatchEditSettings.HighlightDeletedRows = true;
+    settings.Width = Unit.Percentage(100);
+    settings.SettingsEditing.Mode = GridViewEditingMode.Inline;
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+    settings.ClientSideEvents.BeginCallback = "fp_enumBeginCallback";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowNewButton = true;
+    settings.CommandColumn.ShowDeleteButton = true;
+    settings.CommandColumn.ShowEditButton = true;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+
+    //settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnEdit", Text = "Edit" });
+    //settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnDelete", Text = "Delete" });
+
+    settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+    settings.SettingsCommandButton.DeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+    settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+    settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+    settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+    settings.CommandColumn.Caption = "Actions";
+
+    settings.Columns.Add(m => m.CurrentText, column =>
+    {
+        column.Width = new Unit(50, UnitType.Percentage);
+        column.Caption = "Text";
+        column.ReadOnly = false;
+    });
+
+    //settings.Columns.Add(m => m.Text, column =>
+    //{
+    //    column.Width = new Unit(0, UnitType.Percentage);
+    //    column.Caption = "Text";
+    //    column.Visible = true;
+    //    column.ReadOnly = false;
+    //});
+
+    settings.Columns.Add(m => m.Value, column =>
+    {
+        column.Width = new Unit(25, UnitType.Percentage);
+        column.ReadOnly = false;
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    // settings.ClientSideEvents.CustomButtonClick = "fp_enumValues_CustomButtonClick";
+
+}).Bind(Model).GetHtml())

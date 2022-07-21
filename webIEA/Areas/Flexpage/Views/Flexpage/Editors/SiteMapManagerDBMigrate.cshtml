@@ -1,0 +1,49 @@
+﻿@model string
+
+<script>
+    function fp_migrateSitemap(e) {
+        $("#fp_sitemapManagerMigrateForm").submit();
+        //fp_PostAjaxForm('#fp_sitemapManagerContainerMigrate', { command: 'migrateSitemap', parameters: '' });
+    }
+</script>
+<div id="fp_sitemapManagerContainerMigrate">
+    @using (Ajax.BeginForm("UpdateSitemapMigrate", "SitemapManager", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_sitemapManagerContainerMigrate", InsertionMode = InsertionMode.Replace }, new { id = "fp_sitemapManagerMigrateForm", forTraking = "all" }))
+    {
+        @Html.Hidden("command", "migrateSitemap");
+        <!-- test - migrating the sitemap as a tool -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="process-files">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="LoadedFileName" class="col-sm-12 pull-left">File name:</label>
+                            <div class="col-sm-12">
+                                @Html.TextBox("LoadedFileName", Model, new { @class = "form-control", @placeholder = "Set filename" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <strong> Load sitemap</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="pull-right">
+                                    <button id="SiteMapManagerMigrateSitemap" class="btn btn-orange" onclick="fp_migrateSitemap(this)" type="button">Migrate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            @(ViewBag.ErrorMassage)
+                        </div>
+                        <div class="col-xs-12">
+                            @(ViewBag.Result)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

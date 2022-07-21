@@ -1,0 +1,23 @@
+﻿@model Flexpage.Models.WebFormActionModel
+
+
+@{
+    var subscribes = ViewBag?.Subscribes as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<div class="col-md-12">
+    <b>This is Inplace redirect action custom editor: </b>
+</div>
+<div class="col-md-3 fp_label">
+    Params
+</div>
+<div class="col-md-6">
+    @if (Model.ReadOnly)
+    {
+        @Html.TextBoxFor(m => m.Parameter, new { @class = "form-control", @readonly = Model.ReadOnly ? "readonly" : "" })
+    }
+    else
+    {
+        @Html.TextBoxFor(m => m.Parameter, new { @class = "form-control" })
+    }
+</div>

@@ -1,0 +1,454 @@
+﻿@model Flexpage.Abstract.DTO.SitemapManagerModel
+
+
+@{
+    var getSitemapEntryID = new Func<string, string, string>((sitemapID, id) => string.Format("sitemap_{0}_Entry_{1}", sitemapID, id));
+}
+<script src="~/Areas/Flexpage/Content/Scripts/bootstrap/jquery-sortable.min.js"></script>
+<script type="text/javascript">
+
+    fp_popupControlChangeTitle('SITEMAP MANAGER', '#fp_sitemapManagerContainer');
+    fp_enableSitemapDragAndDrop();
+
+    var currentVisibleNode = '';
+    var currentVisibleNodeID = '';
+    function sitemapNodeClicked(sitemapID, nodeID) {
+        var openPanels = [];
+        $("#right-add-item").hide();
+        $("#right-item-details").show();
+
+        if (currentVisibleNode != '') {
+            openPanels = $(currentVisibleNode).find(".panel-title [aria-expanded='true']").map((index, elem) => { return $(elem).text().trim() }).toArray();
+            $(currentVisibleNode).hide();
+        }
+
+        currentVisibleNode = "#sitemap_" + sitemapID + "_Entry_" + nodeID;
+        currentVisibleNodeID = nodeID;
+       
+        $(currentVisibleNode).find(".panel-title").each((index,elem) => {
+            var text = $(elem).text().trim();
+            if (openPanels.includes(text)) {
+                if ($(elem).find("[aria-expanded='true']").length == 0) {
+                    $(elem).find("[aria-expanded]").attr("aria-expanded", true);
+                    var href = $(elem).find("[aria-expanded]").attr("href");
+                    $(href).addClass("in");
+                    $(href).attr("aria-expanded", true);
+                }
+            } else {
+                if ($(elem).find("[aria-expanded='true']").length != 0) {
+                    $(elem).find("[aria-expanded]").attr("aria-expanded", false);
+                    var href = $(elem).find("[aria-expanded]").attr("href");
+                    $(href).removeClass("in");
+                    $(href).attr("aria-expanded", false);
+                }
+            }
+        });
+        $(currentVisibleNode).show();
+    }
+
+    function fp_changeSitemap(selectedSitemap) {
+        fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'changeSitemap', parameters: selectedSitemap });
+    }
+
+    function fp_addSitemap(newSitemap) {
+        fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'addSitemap', parameters: newSitemap });
+        $(".right").removeClass("hidden");
+    }
+
+    function fp_addNewNode() {
+        fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'addNewNode', parameters: '' });
+    }
+
+
+    function fp_cancelNodeEdit(confirmDialogTitle) {
+        if (confirmDialogTitle && dirty == true) {
+            fp_ConfirmDialog(confirmDialogTitle, 'There are unsaved changes, do you want to proceed?', function () {
+                fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'cancelEdit', parameters: currentVisibleNodeID });
+            });
+        } else {
+            fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'cancelEdit', parameters: currentVisibleNodeID });
+        }
+    }
+
+    function fp_applyNodeEdit() {
+        jQuery('#right-item-details').hide();
+        jQuery('#right-add-item').show();
+
+        if (currentVisibleNode != '' && currentVisibleNodeID != '') {
+            var title = $(currentVisibleNode).find("input.sitemapNodeTitle").val();
+            $("#sitemapTreeNode" + currentVisibleNodeID).find("a.sitemapTreeNodeLink:first").text(title);
+        }
+    }
+
+    function fp_deleteSitemapNode() {
+        fp_ConfirmDialog('Delete', 'Are you sure you want to delete this node and all its subitems?', function () {
+            fp_PostAjaxForm('#fp_sitemapManagerContainer', { command: 'deleteNode', parameters: currentVisibleNodeID });
+        });
+
+    }
+    var dirty = false;
+    function fp_enableSitemapDragAndDrop() {
+        jQuery(function ($) {
+            $("#sitemapSortable").sortable({
+                afterMove: function ($placeholder, container, $closestItemOrContainer) {
+                    $(".ui-state-default[sitemap-node-id]").removeClass("sortable-placeholder");
+                    $placeholder.closest(".ui-state-default[sitemap-node-id]").addClass("sortable-placeholder");
+                },
+                onDrop: function ($item, container, _super) { fp_sitemapAfterDragAndDrop($item, container); _super($item, container); }
+            });
+            $("#sitemapSortable").disableSelection();
+        });
+
+        fp_TrackInitialize(false);
+        $('#fp_sitemapManagerForm').on('dirty.tracker', function (e) {
+            dirty = true;
+            var $panel = $(e.target).closest(".active-homepage");
+            if ($panel.length > 0) {
+                $panel.find(".btn-cancel").removeClass("hidden");
+            }
+        });
+
+    }
+
+    function fp_TrackInitialize(isDirty) {
+        $('[id*="fp_PopupContent_"]').last().find('[fortraking]').each(function () {
+            let formID = $(this).attr('id');
+            let trackType = $(this).attr('fortraking');
+
+            if (formID) {
+                if (trackType === 'all') {
+                    $('#' + formID + ' input:text').addClass('tracked');
+                    $('#' + formID + ' input:checkbox').addClass('tracked');
+                    $('#' + formID + ' input:radio').addClass('tracked');
+                    $('#' + formID + ' textarea').addClass('tracked');
+                    $('#' + formID + ' select').addClass('tracked');
+                }
+
+                $('#' + formID).track();
+                if (isDirty) {
+                    $('#' + formID).find('.tracked').each(function () {
+                        $(this).addClass('tracker-dirty');
+                    });
+                }
+            }
+        });
+    }
+
+    function fp_sitemapAfterDragAndDrop(element, container) {
+        $(".ui-state-default[sitemap-node-id]").removeClass("sortable-placeholder");
+        var root = $("#sitemapSortable");
+        $(root).children().each((index, elem)=> {
+            fp_updateSitemapNodesInfo(elem);
+        });
+        $("[sitemap-node-id]").each((index, elem) => {
+            if ($(elem).find(">.collapse>li").length == 0) {
+                $(elem).find(">.panel-group").find(".sitemapTreeNodeLink .pull-right").addClass("hidden");
+                $(elem).find(">.collapse").addClass("fp_p-0").addClass("fp_m-0");
+            } else {
+                $(elem).find(">.panel-group").find(".sitemapTreeNodeLink .pull-right").removeClass("hidden");
+                $(elem).find(">.collapse").removeClass("fp_p-0").removeClass("fp_m-0");
+            }
+        })
+        
+    }
+
+    /* Its possible that an element is dragged from one nested list to another, so we need to update all parents and ids.
+     * Previous function finds the root ordered list and passes its children here. If any of the items have an ordered list as well,
+     * it is also updated recursively. */
+
+    function fp_updateSitemapNodesInfo(element) {
+        var parent = $(element).parent();
+        var containerId = $(parent.parent()).attr("sitemap-node-id");
+        var sitemapId = $(parent.parent()).attr("sitemap-id");
+        var index = 0;
+        parent.children().each((index, elem) => {
+            var childId = "#sitemap_" + $(elem).attr("sitemap-id") + "_Entry_" + $(elem).attr("sitemap-node-id");
+            $(childId).find("input.sitemapNodeIndex").val(index++);
+            $(childId).find("input.sitemapNodeParent").val(containerId || $("#SelectedSiteMap_Name").val());
+        });
+        $(element).children("ol").children().each(function (index, elem) { fp_updateSitemapNodesInfo(elem) });
+    }
+</script>
+<style>
+    body.dragging, body.dragging * {
+        cursor: move !important;
+    }
+
+    .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+        margin-top: -20px;
+        margin-left: -20px;
+    }
+
+    .placeholder {
+        height: 37px;
+        margin-bottom: 20px;
+        border: 1px dotted #e8e8e8;
+    }
+    #sitemapSortable .ui-state-default .placeholder {
+        border: 2px dotted #fff;
+    }
+    .sortable-placeholder[sitemap-node-id] > .panel-group > .panel > .panel-heading {
+        background-image: -webkit-linear-gradient(top, #e8e8e8 0%, #a9a9a9 100%) !important;
+        background-image: -o-linear-gradient(top, #e8e8e8 0%, #a9a9a9 100%) !important;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#e8e8e8), to(#a9a9a9)) !important;
+        background-image: linear-gradient(to bottom, #e8e8e8 0%, #a9a9a9 100%) !important;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffe8e8e8', endColorstr='#ffa9a9a9', GradientType=0) !important;
+    }
+
+    ol li {
+        list-style: none;
+    }
+</style>
+
+<div id="fp_sitemapManagerContainer" class="page-sitemaps flexpage">
+
+    @using (Ajax.BeginForm("UpdateSitemap", "SitemapManager", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_sitemapManagerContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_sitemapManagerForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.SelectedSitemapID);
+        if (Model.LoadedSitemaps != null)
+        {
+            for (int i = 0; i < Model.LoadedSitemaps.Count; i++)
+            {
+                @Html.HiddenFor(m => m.LoadedSitemaps[i].ID)
+                @Html.HiddenFor(m => m.LoadedSitemaps[i].IsDefault)
+                @Html.HiddenFor(m => m.LoadedSitemaps[i].Name)
+            }
+        }
+        if (Model.AvailableSitemaps != null)
+        {
+            for (int i = 0; i < Model.AvailableSitemaps.Count; i++)
+            {
+                @Html.HiddenFor(m => m.AvailableSitemaps[i].ID)
+                @Html.HiddenFor(m => m.AvailableSitemaps[i].IsDefault)
+                @Html.HiddenFor(m => m.AvailableSitemaps[i].Name)
+            }
+        }
+
+        <div class="row">
+
+            <!--left content-->
+            <div class="col-md-6 left all-scroll">
+                <div class="ui-state-default" id="left-main">
+                    @if (!string.IsNullOrEmpty(Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Name))
+                    {
+                        <p>
+                            Choose a sitemap to manage:
+                        </p>
+                    }
+                    <div class="panel-group">
+                        <div class="panel panel-default sitemapWrapper">
+                            @if (!string.IsNullOrEmpty(Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Name))
+                            {
+                                <div class="panel-heading sitemapHeader">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseSitemapSelector" onclick="javascript: InitNew();">@(Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Name)<span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                                    </h4>
+                                </div>
+
+                                @Html.Raw("<div id='collapseSitemapSelector' class='panel-body panel-collapse collapse collapse-field-container' style='z-index:2000'>")
+                                if (Model.AvailableSitemaps!=null)
+                                {
+                                    foreach (var sitemap in Model.AvailableSitemaps)
+                                    {
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <h4 class="panel-title">
+                                                    @if (Model.SelectedSitemapID != sitemap.ID)
+                                                    {
+                                                        string selectFunc = string.Format("javascript: fp_changeSitemap('{0}');", sitemap.Name);
+                                                        <a onclick="@selectFunc" data-sitemapvalue="@sitemap.ID">@sitemap.Name <span class="pull-right"><i class="far fa-check-circle"></i></span></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a onclick="javascript: InitNew(); jQuery('#collapseSitemapSelector').removeClass('in');" data-sitemapvalue="@sitemap.ID">@sitemap.Name <span class="pull-right"><i class="fas fa-check-circle"></i></span></a>
+                                                    }
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                @Html.Raw("<div id='collapseSitemapSelector' class='panel-body panel-collapse collapse-field-container in' style='z-index:2000'>")
+                            }
+
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    @*<div class="form-group">*@
+                                    <div class="pull-left" style="width:70%;">
+                                        <input type="text" class="form-control" id="NewWebsiteMap" name="NewWebsiteMap" placeholder="Enter new sitemap name" />
+                                    </div>
+                                    <div for="NewWebsiteMap" class="col-sm-3 col-md-3 col-lg-3 pull-right">
+                                        <button type="button" id="createNewSitemap" class="btn btn-orange" onclick="javascript: fp_addSitemap(jQuery('#NewWebsiteMap').val());">
+                                            <span>Add</span>
+                                        </button>
+                                    </div>
+                                    @*</div>*@
+                                </div>
+                            </div>
+
+                            @Html.Raw("</div>")
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Name))
+                    {
+                        <ol id="sitemapSortable">
+                            @foreach (Flexpage.Abstract.DTO.SitemapNodeModel node in Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Nodes.Where(n => !n.ParentID.HasValue).OrderBy(n=>n.OrderNumber).ToList())
+                            {
+                                Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Editors/SitemapNodeDBPartial.cshtml", node);
+                            }
+                        </ol>
+                    }
+                    else
+                    {
+                        <p class="pt-15">
+                            There is no sitemaps available. Please create one with the dropdown control above.
+                        </p>
+                    }
+                </div>
+            </div>
+           
+            <!--right content-->
+            <div class="col-md-6 right @(string.IsNullOrEmpty(Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Name)?"hidden":"")">
+                <div class="active-sitemap" id="right-add-item">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong> Add item</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                                <button id="SiteMapManagerAddNewItem" class="btn btn-orange" onclick="fp_addNewNode()" type="button">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="sitemap-title" class="col-sm-12 pull-left">Title:</label>
+                            <div class="col-sm-12">
+                                @Html.TextBoxFor(m => m.NewEntry.Title, new { @class = "form-control", @placeholder = "Enter title" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sitemap-description" class="col-sm-12 pull-left">Description:</label>
+                            <div class="col-sm-12">
+                                @Html.TextBoxFor(m => m.NewEntry.Description, new { @class = "form-control", @placeholder = "Enter description" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="parent" class="col-sm-12 pull-left">Parent:</label>
+                            <div class="col-sm-12">
+                                @{
+                                    var parentNodesValues = (Model.LoadedSitemaps.FirstOrDefault(ls => ls.ID == Model.SelectedSitemapID)?.Nodes ?? new List<Flexpage.Abstract.DTO.SitemapNodeModel>())
+                                        .Select(n => new { Value = n.ID, Text = n.DefaultTitle }).ToList();
+                                    if (Model.NewEntry.ParentNodeID == null && parentNodesValues.Count > 0)
+                                    {
+                                        Model.NewEntry.ParentNodeID = parentNodesValues.First().Value;
+                                    }
+                                }
+                                @Html.DevExpress().ComboBox(
+                                settings =>
+                                {
+                                    settings.Name = "NewEntry.ParentNodeID";
+                                    settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                    settings.ControlStyle.CssClass = "form-control";
+                                    settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                    settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                    settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                                    settings.Properties.TextField = "Text";
+                                    settings.Properties.ValueField = "Value";
+                                    settings.Properties.ValueType = typeof(int);
+                                }
+                                ).BindList(parentNodesValues).Bind(Model.NewEntry.ParentNodeID).GetHtml()
+                                @*@Html.DropDownListFor(m => m.NewEntry.Parent, new SelectList(Model.GetAvailableParentNodes(), "Key", "Value"), new { @class = "form-control" })*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="radio-inline col-sm-11 pull-right">
+                                @*<input type="radio" name="radioPage" id="radioPageSelector" value="" checked="checked" onclick="javascript: jQuery('#ManualURlSelector').val('');" />*@
+                                @Html.RadioButtonFor(m => m.NewEntry.CustomURL, "false")
+                                <strong>Page:</strong>
+                            </label>
+                            <div class="col-sm-10 pull-right">
+                                @{
+                                    var availablePages = Model.AvailablePages;
+                                    if (Model.NewEntry.PageUrl == null && Model.AvailablePages.Count() > 0)
+                                    {
+                                        Model.NewEntry.PageUrl = Model.AvailablePages.First();
+                                    }
+                                }
+                                @Html.DevExpress().ComboBox(
+                                    settings =>
+                                    {
+                                        settings.Name = "NewEntry.PageUrl";
+                                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                        settings.ControlStyle.CssClass = "form-control";
+                                        settings.Properties.DropDownRows = 4;
+                                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                        settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                                    }
+                                    ).BindList(availablePages).Bind(Model.NewEntry.PageUrl).GetHtml()
+                                @*@Html.DropDownListFor(m => m.NewEntry.PageUrl, new SelectList(Model.AvailablePages), new { id = "ReferencePageURlSelector", @class = "form-control" })*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="radio-inline col-sm-11 pull-right">
+                                @Html.RadioButtonFor(m => m.NewEntry.CustomURL, "true")
+                                @*<input type="radio" name="radioPage" id="radioPageURL" value="" onclick="javascript: jQuery('[name=&quot;NewEntry.PageUrl&quot;]').val('');" />*@
+                                <strong>Url:</strong>
+                            </label>
+                            <div class="col-sm-10 pull-right">
+                                @Html.TextBoxFor(m => m.NewEntry.ManualURL, new { id = "ManualURlSelector", @class = "form-control", @placeholder = "http://" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="active-homepage" id="right-item-details" style="display:none;">
+                    <div class="row"></div>
+                    <div class="col-md-12" style="padding:0">
+                        <button type="button" class="btn btn-blue-fullcolor-radius btn-new pull-right  " style="margin: 0 0 15px 0;" onclick="javascript: fp_cancelNodeEdit('New menu item');">
+                            <i class="fas fa-plus"></i>
+                            Add new item
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Item settings</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-transparent btn-cancel hidden" onclick="javascript: fp_cancelNodeEdit();">Cancel</button>
+                                <button type="button" class="btn btn-orange" onclick="javascript: fp_applyNodeEdit();" id="SiteMapManagerEditItem">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 form-group pull-right">
+                            <a onclick="fp_deleteSitemapNode();">Delete item</a>
+                        </div>
+                    </div>
+                    <br />
+                    @if (Model.LoadedSitemaps != null)
+                    {
+                        for (int j = 0; j < Model.LoadedSitemaps.Count; j++)
+                        {
+                            for (int i = 0; i < (Model.LoadedSitemaps[j].Nodes?.Count ?? 0); i++)
+                            {
+                                <div id="@string.Format("sitemap_{0}_Entry_{1}", Model.LoadedSitemaps[j].ID, Model.LoadedSitemaps[j].Nodes[i].ID)" class="sitemapEntryEditor" style="display:none;">
+                                    @Html.EditorFor(m => m.LoadedSitemaps[j].Nodes[i], "SitemapEntryEditorDB")
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

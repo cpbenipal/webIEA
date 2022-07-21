@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>blocks/multicontent-selected</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="blocks/multicontent-selected" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(7.000000, 8.000000)" fill="#23598E">
+            <path d="M3.25,29.75125 L13.25,29.75125 L13.25,3.08375 L3.25,3.08375 L3.25,29.75125 Z M14.5,0.58375 L2,0.58375 C1.30875,0.58375 0.75,1.1425 0.75,1.83375 L0.75,31.00125 C0.75,31.6925 1.30875,32.25125 2,32.25125 L14.5,32.25125 C15.19125,32.25125 15.75,31.6925 15.75,31.00125 L15.75,1.83375 C15.75,1.1425 15.19125,0.58375 14.5,0.58375 Z" id="Fill-2"></path>
+            <path d="M20.75,29.75125 L30.75,29.75125 L30.75,3.08375 L20.75,3.08375 L20.75,29.75125 Z M32,0.58375 L19.5,0.58375 C18.80875,0.58375 18.25,1.1425 18.25,1.83375 L18.25,31.00125 C18.25,31.6925 18.80875,32.25125 19.5,32.25125 L32,32.25125 C32.69125,32.25125 33.25,31.6925 33.25,31.00125 L33.25,1.83375 C33.25,1.1425 32.69125,0.58375 32,0.58375 Z" id="Fill-4"></path>
+        </g>
+    </g>
+</svg>

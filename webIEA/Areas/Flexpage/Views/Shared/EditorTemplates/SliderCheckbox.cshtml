@@ -1,0 +1,10 @@
+﻿@model bool
+
+
+<div class="toggle-switch">
+    <label class="switch">
+        @Html.CheckBoxFor(m => m, new { name = @ViewData.ModelMetadata.PropertyName, @class = ViewData["ClassName"] })
+        <span class="slider round"></span>
+    </label>
+</div>
+

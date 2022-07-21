@@ -1,0 +1,33 @@
+﻿@model Flexpage.Abstract.DTO.SitemapMenuModel
+
+@{ 
+    string clientID = "fp_Menu" + Model.ID.ToString();
+}
+
+<div id="@clientID" class='@Model.CssClass fp_flex fp_w-100 fp_sitemapMenu-menu'>
+    @if (Model.ShowMenuName)
+    {
+        <h3 class="fp_m-0 fp_pl-10">
+            @Model.MenuName
+        </h3>
+    }
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/SitemapSubMenu.cshtml", Model.RootLevel)
+</div>
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        FlexpageMenu.create('@clientID', {
+            showEffect: '',
+            hideEffect: '',
+            duration: 0.5,
+            topOffset: 2,
+            topOffsetIE7: 0,
+            leftOffset: 1,
+            autocloseTimeout: 100,
+            positionSubmenu: true,
+            oneSubmenuVisible: false,
+            mainMenuActive: false,
+            allowForMobile: false
+            });
+    });
+</script>

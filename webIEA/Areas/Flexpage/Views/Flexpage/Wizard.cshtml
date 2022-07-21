@@ -1,0 +1,39 @@
+﻿@using Flexpage.Abstract.DTO
+@model WizardUserViewModel
+
+@{
+    string containerID = $"fp_wizard_{Model.ID}";
+}
+
+
+<!-- TODO place the script into loaded resource -->
+<script type="text/javascript">
+    function fp_wizard_beforeSubmit(obj, command, args) {
+        if(!args) {
+            args = {};
+        }
+        obj = $(obj);
+        obj.parent().parent().find('input[type=hidden][name=Command]').val(command);
+        obj.parent().parent().find('input[type=hidden][name=Arguments]').val(JSON.stringify(args));
+        obj.parents('form').first().submit();
+    }
+</script>
+
+@if(Model.FirstLoad)
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+        obj = $('#@containerID');
+        obj.find('input[type=hidden][name=Command]').val('refresh');
+        obj.find('form').first().submit();
+    });
+</script>
+}
+<div class="fp_wizard_wrapper" id="@containerID">    
+    @if(Model.FirstLoad)
+    {
+        <p>Loading ... </p>
+    }
+
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/WizardForm.cshtml", Model)
+</div>

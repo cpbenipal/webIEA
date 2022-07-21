@@ -1,0 +1,126 @@
+﻿@model List<Flexpage.Models.SubscriberModel>
+@using System.Web.UI.WebControls;
+
+
+@(Html.DevExpress().GridView<Flexpage.Models.SubscriberModel>(settings =>
+{
+    settings.Name = "fp_Subscribers_Grid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "SubscribersGrid" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "DeleteSubscriber" };
+
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.ClientSideEvents.BeginCallback = "fp_subscriberListBeginCallback";
+    var btnEdit = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnEdit",
+        Text = "Edit",
+    };
+    btnEdit.Image.IconID = IconID.EditEdit16x16office2013;
+
+    var btnDelete = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnDelete",
+        Text = "Delete",
+    };
+    btnDelete.Image.IconID = IconID.EditDelete16x16office2013;
+    var btnNotify = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnNotify",
+        Text = "Send Notify",
+    };
+    btnNotify.Image.IconID = IconID.MailSend16x16office2013;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.CommandColumn.CustomButtons.Add(btnNotify);
+    settings.CommandColumn.CustomButtons.Add(btnEdit);
+    settings.CommandColumn.CustomButtons.Add(btnDelete);
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.CommandColumn.Caption = "Actions";
+
+    settings.SettingsExport.RenderBrick = (sender, e) =>
+    {
+        if (e.RowType == GridViewRowType.Data && e.VisibleIndex % 2 == 0)
+            e.BrickStyle.BackColor = System.Drawing.Color.FromArgb(0xEE, 0xEE, 0xEE);
+    };
+
+    settings.Toolbars.Add(t =>
+    {
+        t.EnableAdaptivity = true;
+        t.Items.Add(GridViewToolbarCommand.ExportToXlsx);
+    });
+
+    settings.SettingsExport.Landscape = true;
+    settings.SettingsExport.EnableClientSideExportAPI = true;
+
+    settings.SettingsExport.RenderBrick = (sender, e) =>
+    {
+        if (e.RowType == GridViewRowType.Data && e.VisibleIndex % 2 == 0)
+            e.BrickStyle.BackColor = System.Drawing.Color.FromArgb(0xEE, 0xEE, 0xEE);
+    };
+
+
+    settings.Columns.Add(m => m.Name, column =>
+    {
+        column.Width = new Unit(50, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "Name";
+        column.ReadOnly = false;
+    });
+
+    settings.Columns.Add(m => m.Email, column =>
+    {
+        column.Width = new Unit(50, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "E-mail";
+        column.ReadOnly = false;
+    });
+
+    settings.Columns.Add(m => m.IsConfirmed, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "Confirmed";
+        column.ReadOnly = false;
+    });
+
+    settings.Columns.Add(m => m.IsNotified, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "Notified";
+        column.ReadOnly = false;
+    });
+
+    settings.Columns.Add(m => m.Seats, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "Seats";
+        column.ReadOnly = false;
+    });
+
+    settings.Columns.Add(m => m.ConfirmationDate, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.Caption = "ConfirmationDate";
+        column.ReadOnly = false;
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_Subscribers_Grid_CustomButtonClick";
+
+}).Bind(Model).GetHtml())

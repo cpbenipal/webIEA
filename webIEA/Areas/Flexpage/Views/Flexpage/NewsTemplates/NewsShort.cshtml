@@ -1,0 +1,22 @@
+﻿@model Flexpage.Abstract.DTO.EventViewModel
+
+<h3 class="main-title">@Model.Title</h3>
+
+@if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+{
+    <img class="LOG-image" height="70" width="318" src="@Model.ImageUrl" />
+}
+<div class="content" style="margin-top:20px;"> 
+    @Html.Raw(Model.ViewText)
+</div>
+<div style="font-size:0.9em;font-style:italic;margin-top:20px;">
+    @Model.StartDate.ToString("dd/MM/yyyy")
+</div>
+<div class="keywords">
+    @foreach (var keyword in Model.KeywordsList)
+    {
+        <div>@keyword</div>
+    }
+</div>
+
+

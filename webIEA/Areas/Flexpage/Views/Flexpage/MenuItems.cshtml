@@ -1,0 +1,36 @@
+﻿@model Flexpage.Models.MenuModel
+
+@{ 
+    string cssClass = string.Format("level{0} {1}", Model.Level, Model.Level == 0 ? "topLevel" : "submenu");
+}
+
+@foreach (Flexpage.Models.MenuItemModel item in Model.Items) {
+    string itemCssClass = item.IsCurrent ? "active" : "";
+    string target = string.IsNullOrEmpty(item.Target) ? "_self" : item.Target;
+    
+    //string separator = Model.Level == 0 ? Model.Settings.TopLevelSeparator : Model.Settings.SubmenuLevelSeparator;
+    if (item.IsVisible)
+    {
+        <li class="@cssClass @itemCssClass" level="@Model.Level">
+        @if (!string.IsNullOrEmpty(item.Url))
+        {
+            string href = string.Format("{0}", item.Url);
+            <a href="@href" class="@cssClass navbar-brand" target="@target">@item.Text</a>
+        }
+        else
+        {
+            <span class="@cssClass navbar-brand">@item.Text</span>
+        }
+
+        @if (item.SubMenu != null)
+        {
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Menu.cshtml", item.SubMenu)
+        }
+        </li>
+        @*if(!string.IsNullOrEmpty(separator) && item != Model.Items.Last())
+        {
+            <li class='@cssClass separator' level='@Model.Level'>@separator</li>
+        }*@ 
+    }
+}
+

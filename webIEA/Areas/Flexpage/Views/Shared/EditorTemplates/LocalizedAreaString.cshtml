@@ -1,0 +1,17 @@
+﻿@model Flexpage.Models.LocalizedStringModel
+
+@Html.HiddenFor(m => Model.CurrentLangCode)
+@{
+    var attrs = new RouteValueDictionary() { { "class", "form-control tracked" }, { "placeholder", "Text input" } };
+    if (Model.ReadOnly)
+    {
+        attrs.Add("readonly", "");
+    }
+}
+@* Html.TextBoxFor(m => Model.CurrentLocalization, new { @class = "form-control", placeholder = "Text input", @readonly = Model.ReadOnly ? "readonly" : "" }) *@
+@Html.TextAreaFor(m => Model.CurrentLocalization, attrs )
+@foreach (string key in Model.Localizations.Keys)
+{
+    @Html.HiddenFor(m => Model.Localizations[key])
+}
+

@@ -1,0 +1,21 @@
+﻿.videoplayer-container {
+    position: relative;
+}
+    
+    .videoplayer-container .videoplayer {
+        width: 100%;
+        height: 100%
+    }
+
+    .videoplayer-container .videoplayer-alt {
+    }
+
+    .videoplayer-container .videoplayer-overlay {
+        pointer-events: none;
+        display: block;
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }

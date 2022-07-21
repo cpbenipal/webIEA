@@ -1,0 +1,52 @@
+﻿@model Flexpage.Models.WebFormActionModel
+
+@{
+    bool correctJSON = false;
+    var p = Model.ParseParameter(new { Subscription = "" }, out correctJSON);
+    var actionIndex = Model.Form.FormActions.IndexOf(Model);
+    var parameterFieldID = String.Format("WebFormAction_Subscribe_ParameterField{0}", actionIndex);
+    var editorID = String.Format("WebFormAction_Subscribe{0}", actionIndex);
+    var subscriptionComboboxName = String.Format("WebFormAction_Subscribe_SubscriptionCombo{0}", actionIndex);
+    var subscriptions = Model.Form.Subscriptions.Select(s => new ListEditItem(string.IsNullOrEmpty(s.ShortDescription.GetText()) ? s.Code : s.ShortDescription.GetText(), s.Code)).ToList();
+    var currentSubscriptionIndex = subscriptions.FindIndex(e => (e.Value as string) == p.Subscription);
+    ListEditItem currentSubscription = null;
+    if (currentSubscriptionIndex > -1)
+    {
+        currentSubscription = subscriptions[currentSubscriptionIndex];
+    }
+}
+
+<div class="col-md-12 fp_label">
+    Subscription
+</div>
+
+@Html.HiddenFor(m => m.Parameter, new { @class = "form-control", @readonly = "readonly", @id = parameterFieldID })
+<div class="col-md-12">
+    @if (Model.ReadOnly)
+    {
+        @Html.TextBox("SubscriptionText", currentSubscription == null ? null : currentSubscription.Text, new { @class = "form-control", @readonly = "readonly" })
+    }
+    else
+    {
+        @Html.DevExpress().ComboBox(settings =>
+        {
+            settings.Name = subscriptionComboboxName;
+            settings.Width = new System.Web.UI.WebControls.Unit("100%");
+            settings.SelectedIndex = currentSubscriptionIndex;
+            settings.Properties.ValueType = typeof(string);
+            settings.Properties.Items.AddRange(subscriptions);
+        }).GetHtml()
+        <script language="JavaScript">
+            actionEditors.push({
+                Name: '@editorID',
+                Refresh: function () { },
+                Update: function () {
+                    console.log("Subscribe.Update");
+                    @Html.Raw("var sv = fp_webFormToString(" + subscriptionComboboxName + ".GetValue());");
+                    $('#@parameterFieldID').val('{Subscription:"' + sv + '"}');
+                }
+            });
+        </script>
+
+    }
+</div>

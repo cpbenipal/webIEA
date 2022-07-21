@@ -1,0 +1,25 @@
+﻿<script>
+    function doClick() {
+        $.ajax({
+            url: '@Url.Action("AddToFavorites", "Favorites")',
+            data: { 'url': jQuery(location).attr('href'), 'title' : document.title },
+            type: "post",
+            cache: false,
+            success: function (result) {
+                alert('Page has been added to favorites.');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+    }
+
+</script>
+
+<style>
+    a.favorites-add{
+        cursor:pointer;
+    }
+</style>
+
+<a onclick="doClick()" class="favorites-add">Add to favorites</a>

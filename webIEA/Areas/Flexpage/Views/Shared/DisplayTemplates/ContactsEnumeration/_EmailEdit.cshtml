@@ -1,0 +1,86 @@
+﻿
+@model Flexpage.Models.EmailOverridingModel
+@Html.HiddenFor(m => m.ContactID)
+@Html.HiddenFor(m => m.СontactShortcutID)
+@Html.HiddenFor(m => m.FolderID)
+@Html.HiddenFor(m => m.DefaultID)
+@Html.HiddenFor(m => m.ContactType)
+<div class="row">
+    <div class="col-xs-12">
+
+        <div class="col-xs-12">
+            <div class=" form-fields">
+                <label class="radio-inline col-xs-2">
+                    @if (Model.Type == Flexpage.Models.TypeEmailOverriding.UseDefault)
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 0, new { @class = "", @checked = "checked" })
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 0, new { @class = "" })
+                    }
+                    Use default:
+                </label>
+                <span class="col-xs-8">@Model.Default</span>
+            </div>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="form-fields">
+                <label class="radio-inline col-xs-2">
+                    @if (Model.Type == Flexpage.Models.TypeEmailOverriding.Overide)
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 1, new { @class = "", @checked = "checked" })
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 1, new { @class = "" })
+                    }
+                    Overide:
+                </label>
+                <span class="col-xs-8 textType @((Model.Type != Flexpage.Models.TypeEmailOverriding.Overide)?"dissable":"")" for="Type1"> @Html.DropDownListFor(m => m.OverideID, Model.Overides, new { @class = "form-control" })</span>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-fields">
+                <label class="radio-inline col-xs-2 ">
+                    @if (Model.Type == Flexpage.Models.TypeEmailOverriding.Email)
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 2, new { @class = "", @checked = "checked" })
+                    }
+                    else
+                    {
+                        @Html.RadioButtonFor(m => m.Type, 2, new { @class = "" })
+                    }
+                    E-mail:
+                </label>
+                <span class="col-xs-8 textType @((Model.Type != Flexpage.Models.TypeEmailOverriding.Email)?"dissable":"")" for="Type2">  @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })</span>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="form-fields">
+                <label class="radio-inline col-xs-2 " style="padding-left: 0;width: 10px;">
+                    @Html.CheckBoxFor(m => m.ApplyToAllContactFolders)
+                </label>
+                <span class="col-xs-8">  Apply to all contact folders</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    function fp_AfterSave(idPostfix) {
+        window.parent.flexpage.fp_refresh();
+        window.parent.flexpage.onClose();
+    }
+    jQuery(function ($) {
+        $("[name='Type']").on("click", function (e) {
+            var val = $(e.target).val();
+            if (fp_settings.debug == true) {
+                console.log(val);
+            }
+            $(".textType").removeClass("dissable");
+            $(".textType:not([for='Type" + val + "'])").addClass("dissable");
+        });
+    });
+</script>

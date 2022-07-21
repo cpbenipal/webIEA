@@ -1,0 +1,130 @@
+﻿@using Pluritech.Notifications.Abstract.DTO
+@using Pluritech.Notifications.Abstract.Enum
+
+@model UserNotificationsEditorModel
+
+
+<script>
+
+    $(function () {
+        fp_popupControlChangeTitle('Notification Settings', '#fp_userNotificationEditorContainer');
+        setControlsState($('#UseSpecified').is(':checked'));
+    });
+
+
+
+    function setControlsState(val) {
+        if (val) {
+            $('#Email').removeAttr('disabled');
+        }
+        else {
+            $('#Email').attr('disabled', true);
+        }
+    }
+
+
+
+</script>
+
+<style>
+    div.notification-radio {
+        margin: 5px 0;
+    }
+</style>
+
+<div class="tab-content" id="fp_userNotificationEditorContainer">
+    @using (Ajax.BeginForm("UpdateUserNotificationSettings", "Notifications", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "fp_userNotificationEditorContainer" }, new { @id = "fp_BlockEditorForm", @role = "form" }))
+    {
+        @Html.HiddenFor(x => x.UserID)
+        <div class="tab-pane fade in active" id="general-tab">
+            <div class="row">
+                <div class="col-md-12 form-group element-center">
+                    <label></label>
+                </div>
+            </div>
+            <div class="row general-options">
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="radio-inline">
+                                Send me notification e-mail:
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio" style="margin-top:15px;">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.Frequency, NotificationsRateEnum.ASAP, new { id = "Frequency0" })
+                                    As soon as possible
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.Frequency, NotificationsRateEnum.Daily, new { id = "Frequency1" })
+                                    Ones per day
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.Frequency, NotificationsRateEnum.Weekly, new { id = "Frequency2" })
+                                    Ones per week
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.Frequency, NotificationsRateEnum.Montly, new { id = "Frequency3" })
+                                    Ones per month
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8" style="margin:30px 0 15px 0">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="radio-inline">
+                                Send notifications to:
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio" style="margin-top:15px">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.UseDefaultEmail, true, new { id = "UseDefault", onchange = "setControlsState(false)" })
+                                    my default e-mail address
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-radio">
+                        <div class="col-md-8 col-md-offset-1">
+                            <label class="radio-inline">
+                                <label class="radio-inline">
+                                    @Html.RadioButtonFor(s => s.UseDefaultEmail, false, new { id = "UseSpecified", onchange = "setControlsState(true)" })
+                                    this e-mail address: @Html.TextBoxFor(s => s.Email, new { id = "Email" })
+                                </label>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

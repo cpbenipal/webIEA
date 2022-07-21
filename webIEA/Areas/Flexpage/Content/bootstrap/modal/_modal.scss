@@ -1,0 +1,121 @@
+﻿.modal {
+    background-color: $modal-bg;
+
+}
+
+.modal-header {
+    background-color: $dusk-blue !important;
+}
+
+.modal-title {
+    float: left;
+    color: $white-clear;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.modal-title {
+    float: left;
+    color: $white-clear;
+}
+
+.modal-dialog .close {
+    color: $white-clear;
+    font-size: 32px;
+    opacity: 1;
+    font-weight: 100;
+}
+
+.modal-dialog .close:hover {
+    color: $white-clear;
+    opacity: 1;
+}
+
+.modal-sm {
+    width: 500px;
+}
+.modal-footer {
+    background: $dusk-blue;
+    color: $white-clear;
+    padding: 15px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    button {
+        color: $white-clear;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .right {
+        button {
+            margin-left: 20px;
+        }
+    }
+}
+
+@media(max-width: 500px) {
+    .modal-footer {
+        .col-md-6 {
+            width: 100%;
+        }
+
+        .right {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+
+            a {
+                margin: 0;
+            }
+        }
+    }
+}
+
+@media(max-width: 550px) {
+    .modal-sm {
+        width: 300px;
+    }
+}
+
+.modal-dialog.mini .modal-body {
+    min-height: 100px;
+    padding-top: 15px;
+}
+
+.modal-dialog.mini {
+    margin: 35vh auto;
+}
+
+.modal .modal-footer .right a, .modal .modal-footer .left a {
+    color: #fff;
+    margin-left: 20px;
+    padding: 10px 12px;
+    display: inline-block;
+}
+
+.modal .modal-footer .left a {
+    margin-left: 0;
+}
+
+.modal-body {
+    height:100%;
+    /*max-height: 75vh;*/
+    overflow: auto;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-top: 0;
+    margin-bottom: 71px;
+}
+#fp_confirm_dialog {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

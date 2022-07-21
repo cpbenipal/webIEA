@@ -1,0 +1,77 @@
+﻿@model Flexpage.Models.WebFormActionModel
+
+
+@{
+    var cid = String.Format("fp_WebFormCollapseAction{0}", Model.Index);
+    var paramActions = new string[] { "customaction", "maillist", "inplaceredirect", "globalredirect", "subscribe" };
+    bool hasParameter = paramActions.Contains(Model.Function.ToLower());
+    string editorViewPath = String.Format(@"~\Areas\Flexpage\Views\Shared\EditorTemplates\WebFormActions\{0}.cshtml", Model.Description);
+    bool templateExists = false;
+    if (ViewContext.Controller is Flexpage.Controllers.BasicController)
+    {
+        templateExists = (ViewContext.Controller as Flexpage.Controllers.BasicController).IsPartialViewExists(editorViewPath);
+    }
+
+}
+
+<li class="ui-state-default" data-index="@Model.Index">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.HiddenFor(m => m.ActionID)
+            @Html.HiddenFor(m => m.Description)
+            @Html.HiddenFor(m => m.FormID)
+            @Html.HiddenFor(m => m.Function)
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.Index)
+            @Html.HiddenFor(m => m.FormID)
+            @*<div style="width: 100%; height: 8px; background-color: #FFFFFF; margin-bottom: 4px" ondrop="fp_webFormActionDrop(event, '@Model.Order')" ondragenter="fp_webFormActionsDropAreaEnter(this)" ondragleave="fp_webFormActionsDropAreaLeave(this)"></div>*@
+            <div class="panel-group" style="margin-bottom: 4px">
+                <div class="panel panel-default" draggable="true" @*ondragstart="fp_webFormActionDrag(event, @Model.Order)"*@>
+                    <div class="panel-heading">
+                        <div class="row">
+                            @*<div class="col-md-2">
+                                    @if (Model.ReadOnly)
+                                    {
+                                        @Html.HiddenFor(m => m.Selected);
+                                        @Html.CheckBoxFor(m => m.Selected, new { @disabled = Model.ReadOnly ? "disabled" : "", @class = "custom-control-input" });
+                                    }
+                                    else
+                                    {
+                                        @Html.CheckBoxFor(m => m.Selected, new { @class = "custom-control-input" });
+                                    }
+                                </div>*@
+                            <div class="col-md-12">
+                                <h4 class="@(Model.HasErrors  ? "block-error" : "panel-title")">
+                                    @if (hasParameter || templateExists)
+                                    {
+                                        <a data-toggle="collapse" href="#@cid" class="align-box">@Model.Description<span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                                    }
+                                    else
+                                    {
+                                        @Model.Description
+                                    }
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="@cid" class="col-md-12 panel-collapse collapse collapse-field-container">
+                                @if (templateExists)
+                                {
+                                    @Html.Partial(editorViewPath, Model)
+                                }
+                                else
+                                {
+                                    if (hasParameter)
+                                    {
+                                            @Html.Partial(@"~\Areas\Flexpage\Views\Shared\EditorTemplates\WebFormActions\Fallback.cshtml", Model)
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>

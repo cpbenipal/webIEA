@@ -1,0 +1,31 @@
+﻿@{
+    string editorContainer = "fp_NotificationsContainer_" + Model.EditorPostfix;
+}
+@model Flexpage.Models.NotificationsModel
+@using (Ajax.BeginForm("SaveNotifications", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = editorContainer, InsertionMode = InsertionMode.Replace }
+, new { id = "fp_NotificationsForm", forTraking = "all" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-fields">
+                <span class="col-xs-2">Notification:</span>
+                <span class="col-xs-8">
+                    <span class="col-xs-12">
+                        @Html.DropDownListFor(m => m.Notification, new SelectList(new List<object>
+                        {
+                            new {value = "0", text = "None (default)"},
+                            new {value = "1", text = "Warn"},
+                             new {value = "2", text = "Push" }
+                        }, "value", "text"), new { @class = "form-control" })
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsEnumeration/_EmailEdit.cshtml", Model)
+
+}
+<script type="text/javascript">
+    fp_popupControlChangeTitle('Notification', '#fp_NotificationsForm');
+</script>

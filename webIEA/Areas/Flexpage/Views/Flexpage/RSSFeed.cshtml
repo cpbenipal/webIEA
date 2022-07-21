@@ -1,0 +1,22 @@
+﻿@using System.Web.UI.WebControls;
+@model List<Flexpage.Models.RSSModelFeed>
+
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+    <channel>
+        @Html.Raw("<title>" + Resources.CultureDependent.SiteTitle + "</title>")
+        @Html.Raw("<link>" + Resources.CultureDependent.SiteUrl + "</link>")
+        @Html.Raw("<description>" + Resources.CultureDependent.SiteDescription + "</description>")
+
+        @if(Model != null)
+        {
+            foreach(var rssItem in Model)
+            {
+                Html.Raw("<title>" + Flexpage.Helpers.StringHelper.RemoveIllegalCharacters(rssItem.ShortDescription) + "</title>");
+                Html.Raw("<link>" + Resources.CultureDependent.SiteUrl + rssItem.NavigateUrl + "</link>");
+                Html.Raw("<pubDate>" + String.Format("{0:R}", rssItem.PublicationDate) + "</pubDate>");
+                Html.Raw("<description>" + Resources.CultureDependent.SiteDescription + "</description>");
+            }
+        }
+    </channel>
+</rss>

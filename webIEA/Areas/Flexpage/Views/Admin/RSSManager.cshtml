@@ -1,0 +1,50 @@
+﻿@model Flexpage.Models.RSSModel
+@{
+    ViewBag.Title = "RSS Manager";
+}
+
+<h2>@ViewBag.Title</h2>
+<p>@Resources.Strings.RssManager_SubHeader</p>
+
+<div id="link-field">
+    <p><a href="/FlexPage/RSSFeed/" id="link-source">RSS Feed</a> <img src="\Areas\Flexpage\Content\Images\icons\menu\copy.svg" title="@Resources.Strings.RssManager_Tooltip" onclick="copyToClipboard()" /> </p>
+</div>
+<script>
+    function copyToClipboard() { //Copies href value from the element with "link-source" id into user's clipboard.
+        var textArea = document.createElement("textarea");
+        textArea.innerText = document.getElementById("link-source").href;
+        textArea.id = "clipboard-source";
+        textArea.style = "position: absolute;left: -9999px;";
+        document.getElementById("link-field").appendChild(textArea);
+        var text = document.getElementById("clipboard-source");
+        text.select();
+        document.execCommand("copy");
+        if (!('remove' in Element.prototype)) {
+            Element.prototype.remove = function () {
+                if (this.parentNode) {
+                    this.parentNode.removeChild(this);
+                }
+            };
+        }
+        document.getElementById("clipboard-source").remove();
+    }
+</script>
+<script type="text/javascript">
+
+    function fp_rssGrid_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnRSSDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete this RSS Item?', function () { s.DeleteRow(e.visibleIndex); });
+    }
+
+    function OnValueChanged(s, e, key) {
+        fp_RSS_Grid.PerformCallback({ rowKey: key });
+    }
+</script>
+
+<div class="flexpage records-field">
+    @Html.Partial("~/Areas/Flexpage/Views/Admin/RSSManagerGrid.cshtml", Model.Feeds)
+</div>
+
+
+
+

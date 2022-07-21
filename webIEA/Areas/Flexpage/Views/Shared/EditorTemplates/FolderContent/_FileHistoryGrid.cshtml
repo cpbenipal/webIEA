@@ -1,0 +1,58 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+@model Pluritech.FileSystem.Abstract.DTO.FileHistoryModel
+
+@(Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_FileHistoryGrid";
+    settings.CallbackRouteValues = new { Controller = "flexpage", Action = "FileHistoryGrid", fileId = Model.ID };
+    settings.Width = Unit.Percentage(100);
+    settings.Settings.ShowColumnHeaders = true;
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+    settings.Settings.ShowFilterRow = false;
+    settings.SettingsBehavior.AllowSort = false;
+
+    settings.KeyFieldName = "RevisionID";
+    settings.CommandColumn.Visible = true;
+    settings.CommandColumn.ShowSelectCheckbox = true;
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = true; 
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "VrsionID";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "RevisionID";
+        column.Caption = "Revision Number";
+        column.Width = Unit.Percentage(10);
+        column.SortOrder = ColumnSortOrder.Descending;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Date";
+        column.Width = Unit.Percentage(20);
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "UserName";
+        column.Caption = "User";
+        column.Width = Unit.Percentage(20);
+
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Comment";
+        column.Width = Unit.Percentage(50);
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.SelectionChanged = "SelectionChangedRow";
+
+}).Bind(Model.ListHistory).GetHtml())

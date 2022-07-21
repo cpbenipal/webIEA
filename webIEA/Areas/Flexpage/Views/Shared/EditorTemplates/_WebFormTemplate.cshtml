@@ -1,0 +1,252 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@model Flexpage.Models.WebFormModel
+
+@{
+    int step = (int)Model.Step;
+}
+
+<div class="tab-content-gray">
+    <!--LEFT------------------------------------------------------------------------------------ -->
+    <div class="@(Model.ReadOnly ? "col-md-12" : "col-md-8") left-form" style="overflow: hidden; display:flex; flex-flow: column">
+        <div style="flex: 0 1 auto">
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @if (Model.ReadOnly)
+                {
+                    <div class="col-md-12">
+                        <div class="col-md-9">
+                            <h4>
+                                @Model.TemplateName<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" data-container=".modal-content" title="Web Form title"></i>
+                            </h4>
+                            <div style="visibility: collapse">
+                                @Html.EditorFor(m => m.Title, "_LocalizedStringData")
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-orange pull-right" onclick="fp_webFormEditTemplate()">@Resources.Strings.Forms_EditTemplate</button>
+                        </div>
+                    </div>
+                    @Html.EditorFor(m => m.Title, "_LocalizedStringData")
+                    @Html.HiddenFor(m => m.ShowFormTitle)
+                    @Html.HiddenFor(m => m.Name)
+                }
+                else
+                {
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            Form title:
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-8">
+                            @Html.EditorFor(m => m.Title, "LocalizedString")
+                        </div>
+                        <div class="col-md-4 element-center form-group" style="padding-top: 6px">
+                            @Html.CheckBoxFor(m => m.ShowFormTitle, new { @class = "check-box" })
+                            <label class="form-check-label">
+                                Show form title
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="padding-bottom: 8px">
+                        <div class="col-md-3 fp_label">
+                            Form name:
+                        </div>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Form name", @style = "width: 100%" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div style="flex: 0 1 auto">
+            <div class="col-md-12 ">
+                <!--Fields layout-->
+                <div class="panel-group">
+                    <div class="panel panel-default newsletter-layout" @*ondragover="fp_webFormAllowFieldDrop(event)"*@>
+                        <div class="panel-heading  panel-page">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#form-layout" class="align-box">@Resources.Strings.Forms_Layout <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Available fields and their layout"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                            </h4>
+                        </div>
+                        <div id="form-layout" class="panel-collapse collapse collapse-field-container @(Model.Fields.Count > 0 ? "in" : string.Empty)">
+                            @if (Model.Fields.Count > 0)
+                            {
+                                <div class="fields-title">
+                                    <div class="col-md-5"><label>Input fields</label></div>
+                                    <div class="col-md-1"></div>
+                                    @*<div class="col-md-1"><label>Hidden</label></div>*@
+                                    <div class="col-md-2"><label>System</label></div>
+                                    <div class="col-md-2"><label>Encrypted</label></div>
+                                    <div class="col-md-2"><label>Mandatory</label></div>
+                                </div>
+                            }
+                            <ul id="fp_webFormFieldsList">
+                                @{
+                                    for (int fieldNum = 0; fieldNum < Model.Fields.Count; fieldNum++)
+                                    {
+                                        @Html.EditorFor(m => m.Fields[fieldNum], "_WebFormFieldEditor")
+                                    }
+                                }
+                                @*<li class="ui-state-default">
+                                    </li>*@
+                            </ul>
+                            @if (!Model.ReadOnly)
+                            {
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <div style="width: 100%; border: 2px solid white; background-color: #FFFFFF" ondragover="fp_webFormAllowFieldDrop(event)" ondrop="fp_webFormFieldsDrop(event)" ondragenter="fp_webFormItemAppendAreaEnter(this)" ondragleave="fp_webFormItemAppendAreaLeave(this)">
+                                            Drop field from template (right pane) here or to list above to append it to form, or drag it out of this list to remove
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!--Sections layout-->
+                <div class="panel panel-default newsletter-layout">
+                    <div class="panel-heading  panel-page">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#sections-button" class="align-box">Sections <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Groups of the form fields"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                        </h4>
+                    </div>
+                    <div id="sections-button" class="panel-collapse collapse collapse-field-container">
+                        <ul id="fp_webFormSectionsList">
+                            @for (int i = 0; i < Model.Sections.Count; i++)
+                            {
+                                @Html.EditorFor(m => m.Sections[i], "_WebFormSectionEditor")
+                            }
+                            @*<li class="ui-state-default">
+                                </li>*@
+                        </ul>
+                        @if (!Model.ReadOnly)
+                        {
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div style="width: 100%; border: 2px solid white; background-color: #FFFFFF" ondragover="fp_webFormAllowSectionDrop(event)" ondrop="fp_webFormSectionsDrop(event)" ondragenter="fp_webFormItemAppendAreaEnter(this)" ondragleave="fp_webFormItemAppendAreaLeave(this)">
+                                        Drop section from template (right pane) here or to list above to append it to form, or drag it out of this list to remove
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!--Actions layout-->
+                <div class="panel panel-default newsletter-layout">
+                    <div class="panel-heading  panel-page">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#newsletter-button" class="align-box">Submit settings <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Submit button appearance and form processing actions"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                        </h4>
+                    </div>
+                    <div id="newsletter-button" class="panel-collapse collapse collapse-field-container">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Text:</label>
+                                @Html.EditorFor(m => m.SubmitButtonCaption, "LocalizedString")
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Position:</label>
+                                @{
+                                    var attrs = new RouteValueDictionary() { { "class", "form-control" } };
+                                    if (Model.ReadOnly)
+                                    {
+                                        attrs.Add("disabled", "disabled");
+                                    }
+                                }
+                                @Html.DropDownListFor(m=>m.SubmitButtonLayoutID, new List<SelectListItem>() {
+                                    new SelectListItem() { Text = "Inline right", Value = "0" },
+                                    new SelectListItem() { Text = "Inline left", Value = "1" },
+                                    new SelectListItem() { Text = "Below right", Value = "2" },
+                                    new SelectListItem() { Text = "Below left", Value = "3" },
+                                    new SelectListItem() { Text = "Below center", Value = "4" } }, attrs)
+                            </div>
+
+                            <div class="@(Model.ReadOnly ? "col-md-12" : "col-md-7")">
+                                @if (Model.FormActions.Count > 0)
+                                {
+                                    <p>Actions:</p>
+                                    <ul id="fp_webFormActionsList">
+                                        @for (int i = 0; i < Model.FormActions.Count; i++)
+                                        {
+                                            @*@Html.EditorFor(m => m.FormActions[i], "_WebFormActionEditor",new { Subscribes=Model.Subscriptions.Select(s=>
+                                                new SelectListItem() { Value=s.Code, Text=string.IsNullOrEmpty( s.ShortDescription.GetText())? s.Code: s.ShortDescription.GetText() }).ToList() })*@
+
+                                            @Html.EditorFor(m => m.FormActions[i], "_WebFormActionEditor")
+                                        }
+                                    </ul>
+                                }
+                                @if (!Model.ReadOnly)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div style="width: 100%; border: 2px solid white; background-color: #FFFFFF" ondragover="fp_webFormAllowActionDrop(event)" ondrop="fp_webFormActionsDrop(event)" ondragenter="fp_webFormItemAppendAreaEnter(this)" ondragleave="fp_webFormItemAppendAreaLeave(this)">
+                                                Drop action template (right pane) here to append it to form, or drag it out of this list to remove
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+
+                            @if (!Model.ReadOnly)
+                            {
+                                <div class="col-md-5">
+                                    Action templates:
+                                    <ul id="fp_webFormActionTemplatesList">
+                                        @for (int i = 0; i < Model.ActionTemplates.Count; i++)
+                                        {
+                                            @Html.EditorFor(m => m.ActionTemplates[i], "_WebFormActionTemplate")
+                                        }
+                                    </ul>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (!Model.ReadOnly)
+        {
+            <div style="flex: 1 1 auto; ">
+                <span style="position: absolute; bottom: 0; left: 16px">
+                    @Html.CheckBoxFor(m => m.IsEdit)&nbsp;<label style="vertical-align: middle; display: inline-block;">Save as template</label>
+                </span>
+            </div>
+        }
+    </div>
+    <!--RIGHT------------------------------------------------------------------------------- -->
+    @if (!Model.ReadOnly)
+    {
+        <div class="col-md-4 right-form">
+            <div class="col-md-12" @(Model.ReadOnly ? "" : "ondrop='fp_webFormTemplatesDrop(event)' ondragover='fp_webFormAllowDrop(event)'")>
+                @*<p>@Resources.Strings.Forms_CreateACopyInfo</p>*@
+                <p>Form template to get fields from</p>
+                @Html.DropDownListFor(m => m.FieldsTemplateID, Model.SystemTemplates.Select(e => new SelectListItem() { Text = e.TemplateName, Value = e.TemplateID.ToString() }), new { @id = "fp_webFormFieldsTemplateSelector", @onchange = "fp_webFormSetFieldsTemplate()", @style = "width: 100%; margin-bottom: 16px" })
+                @for (int i = 0; i < Model.TemplateSections.Count; i++)
+                {
+                    @Html.EditorFor(m => m.TemplateSections[i], "_WebFormTemplateSectionEditor");
+                }
+                @for (int i = 0; i < Model.TemplateFields.Count; i++)
+                {
+                    @Html.EditorFor(m => m.TemplateFields[i], "_WebFormTemplateFieldEditor");
+                }
+                @*<div class="col-md-12 text-center">
+                        <div id="fp_webFormTemplateDropArea" style="text-align:center; width: 100%; border: 2px solid white; background-color: #FFFFFF" @(Model.ReadOnly ? "" : "ondrop='fp_webFormTemplatesDrop(event)'") ondragover="fp_webFormAllowDrop(event)" ondragenter="fp_webFormItemAppendAreaEnter(this)" ondragleave="fp_webFormItemAppendAreaLeave(this)">
+                            Drop field or section here to remove it from form
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    }
+</div>

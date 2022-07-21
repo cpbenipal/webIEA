@@ -1,0 +1,336 @@
+﻿@model Flexpage.Abstract.DTO.PageModel
+
+@{
+    /**/
+
+    if(Model.ShowPreviewButton == false)
+    {
+        Layout = "~/Areas/Flexpage/Views/Shared/_PopupLayout.cshtml";
+    }
+}
+@if(ViewBag.command == "save")
+{
+    @PageEditorContainer()
+}
+else
+{
+    <script type="text/javascript">
+        fp_popupControlChangeTitle('PAGE', '#fp_PageEditorContainer');
+
+        function fp_changeDescrLanguage(langCode) {
+            $("#fp_PageEditorForm").attr('action', "/Page/UpdatePage?command=changelanguage&parameters=" + langCode);
+            $("#fp_PageEditorForm").attr('data-ajax-update', "#page-general");
+            fp_PostAjaxForm('#fp_PageEditorContainer');
+        }
+        function fp_savePageSettings() {
+            $("#fp_PageEditorForm").attr('action', "/Page/UpdatePage?command=save");
+            $("#fp_PageEditorForm").attr('data-ajax-update', "#fp_PageEditorContainer");
+            fp_PostAjaxForm('#fp_PageEditorContainer');
+            if(window.parent.closeNav) {
+                window.parent.closeNav();
+            }
+        }
+        function modifyRobotParams(inputItem) {
+            var robotsValue = jQuery("#RobotsMetatagParameters").val();
+            var values = [];
+            if(robotsValue.trim() != '') {
+                values = jQuery("#RobotsMetatagParameters").val().split(",");
+            }
+            var jInputItem = jQuery(inputItem);
+            if(jInputItem.is(":checked") == true) {
+                values.push(jInputItem.attr("data-value"));
+            }
+            else {
+                for(var i = 0; i < values.length - 1; i++) {
+                    if(values[i] === jInputItem.attr("data-value")) {
+                        values.splice(i, 1);
+                    }
+                }
+            }
+            jQuery("#RobotsMetatagParameters").val(values.join(','));
+        }
+
+        $("div.can-see-page").find("input.check-box[roletype='VisibleRole']").each(function (index, element) {
+            $(element).change(function () {
+                if(!this.checked) {
+                    var related = $("div.can-edit-page").find("input.check-box[roletype='AdminRole'][rolename='" + $(this).attr("rolename") + "']");
+                    if(related != null) {
+                        related.prop("checked", false);
+                    }
+                }
+            });
+        });
+        $("div.can-edit-page").find("input.check-box[roletype='AdminRole']").each(function (index, element) {
+            $(element).change(function () {
+                if(this.checked) {
+                    var related = $("div.can-see-page").find("input.check-box[roletype='VisibleRole'][rolename='" + $(this).attr("rolename") + "']");
+                    if(related != null) {
+                        related.prop("checked", true);
+                    }
+                }
+            });
+        });
+
+        function fp_Page_CustomCssUploaded(sender, event) {
+            if(event.callbackData) {
+                $("#pageCustomCss").val(event.callbackData);
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        input[type=text].dxucEditArea_MetropolisBlue {
+            width: 100%;
+            padding: 6px 6px;
+            height: 32px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff !important;
+            background-image: none;
+            box-sizing: border-box;
+            border: 1px solid #ccc !important;
+            border-radius: 4px 0 0 4px;
+        }
+
+        td.flexpage.fileUpload.dxucBrowseButton_MetropolisBlue {
+            display: table-cell;
+            border: none;
+        }
+    </style>
+
+    <div class="flexpage" id="fp_PageEditorContainer">
+        @PageEditorContainer()
+    </div>
+}
+@helper PageEditorContainer()
+{
+    /**/
+
+    using(Ajax.BeginForm("UpdatePage", "Page", null,
+            new AjaxOptions()
+            {
+                HttpMethod = "POST",
+                UpdateTargetId = "fp_PageEditorContainer",
+                InsertionMode = InsertionMode.Replace
+            },
+            new { id = "fp_PageEditorForm" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.IsSystem)
+        @Html.HiddenFor(m => m.ShowUrlEditor)
+        @Html.HiddenFor(m => m.ShowSaveButton)
+        @Html.HiddenFor(m => m.AjaxUpdateTargetID)
+        @Html.HiddenFor(m => m.ShowPreviewButton)
+
+        <h4 class="fp_mb-5">Page settings</h4>
+
+        @Html.ValidationSummary()
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row fp_flex fp_align-items-end mb-15">
+                    <div class="col-md-4 left fp_flex fp_align-items-center">
+                        @if(Model.ShowUrlEditor)
+                        {
+                            <div class="form-group m-0">
+                                Url
+                                @Html.TextBoxFor(m => m.Name, new { @class = "custom-control-input" })
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-4 left fp_flex fp_align-items-center">
+                        <div class="form-group m-0 fp_mb-3">
+                            <div class="checkbox custom-control custom-checkbox m-0">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.IsPublished, new { @class = "custom-control-input" })
+                                    Is published
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 left fp_flex fp_align-items-center">
+                        @if(@Model.ShowPreviewButton)
+                        {
+                            <div class="form-group preview-page fp_flex fp_align-items-center fp_m-0 fp_mb-3">
+                                <a href="/@Model.Name" id="previewPage" class="fp_flex fp_align-items-center">
+                                    <i class="far fa-eye"></i>
+                                    <span class="fp_pl-5">
+                                        Preview page
+                                    </span>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 left">
+                @if(Model.ShowSaveButton)
+                {
+                    <div class="form-group">
+                        <button onclick="fp_savePageSettings()" class="btn btn-orange pull-right">Save</button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="panel-group page-settings-collapse">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">General<span class="pull-right"><i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="General page description"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse collapse-field-container">
+                    <div class="form-group">
+                        <div id="page-general">
+                            @{Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Editors/PageGeneral.cshtml", Model);}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Permissions-->
+        <div class="panel-group page-settings-collapse">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse2">Permissions <span class="pull-right"><i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Access to this page"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse collapse-field-container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6 left can-see-page">
+                                <strong>Can see page:</strong>
+                                @foreach(var role in Model.VisibleRoles)
+                                {
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                @Html.EditorFor(m => m.VisibleRoles[role.Key], new { htmlAttributes = new { rolename = role.Key, roletype = "VisibleRole" } }) @role.Key
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-6 left can-edit-page">
+                                <strong>Can edit page:</strong>
+                                @foreach(var role in Model.AdminRoles)
+                                {
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                @Html.EditorFor(m => m.AdminRoles[role.Key], new { htmlAttributes = new { rolename = role.Key, roletype = "AdminRole" } }) @role.Key
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-group page-settings-collapse">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse3">Robots <span class="pull-right"><i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Page indexing options"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse3" class="panel-collapse collapse collapse-field-container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div style="display:none;visibility:hidden;">
+                                @Html.EditorFor(m => m.RobotsMetatagParameters)
+                            </div>
+                            @foreach(var parameter in Enum.GetNames(typeof(Flexpage.Abstract.DTO.eRobotsMetaTagParameters)))
+                            {
+                                <div class="col-md-3 left">
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                @Html.CheckBox(parameter, Model.RobotsMetatagParameters.Contains(parameter), new { @class = "robotParam", data_value = parameter, onclick = "modifyRobotParams(this);" }) @Html.Raw(Flexpage.Code.Helpers.EnumHelper.GetDisplay((Flexpage.Abstract.DTO.eRobotsMetaTagParameters)Enum.Parse(typeof(Flexpage.Abstract.DTO.eRobotsMetaTagParameters), parameter)))
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-group page-settings-collapse">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse4">Custom CSS<span class="pull-right"><i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Custom page styles (advanced settings)"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse4" class="panel-collapse collapse collapse-field-container">
+                    <div class="form-group">
+                        <div id="page-general">
+                            @Html.TextAreaFor(m => m.CustomCSS, new { @id = "pageCustomCss", @class = "form-control", @rows = "10" })
+                        </div>
+                        <div class="uploadContainer">
+                            @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                           {
+                               Name = "fp_Page_CustomCSS",
+                               OnFileUploaded = "fp_Page_CustomCssUploaded",
+                               EnableDragAndDrop = false,
+                               EnableFileList = false,
+                               EnableMultiSelect = false,
+                               UploadMode = UploadControlUploadMode.Auto,
+                               ShowUploadButton = false,
+                               Controller = "Admin",
+                               Action = "Page_UploadCustomCss",
+                               TextChanged = String.Empty,
+                               AllowedFileExtensions = new string[] { ".css", ".scss" }
+                           })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-group page-settings-collapse">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse5">Custom JS<span class="pull-right"><i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Custom page js code (advanced settings)"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                    </h4>
+                </div>
+                <div id="collapse5" class="panel-collapse collapse collapse-field-container">
+                    <div class="form-group">
+                        <div id="page-general">
+                            @Html.TextAreaFor(m => m.CustomJS, new { @id = "pageCustomJs", @class = "form-control", @rows = "10" })
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div style="display:none;">
+            <!--Recently deleted blocks-->
+            <div class="panel-group page-settings-collapse">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse4">Recently deleted blocks <span class="pull-right"><i class="fas fa-info-circle"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+                        </h4>
+                    </div>
+                    <div id="collapse4" class="panel-collapse collapse collapse-field-container">
+                        <table width="100%" class="recently-deleted-blocks"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

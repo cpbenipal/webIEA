@@ -1,0 +1,16 @@
+﻿@model string
+
+<script type="text/javascript">
+    window.history.replaceState({}, null, "/@Model")
+    @Html.Raw("var queryString = '" + ViewBag.QueryString +"';\n");
+</script>
+
+@Html.Action("BlockList", "BlockList", new { alias = @Model })
+@if (Request.QueryString["id"] != null)
+{
+    <script language="javascript">        
+        $(function() {
+            fp_ActivateTab('@Request.QueryString["id"]');
+        });
+    </script>
+}

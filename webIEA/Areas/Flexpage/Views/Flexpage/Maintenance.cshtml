@@ -1,0 +1,9 @@
+﻿@model Flexpage.Models.MaintenanceModel
+
+@{
+    if (Model.Layout)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+@Html.Partial("~/Areas/Flexpage/Views/Shared/Maintenance.cshtml",Model.DisplayMaintenanceText)

@@ -1,0 +1,110 @@
+﻿@using System.Web.UI.WebControls;
+@model Flexpage.Abstract.DTO.IHtmlEditorModel
+
+ @Html.DevExpress().HtmlEditor(
+    settings =>
+    {
+        settings.Theme = "Default";
+        settings.Name = Model.Name ?? "fp_HtmlEditor";
+        settings.CallbackRouteValues = new { Controller = "Admin", Action = "HtmlEditorPartialCommand", Name = Model.Name ?? "fp_HtmlEditor" };
+        settings.SettingsDialogs.InsertImageDialog.SettingsImageUpload.UploadCallbackRouteValues = new
+        {
+            Controller = "Admin",
+            Action = "HtmlEditorPartial_ProcessingImageUpload",
+            folderPath = "~/Content/Images/"
+        };
+
+        settings.SettingsDialogs.InsertImageDialog.SettingsImageUpload.ValidationSettings.MaxFileSize = Model.MaxFileSize;
+        settings.SettingsDialogs.InsertImageDialog.SettingsImageUpload.ValidationSettings.AllowedFileExtensions = new[] { ".jpg", ".gif", ".png", ".jpeg", ".svg" };
+
+        settings.Height = Model.Height;
+        settings.Width = Model.Width;
+        settings.Html = Model.Text;
+
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.Enabled = true;
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.UseAdvancedUploadMode = true;
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.CommonSettings.RootFolder = System.Configuration.ConfigurationManager.AppSettings["FP:UploadedFilesPath"].ToString(); //  "~/data/files";
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.EditingSettings.AllowCreate = true;
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.Enabled = true;
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadSettings.ValidationSettings.AllowedFileExtensions = new string[] { ".pdf", ".doc", ".docx", ".txt", ".xls", ".xlsx", ".ppt", ".pptx", ".rtf" };
+        settings.SettingsDialogs.InsertLinkDialog.SettingsDocumentSelector.UploadCallbackRouteValues = new
+        {
+            Controller = "Admin",
+            Action = "HtmlEditorPartial_DocumentUpload",
+            folderPath = System.Configuration.ConfigurationManager.AppSettings["FP:UploadedFilesPath"].ToString(),
+            name = Model.Name ?? "fp_HtmlEditor"
+        }; // "~/data/files/",
+
+        settings.SettingsHtmlEditing.EnablePasteOptions = true;
+        settings.SettingsHtmlEditing.AllowIFrames = true;
+        settings.SettingsHtmlEditing.AllowYouTubeVideoIFrames = true;
+        settings.SettingsHtmlEditing.AllowHTML5MediaElements = true;
+        settings.SettingsHtmlEditing.AllowScripts = true;
+        settings.SettingsHtmlEditing.AllowIdAttributes = true;
+        settings.SettingsHtmlEditing.AllowStyleAttributes = true;
+
+        settings.CssFiles.Add("https://fonts.googleapis.com/css?family=Muli:300,400,600,700|Roboto:300,400,500,700&amp;subset=latin-ext");
+        settings.CssFiles.Add("https://use.fontawesome.com/releases/v5.0.13/css/all.css");
+        settings.CssFiles.Add("~/Areas/Flexpage/Content/bootstrap/flexpage-style.css");
+        //  settings.CssFiles.Add("~/Areas/Flexpage/Content/flexpage.css");       
+        //this is the css with styles for html editor
+
+        settings.Toolbars.CreateDefaultToolbars();
+        int insertImageBtnIndex = settings.Toolbars[0].Items.Where(elem => elem.GetType().Equals(typeof(ToolbarInsertImageDialogButton))).Select(elem => elem.Index).FirstOrDefault();
+        settings.Toolbars[0].Items.Insert(insertImageBtnIndex + 1, new ToolbarInsertYouTubeVideoDialogButton());
+
+        insertImageBtnIndex = settings.Toolbars[0].Items.Where(elem => elem.GetType().Equals(typeof(ToolbarInsertLinkDialogButton)) && elem.Text.Equals("Insert Link")).Select(elem => elem.Index).FirstOrDefault();
+        settings.Toolbars[0].Items.Add<ToolbarCustomDialogButton>( custButton =>
+        {
+            custButton.Name = "PWLink";
+            custButton.ToolTip = "Insert Link from PW";
+            custButton.VisibleIndex = insertImageBtnIndex + 1;
+            custButton.Image.Url = "~/Areas/Flexpage/Content/Images/PWLinkDialog.png";
+        });
+
+        settings.CustomDialogs.Add( dialog =>
+        {
+            dialog.Name = "PWLink";
+            dialog.Caption = "Insert Link from PW";
+            dialog.FormAction = "HtmlEditorPartial_InsertPWLink";
+            dialog.OkButtonText = "Insert";
+
+        });
+
+        settings.Toolbars[1].Items.RemoveAll(item => item.GetType() == typeof(ToolbarParagraphFormattingEdit));
+        settings.Toolbars[1].Items.Add<ToolbarCustomCssEdit>(edit =>
+        {
+            edit.Items.Add("Clear Style", "P", "");
+            edit.Items.Add("Title", "H1", "CommonTitle");
+            edit.Width = 120;
+            edit.VisibleIndex = 0;
+        });
+
+        settings.Toolbars[1].Items.RemoveAll(item => item.GetType() == typeof(ToolbarBackColorButton));
+        settings.Toolbars[1].Items.RemoveAll(item => item.GetType() == typeof(ToolbarFontColorButton));
+
+        settings.Toolbars[1].Items.Add(new ToolbarJustifyFullButton());
+        settings.Toolbars[1].Items.Add(new ToolbarBackColorButton());
+        settings.Toolbars[1].Items.Add(new ToolbarFontColorButton());
+
+        var list = new List<string>(new string[] { "ass", "svg", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "span", "font", "br", "ol", "ul", "li", "table", "tbody", "thead", "td", "tr", "th", "img", "address", "a", "b", "strong", "i", "em" }).ToArray();
+        settings.SettingsHtmlEditing.ContentElementFiltering.Tags = list;
+        settings.SettingsHtmlEditing.ContentElementFiltering.TagFilterMode = HtmlEditorFilterMode.WhiteList;
+
+        settings.Init = (source, e) =>
+        {
+            MVCxHtmlEditor he = (MVCxHtmlEditor)source;
+            he.HtmlCorrecting += (s1, e1) =>
+            {
+                e1.Handled = true;
+            };
+        };
+
+        settings.ClientSideEvents.Init = "fp_HtmlEditor_Init";
+        settings.ClientSideEvents.CommandExecuted = "fp_HtmlEditor_Command";
+        settings.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+        settings.ClientSideEvents.CustomDialogOpened = "function(s, e){if (typeof(fp_HtmlEditor_OnCustomDialogOpened)==='function'){fp_HtmlEditor_OnCustomDialogClosing(s, e)}} ";
+        settings.ClientSideEvents.CustomDialogClosing = "function(s, e){if (typeof(fp_HtmlEditor_OnCustomDialogClosing)==='function'){fp_HtmlEditor_OnCustomDialogClosing(s, e)}} ";
+        settings.ClientSideEvents.CustomDialogClosed = "function(s, e){if (typeof(fp_HtmlEditor_OnCustomDialogClosed)==='function'){fp_HtmlEditor_OnCustomDialogClosed(s, e)}} ";
+
+    }).GetHtml()

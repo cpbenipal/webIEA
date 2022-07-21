@@ -1,0 +1,17 @@
+﻿@model Flexpage.Models.GalleryImageModel
+@{
+    var href = (Model.GallerySettings.EnableClickToEnlarge ? Model.ImageUrl : string.IsNullOrEmpty(Model.LocalizedImageDetails.LocalizedLinkUrl.GetText()) ? "javascript:void(0);" : Model.LocalizedImageDetails.LocalizedLinkUrl.GetText());
+    var datasource = Model.ImageUrl;
+    string title = Model.LocalizedImageDetails.LocalizedTitle.NotEmptyLocalization;
+    string alter = Model.AlternateText;
+    string style = (Model.GallerySettings.RenderThumbnailActualSize == false) ?
+        "width:" + Model.GallerySettings.ThumbnailWidth + "px;height:" + Model.GallerySettings.ThumbnailHeight + "px;" : "";
+    string src = Model.ThumbUrl;
+    }
+
+
+<a href='@href' class='gallery-image-item' data-source='@datasource' title='@title'>
+    <img alt='@alter' src='@src' style='@style' />
+</a>
+    
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_Main" 
+targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="4.0.0">
+  <bpmn:process id="Process_Main" isExecutable="false">
+    <bpmn:task id="Task_select" name="What do you want to get?" bpmn:sField="Persons"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Main">
+    <bpmndi:BPMNPlane id="BPMNPlaneMain" bpmnElement="Process_Main">
+      <bpmndi:BPMNShape id="Task_select_di" bpmnElement="Task_select">
+        <dc:Bounds x="250" y="171" width="160" height="90" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

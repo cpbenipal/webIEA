@@ -1,0 +1,205 @@
+﻿@model Flexpage.Models.ContactsAdvancedSearchModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+
+<link rel="stylesheet" href="@(Model.Folder+"/dist/css/diagram-js.css")" />
+<link rel="stylesheet" href="@(Model.Folder+"/dist/css/diagram-js-minimap.css")" />
+<link rel="stylesheet" href="@(Model.Folder+"/dist/vendor/bpmn-font/css/bpmn-embedded.css")" />
+<link rel="stylesheet" href="@(Model.Folder+"/dist/css/menu.css")" />
+<link rel="stylesheet" href="@(Model.Folder+"/dist/css/style.css")" />
+<div class="fp_advancedSearch">
+    <div class="fp_toolbar-buttons">
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_search">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Search">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_new">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="New">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_save">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Save">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_open">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Open">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_undo">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Undo">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_redo fp_toolbar-buttons__button_inactive">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Redo">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_layout">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Layout">
+            </div>
+        </div>
+        <div class="fp_toolbar-buttons__button fp_toolbar-buttons__button_menu">
+            <div class="fp_toolbar-buttons__button-icon" data-container=".container" data-toggle="tooltip" data-placement="top" title="Menu">
+            </div>
+            <ul class="fp_toolbar-buttons__ul fp_toolbar-buttons__ul_hidden">
+                <li class="fp_toolbar-buttons__li fp_toolbar-buttons__button_export">Download query as a file</li>
+                <li class="fp_toolbar-buttons__li fp_toolbar-buttons__button_import">Upload an existing query</li>
+            </ul>
+        </div>
+
+    </div>
+    <div id="canvas"></div>
+
+    <div class="toolbar">
+        <div class="entry">
+            <input type="file" data-open-file value="open" />
+        </div>
+
+    </div>
+
+    <dev class="fp_errorsSearch"></dev>
+    @Html.Hidden("SearchXml")
+    @Html.Hidden("XMLName", "")
+    @Html.Hidden("HistoryStep", 0)
+    @Html.Hidden("HistoryName", "bpmn-history")
+    @Html.Hidden("HistoryStart", "startXML")
+    @Html.Hidden("UserName", User?.Identity?.Name ?? "")
+    <script>
+     (function () {
+        setTimeout(function () {
+                fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                    fp_loadScripts(EventManager.settings.PathJs.contactsAdvancedSearch, 'EventManagerContactsAdvancedSearch', function () {
+                        var args = {
+                            ID:@(Model.ID),
+                            StartXML:"@Model.StartXML"
+                        };
+                        var contactsAdvancedSearchEM@(Model.ID) = new EventManagerContactsAdvancedSearch(args);
+                        fp_loadScripts('@(Model.Folder+"/dist/app.js")');
+                });
+            });
+        }, 1000);
+
+        })();
+
+        function fp_changeActiveTab() {
+            @("tabControl").SetActiveTabIndex(1);
+        }
+        var linkFolderResult = true;
+        var saveXmlFile = "";
+        var callbackSucceed = function () { };
+        var startData = "";
+        function search(args) {
+            args.ID=@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.search, args);
+        $("#SearchXml").val(args.xml);
+        }
+        function saveToFolder(args) {
+            linkFolderResult = false;
+            args.ID =@(Model.ID);
+            saveXmlFile = args.xml;
+            callbackSucceed = args.callbackSucceed;
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.saveToFolder, args);
+        }
+        function openToBrowser(args) {
+            args.ID =@(Model.ID);
+            callbackSucceed = args.callbackSucceed;
+            startData = args.startData;
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.openToBrowser, args);
+        }
+        function newFile(args) {
+            args.ID =@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.newFile, args);
+        }
+        function exportToFile(args) {
+            args.ID=@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.exportToFile, args);
+        }
+        function importToFile(args) {
+            args.ID =@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.importToFile, args);
+        }
+        function saveXmlChanges(args) {
+            args.ID =@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.saveXmlChanges, args);
+        }
+        function setHistoryStep(args) {
+            args.ID =@(Model.ID);
+            EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.setHistoryStep, args);
+        }
+        window.flexpage = window.flexpage || {};
+        window.flexpage.fp_afterObjectSelected = function (obj) {
+            if (obj && obj[0] && obj[0].id) {
+                EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.openFile,
+                    { "ID": '@Model.ID.ToString()', "fileID": obj[0].id, "callbackSucceed": callbackSucceed, "bpmnXml": startData });
+            } else if (obj && obj.path && linkFolderResult) {
+                EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.linkFolder,
+                    { "ID": '@Model.ID.ToString()', "path": obj.path });
+            } else if (obj && obj.path && linkFolderResult == false) {
+
+
+                    EventManager.bus.publish(EventManager.settings.Events.contactsAdvancedSearch.exportToFile,
+                        { "ID": '@Model.ID.ToString()', "name": obj.name, "path": obj.path, "xml": saveXmlFile, "folderId": obj.id, "callbackSucceed": callbackSucceed  });
+
+
+            } else {
+                fp_ConfirmDialog('Error Open file', 'You have not selected a file or a file opening error has occurred', function () { });
+            }
+            linkFolderResult = true;
+        }
+    </script>
+
+    <select id="fp_personContactFields" class="hidden">
+        @foreach (var field in Model.PersonContactFields)
+        {
+            <option value="@field.Value.Name">@field.Value.Name.Replace("Person.", "")</option>
+        }
+    </select>
+    <select id="fp_companyContactFields" class="hidden">
+        @foreach (var field in Model.CompanyContactFields)
+        {
+            <option value="@field.Value.Name">@field.Value.Name.Replace("Company.", "")</option>
+        }
+    </select>
+    <select id="fp_folderContactFields" class="hidden">
+        @foreach (var field in Model.FolderContactFields)
+        {
+            <option value="@field.Value.Name">@field.Value.Name.Replace("Folder.", "")</option>
+        }
+    </select>
+
+
+    <select id="fp_personToPersonLinkTypes" class="hidden">
+        @foreach (var type in Model.PersonToPersonLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <select id="fp_personToCompanyLinkTypes" class="hidden">
+        @foreach (var type in Model.PersonToCompanyLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <select id="fp_personToFolderLinkTypes" class="hidden">
+        @foreach (var type in Model.PersonToFolderLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <select id="fp_companyToPersonLinkTypes" class="hidden">
+        @foreach (var type in Model.CompanyToPersonLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <select id="fp_companyToCompanyLinkTypes" class="hidden">
+        @foreach (var type in Model.CompanyToCompanyLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <select id="fp_companyToFolderLinkTypes" class="hidden">
+        @foreach (var type in Model.CompanyToFolderLinkTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+</div>

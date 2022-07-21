@@ -1,0 +1,53 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Models.TinyUrlModel>(settings =>
+{
+    settings.Name = "fp_TinyUrl_Grid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "TinyUrlGrid" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "DeleteTinyUrl", ID = ViewData["ID"] };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnTinyUrlEdit", Text = "Edit" });
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnTinyUrlDelete", Text = "Delete" });
+
+    settings.CommandColumn.Caption = "Actions";
+    settings.CommandColumn.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+
+    settings.Columns.Add(m => m.ShortUrl, column =>
+    {
+        column.Width = new Unit(120, UnitType.Pixel);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+    });
+    settings.Columns.Add(m => m.NavigateUrl, column =>
+    {
+        column.Width = new Unit(40, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+    });
+    settings.Columns.Add(m => m.Language, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    });
+    settings.Columns.Add(m => m.IsDisabled, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+    });
+    settings.Columns.Add(m => m.IsShowDestinationUrl, column =>
+    {
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Display Destination URL";
+    });
+
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRow = settings.Settings.ShowFilterRowMenu = true;
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_tinyUrl_CustomButtonClick";
+}).Bind(Model).GetHtml())

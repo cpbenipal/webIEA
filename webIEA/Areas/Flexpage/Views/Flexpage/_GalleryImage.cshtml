@@ -1,0 +1,25 @@
+﻿@model Flexpage.Models.GalleryImageModel
+@{
+    var href = (Model.GallerySettings.EnableClickToEnlarge ? Model.ImageUrl : string.IsNullOrEmpty(Model.LocalizedImageDetails.LocalizedLinkUrl.GetText()) ? "javascript:void(0);" : Model.LocalizedImageDetails.LocalizedLinkUrl.GetText());
+    var datasource = Model.ImageUrl;
+    string title = Model.LocalizedImageDetails.LocalizedTitle.NotEmptyLocalization;
+    string description = Model.LocalizedImageDetails.LocalizedDescription.NotEmptyLocalization;
+    string alter = Model.AlternateText;
+    string style = (Model.GallerySettings.RenderThumbnailActualSize ? string.Empty : "width:" + Model.GallerySettings.ThumbnailWidth + "px;height:" + Model.GallerySettings.ThumbnailHeight + "px; transition: all 0.5s ease-in-out 0s, transform 0.6s ease 0s;");
+    string src = Model.ThumbUrlForCustom;
+
+}
+
+<a href="@href" data-source='@datasource' style="overflow: hidden" description="@description"  title='@title'>
+    <img src="@src" style="@style" alt='@alter' />
+    @if (!string.IsNullOrEmpty(alter))
+    {
+        <div class="g-caption" style="width: @(Model.GallerySettings.ThumbnailWidth + "px"); margin-left: @(Model.GallerySettings.ThumbnailWidth / 2 * -1 + "px");">
+            @alter
+        </div>
+    }
+</a>
+@if (!string.IsNullOrEmpty(title))
+{
+    <span>@title</span>
+}

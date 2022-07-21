@@ -1,0 +1,55 @@
+﻿@using Flexpage.Domain.Enum;
+@model Flexpage.Models.VideoPlaylistModel
+
+@{
+    string currentBlockID = string.Format("videoPlaylistBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+
+    Model.CurrentItem.Width = new Flexpage.Models.DimensionModel
+    {
+        Type = SizeType.Full
+    };
+
+    Model.CurrentItem.Height = new Flexpage.Models.DimensionModel
+    {
+        Type = SizeType.Full
+    };
+}
+
+<div style="width: @Model.Width.CreateSizeString(); height: @Model.Height.CreateSizeString()">
+    @if (Model.DisplayTitle)
+    {
+        <div>
+            <h4>
+                @Model.Info.LocalizedTitle.NotEmptyLocalization
+            </h4>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            @if (Model.CurrentItem != null)
+            {
+                <div id="@currentBlockID" class="">
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_"+Model.CurrentItem.MediaType.Name+".cshtml", Model.CurrentItem)
+                </div>
+            }
+        </div>
+        <div class="col-md-4" id="b@(Model.ID)Items" style="overflow-y: auto; height: 100%">
+            @foreach (var i in Model.Items)
+            {
+                var id = string.Format("b{0}i{1}", Model.ID, i.ID);
+                <div class="col-md-12 list-group-item" id="@id" onclick="fp_videoPlaylistSelectItem('#@currentBlockID', @i.ID, this,'@i.MediaType.Name')">
+                    <img height="64" width="64" src="@(i.NonEmptyLocalization != null ? i.NonEmptyLocalization.GetThumbUrl() : "")" />
+                    <a href="#" onclick="return false;">@i.Title.NotEmptyLocalization</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.DisplayDescription)
+    {
+        <div>
+            @Model.Info.FullText.CurrentText
+        </div>
+    }
+</div>

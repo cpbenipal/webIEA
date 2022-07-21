@@ -1,0 +1,22 @@
+﻿@using Flexpage.Models
+@model Flexpage.Models.AdvertisementModel
+
+@{
+    var idBlock = Guid.NewGuid();
+}
+
+<div id="container-Advertisement-@idBlock">
+    @if (!(Model.DisplayType == DisplayTypeAdvertisement.Cycle))
+    {
+        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/_AdvertisementPartial.cshtml", Model)
+    }
+</div>
+@if (Model.DisplayType == DisplayTypeAdvertisement.Cycle && Model.CycleDelay > 0)
+{
+    <script type="text/javascript">
+        $(function() {
+            var advertisementCycle = new AdvertisementCycle(@(Model.CycleDelay*1000),'@Model.ID','@idBlock','@Model.TagName');
+            advertisementCycle.startReload();
+        });
+    </script>
+}

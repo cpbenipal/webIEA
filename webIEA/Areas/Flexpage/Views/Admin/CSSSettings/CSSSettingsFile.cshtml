@@ -1,0 +1,18 @@
+﻿@model  Flexpage.Abstract.DTO.CssSettingFileModel
+<div class="fp_CssSettingFile fp_cursor-pointer fp_mb-15" data-index="@ViewBag.Index">
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].ID", Model.ID)
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].Index", Model.Index)
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].IsEnabled", Model.IsEnabled)
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].IsSystem", Model.IsSystem)
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].Path", Model.Path)
+    @Html.Hidden($"CssSettingFiles[{ViewBag.Index}].Name", Model.Name)
+    <i class="fa fa-bars"></i>
+    <span class="fp_ml-5">
+        @Model.Name
+    </span>
+    @if (!Model.IsSystem)
+    {
+        <i class="fa @(Model.IsEnabled?"fa-plus":"fa-minus") fp_CssSettingFiles_IsEnabled fp_ml-5"></i>
+        <i class="fa fa-trash-alt fp_ml-5 fp_CssSettingFiles_Delete"></i>
+    }
+</div>

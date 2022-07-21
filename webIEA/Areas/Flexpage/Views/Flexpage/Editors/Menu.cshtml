@@ -1,0 +1,146 @@
+﻿@model Flexpage.Models.MenuModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('MENU', '#fp_MenuBlockEditorContainer');
+
+    $(document).ready(function () {
+        $('#selectallitems').on('change', function () {
+            var state = this.checked,
+                nodes = '';
+            if (state) {
+                $('[name=footitems]').each(function () {
+                    
+                    this.checked = state;
+                    nodes = nodes + $(this).attr('id') + ";";
+                });
+            }
+            $('#SelectedNodes').val(nodes);
+        });
+
+        $('[name=footitems]').on('change', function () {
+            var nodes = $('#SelectedNodes').val();
+            if (this.checked) {
+                nodes = elemChecked($(this), nodes);
+            }
+            else {
+                nodes = elemUnchecked($(this), nodes);
+            }
+
+            $('#SelectedNodes').val(nodes);
+        });
+
+        $('#SiteMap').on('change', function () {
+            fp_changeSitemap(this.value);
+        });
+
+        var nodesService = {
+            nodes: $('#SelectedNodes').val(),
+            selecteNodes: function() {
+                var nodesArr = this.nodes.split(";");
+
+                $('[name=footitems]').each(function() {
+                    var idAttr = $(this).attr('id');
+                    var findNodes = nodesArr.find(function(element, index, array) {
+                        if (element === idAttr) {
+                            return element;
+                        }
+                        return false;
+                    });
+
+                    if (typeof findNodes != "undefined") {
+                        $(this).prop('checked', true);
+                    }
+                });
+            }
+        };
+
+        nodesService.selecteNodes();
+
+    });
+
+    function elemChecked(elem, nodes) {
+        var fp = $(elem).attr('forparent'),
+            nodesArr = nodes.split(';');
+        
+        if($.inArray($(elem).attr('id'),nodesArr) < 0)
+            nodes = nodes + $(elem).attr('id') + ";";
+        
+        if (fp) {
+            var parent = $('[parent=' + fp + ']');
+            if($.inArray(parent.attr('id'), nodesArr) < 0)
+                nodes = nodes + parent.attr('id') + ";";
+            
+            parent.prop('checked', true);
+            if (parent.attr('forparent')) {
+                elemChecked(parent, nodes);
+            }
+        }
+        return nodes;
+    }
+
+    function elemUnchecked(elem, nodes) {
+            
+            nodes = nodes.replace(new RegExp($(elem).attr('id') + ';'), '');
+            let p = $(elem).attr('parent');
+            if (p) {
+                $('[forparent=' + p + ']').each(function () {
+                    $(this).prop('checked', false);
+                    nodes = nodes.replace(new RegExp($(this).attr('id') + ';'), '');
+                    if ($(this).attr('parent')) {
+                        elemUnchecked($(this), nodes);
+                    }
+                });
+            }
+        return nodes;
+    }
+        
+    function fp_changeSitemap(sitemap) {
+        fp_PostAjaxForm('#fp_MenuBlockEditorContainer', { command: 'changesitemap', parameters: sitemap });
+    }
+</script>
+
+<div id="fp_MenuBlockEditorContainer" class="page-menu-block">
+    @using (Ajax.BeginForm("UpdateMenu", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_MenuBlockEditorContainer" }, new { id = "fp_MenuBlockEditorForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.SelectedNodes)
+        <!--settings-->
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6 left">
+                    <form>
+                        <div class="form-group">
+                            <label for="Name">Name:</label>
+                            @Html.TextBoxFor(m => Model.Name, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label for="SiteMap">Sitemap:</label>
+                            @Html.DropDownListFor(m => Model.SiteMap,
+                                           new SelectList(Model.SitemapFileNames.Select(n => new { value = n, text = n })
+                                       , "value", "text"), new { @class = "form-control" })
+                        </div>
+                        <div class="form-check">
+                            <div class="panel-page element-center form-fields">
+                                @Html.EditorFor(m => Model.ShowName, new { @class = "form-check-input" })
+                                <label for="ShowName">Show menu name</label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 right">
+                    <form>
+                        <div class="form-check">
+                            <div class="panel-page element-center form-fields">
+                                @Html.CheckBox("selectallitems", new { @class = "form-check-input" })
+                                <label for="selectallitems">Select all</label>
+                            </div>
+                        </div>
+                    </form>
+                    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/MenuSiteMapNodes.cshtml", Model)
+                </div>
+            </div>
+        </div>
+    }
+</div>

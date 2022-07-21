@@ -1,0 +1,40 @@
+﻿@model Flexpage.Models.NewsModel
+
+<div>
+    <br />
+    <table class="fegra-tbl aligned-left">
+        <tr>
+            <th style="width:15%">Date</th>
+            <th>Agenda</th>
+        </tr>
+        @foreach(Flexpage.Models.EventModel rec in Model.Records)
+        {
+            <tr>
+                <td>@rec.StartDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @{ if(Model.AdminMode)
+                        {
+                            <table cellpadding='0' cellspacing='0'>
+                                <tr>
+                                    <td>
+                                        <a href='javascript:void(0)' data-toggle="modal" data-target="#flexpage-popup-control"
+                                           onclick="fp_popupControlOpen({ command: 'edit', blockType: 'Event', blockID: @rec.ID }, fp_reload)">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href='javascript:void(0)' onclick="fp_deleteNewsRecord(this, '@rec.ID')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                    }
+                    @Html.Raw(rec.ViewText)
+                </td>
+            </tr>            
+        }
+    </table>
+</div>
+

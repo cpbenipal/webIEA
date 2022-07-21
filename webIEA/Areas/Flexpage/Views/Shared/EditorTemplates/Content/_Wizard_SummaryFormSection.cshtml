@@ -1,0 +1,27 @@
+﻿@model Flexpage.Abstract.DTO.SummaryFormSection
+
+@{ 
+    var blockTypeName = Model.BlockType.ToString();
+    bool isWebForm = blockTypeName == "WebForm";
+}
+<div class="ui-state-default fp_fc_column">
+    <div class="row">
+        <div class="col-md-9">
+            <p>@blockTypeName (ID: @Model.BlockID, Step: @(isWebForm ? Model.StepIndex.ToString() : "Summary"))</p>
+        </div>
+        <div class="col-md-2 center-option">
+            @Html.HiddenFor(m => m.StepID)
+            @Html.HiddenFor(m => m.BlockID)
+            @Html.HiddenFor(m => m.Order)
+            @if(isWebForm)
+            {
+                @Html.CheckBoxFor(m => m.IsActive, new { @class = "custom-control-input" })
+            }
+        </div>
+        <div class="col-md-1 all-scroll dnd-action">
+            <label>
+                <i class="fa fa-bars all-scroll" aria-hidden="true"></i>
+            </label>
+        </div>
+    </div>
+</div>

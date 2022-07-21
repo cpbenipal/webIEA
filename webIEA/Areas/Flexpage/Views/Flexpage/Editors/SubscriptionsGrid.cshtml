@@ -1,0 +1,102 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Models.SubscriptionModel>(settings =>
+{
+    settings.Name = "fp_SubscriptionManager_Grid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "SubscriptionsGrid" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "DeleteSubscriptions", ID = ViewData["ID"] };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Admin", Action = "AddSubscription" };
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "UpdateSubscription" };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+    // settings.CommandColumn.ShowNewButton = true;
+    // settings.CommandColumn.ShowDeleteButton = true;
+    // settings.CommandColumn.ShowEditButton = true;
+    settings.ClientSideEvents.BeginCallback = "fp_subscriptionListBeginCallback";
+
+    var btnEdit = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnEdit",
+        Text = "Edit",
+    };
+    btnEdit.Image.IconID = IconID.EditEdit16x16office2013;
+
+    var btnDelete = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnDelete",
+        Text = "Delete",
+    };
+    btnDelete.Image.IconID = IconID.EditDelete16x16office2013;
+    var btnItems = new GridViewCommandColumnCustomButton()
+    {
+        ID = "btnItems",
+        Text = "Items",
+    };
+    btnItems.Image.IconID = IconID.PeopleUser16x16;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.CommandColumn.CustomButtons.Add(btnItems);
+    settings.CommandColumn.CustomButtons.Add(btnEdit);
+    settings.CommandColumn.CustomButtons.Add(btnDelete);
+    settings.CommandColumn.Width = new Unit(20, UnitType.Percentage);
+
+    settings.CommandColumn.Caption = "Actions";
+
+    settings.Columns.Add(m => m.Code, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.Columns.Add(m => m.ShortDescription.Current, column => 
+    {
+        column.Caption = "Description";
+        column.Width = new Unit(25, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.Columns.Add(m => m.Enabled, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.Columns.Add(m => m.MaxSeats, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.Columns.Add(m => m.StartDate, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    settings.Columns.Add(m => m.EndDate, column =>
+    {
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+    });
+
+    //settings.Columns.Add(m => m.ID, column =>
+    //{ 
+    //    column.Width = new Unit(50, UnitType.Percentage);
+    //    column.ReadOnly = true;
+    //});
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_subscriptionListCustomButtonClick";
+
+}).Bind(Model).GetHtml())

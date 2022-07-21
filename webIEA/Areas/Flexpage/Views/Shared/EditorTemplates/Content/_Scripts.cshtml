@@ -1,0 +1,12 @@
+﻿@model Flexpage.Models.ContentModel
+
+<script type="text/javascript">
+    var fp_typeBlock = '@Model.BlockType';
+    var fp_blockEditorContainer = 'fp_' + fp_typeBlock+'BlockEditorContainer';
+
+    fp_popupControlChangeTitle('@Model.ContentName.GetDisplay().ToUpper()',"#"+ fp_blockEditorContainer);
+
+    (function () {
+        fp_loadScripts("/Areas/Flexpage/Content/Scripts/"+fp_typeBlock+"/_bundle" + fp_typeBlock+"Edit.min.js");
+    })();
+</script>

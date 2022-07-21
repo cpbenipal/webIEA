@@ -1,0 +1,70 @@
+﻿@using Flexpage.Models
+@using Newtonsoft.Json
+@model Flexpage.Models.TabContainerModel
+
+<div class="row">
+    <div class="col-md-12">
+        @{
+            var l = Model.Tabs.OrderBy(e => e.Order);
+            string cls;
+            if (Model.ShowHeaders)
+            {
+                <ul class="nav nav-pills tabs-navigation tabbed-content-nav">
+
+                    @foreach (var t in l)
+                    {
+                        cls = t.IsDefault ? "active" : "";
+                        <li class="@cls"><a href="#@t.UID" id="@t.UID-link" data-toggle="pill">@t.Title.NotEmptyLocalization</a></li>
+                    }
+                </ul>
+            }
+            // hidden links are required for smooth transition
+            else if (Model.SwitchAutomatically)
+            {
+                <ul class="nav nav-pills tabs-navigation tabbed-content-nav" style ="display: none">
+
+                    @foreach (var t in l)
+                    {
+                        cls = t.IsDefault ? "active" : "";
+                        <li class="@cls"><a href="#@t.UID" id="@t.UID-link" data-toggle="pill">@t.Title.NotEmptyLocalization</a></li>
+                    }
+                </ul>
+            }
+        }
+
+        <div class="tab-content">
+            @{
+                foreach (var t in l)
+                {
+                    cls = t.IsDefault ? "tab-pane fade form-type active in" : "tab-pane fade form-type";
+                    <div class="@cls" id="@t.UID">
+                        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockList.cshtml", t)
+                    </div>
+                }
+            }
+        </div>
+
+        @if (Model.AdminMode)
+        {
+            <br />
+            <br />
+        }
+    </div>
+</div>
+
+@if (Model.SwitchAutomatically)
+{
+    switch (Model.SwitchTransition)
+    {
+        case TabContainerModel.eTabsSwitchTransition.Slideshow:
+            <script>
+                $(document).ready(function() { fp_initTabsSlideshow(@Html.Raw(@JsonConvert.SerializeObject(Model.Tabs.Select(t => t.UID).ToList())), @Model.SwitchDelay) });
+            </script>
+            break;
+        default:
+            <script>
+                $(document).ready(function() { fp_initTabsSlideshow(@Html.Raw(@JsonConvert.SerializeObject(Model.Tabs.Select(t => t.UID).ToList())), @Model.SwitchDelay) });
+            </script>
+            break;
+    }
+}

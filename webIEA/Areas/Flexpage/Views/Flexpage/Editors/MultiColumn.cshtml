@@ -1,0 +1,164 @@
+﻿@model Flexpage.Models.MultiColumnModel
+
+@{
+    string editorContainer = "fp_BlockEditorContainer_" + Model.EditorPostfix;
+    ViewData["Count"] = Model.Columns.Count;
+    }
+<script type="text/javascript">
+    function fp_isUpdate(value) {
+        var parentBlock = $("#fp_BlockEditorContainer_" + @Model.EditorPostfix).parent(),
+            editColumn = $("#EditColumn");
+
+        if (!editColumn.length) {
+            $('<input/>',{'id':'EditColumn', 'type': 'hidden'}).val(value).appendTo(parentBlock);
+
+            if (value > 0)
+                return true;
+
+            return false;
+        }
+
+        if (editColumn.val() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    var message = 'Selecting another predefined-layout will clear the content. Do you want to proceed?';
+
+    function fp_multiColumn_AddColumn() {
+        fp_PostAjaxForm('#@editorContainer', { command: 'addcolumn', parameters: '' }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_multiColumn_DeleteColumn(index) {
+        SaveSarvice.needShow(fp_isUpdate(@(Model.ID > 0 && Model.Columns.Select(s => s.Blocks).FirstOrDefault(w => w.Any()) != null ? 1 : 0)), message);
+        // fp_PostAjaxForm('#fp_BlockEditorContainer', { command: 'deletecolumn', parameters: index.toString() });
+        fp_PostAjaxForm('#@editorContainer', { command: 'deletecolumn', parameters: index.toString() }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_multiColumn_SetPredefinedLayout(index) {
+        SaveSarvice.needShow(fp_isUpdate(@(Model.ID > 0 && Model.Columns.Select(s => s.Blocks).FirstOrDefault(w => w.Any()) != null ? 1 : 0)), message);
+        fp_PostAjaxForm('#@editorContainer', { command: 'setpredefined', parameters: index }, 'fp_TrackInitialize(' + true + ')');
+    }
+
+    function fp_multiColumn_SelectLanguage(lang) {
+        let isDirty = IsFormDirty('@editorContainer');
+        // console.log("fp_multiColumn_SelectLanguage(" + lang + ")");
+        fp_PostAjaxForm('#@editorContainer', { command: 'changelanguage', parameters: lang }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+
+    function fp_success(data) {
+        alert(JSON.stringify(data));
+    }
+
+    function fp_preSaveBlock() {
+    }
+
+    fp_popupControlChangeTitle('MULTICOLUMN BLOCK', '#fp_BlockEditorForm');
+
+    $(function() {
+
+        $("#MultiColumn").sortable({
+            axis: "y",
+            update: function(event, ui) {
+                var order = 0;
+                $(ui.item[0]).parent().children().each(function() {
+                    $(this).find(".hidden-order").val(order++);
+                });
+            }
+        });
+
+        $("#MultiColumn").disableSelection();
+    });
+</script>
+
+@using (Ajax.BeginForm("UpdateMultiColumn", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = @editorContainer, InsertionMode = InsertionMode.Replace }, new { id = "fp_BlockEditorForm", forTraking = "all" }))
+{
+    @Html.HiddenFor(m => m.Alias)
+    @Html.HiddenFor(m => m.BlockType)
+    @Html.HiddenFor(m => m.AdminMode)
+    @Html.HiddenFor(m => m.CssClass)
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.EditorPostfix)
+    <div class="row">
+        <div class="col-md-12">
+            <h5>
+                General options
+            </h5>
+            <div class="row general-options">
+                <div class="col-md-4">
+                    <div class="element-center form-group">
+                        @Html.EditorFor(e => Model.ShowHeaders, new { @id = "ex1", @class = "form-check-input" })
+                        <label class="form-check-label" for="ex1">Show column headers</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="element-center form-group">
+                        @Html.EditorFor(e => Model.ContentInRows, new { @id = "ex2", @class = "form-check-input" })
+                        <label class="form-check-label" for="ex2">Content in rows</label>
+                    </div>
+                </div>
+                <div class="languages" style="margin-bottom: 20px">
+                    @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 left">
+            <h3 class="main-title">
+                Predefined layout  <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Default tooltip"></i>
+            </h3>
+            <div class="row layout-predefined">
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-one.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(1)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-two.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(2)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-three.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(3)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-four.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(4)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-five.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(5)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-six.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(6)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-seven.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(7)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-eight.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(8)"></a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#"><img class="layoutImg" src="/areas/flexpage/content/images/layout/layout-nine.svg" alt="" onclick="fp_multiColumn_SetPredefinedLayout(9)"></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 right">
+            <!--Custom Layout-->
+            <h3 class="main-title">Custom layout <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Default tooltip"></i></h3>
+            
+            <div id="MultiColumn">
+                @for (var i = 0; i < Model.Columns.Count; i++)
+                {
+                    Model.Columns[i].Index = i;
+                    Model.Columns[i].Last = i == Model.Columns.Count - 1;
+                    @Html.EditorFor(m => Model.Columns[i], "Column")
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 add-column">
+                    <a href="#" onclick="fp_multiColumn_AddColumn()">
+                        <strong>+ Add column</strong>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

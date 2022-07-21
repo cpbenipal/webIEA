@@ -1,0 +1,105 @@
+﻿@using Flexpage.Domain.Enum
+@model Flexpage.Models.ContentModel
+
+
+<!--Layout Settings-->
+<div id="layout-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-fields">
+                    <label for="dateFormat">Paging Mode:</label>
+                    @Html.DropDownListFor(m => m.PagingMode, new SelectList(System.Enum.GetNames(typeof(PagingMode))), new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-fields">
+                    <label for="dateFormat">Paging Size:</label>
+                    @Html.TextBoxFor(m => m.PagingSize, new {@class = "form-control"})
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6 open-row">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show filter row</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowFilterRow, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show header row</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowHeaderRow, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show clear column</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowClearColumn, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Group by description</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.GroupByDescription, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Selection Boxes</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowSelectionBoxes, "SliderCheckbox")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 close-row">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show detail row</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowDetailRow, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                </div>
+            </div>
+            <div class="detail-row-options opacity-activated">
+                <div class="row form-fields">
+                    <div class="col-md-9">
+                        <label>Allow only one detail row</label>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.EditorFor(m => m.AllowOnlyOneDetailRow, "SliderCheckbox")
+                    </div>
+                </div>
+                <div class="row form-fields">
+                    <div class="col-md-9">
+                        <label>Show detail buttons</label>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.EditorFor(m => m.ShowDetailButtons, "SliderCheckbox")
+                    </div>
+                </div>
+                <div class="row form-fields">
+                    <div class="col-md-9">
+                        <label>Expand all details OnLoad</label>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.EditorFor(m => m.ExpandAllDetailsOnLoad, "SliderCheckbox")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

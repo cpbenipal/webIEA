@@ -1,0 +1,34 @@
+﻿@model Flexpage.Models.FolderTreeListModel
+
+@{
+}
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+
+<script>
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.treeList,'EventManagerTreeList', function () {
+                    var args = { ID:@(Model.ID), allowUpload: '@(Model.AllowUpload)' == "True" };
+                    var treeListEM@(Model.ID) = new EventManagerTreeList(args);
+                });
+            });
+        }, 4000);
+    })();
+</script>
+
+<div class="fp_folderTreeList" data-name="@Model.Name">
+
+    @if (Model.AllowUpload || true)
+    {
+        <div class="upload-area">
+            @Html.Hidden("treeListDataId")
+            @Html.Hidden("treeListRowId")
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderTreeList/_FolderTreeList.cshtml")
+        </div>
+    }
+    else
+    {
+        @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderTreeList/_FolderTreeList.cshtml")
+    }
+</div>

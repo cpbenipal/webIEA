@@ -1,0 +1,151 @@
+﻿@model Flexpage.Abstract.DTO.EventEditorModel
+
+<script type="text/javascript">
+    function fp_DevControlChanged(s, e) {
+    }
+    function fp_changeLanguage(langCode) {
+        let isDirty = IsFormDirty('fp_EventEditorContainer');
+        fp_PostAjaxForm('#fp_EventEditorContainer', { command: 'changelanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+    fp_popupControlChangeTitle('Edit Event', '#fp_EventEditorContainer');
+    function fp_eventUpdateLocalizedTexts() {
+        console.log("fp_eventUpdateLocalizedTexts");
+        var html = eval('fp_HtmlEditor_ShortText.GetHtml()');
+        $("#ShortText_CurrentText").val(html);
+    }
+    window.fp_preSaveBlock = function () {
+        fp_eventUpdateLocalizedTexts();
+    }
+</script>
+
+<div id="fp_EventEditorContainer">
+    @using (Ajax.BeginForm("UpdateEvent", "Events", null,
+        new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_EventEditorContainer" }, new { id = "fp_NewsRecordBlockEditorForm", forTraking = "" }))
+    {
+        <div id="HiddenInputDay">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => Model.ID)
+            @Html.HiddenFor(m => m.Alias)
+            @Html.HiddenFor(m => m.ImageUrl)
+            @Html.HiddenFor(m => m.BlockType, new { Value = "CalendarEvent" })
+            @Html.HiddenFor(m => m.CategoryName)
+        </div>
+        <div id="HiddenLocalizedModels" style="display:none">
+            @Html.EditorFor(m => m.LocalizedKeywords, "LocalizedString")
+            @Html.EditorFor(m => m.FullText, "LocalizedText")
+        </div>
+        <div class="form-group">
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector2.cshtml", Model.LanguageSelector)
+        </div>
+
+        <div class="events-calendar-details">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Start date:</label>
+                        @Html.DevExpress().DateEdit(
+                            settings =>
+                            {
+                                settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                                settings.Name = "StartDate";
+                                settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                settings.ControlStyle.CssClass = "flexpage calendar";
+                                settings.Properties.EditFormat = EditFormat.Custom;
+                                settings.Properties.EditFormatString = "dd/MM/yyyy";
+                                settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                                settings.Properties.CalendarProperties.ShowClearButton = false;
+                                settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                            }
+                            ).Bind(Model.StartDate).GetHtml()
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>End date:</label>
+                        @Html.DevExpress().DateEdit(
+                            settings =>
+                            {
+                                settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                                settings.Name = "EndDate";
+                                settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                settings.ControlStyle.CssClass = "flexpage calendar";
+                                settings.Properties.EditFormat = EditFormat.Custom;
+                                settings.Properties.EditFormatString = "dd/MM/yyyy";
+                                settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                                settings.Properties.CalendarProperties.ShowClearButton = false;
+                                settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                            }
+                            ).Bind(Model.EndDate).GetHtml()
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-fields fp_flex fp_align-items-center">
+                        <label class="fp_m-0">Set as primary day event</label>
+                        @Html.EditorFor(m => Model.IsPrimary, "SliderCheckbox")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="titleCal">Title:</label>
+                        @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString", new { @class = "form-control", @id = "titleCal" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="placeCal">Location:</label>
+                        @Html.EditorFor(m => m.LocalizedPlace, "LocalizedString", new { @class = "form-control", @id = "PlaceCal" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Category:</label>
+                        @Html.DevExpress().ComboBox(
+                            settings =>
+                            {
+                                settings.Name = "CategoryID";
+                                settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                settings.ControlStyle.CssClass = "form-control";
+                                settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                                settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                settings.Style.Add(HtmlTextWriterStyle.Display,"table");
+                                settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                                settings.Properties.ValueField = "Key";
+                                settings.Properties.ValueType = typeof(int);
+                                settings.Properties.TextField = "Value";
+                            }
+                            ).BindList(Model.AllowedCategories).Bind(Model.CategoryID).GetHtml()
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-fields calendar-text-editor">
+                        <div class="title">
+                            <label>Notes:</label>
+                        </div>
+                        <div class="tabs">@Html.EditorFor(m => m.ShortText, "LocalizedText")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(function () {
+        if (window.parent.flexpage.lastClickedDate) {
+            var currentDateString = window.parent.flexpage.lastClickedDate;
+
+            StartDate.SetDate(new Date(currentDateString));
+            @if (string.IsNullOrEmpty(Model.LocalizedTitle.CurrentLocalization))
+            {
+            <text>
+            EndDate.SetDate(new Date(currentDateString));
+            </text>
+            }
+        }
+    });
+</script>

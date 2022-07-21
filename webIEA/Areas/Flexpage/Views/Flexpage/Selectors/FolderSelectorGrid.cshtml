@@ -1,0 +1,51 @@
+﻿@model Flexpage.Models.FolderSelectorModel
+
+@Html.DevExpress().TreeList(settings => {
+    settings.Name = "treeList_FolderSelector";
+    settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+    settings.Theme = "Default";
+
+    // The "OverviewPartial" action from the HomeController will handle the TreeList callbacks.
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "FolderSelector_BindingPartial" };
+
+    // Defining the key field and parent field names.
+    settings.KeyFieldName = "ID";
+    settings.ParentFieldName = "ParentID";
+
+    // Adding columns for the required data fields.
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Name";
+        column.SetDataCellTemplateContent(t =>
+        {
+            ViewContext.Writer.Write(string.Format("<a href='javascript:void(0)' fullname='{1}' folderid='{2}' onclick='fp_folderselector_FolderClicked(this)' ondblclick='fp_folderselector_FolderDblClicked(this)'>{0}</a>"
+                , DataBinder.Eval(t.DataItem, "Name"), DataBinder.Eval(t.DataItem, "FullName"), DataBinder.Eval(t.DataItem, "ID")));
+        });
+    });
+
+    //settings.SettingsBehavior.ExpandCollapseAction = DevExpress.Web.ASPxTreeList.TreeListExpandCollapseAction.NodeDblClick;
+
+    settings.SettingsSelection.Enabled = true;
+    settings.SettingsSelection.AllowSelectAll = false;
+    settings.SettingsSelection.Recursive = false;
+    settings.Settings.ShowTreeLines = true;
+    settings.Settings.ShowColumnHeaders = false;
+
+    settings.CustomJSProperties += (s, e) =>
+    {
+        var tree = s as MVCxTreeList;
+        if(tree.SelectionCount > 0)
+        {
+            var lastSelectedNode = tree.GetSelectedNodes()[0];
+            e.Properties["cp_lastKey"] = lastSelectedNode.Key;
+        }
+    };
+    settings.PreRender = (sender, e) =>
+    {
+        if (Session["TreeListState"] == null)
+            ((MVCxTreeList)sender).ExpandToLevel(1);
+    };
+    settings.ClientSideEvents.SelectionChanged = "fp_OnTreeListSelectionChanged";
+
+}).BindToVirtualData(Model.VirtualModeCreateChildren, Model.VirtualModeNodeCreating).GetHtml()
+

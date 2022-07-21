@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>multicontent/tabbed</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="multicontent/tabbed" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(4.000000, 7.000000)" fill="#727376">
+            <path d="M37.464625,31.375 L2.535875,31.375 L2.535875,7.625 L13.762125,7.625 L26.238375,7.625 L37.464625,7.625 L37.464625,31.375 Z M15.013375,5.125 L24.988375,5.125 L24.988375,2.625 L15.013375,2.625 L15.013375,5.125 Z M27.488375,5.125 L37.464625,5.125 L37.464625,2.625 L27.488375,2.625 L27.488375,5.125 Z M38.714625,0.125 L26.238375,0.125 L13.762125,0.125 L1.285875,0.125 C0.594625,0.125 0.035875,0.68375 0.035875,1.375 L0.035875,6.375 L0.035875,32.625 C0.035875,33.31625 0.594625,33.875 1.285875,33.875 L38.714625,33.875 C39.405875,33.875 39.964625,33.31625 39.964625,32.625 L39.964625,6.375 L39.964625,1.375 C39.964625,0.68375 39.405875,0.125 38.714625,0.125 Z" id="Fill-1"></path>
+        </g>
+    </g>
+</svg>

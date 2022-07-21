@@ -1,0 +1,84 @@
+﻿.webform-container {
+}
+
+    .webform-container .webform-error-summary {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .webform-container .sections-list {
+        padding-left: 30px;
+        list-style-type: none;
+        padding-right: 0px;
+    }
+
+    .webform-container .fields-container {
+    }
+
+    .webform-container .submit-container {
+        padding-left: 15px;
+        padding-right: 0px;
+        padding-bottom: 16px
+    }
+
+        .webform-container .submit-container .submit-button {
+            background: #23598e;
+            color: #fff;
+            padding: 5px 25px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400;
+            border: none;
+            box-shadow: none;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+            .webform-container .submit-container .submit-button:hover {
+                color: #fff;
+            }
+
+            .webform-container .submit-container .submit-button:active {
+                color: #fff;
+            }
+
+            .webform-container .submit-container .submit-button:visited {
+                color: #fff;
+            }
+
+            .webform-container .submit-container .submit-button:focus {
+                color: #fff;
+            }
+
+.section-container {
+    padding-left: 0px;
+    /*padding-right: 0px*/
+}
+
+    .section-container .section-title {
+    }
+
+    .section-container .section-content {
+        padding-right: 0px
+    }
+
+.field-container {
+    margin-bottom: 6px;
+    padding-right: 0px
+}
+
+    .field-container .field-title {
+        margin-top: 6px
+    }
+
+    .field-container .field-content {
+        padding-right: 0px
+    }
+
+        .field-container .field-content .field-description {
+            font-size: 10px
+        }
+
+        .field-container .field-content .field-error-message {
+            font-size: 10px;
+            color: red
+        }

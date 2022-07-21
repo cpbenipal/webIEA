@@ -1,0 +1,8 @@
+﻿@model Flexpage.Models.CustomPropertyAddModel
+<script type="text/javascript">
+    fp_popupControlChangeTitle('SELECT A PROPERTY', '#fp_customPropertyAdd');
+    $("#fp_customPropertyAdd").parents(".modal-dialog").removeClass("modal-lg").addClass("modal-md");
+</script>
+<div id="fp_customPropertyAdd" class="flexpage">
+    @Html.Action("CustomPropertyAddEditors", "Flexpage", new { PropertiesRequest = Model.PropertiesRequestJson ?? string.Empty })
+</div>

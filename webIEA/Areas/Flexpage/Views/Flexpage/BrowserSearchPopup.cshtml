@@ -1,0 +1,58 @@
+﻿@model int
+
+<script>
+    function fp_initBrowserSearchPopupMenu@(Model.ToString())(s, e){
+    }
+    function fp_browserSearchContextMenu@(Model.ToString())(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.browserSearch.showContextMenu,
+            { "ID" : @Model, "pageY": e.pageY, "pageX": e.pageX, "event": e });
+        return false;
+    }
+    function fp_browserSearchPopupMenuClick@(Model.ToString())(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.browserSearch.clickContextMenu,
+                { "ID" : @Model, "event": e });
+            EventManager.bus.publish(EventManager.settings.Events.hideAllContextMenu, { "event": e });
+    }
+
+</script>
+<div class="browser-search-popup">
+    @Html.DevExpress().PopupMenu(
+        settings =>
+        {
+            settings.Name = "PopupMenu" + Model;
+            settings.AllowSelectItem = false;
+
+            settings.Items.Add(item =>
+            {
+                item.Text = "Copy";
+                item.Name = "Copy";
+                item.Image.IconID = IconID.EditCopy16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Cut";
+                item.Name = "Cut";
+                item.Image.IconID = IconID.EditCut16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Download";
+                item.Name = "Download";
+                item.Image.IconID = IconID.ActionsDownload16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Open containing folder";
+                item.Name = "OpenInBrowser";
+                item.Image.IconID = IconID.ActionsOpen16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Delete";
+                item.Name = "Delete";
+                item.Image.IconID = IconID.EditDelete16x16office2013;
+            });
+            settings.ClientSideEvents.Init = ("fp_initBrowserSearchPopupMenu" + Model.ToString());
+            settings.ClientSideEvents.ItemClick = ("fp_browserSearchPopupMenuClick" + Model.ToString());
+        }).GetHtml()
+</div>

@@ -1,0 +1,12 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+@{
+    ViewBag.IsAdmin = Model.AdminMode;
+}
+@Scripts.Render("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js")
+<script>
+    (function () {
+        fp_loadScripts("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js");
+    });
+</script>
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_CustomPropertiesGrid.cshtml", Model.CustomProperties)

@@ -1,0 +1,41 @@
+﻿@model Flexpage.Models.ContactAddModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+@{
+    ViewBag.Edit = Model.ContactDetailsModel.Edit;
+    ViewBag.Languages = Model.ContactDetailsModel.Languages;
+}
+@using (Ajax.BeginForm("CheckAdd"+Model.ContactType.GetDisplay(), "ContactsEnumeration", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "", InsertionMode = InsertionMode.Replace}, new { id = "addContactForm",style="min-height:200px" }))
+{
+<div class="col-md-12" style="height:400px">
+    <span>
+        Just enter a brief information that describes this @Model.Title.ToLower().
+        <br />
+        You’ll enter the remaining details after you’ve added this contact.
+    </span>
+    <div class="col-xs-12"></div>
+    <div class="col-xs-6" style="padding:0">
+        @if (Model.ContactDetailsModel.PersonView != null)
+        {
+            @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoPerson.cshtml", Model.ContactDetailsModel.PersonView)
+        }
+        else if (Model.ContactDetailsModel.CompanyView != null)
+        {
+            @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactInfoCompany.cshtml", Model.ContactDetailsModel.CompanyView)
+        }
+    </div>
+</div>
+}
+<script type="text/javascript">
+
+    fp_popupControlChangeTitle('New  @Model.Title'.toUpperCase(), '#addContactForm');
+    
+    var fp_preSaveBlock = function () {
+        
+        var obj = {
+            name1:Name1.GetValue(),
+            name2:Name2.GetValue(),
+            type:'@Model.Title'
+        }
+        return obj;
+    }
+</script>

@@ -1,0 +1,41 @@
+﻿@model Flexpage.Models.BlockListModel
+
+<div id=@("BlockList"+Model.ID  ) class="flexpage-blocks">
+    @foreach (var item in Model.Blocks)
+    {
+        if (Model.AdminMode || item.Visible)
+        {
+            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", item);
+        }
+    }
+
+    @if (Model.AdminMode)
+    {
+        if (Model.Blocks.Count() == 0)
+        {
+            <div class="flexpage row text-center">
+                <button class="btn-transparent" onclick="fp_popupControlOpen({ command:'add', blocklistID: '@Model.ID', url: '@Request.Url.AbsoluteUri'})" data-target="#flexpage-popup-control">
+                    <i class="fas fa-plus-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add CMS block" style="font-size: 40px; color: #23598e; text-align: center; display: block; margin-bottom: 10px; margin-top: 30px"></i>
+                </button>
+                @if (System.Web.HttpContext.Current.Session["FP:CopyBlock"] != null)
+                {
+                    <button class="btn-transparent" onclick="fp_PasteBlock('0','@Model.ID')" data-target="#flexpage-popup-control">
+                        <i class="fas fa-paste" data-toggle="tooltip" data-placement="top" title="" data-original-title="Paste block" style="font-size: 40px; color: #23598e; text-align: center; display: block; margin-bottom: 10px; margin-top: 30px"></i>
+                    </button>
+                }
+            </div>
+        }
+
+        <script type="text/javascript">
+            var currentModelID = @(Model.ID);
+            $(document).ready(function () {
+                fp_initSetting('deleteBlockUrl', '@Url.Action("DeleteBlock", "Admin")');
+                fp_initSetting('moveBlockUrl', '@Url.Action("MoveBlock", "Block")');
+                fp_initSetting('cutBlockUrl', '@Url.Action("CutBlock", "Block")');
+                fp_initSetting('copyBlockUrl', '@Url.Action("CopyBlock", "Block")');
+                fp_initSetting('pasteBlockUrl', '@Url.Action("PasteBlock", "Block")');
+                fp_initSetting('addToRssUrl', '@Url.Action("AddToRss", "Admin")');
+            });
+        </script>
+    }
+</div>

@@ -1,0 +1,184 @@
+@import "../variables";
+
+#folder-content {
+
+    .tab-pane {
+        min-height: 400px;
+    }
+
+    .custom-tabs-row {
+        padding: 20px;
+    }
+
+    .custom-tabs-faq {
+        padding: 0px 20px 20px 20px;
+    }
+
+    .fa-folder {
+        color: $warm-grey;
+    }
+
+    .custom-folder-field {
+        border: 1px solid $gray-soft;
+        border-radius: 4px;
+    }
+
+    .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+        background-color: $white-clear;
+        opacity: 1;
+        border: none !important;
+    }
+
+    .tabs-navigation {
+        margin-top: -16px;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    #columns {
+        .fields-title {
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 18px;
+        }
+    }
+
+    .fa-trash-alt {
+        margin-top: 7px;
+        cursor: pointer;
+        color: $white-clear;
+    }
+
+    .fa-trash-alt:hover {
+        margin-top: 7px;
+        cursor: pointer;
+        color: $squash;
+    }
+
+    .trash {
+        button {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+    }
+
+    .permissions-box-no-select {
+        height: 272px;
+        display: flex;
+        font-size: 18px;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #groups, #persons {
+        margin-top: 15px;
+
+        .list.owners {
+            height: 500px;
+        }
+
+        .flexpage-blockWrapper:hover > .flexpage-blockControls {
+            display: none;
+        }
+    }
+}
+.detail-row-options {
+  margin-left: 20px;
+}
+.sortable-folder-content {
+  .panel-default > .panel-heading {
+    background-color: transparent;
+    border: 1px solid $white-two;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .panel-title>.small, .panel-title>.small>a, .panel-title>a, .panel-title>small, .panel-title>small>a {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .panel-collapse {
+    background: transparent;
+  }
+  input[type="checkbox"]:checked {
+    background-image: url("/Areas/Flexpage/Content/Images/icons/checkbox-full.svg")
+
+  }
+}
+.center-option {
+  display: flex;
+  justify-content: center;
+}
+.folder-content-hidden-title {
+  display: none;
+}
+
+.opacity-field {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.opacity-activated {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.opacity-field1 {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.opacity-activated1 {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@media(max-width: 990px) {
+  .folder-content-hidden-title {
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    margin: 20px 0;
+  }
+  .fields-title {
+    display: none;
+  }
+}
+@media(max-width: 650px){
+    #folder-content, #groups-persons-content {
+        .tabs-navigation {
+            display: flex;
+
+            li {
+                width: 20%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                a {
+                    text-align: center;
+                }
+            }
+
+            li.active {
+                color: $white-clear;
+                background-color: $dusk-blue-80;
+            }
+        }
+    }
+  .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    background-color: transparent !important;
+  }
+}
+@media(max-width: 500px) {
+    #folder-content, #groups-persons-content {
+        .tabs-navigation {
+            flex-wrap: wrap;
+
+            li {
+                width: 100%;
+            }
+        }
+    }
+}

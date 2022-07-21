@@ -1,0 +1,32 @@
+﻿@model Flexpage.Abstract.DTO.SitemapNodeModel
+
+@{
+    string nodeID = "sitemapTreeNode" + Model.ID;
+    string hrefID = "#collapsePanel" + Model.ID;
+    string subitemsID = "collapsePanel" + Model.ID;
+    string nodeDisplayName = string.IsNullOrWhiteSpace(Model.DefaultTitle) ? "(no_name)" : Model.DefaultTitle;
+}
+<li class="ui-state-default all-scroll" sitemap-node-id="@Model.ID" id="@nodeID" sitemap-id="@Model.SitemapID">
+    <a class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading  panel-page">
+                <h4 class="panel-title">
+                    <span data-toggle="collapse" href="@hrefID" onclick="sitemapNodeClicked('@Model.SitemapID', '@Model.ID')" class="align-box sitemapTreeNodeLink">
+                        @nodeDisplayName
+                        <span class="pull-right @(Model.HasChildren?"":"hidden")"><i class="fa fa-chevron-down rotate"></i></span>
+                    </span>
+                </h4>
+            </div>
+        </div>
+    </a>
+    @*don’t move or change, otherwise the drag and drop will break*@
+    <ol id="@subitemsID" class="panel-collapse collapse collapse-field-container sitemap-subnodes-container @(Model.HasChildren?"":"fp_p-0 fp_m-0")">
+        @if (Model.HasChildren && Model.Sitemap != null && Model.Sitemap.Nodes != null)
+        {
+            foreach (Flexpage.Abstract.DTO.SitemapNodeModel entry in Model.Sitemap.Nodes.Where(n => n.ParentID == Model.ID && n.SitemapID == Model.SitemapID).OrderBy(n => n.OrderNumber).ToList())
+            {
+                Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/Editors/SitemapNodeDBPartial.cshtml", entry);
+            }
+        }
+    </ol>
+</li>

@@ -1,0 +1,95 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+
+
+<!--General settings-->
+<div id="general-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show General Info</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowGeneralInfo, "SliderCheckbox")
+                </div>
+            </div>
+           
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Telecoms</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowTelecoms, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Linked Persons</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowLinkedPersons, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Linked Companies</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowLinkedCompanies, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Linked Folders</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowLinkedFolders, "SliderCheckbox")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Addresses</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowAddresses, "SliderCheckbox")
+                </div>
+            </div>
+
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Bank Accounts</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowBankAccounts, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Custom Properties</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowCustomProperties, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show Administration</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowAdministration, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Edit </label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.AllowEdit, "SliderCheckbox")
+                </div>
+                </div>
+            </div>
+    </div>
+</div>

@@ -1,0 +1,371 @@
+﻿
+@model Flexpage.Models.ContactsEnumerationModel
+@if (!Model.ExpandAllDetailsOnLoad)
+{
+    <style>
+        .fp_contactsEnumeration [class*=' dxgvDetailRow'], .fp_contactsEnumeration [class^='dxgvDetailRow'] {
+            display: none;
+        }
+    </style>
+}
+else
+{
+    <style>
+        .fp_contactsEnumeration [class*=' dxgvDetailRow'], .fp_contactsEnumeration [class^='dxgvDetailRow'] {
+            display: table-row;
+        }
+    </style>
+}
+<script>
+    var fp_settings = fp_settings||{};
+    fp_settings.showSelectionBoxes@(Model.ID.ToString()) = '@(Model.ShowSelectionBoxes)';
+    var dataSelect = new Map();
+    function fp_beginCallback@(Model.ID.ToString())(s, e) {
+        e.customArgs['ShowSelectedContactsGrid'] = (document.getElementById('ShowSelectedContactsGrid') === null ? 'false' : (document.getElementById('ShowSelectedContactsGrid').value));
+        if (document.getElementById('ShowSelectedContactsGrid') !== null && document.getElementById('ShowSelectedContactsGrid').value === "true") {
+            e.customArgs['SelectedValues'] = $("#SelectionChanged").val();
+        }
+        $(function () {
+            if (typeof EventManager !== 'undefined') {
+                EventManager.tools.hideLoading({ "ID": '@Model.ID.ToString()', "event": e });
+            }
+        });
+    }
+    function fp_browserContacts_EndCallback@(Model.ID.ToString())(s, e) {
+        $(function () {
+            if (typeof EventManager !== 'undefined') {
+                EventManager.tools.hideLoading({ "ID": '@Model.ID.ToString()', "event": e });
+            }
+        });
+        setTimeout(function () {
+            $(".fp_browserContacts").removeClass("hidden-visbility");
+            $(".fp_browserContacts-empty").addClass("hidden");
+            EventManager.bus.publish(EventManager.settings.Events.browserContacts.endCallback,
+                { "ID": '@Model.ID.ToString()' });
+        }, 6000);
+
+    }
+
+    window.flexpage = window.flexpage || {};
+
+    window.flexpage.fp_afterPreSaveBlock = function (obj) {
+        if (obj && (obj.type == 'Person' && obj.name1 != '' && obj.name2 != '' || obj.type == 'Company' && obj.name1 != '')){
+            EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.addNewContact,
+                { "ID": '@Model.ID.ToString()', contact: obj });
+            window.parent.flexpage.onClose();
+        }
+    }
+
+
+    function fp_refresh@(Model.ID.ToString())() {
+        @("fp_ContactsEnumeration_Grid" + Model.ID).Refresh(false);
+
+    }
+    window.flexpage.fp_refresh = fp_refresh@(Model.ID.ToString());
+    function fp_initPopupMenu@(Model.ID.ToString())(s, e) {
+    }
+    function fp_popupMenuItemClick@(Model.ID.ToString())(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.clickContextMenu,
+            { "ID": '@Model.ID.ToString()', "event": e });
+    }
+    function fp_contextMenu@(Model.ID.ToString())(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.showContextMenu,
+            { "ID": '@Model.ID.ToString()', "pageY": e.pageY, "pageX": e.pageX, "event": e,"typeContextMenu":"@(Model.TypeContextMenu)" });
+        return false;
+    }
+    function fp_DetailToggleButton@(Model.ID.ToString())(e) {
+        EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.detailToggleButton, { "event": e, ID:@(Model.ID.ToString()) });
+    }
+    function fp_rowClick@(Model.ID.ToString())(s, e) {
+        try {
+            if (!window.tabContainer) {
+                window.tabContainer = @("tabControl" + Model.ID);
+            }
+            window.tabContainer.SetVisible(true);
+        } catch (e) {
+
+        }
+        if (typeof EventManager != "undefined") {
+            EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.rowClick, { "event": e, ID:@(Model.ID.ToString()) });
+        }
+        if (typeof fp_objectpropertiesperson_clickOwner === "function" && e.htmlEvent) {
+            fp_objectpropertiesperson_clickOwner(e);
+        }
+        updateContactDetailTabText();
+
+    }
+    function fp_selectionChanged@(Model.ID.ToString())(s, e) {
+        
+        s.GetSelectedFieldValues("ID", function (values) {
+            if (document.getElementById("ContactsEnumeration_SelectedContacts" + @Model.ID) !== null){
+                showSelectedContacts(values);
+            }
+            $("#SelectionChanged").val(values);
+        });
+    }
+
+    function showSelectedContacts(values) {
+        var array1 = values.map(el => el.toString()); //selected now
+        var array2 = $("#SelectionChanged").val().split(",").filter(el => el != ""); //selected before
+        var index;
+        var result;
+        var target = $("#ContactsEnumeration_SelectedContacts" + @Model.ID);
+        var selectedContacts = document.getElementById("SelectedContacts");
+        var contactsDisplayed = parseInt(document.getElementById("DisplayedContacts").value);
+        var contactsInGrid = (document.getElementById('ShowSelectedContactsGrid') !== null && document.getElementById('ShowSelectedContactsGrid').value === "true")
+        for (var i = 0; i < array1.length; i++) {
+            var text = $("[data-shortcut-id=" + array1[i] + "]").text().trim();
+            if (text && !dataSelect.has(text)) {
+                dataSelect.set(array1[i], text);
+            }
+        }
+        if (array1.length === 0) {
+            if (contactsInGrid) {
+                result = 'Showing selected contacts <a href="#" onclick="toggleGrid()">(click to close)</a';
+            }
+            else {
+                result = 'Nothing selected';
+            }
+        }
+        else if (array1.length === 1) {
+            selectedContacts.value = $("[data-shortcut-id=" + array1[0] + "]").text().trim() || dataSelect.get(array1[0]);
+            if (contactsInGrid) {
+                result = 'Showing selected contacts <a href="#" onclick="toggleGrid()">(click to close)</a';
+            }
+            else {
+                result = 'Currently selected: ' + selectedContacts.value
+            }
+        }
+        else if (array1.length > array2.length) { // contact selected
+            for (var i = 0; i < array2.length; i++) {
+                index = array1.indexOf(array2[i]);
+                if (index > -1) {
+                    array1.splice(index, 1);
+                }
+            }
+            if (selectedContacts.value.length > 0) {
+                selectedContacts.value += ("; ");
+            }
+            selectedContacts.value += ($("[data-shortcut-id=" + array1[0] + "]").text().trim() || dataSelect.get(array1[0]));
+
+            if (contactsInGrid) {
+                result = 'Showing selected contacts <a href="#" onclick="toggleGrid()">(click to close)</a';
+            }
+            else if (contactsDisplayed < 2) { // 0-2 contacts
+                result = 'Currently selected: ' + selectedContacts.value;
+            }
+            else if (contactsDisplayed > 1) { // 3 or more contacts
+                result = 'Currently selected: ' + selectedContacts.value.substring(0, selectedContacts.value.indexOf("; ", selectedContacts.value.indexOf("; ") + 1)) +
+                    ' and ' + (values.length - 2) + ' more <a href="#" onclick="toggleGrid()">(click to view)</a > ';
+            }
+        }
+        else { //contact unselected
+            for (var i = 0; i < array1.length; i++) {
+                index = array2.indexOf(array1[i]);
+                if (index > -1) {
+                    array2.splice(index, 1);
+                }
+            }
+
+            var text = $("[data-shortcut-id=" + array1[0] + "]").text().trim() || dataSelect.get(array1[0]);
+            selectedContacts.value = selectedContacts.value.replace(text, "");
+            selectedContacts.value = selectedContacts.value.replace("; " + text, "");
+
+            var result;
+
+            if (contactsInGrid) {
+                result = 'Showing selected contacts <a href="#" onclick="toggleGrid()">(click to close)</a';
+            }
+            else if (contactsDisplayed <= 3) { // 0-2 contacts
+                result = 'Currently selected: ' + selectedContacts.value;
+            }
+            else if (contactsDisplayed > 3) { // 3 or more contacts
+                result = 'Currently selected: ' + selectedContacts.value.substring(0, selectedContacts.value.indexOf("; ", selectedContacts.value.indexOf("; ") + 1)) +
+                    ' and ' + (values.length - 2) + ' more <a href="#" onclick="toggleGrid()">(click to view)</a > ';
+            }
+
+        }
+        target.html(result);
+        document.getElementById("DisplayedContacts").value = values.length;
+    }
+
+    function toggleGrid() {
+        document.getElementById("ShowSelectedContactsGrid").value = document.getElementById("ShowSelectedContactsGrid").value == "false" ? "true" : "false";
+        eval("fp_ContactsEnumeration_Grid" + @Model.ID.ToString()).PerformCallback(null, function () {
+            eval("fp_ContactsEnumeration_Grid" + @Model.ID.ToString()).GetSelectedFieldValues('ID', function (values) {
+                showSelectedContacts(values)
+            });
+        });
+    }
+    function updateContactDetailTabText() {
+        var grid = "fp_ContactsEnumeration_Grid" + @Model.ID.ToString();
+        if (document.getElementsByClassName("contact-detail-tab-empty").length > 0) {
+            window[grid].pageRowCount == 0 ? document.getElementsByClassName("contact-detail-tab-empty")[0].innerText = "No contacts found" :
+                document.getElementsByClassName("contact-detail-tab-empty")[0].innerText = "Please select a contact in the list";
+        }
+    }
+
+
+    $(function() {
+        $(".export-contacts").click(function () {
+            var grid = "fp_ContactsEnumeration_Grid" + @Model.ID.ToString();
+            window.flexpage = window.flexpage || {};
+            window.flexpage.isSaveEven = false;
+            if ($("#SearchXml").val()) {
+                window.parent.flexpage.ExportXls = $("#SearchXml").val();
+            }
+            window.flexpage.onClose = function () {
+                $("#dialog-iframe").remove();
+            };
+
+            var requestParameters = '?folderId=' + $("#SelectFolderId").val();
+
+            if ($("#fp_resultAdvancedSearchGUID").val()) {
+                var guid = $("#fp_resultAdvancedSearchGUID").val();
+                requestParameters += ('&xml=' + guid);
+            };
+
+            window.flexpage.Download = function (path) {
+                $("#dialog-iframe").remove();
+                location.href = path;
+            };
+
+
+            var searchQuery;
+            if (window[grid].GetSearchEditor()) {
+                searchQuery = window[grid].GetSearchEditor().GetValue() || "";
+            }
+            else { searchQuery = "" }
+            requestParameters += '&exportSearchQuery=' + searchQuery;
+
+            $('<iframe/>',
+                {
+                    id: 'dialog-iframe',
+                    css: {
+                        'position': 'fixed',
+                        'top': 0,
+                        'left': 0,
+                        'width': '100%',
+                        'height': '100%',
+                        'border': 0,
+                        'z-index': 12001
+                    },
+                    src: '/Export/ShowExportSettingsDialog' + requestParameters
+                }).appendTo($('body'));
+        });
+    })
+    var fp_keywords_first_implementation = true;
+    function fp_implementFilter() {
+        if (fp_keywords_first_implementation) {
+            @if(!string.IsNullOrEmpty(Model.Keywords)) {
+                <text>
+                    $('.fp_Search_contacts input').val('@Model.Keywords');
+                    $('.fp_Search_contacts input').change();
+                </text>
+            }
+            fp_keywords_first_implementation = false;
+        }
+    }
+</script>
+@if (Model.AllowExport)
+{
+    <img src="~/Areas/Flexpage/Content/Images/frontend/browser/Table_32.png" class="export-contacts" />
+}
+@Html.Hidden("DetailRowsExpanded", "")
+@Html.HiddenFor(m => m.SelectFolderName)
+@Html.HiddenFor(m => m.SelectFolderId)
+@Html.Hidden("SelectionChanged")
+@if (Model.FileSource != 2 && Model.SourceType != 3)
+{
+    @Html.HiddenFor(m => m.PWFolderName)
+}
+@if (Model.ShowSelectedContactsLabel)
+{
+    @Html.Label("Nothing selected", new { @id = "ContactsEnumeration_SelectedContacts" + Model.ID })
+    @Html.Hidden("DisplayedContacts", (int)0)
+    @Html.Hidden("SelectedContacts")
+    @Html.Hidden("ShowSelectedContactsGrid", "false")
+}
+@Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsEnumeration/_ContactsEnumerationGrid.cshtml", Model)
+<div class="fp_contactsEnumerationPopupMenu">
+    @Html.DevExpress().PopupMenu(
+        settings =>
+        {
+            settings.Name = "PopupMenu" + Model.ID.ToString();
+            settings.AllowSelectItem = false;
+            settings.Items.Add(item =>
+            {
+                item.Text = "Add Person";
+                item.Name = "AddPerson";
+                item.Image.IconID = IconID.ActionsAdd16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Add Company";
+                item.Name = "AddCompany";
+                item.Image.IconID = IconID.ActionsAdd16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Add Contact";
+                item.Name = "AddContact";
+                item.Image.IconID = IconID.ActionsAdd16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Delete Contact";
+                item.Name = "DeleteContact";
+                item.Image.IconID = IconID.EditDelete16x16office2013;
+            });
+             settings.Items.Add(item =>
+            {
+                item.Text = "Delete";
+                item.Name = "Delete";
+                item.Image.IconID = IconID.EditDelete16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Navigate";
+                item.Name = "Navigate";
+                item.Image.IconID = IconID.NavigationForward16x16office2013;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Notifications";
+                item.Name = "Notifications";
+                item.Image.IconID = IconID.MailNewmail16x16;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Email Overriding";
+                item.Name = "EmailOverriding";
+                item.Image.IconID = IconID.MailNewmail16x16;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "Refresh");
+                item.Name = "Refresh";
+                item.Image.IconID = IconID.ActionsRefresh16x16office2013;
+                item.BeginGroup = true;
+            });
+            settings.Items.Add(item =>
+            {
+                item.Text = "Properties";
+                item.Name = "Properties";
+                item.Image.IconID = IconID.SetupProperties16x16office2013;
+                item.BeginGroup = true;
+            });
+            settings.ClientSideEvents.Init = ("fp_initPopupMenu" + Model.ID.ToString());
+            settings.ClientSideEvents.ItemClick = ("fp_popupMenuItemClick" + Model.ID.ToString());
+
+        }).GetHtml()
+</div>
+<div class="fp_contactsEnumerationLoadingPanel">
+    @Html.DevExpress().LoadingPanel(
+        settings => {
+            settings.Name = "LoadingPanel" + Model.ID.ToString();
+            settings.Modal = true;
+            settings.Enabled = true;
+        }
+        ).GetHtml()
+</div>

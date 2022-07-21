@@ -1,0 +1,26 @@
+﻿@model Pluritech.Pluriworks.Service.DTO.BrowserSearchResultModel
+
+<style>
+    .browser-search-no-bottom-border {
+        border-bottom: none !important;
+    }
+
+    .browser-search-no-top-border {
+        border-top: none !important;
+    }
+</style>
+<script>
+    var dateNow = Date.now();
+    var tabIndex = @Model.TabIndex;
+    eval("var tabTimerStart" + tabIndex + "= dateNow;");
+    window.setTimeout(function() {
+        fp_CheckBrowserSearchResultTimer(tabIndex, dateNow);
+    }, 1000 * 60 * 60 * 24);
+</script>
+<div class="browser-search-result-tab-@Model.TabIndex.ToString()">
+    @{
+        Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BrowserSearchResultGrid.cshtml", Model);
+    }
+    <div id="browser-search-result-message-@Model.TabIndex.ToString()">Your search has started. Please wait for it to finish</div>
+</div>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>blocks/beardcrumbs</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="blocks/beardcrumbs" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(1.000000, 15.000000)" fill="#727376">
+            <path d="M3,11.50125 L13,11.50125 L13,6.50125 L3,6.50125 L3,11.50125 Z M14.25,4.00125 L1.75,4.00125 C1.06,4.00125 0.5,4.56 0.5,5.25125 L0.5,12.75125 C0.5,13.4425 1.06,14.00125 1.75,14.00125 L14.25,14.00125 C14.94,14.00125 15.5,13.4425 15.5,12.75125 L15.5,5.25125 C15.5,4.56 14.94,4.00125 14.25,4.00125 Z" id="Fill-2"></path>
+            <path d="M33,11.50125 L43,11.50125 L43,6.50125 L33,6.50125 L33,11.50125 Z M44.25,4.00125 L31.75,4.00125 C31.05875,4.00125 30.5,4.56 30.5,5.25125 L30.5,12.75125 C30.5,13.4425 31.05875,14.00125 31.75,14.00125 L44.25,14.00125 C44.94125,14.00125 45.5,13.4425 45.5,12.75125 L45.5,5.25125 C45.5,4.56 44.94125,4.00125 44.25,4.00125 Z" id="Fill-4"></path>
+            <polygon id="Fill-5" points="18.690875 16.940625 21.392125 16.940625 27.258375 1.061875 24.607125 1.061875"></polygon>
+        </g>
+    </g>
+</svg>

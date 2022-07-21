@@ -1,0 +1,99 @@
+﻿@using Pluritech.Notifications.Abstract.DTO
+
+@model FolderNotificationsEditorModel
+
+<style>
+    div.notification-checkbox{
+        margin:5px 0 5px 20px;
+    }
+</style>
+<script>
+
+    $(function () {
+        fp_popupControlChangeTitle('Folder Notifications', '#fp_folderNotificationEditorContainer');
+        setControlsState($('#NotifyOn').is(':checked'));
+    });
+
+    
+
+    function setControlsState(val) {
+        if (val) {
+            $('#IsNew').removeAttr('disabled');
+            $('#IsEdited').removeAttr('disabled');
+            $('#IsDeleted').removeAttr('disabled');
+        }
+        else {
+            $('#IsNew').attr('disabled', true);
+            $('#IsEdited').attr('disabled', true);
+            $('#IsDeleted').attr('disabled', true);
+        }
+    }
+
+function ShowNotificationSettings() {
+    fp_popupControlOpen({ command: 'notification', blocklistID: '0', blockType: 'NotificationSettings', blockAlias: '', action: 'GetUserNotificationSettings', controller: 'Notifications', title: 'Notification Settings' }, function (save) { });
+}
+</script>
+<div class="tab-content" id="fp_folderNotificationEditorContainer">
+    @using (Ajax.BeginForm("UpdateFolderNotificationSettings", "Notifications", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "fp_folderNotificationEditorContainer" }, new { @id = "fp_BlockEditorForm", @role = "form" }))
+    {
+        @Html.HiddenFor(s => s.FolderID)
+        @Html.HiddenFor(s => s.UserID)
+        <div class="tab-pane fade in active" id="general-tab">
+            <div class="row">
+                <div class="col-md-12 form-group element-center">
+                    <label></label>
+                </div>
+            </div>
+            <div class="row general-options">
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(s => s.ShouldNotify, true, new { id = "NotifyOn", onchange = "setControlsState(true)" })
+                                Notify me about changes of this folder if someone:
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-checkbox" style="margin-top:15px;">
+                        <div class="col-md-8 ">
+                            <label class="checkbox-inline">
+                                @Html.CheckBoxFor(s => s.IsNew, new { id = "IsNew" })
+                                <span>uploads a new file</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-checkbox">
+                        <div class="col-md-8 ">
+                            <label class="checkbox-inline">
+                                @Html.CheckBoxFor(s => s.IsEdited, new { id = "IsEdited" })
+                                modify an existing file
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row notification-checkbox">
+                        <div class="col-md-8">
+                            <label class="checkbox-inline">
+                                @Html.CheckBoxFor(s => s.IsDeleted, new { id = "IsDeleted" })
+                                delete a file
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:15px;margin-bottom:30px; margin-left:20px">
+                        <div class="col-md-8">
+                            <a href="javascript:void(0)" onclick="ShowNotificationSettings()" style="font-weight:normal; text-decoration:underline;"> Notification settings</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(s => s.ShouldNotify, false, new { id = "NotifyOff", onchange = "setControlsState(false)" })
+                        Do not notify me about changes in this folder
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>

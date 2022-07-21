@@ -1,0 +1,296 @@
+﻿@model Flexpage.Models.AdvertisementImageModel
+
+@Scripts.Render("~/bundles/moment")
+<script type="text/javascript">
+
+    function OnDateChanged(s, e) {
+        s.GetMainElement().className = s.GetMainElement().className.concat(' tracker-dirty');
+    }
+
+    $(document).ready(function () {
+        fp_popupControlChangeTitle('ADVERTISEMENT IMAGE', '#fp_AdvertisementImageEditorContainer');
+    });
+
+    var periods = [];
+
+    $(document).ready(function () {
+        $("#periods div > input").each(function () {
+            periods.push($(this).val());
+        });
+    });
+
+    var preselectedLanguages = $('#preselectedLanguages').val();
+    if (preselectedLanguages) {
+        $('#ddlLanguages').selectpicker('val', JSON.parse(preselectedLanguages));
+    }
+
+    function removePeriod(element) {
+        // if (!confirm('Are you sure you want to delete this period?')) {
+        //    return;
+        // }
+        fp_ConfirmDialog('Delete period', 'Are you sure you want to delete this period ?', function () {
+            var div = $(element).parent()[0];
+            var index = div.id;
+            periods.splice(index, 1);
+            $(div).remove();
+            refreshPeriodsList();
+        });
+    };
+
+    function addPeriod() {
+
+        var startDate = StartDate.GetText();
+        var endDate = EndDate.GetText();
+
+        if (!startDate || !endDate) {
+            return false;
+        }
+
+        // If date to insert is the most biggest, add it to the end
+        var index = periods.length;
+        // Find index to insert new date in chronological order
+        for (var i = 0; periods.length > i; i++) {
+            var indexOfSpace = periods[i].indexOf(" ");
+            var dateString = periods[i].substring(0, indexOfSpace);
+            var massStartDate = stringToDate(dateString);
+
+            var dateToInsert = stringToDate(startDate);
+
+            if (dateToInsert < massStartDate) {
+                index = i;
+                break;
+            }
+        }
+
+        periods.splice(index, 0, startDate + " - " + endDate);
+
+        refreshPeriodsList();
+
+        return false;
+    }
+
+    function refreshPeriodsList() {
+        $("#periods div").each(function () {
+            $(this).remove();
+        });
+
+        for (var i = 0; periods.length > i; i++) {
+            $("#periods").append("<div id='" + i + "'>" +
+                periods[i] +
+                "<input name='Periods[" + i + "]' type='hidden' " + "value='" + periods[i] + "'>" +
+                "<img src='https://cdn2.iconfinder.com/data/icons/basic-ui-elements-plain/448/010_trash-16.png' onclick='removePeriod(this)'"
+                + " style = 'margin-left: 25px; cursor: pointer;' /><br /></div > ");
+        }
+    }
+
+    function stringToDate(dateString) {
+        return moment(dateString, 'DD/MM/YYYY').toDate();
+    }
+
+    function fp_advertisementImage_ImageUploaded(sender, event) {
+        var fileName = event.callbackData.split('/').pop()
+        $('#fp_AdvertisementImageEditorContainer input[type=hidden]#hiddenAdvetisementImagePath').val(fileName);
+        if (event.isValid)
+            $("#uploadedImage").attr("src", event.callbackData);
+        setElementVisible("uploadedImage", event.isValid);
+        fp_TrackInitialize(true);
+    }
+
+    function onImageLoad() {
+        var externalDropZone = $("#externalDropZone");
+        var uploadedImage = $("#uploadedImage");
+        if (uploadedImage.attr("src") != null && uploadedImage.attr("src") != "")
+            setElementVisible("dragZone", false);
+    }
+
+    function setElementVisible(elementId, visible) {
+        var el = $("#" + elementId);
+        if (visible)
+            el.show();
+        else
+            el.hide();
+    }
+    function fp_Picture_DropZoneEnter(sender, event) {
+        if (event.dropZone.id == 'externalDropZone')
+            setElementVisible('dropZone', true);
+    }
+
+    function fp_Picture_DropZoneLeave(sender, event) {
+        if (event.dropZone.id == 'externalDropZone')
+            setElementVisible('dropZone', false);
+    }
+
+    function fp_DeleteImage() {
+        $("#uploadedImage").attr("src", "");
+        $('#fp_AdvertisementImageEditorContainer input[type=hidden]#hiddenAdvetisementImagePath').val(null);
+        fp_TrackInitialize(true);
+        onImageLoad();
+    }
+</script>
+
+<div id="fp_AdvertisementImageEditorContainer">
+    @using (Ajax.BeginForm("UpdateAdvertisementImage", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_AdvertisementImageEditorContainer" }, new { id = "fp_AdvertisementImageEditorForm", forTraking = "all" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.ID, new { Value = Model.ID })
+
+        <div class="row">
+            <div class="col-md-7">
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Name)
+                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Description)
+                    @Html.TextBoxFor(x => x.Description, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Url)
+                    @Html.TextBoxFor(x => x.Url, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Tag)
+                    @Html.TextBoxFor(x => x.Tag, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group element-center">
+                    @Html.Label("Banner is active ", new { @style = "margin-left: 0 !important;" })
+                    @Html.CheckBoxFor(x => x.Active, new { @text = "Banner is active", @style = "margin-left: 10px" })
+                </div>
+
+                <div class="form-group">
+                    <label>Banner is restricted to these languages:</label>
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="If no language is selected, then the banner will appear in every language"></i>
+                    @foreach (var language in Model.SelectedLanguages)
+                    {
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.EditorFor(m => m.SelectedLanguages[language.Key])  @Model.AvailableLanguages[@language.Key]
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+                @Html.Label("Periods")
+                <div class="form-group">
+
+                    <table>
+                        <tr>
+                            <td>
+                                @Html.Label("Start date ")
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="The banner will be shown on the site on this date (this day included) if the banner is set as 'Active'"></i>
+                                @Html.DevExpress().DateEdit(
+                                    settings =>
+                                    {
+                                        settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                                        settings.Name = "StartDate";
+                                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                        settings.ControlStyle.CssClass = "flexpage calendar";
+                                        settings.Properties.EditFormat = EditFormat.Custom;
+                                        settings.Properties.DisplayFormatString = settings.Properties.EditFormatString = "dd'/'MM'/'yyyy";
+                                        settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                                        settings.Properties.CalendarProperties.ShowClearButton = false;
+                                        settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                                        settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                                        settings.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+                                    }
+                                    ).GetHtml()
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>
+                                @Html.Label("End date")
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="The banner will be shown on the site until this date (this day included) if the banner is set as 'Active'"></i>
+                                @Html.DevExpress().DateEdit(
+                                    settings =>
+                                    {
+                                        settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                                        settings.Name = "EndDate";
+                                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                        settings.ControlStyle.CssClass = "flexpage calendar";
+                                        settings.Properties.EditFormat = EditFormat.Custom;
+                                        settings.Properties.DisplayFormatString = settings.Properties.EditFormatString = "dd'/'MM'/'yyyy";
+                                        settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                                        settings.Properties.CalendarProperties.ShowClearButton = false;
+                                        settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                                        settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+                                        settings.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+                                    }
+                                    ).GetHtml()
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" align="right" style="padding-top: 5px;">
+                                <a class="btn btn-primary" onclick="addPeriod()">Add to list</a>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div id="periods" class="form-group">
+                    @Html.Label("Periods in which the banner will be shown:")
+
+                    @for (int i = 0; i < Model.Periods.Count; i++)
+                    {
+                        <div id="@i">
+                            @Html.DisplayFor(x => x.Periods[i])
+                            @Html.HiddenFor(x => x.Periods[i])
+                            <img src="https://cdn2.iconfinder.com/data/icons/basic-ui-elements-plain/448/010_trash-16.png" onclick="removePeriod(this)" style="margin-left: 25px;cursor: pointer;" />
+                            <br />
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+            <div class="col-md-5">
+
+                <div class="form-group" style="max-width:700px; max-height:500px;">
+                    @Html.Label("Image")
+
+                    <div id="externalDropZone" class="dropZoneExternal">
+                        <div id="dragZone">
+                            <span class="dragZoneText">Drag an image here</span>
+                        </div>
+                        <img id="uploadedImage" src="@Model.ImagePath" alt="" class="picture-uploaded-image"
+                             style='@(!string.IsNullOrEmpty(Model.ImagePath)?"":"display:none;")' onload="onImageLoad()" />
+                        <div id="dropZone" style='display:none;'>
+                            <span class="dropZoneText">Drop an image here</span>
+                        </div>
+                    </div>
+                    <div class="uploadContainer">
+                        @Html.HiddenFor(m => m.ImageName, new { id = "hiddenAdvetisementImagePath" })
+                        @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                        {
+                            Name = "fu_AdvertisementImage",
+                            OnFileUploaded = "fp_advertisementImage_ImageUploaded",
+                            DialogTriggerID = "externalDropZone",
+                            EnableDragAndDrop = true,
+                            EnableFileList = false,
+                            EnableMultiSelect = false,
+                            ExternalDropZoneID = "externalDropZone",
+                            UploadMode = UploadControlUploadMode.Auto,
+                            OnDropZoneEnter = "fp_Picture_DropZoneEnter",
+                            OnDropZoneLeave = "fp_Picture_DropZoneLeave",
+                            ShowUploadButton = false,
+                            BrowseButtonCssClass = "pictureFileUpload",
+                            DestinationFolder = Model.ImageFolder
+                        })
+                    </div>
+                    <div class="form-group">
+                        <a href="#" onclick="fp_DeleteImage();">Delete image</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

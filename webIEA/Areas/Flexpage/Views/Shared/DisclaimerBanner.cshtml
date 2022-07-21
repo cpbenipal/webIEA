@@ -1,0 +1,49 @@
+﻿@model Flexpage.Models.DisclaimerModel
+@{
+    string accept = Model.AcceptCookie;
+    string decline = Model.DeclineCookie;
+
+    string host = HttpContext.Current.Request.Url.GetComponents(UriComponents.HostAndPort, UriFormat.Unescaped);
+    if (host.StartsWith("www."))
+    {
+        host = host.Substring(4);
+    }
+    host = HttpContext.Current.Request.Url.IsDefaultPort ? "" : ":" + HttpContext.Current.Request.Url.Port;
+}
+<script type='text/javascript'>
+    var token = "@Html.Raw(Model.CookieToken)"
+
+    if ($.cookie("cookie_token") == null || $.cookie("cookie_token") != token) {
+        $.cookie("cc_cookie_accept", null, {
+            path: '/',
+            expires: 10
+        });
+        $.cookie("cc_cookie_decline", null, {
+            path: '/'
+        });
+        $.cookie("cookie_token", token, {
+            path: '/',
+            expires: 10
+        });
+
+    }
+
+    jQuery(document).ready(function () {
+        jQuery.cookieCuttr({
+            cookieAnalytics: false,
+            cookiePolicyPage: false,
+            cookieDeclineButton: false,
+            cookieResetButton: false,
+            cookieAcceptButtonText: "@accept",
+            cookieDeclineButtonText: "@decline",
+            cookieResetButtonText: "@decline",
+            cookieMessage: '@Html.Raw(Model.CmsText.GetText())',
+            cookieDomain: "@host",
+            cookieNotificationLocationBottom: true,
+            cookieDiscreetLink: false,
+            cookieDiscreetReset: false,
+            cookieCutterDeclineOnly: false,
+            cookieWarningContainerStyleClass: "cc-cookies cc-cookies-banner"
+        });
+    });
+</script>

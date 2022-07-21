@@ -1,0 +1,221 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Helpers;
+@{
+    var pathTemplate = (Model.ShowTiles ? "FolderContentTiles" : "FolderContentGrid");
+}
+@model Flexpage.Models.FolderContentModel
+@if (!Model.ExpandAllDetailsOnLoad)
+{
+    <style>
+        .fp_folderContent [class*=' dxgvDetailRow'], .fp_folderContent [class^='dxgvDetailRow'] {
+            display: none;
+        }
+    </style>
+}
+else
+{
+    <style>
+        .fp_folderContent [class*=' dxgvDetailRow'], .fp_folderContent [class^='dxgvDetailRow'] {
+            display: table-row;
+        }
+    </style>
+}
+
+<script language="JavaScript">
+
+    parent.fp_selectedFolderName = '@((Model.SelectFolderName ?? "").Replace("\\", "\\\\"))';
+
+    function fp_folderContentSelected@(Model.ID.ToString())(s, e) {
+        if (e.isSelected) {
+            var key = s.GetRowKey(e.visibleIndex);
+            var name = "";
+            if (typeof fp_selectedFileId !== 'undefined') {
+                fp_selectedFileId = key;
+            }
+            if (typeof fp_selectedFileName !== 'undefined') {
+                fp_selectedFileName = name;
+            }
+        }
+    }
+</script>
+
+@if (Model.ShowTiles == false)
+{
+    <script>
+        function fp_beginCallback@(Model.ID.ToString())(s, e) {
+            $(function () {
+                if (typeof EventManager !== 'undefined') {
+                    EventManager.tools.hideLoading({ "ID": '@Model.ID.ToString()', "event": e });
+                }
+            });
+        }
+
+        function fp_browser_EndCallback@(Model.ID.ToString())(s, e) {
+            $(function () {
+                if (typeof EventManager !== 'undefined') {
+                    EventManager.tools.hideLoading({ "ID": '@Model.ID.ToString()', "event": e });
+                }
+                setTimeout(function () {
+                    $(".fpBrowser .hidden-visbility,.fp_browserSelector .hidden-visbility").removeClass("hidden-visbility");
+                    $(".fp_browser-empty").addClass("hidden");
+                }, 4000);
+            });
+
+        }
+        function fp_contextMenu@(Model.ID.ToString())(s, e) {
+            EventManager.tools.applyRename(e);
+            EventManager.bus.publish(EventManager.settings.Events.folderContent.showContextMenu,
+                { "ID": '@Model.ID.ToString()', "pageY": e.pageY, "pageX": e.pageX, "event": e,"typeContextMenu":"@(Model.TypeContextMenu)" });
+            return false;
+        }
+
+        function fp_initPopupMenu@(Model.ID.ToString())(s, e) {
+        }
+        function fp_refresh@(Model.ID.ToString())() {
+            @("fp_FolderContent_Grid" + Model.ID).Refresh();
+        }
+        function fp_popupMenuItemClick@(Model.ID.ToString())(s, e) {
+            EventManager.bus.publish(EventManager.settings.Events.folderContent.clickContextMenu,
+                { "ID": '@Model.ID.ToString()', "event": e, allowZipDownload:"@(Model.AllowZipDownload)"=="True" });
+            EventManager.bus.publish(EventManager.settings.Events.hideAllContextMenu, { "event": e });
+        }
+
+        function fp_DetailToggleButton@(Model.ID.ToString())(e) {
+            EventManager.bus.publish(EventManager.settings.Events.folderContent.detailToggleButton,
+                { "event": e, ID: @(Model.ID.ToString()) });
+        }
+        function fp_downloadZip(btn) {
+            EventManager.bus.publish(EventManager.settings.Events.folderContent.downloadZip,
+                { ID: @(Model.ID.ToString())});
+            return false;
+        }
+
+    </script>
+}
+@Html.HiddenFor(m => m.PWFolderName)
+@Html.HiddenFor(m => m.SelectFolderName)
+@Html.HiddenFor(m => m.FolderPermissions)
+
+@Html.Hidden("DetailRowsExpanded", "")
+<div class="fp_folderContentGrid @(Model.ShowTiles?"fp_folderContent_tiles":"")">
+    @if (Model.AllowUpload)
+    {
+        <div class="upload-area">
+            @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderContent/_{pathTemplate}.cshtml", Model)
+        </div>
+    }
+    else
+    {
+        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderContent/_{pathTemplate}.cshtml", Model)
+    }
+</div>
+@if (Model.ShowTiles == false)
+{
+    <div class="fp_folderContentPopupMenu">
+        @Html.DevExpress().PopupMenu(
+            settings =>
+            {
+                if (Model.AllowUpload)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Upload file(s)";
+                        item.Name = "UploadFile";
+                        item.Image.IconID = IconID.ActionsSave16x16devav;
+                    });
+                }
+
+                settings.Name = "PopupMenu" + Model.ID.ToString();
+                settings.AllowSelectItem = false;
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Rename";
+                    item.Name = "Rename";
+                    item.Image.IconID = IconID.DataRenamedatasource16x16;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Delete";
+                    item.Name = "Delete";
+                    item.Image.IconID = IconID.EditDelete16x16office2013;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Copy";
+                    item.Name = "Copy";
+                    item.Image.IconID = IconID.EditCopy16x16office2013;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Cut";
+                    item.Name = "Cut";
+                    item.Image.IconID = IconID.EditCut16x16office2013;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Properties";
+                    item.Name = "Properties";
+                    item.Image.IconID = IconID.SetupProperties16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Version history";
+                    item.Name = "VersionHistory";
+                    item.Image.IconID = IconID.HistoryHistoryitem16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "DownloadContextMenuText");
+                    item.Name = "Download";
+                    item.Image.IconID = IconID.ActionsDownload16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "Refresh");
+                    item.Name = "Refresh";
+                    item.Image.IconID = IconID.ActionsRefresh16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Paste";
+                    item.Name = "Paste";
+                    item.Image.IconID = IconID.EditPaste16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Paste shortcut";
+                    item.Name = "PasteShortcut";
+                    item.Image.IconID = IconID.EditPaste16x16office2013;
+                    item.BeginGroup = true;
+                });
+                if (ViewBag.IsAuthenticated != null && ViewBag.IsAuthenticated)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Open local version";
+                        item.Name = "OpenLocalVersion";
+                        item.Image.IconID = IconID.ActionsOpen16x16office2013;
+                        item.BeginGroup = true;
+                    });
+                }
+                settings.ClientSideEvents.Init = ("fp_initPopupMenu" + Model.ID.ToString());
+                settings.ClientSideEvents.ItemClick = ("fp_popupMenuItemClick" + Model.ID.ToString());
+
+            }).GetHtml()
+    </div>
+}
+<div class="fp_folderContentLoadingPanel">
+    @Html.DevExpress().LoadingPanel(
+        settings =>
+            {
+                settings.Name = "LoadingPanel" + Model.ID.ToString();
+            settings.Modal = true;
+            settings.Enabled = true;
+        }
+        ).GetHtml()
+</div>

@@ -1,0 +1,441 @@
+﻿// Core variables and mixins
+@import "variables";
+@import "common.scss";
+@import "origin/variables";
+@import "origin/mixins";
+
+// Reset and dependencies
+@import "origin/normalize";
+@import "origin/print";
+@import "origin/glyphicons";
+// Core CSS
+@import "origin/scaffolding";
+@import "origin/type";
+@import "origin/code";
+@import "origin/grid";
+@import "origin/tables";
+@import "origin/forms";
+@import "origin/buttons";
+@import "forms/form";
+// Components
+@import "origin/component-animations";
+//@import "origin/dropdowns";
+@import "origin/button-groups";
+@import "origin/input-groups";
+@import "origin/navs";
+//@import "origin/navbar";
+@import "origin/breadcrumbs";
+@import "origin/pagination";
+@import "origin/pager";
+@import "origin/labels";
+@import "origin/badges";
+@import "origin/jumbotron";
+@import "origin/thumbnails";
+@import "origin/alerts";
+@import "origin/progress-bars";
+@import "origin/media";
+@import "origin/list-group";
+@import "origin/panels";
+@import "origin/responsive-embed";
+@import "origin/wells";
+@import "origin/close";
+// Components w/ JavaScript
+@import "origin/modals";
+@import "origin/tooltip";
+//@import "origin/popovers";
+//@import "origin/carousel";
+//// Utility classes
+//@import "origin/utilities";
+//@import "origin/responsive-utilities";
+//cms
+@import "typography/typography";
+@import "pages/page-manager";
+@import "pages/sitemaps";
+@import "pages/blocks";
+@import "pages/cms";
+@import "pages/menu-block";
+@import "pages/multicontent-blocks";
+@import "pages/folder-content";
+@import "pages/news-block";
+@import "pages/gallery-block";
+@import "pages/social-media-feed";
+@import "pages/video-block";
+@import "pages/forms";
+@import "pages/breadcrumbs-block";
+@import "modal/modal";
+@import "pages/calendar";
+@import "pages/file-uploader";
+@import "pages/advertisement";
+@import "pages/maintenance";
+@import "pages/_treeList-block.scss";
+@import "pages/general-permissions";
+@import "pages/_page-not-found.scss";
+
+html{
+    height: 100% !important;
+    overflow-x: hidden;
+}
+
+body {
+    font-weight: 400 !important;
+    background: transparent;
+}
+
+.active {
+    font-weight: bold;
+}
+
+.block-error {
+    color: red;
+}
+
+.page-header {
+    padding-bottom: 10px;
+    margin: 0;
+    border-bottom: none;
+}
+.admin-logout {
+    border-top: 1px solid rgba(0, 0, 0, .15);
+    margin-top: 5px;
+    padding-top: 5px;
+
+    @media(max-width: 767px) {
+        border-top: 1px solid #9d9d9d;
+    }
+}
+.rotate {
+    -moz-transition: all .3s linear;
+    -webkit-transition: all .3s linear;
+    transition: all .3s linear;
+}
+
+.rotate.down {
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+//-----tabs-----
+.tabs-navigation {
+    background-color: $dusk-blue-60;
+
+    li {
+        a {
+            color: $white-clear;
+            border-radius: 0;
+
+            &:active {
+                background-color: $dusk-blue-80;
+            }
+        }
+    }
+}
+
+.tabs-navigation > li.active > a, .tabs-navigation > li.active > a:focus, .tabs-navigation > li.active > a:hover {
+    color: $white-clear;
+    background-color: $dusk-blue-80;
+}
+
+.tabs-navigation > li > a:focus, .tabs-navigation > li > a:hover {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.addImage {
+    position: relative;
+    overflow: hidden;
+    border: none;
+}
+
+.addImage input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.block-icons-top-header {
+    button {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+}
+
+.tab-content-gray {
+    display: flex;
+}
+
+.resize-ico {
+    width: 48px;
+    height: 48px;
+}
+
+@media(max-width: 1200px) {
+    .block-icons-top {
+        .col-md-2 {
+            width: 20.666667%;
+        }
+    }
+}
+
+@media(max-width: 990px) {
+    .block-icons-top-header {
+        button {
+            margin-left: 0 !important;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+    }
+
+    .block-icons-top {
+        display: flex;
+        justify-content: flex-end;
+
+        .col-md-2 {
+            width: 30.666667%;
+        }
+
+        button {
+            margin-left: -140px;
+        }
+    }
+
+    .dropdown-icons-menu {
+        min-width: 50px;
+    }
+
+    .tab-content-gray {
+        display: block;
+    }
+}
+
+.align-left-row {
+    margin-left: -15px;
+}
+
+
+@media(max-width: 768px) {
+    .navbar-static-top {
+        .navbar-toggle {
+            display: flex;
+            flex-direction: column;
+            margin-right: 5px;
+            padding: 0;
+
+            .glyphicon {
+                color: $white-clear;
+                width: 30px;
+                height: 2px;
+                background: $white-clear;
+                margin: 3px;
+            }
+        }
+    }
+}
+
+.body-content {
+    padding-top: 60px;
+}
+
+.language-select {
+    cursor: pointer;
+}
+
+.localized-items .txt input {
+    width: 100%;
+}
+
+#navtop span.glyphicon.glyphicon-bar {
+    width: 1px;
+    height: 1px;
+    background-color: #fff;
+}
+
+#navtop a.navbar-toggle {
+    border-color: #fff;
+    line-height: 1;
+}
+
+#navtop a.navbar-toggle:hover {
+    background-color: #777;
+}
+
+#folder-content .fa-trash-alt {
+    color: #e6981a;
+}
+
+.multicolumn {
+    /* width: 100%;*/
+    vertical-align: top;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+
+.multicolumn td {
+    vertical-align: top;
+    padding-right: 16px;
+    padding-left: 0px;
+}
+
+.multicolumn td:last-child {
+    vertical-align: top;
+    padding-right: 0px;
+}
+
+.multicolumn > div {
+    vertical-align: top;
+    padding-right: 16px;
+    padding-left: 0px;
+}
+
+.multicolumn > div:last-child {
+    vertical-align: top;
+    padding-right: 0px;
+}
+
+.pull-right {
+    float: right !important;
+}
+
+.flexpage {
+    .fa-trash-alt {
+        color: #e6981a;
+    }
+}
+.colorpicker {
+    position: absolute;
+    background: #fff;
+    outline: 1px solid #333;
+    margin-top: 2px;
+}
+#tabs-container {
+    i.fa-copy, i.fa-search {
+        cursor: pointer;
+    }
+
+    i.fa-copy, i.fa-cog {
+        cursor: pointer;
+    }
+
+     .modal-id {
+        display: show;
+        padding-top: 5px;
+    }
+
+    .html-code {
+        display:none;
+    }
+
+    .input-tab-link{
+        padding-right:30px;
+
+        span{
+            position:absolute;
+            right: 10px;
+            top: 8px;
+            display: block;
+        }
+    }
+}
+#MultiColumn{
+    .multi-column{
+        display: block !important;
+        margin-bottom:5px;
+    }
+}
+
+
+.dissable {
+    select, input, .input-group-btn {
+        background: #dddddd !important;
+        pointer-events: none;
+    }
+
+    .checkbox {
+        pointer-events: none;
+
+        &:hover, &:checked {
+            background: #dddddd !important;
+        }
+    }
+}
+
+.grid-select-row {
+    background-color: rgba(35, 89, 142, 0.6);
+    color: #fff;
+}
+.fp_folderSaveAsContactsSelector {
+    &__NameFile {
+        background: #ccc;
+        margin-bottom: -15px;
+        margin-left: -15px;
+        padding: 5px;
+        width: calc(100% + 30px);
+        padding-left: 15px;
+
+        &_Input {
+            width: calc(100% - 90px);
+            margin-left: 10px;
+            padding: 0 5px;
+            display: inline-block;
+        }
+
+        &_Span{
+            font-weight:600;
+        }
+    }
+}
+.pictureManagerContainer {
+    .color-picker-box {
+        margin-top: -6px;
+        display: block;
+        float: right;
+        margin-left: 10px;
+        width: 34px;
+    }
+
+    .colorpicker-component {
+        min-width: 80px;
+    }
+
+    .color-picker-field {
+        margin-left: 0;
+    }
+}
+.fp_fixedPopapDateEdit {
+    position: relative;
+
+    .dxpcDropDown_MetropolisBlue {
+        position: fixed !important;
+    }
+}
+input[type="checkbox"]:focus{
+    outline:none;
+}
+.fp_gallery-bullets{
+
+}
+#items {
+    .records-faq {
+        margin: 15px 7px 0px !important;
+    }
+}

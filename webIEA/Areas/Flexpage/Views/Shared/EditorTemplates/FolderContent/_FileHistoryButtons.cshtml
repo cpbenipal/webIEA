@@ -1,0 +1,22 @@
+﻿@{
+    bool isPermission = (bool)ViewData["isPermission"];
+    var buttonRemove = isPermission
+        ? "<a href='#' id='btn-remove' aria-label='REMOVE' onclick='removeHistory()' class='isDisabled'>REMOVE</a>"
+        : string.Empty;
+}
+<script type="text/javascript">
+    $(function() {
+        if ($(".fp_popupButtonsContainer a:first").length > 0) {
+            $(".fp_popupButtonsContainer a:first").remove();
+            $(".fp_popupButtonsContainer").parent().find("div.left").html(
+                "<a href='#' aria-label='DOWNLOAD' onclick='downloadHistory()' class='isDisabled'>DOWNLOAD</a> " +
+                "@Html.Raw(buttonRemove)");
+        } else {
+            $(".modal-footer").html("<div class='col-md-6 pull-left left'>"+
+                "<a href='javascript:void(0)' aria-label='DOWNLOAD' onclick='downloadHistory()' class='isDisabled'>DOWNLOAD</a>"+ 
+                "@Html.Raw(buttonRemove)</div><div class='col-md-6 pull-right right fp_popupButtonsContainer'>"+ 
+                "<a href='javascript:void(0)' aria-label='Close' onclick='fp_beforeClosePopUp(this, 1)'>CANCEL</a>"+
+                "</div>");
+        }
+    })
+</script>

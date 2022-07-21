@@ -1,0 +1,7 @@
+﻿@model Flexpage.Abstract.DTO.CmsTextViewModel
+<div class="row">
+    <div class="col-xs-12 col-md-12">
+        <h1 class="cmstitle text-center">@Model.Title</h1> @*//todo*@
+        <div class="cmscontent">@Html.Raw(@Model.FullText)</div>
+    </div>
+</div>

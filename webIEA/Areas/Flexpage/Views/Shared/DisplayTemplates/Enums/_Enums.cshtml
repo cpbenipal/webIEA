@@ -1,0 +1,31 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.EnumsModel
+<script>
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+     function fp_beginCallback@(Model.ID.ToString())(s, e) {
+
+    }
+    function fp_customProperties_EndCallback@(Model.ID.ToString())(s, e) {
+        setTimeout(function () {
+
+        }, 1000);
+
+    }
+    function fp_enumListCustomButtonClick(s, e) {
+        if (e.buttonID == 'bDelete') {
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the enum?', function () { s.DeleteRow(e.visibleIndex); });
+        } else
+            if (e.buttonID == 'btnItems') {
+                fp_popupControlOpen({ command: 'edit', blockType: 'Enum', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true, allowSave: 0 }, function () { fp_initJS(); s.PerformCallback(); });
+            }
+    }
+    function fp_enumEndCallback(s, e) {
+        if (s.cpEditError && s.cpEditError != "")
+            fp_ConfirmDialog('Delete error', s.cpEditError, function () { });
+    }
+</script>
+
+@Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/Enums/_EnumsGrid.cshtml", Model.Enums)

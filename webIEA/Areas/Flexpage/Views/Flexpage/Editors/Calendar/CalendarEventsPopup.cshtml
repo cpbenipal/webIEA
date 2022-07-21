@@ -1,0 +1,57 @@
+﻿@model List<Flexpage.Abstract.DTO.EventViewModel>
+@{
+    Layout = "~/Areas/Flexpage/Views/Shared/_PopupLayout.cshtml";
+}
+
+<div id="calendar-block-edit">
+    <div class="modal fade table-celendar-event-popup" id=@("flexpage-popup-control_1") tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" id=@("flexpage-modal-header_1")>
+                    <div id="add-event">
+                        <div class="modal-title">
+                            <h3 class="modal-title">@ViewBag.CurrentDay.ToLongDateString()</h3>
+                            @if(ViewBag.IsAdmin)
+                            {
+                                <div class="line"></div>
+                                <a class="modal-title" onclick="flexpageCalendar.openDialogAddEvent(-1, '@ViewBag.CurrentDay.Date.ToString("yyyy-MM-dd")')">Add event</a>
+                            }
+                        </div>
+                    </div>
+                    <button type="button" class="close" aria-label="Close" onclick="fp_beforeClosePopUp(this, 1)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id=@("flexpage-modal-body_1")  style="margin-bottom: 0">
+                    <div id="partialEvents">
+                        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/Calendar/CalendarEventsListPopup.cshtml", Model)
+                    </div>
+                </div>
+            </div>
+            <div style="display: none; z-index: 1000; position: absolute;  top: 50%; left: 50%; transform: perspective(1px) translateY(-50%) translateX(-50%); text-align: center; width: 256px; height: 100px; opacity: 0.8; background-color: #23598e" id="pleaseWaitDiv">
+                <span style="display: block; opacity: 1; color: #ffffff; font-size: x-large; padding-top: 33px">
+                    Please, wait ...
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            var popup = $('#flexpage-popup-control_1');
+
+            $(window).on('load',
+                function () {
+                    popup.modal();
+                });
+                
+            $('.modal').on('show.bs.modal',flexpageCalendar.repositionEventPopup);
+            
+            $(window).on('resize', function() {
+                $('.modal:visible').each(flexpageCalendar.repositionEventPopup);
+            });
+        });
+    </script>
+}

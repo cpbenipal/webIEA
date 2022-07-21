@@ -1,0 +1,78 @@
+﻿@using System.Drawing
+@using System.Web.UI.WebControls
+@model Flexpage.Models.BrowserModel
+@Html.DevExpress().Splitter(
+settings =>
+{
+    settings.Name = "splResizing" + Model.ID;
+    settings.Height = 550;
+    settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+    settings.Styles.Pane.Paddings.Padding = 0;
+    settings.SeparatorVisible = true;
+    settings.Images.VerticalCollapseBackwardButton.IconID = IconID.ArrowsPrev16x16gray;
+    settings.Images.VerticalCollapseForwardButton.IconID = IconID.ArrowsNext16x16gray;
+    settings.ShowSeparatorImage = true;
+    settings.Panes.Add(listBoxPane =>
+    {
+        listBoxPane.PaneStyle.Border.BorderColor = Color.FromArgb(0, 114, 198);
+        listBoxPane.PaneStyle.BorderWidth = new System.Web.UI.WebControls.Unit(1, System.Web.UI.WebControls.UnitType.Pixel);
+        listBoxPane.Name = "listBoxContainer";
+        listBoxPane.PaneStyle.Paddings.Padding = 8;
+        listBoxPane.Size = new System.Web.UI.WebControls.Unit(30, System.Web.UI.WebControls.UnitType.Percentage);
+        listBoxPane.ShowCollapseBackwardButton = DefaultBoolean.True;
+        listBoxPane.SetContent(() =>
+        {
+            @Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.FolderTreeListModel);
+        });
+    });
+    settings.Panes.Add(contentPane =>
+    {
+        contentPane.PaneStyle.Border.BorderColor = Color.FromArgb(0, 114, 198);
+        contentPane.PaneStyle.BorderWidth = new System.Web.UI.WebControls.Unit(1, System.Web.UI.WebControls.UnitType.Pixel);
+        contentPane.MinSize = 350;
+        contentPane.Panes.Add(gridPane =>
+        {
+            contentPane.PaneStyle.Paddings.Padding = 8;
+            gridPane.Name = "tabContainer" + Model.ID;
+            gridPane.Size = new System.Web.UI.WebControls.Unit(70, System.Web.UI.WebControls.UnitType.Percentage);
+            gridPane.MinSize = 100;
+            gridPane.SetContent(() =>
+            {
+                if (Model.Contacts)
+                {
+                    @Html.DevExpress().PageControl(
+                        panelSettings =>
+                        {
+                            panelSettings.Name = "tabControl" + Model.ID;
+
+                            panelSettings.Width = Unit.Percentage(100);
+                            panelSettings.ClientSideEvents.ActiveTabChanged = ("function(s,e) { fp_ActiveTabChanged" + Model.FolderTreeListModel.Alias + "(s,e)}");
+                            panelSettings.TabPages.Add("Files").SetContent(() =>
+                            {
+                                @Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.FolderContentModel);
+                            });
+                            if (Model.ContactsEnumerationModel != null)
+                            {
+                                panelSettings.TabPages.Add(tab =>
+                                {
+                                    tab.Text = "Contacts";
+                                    tab.SetContent(() =>
+                                    {
+                                        @Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.ContactsEnumerationModel);
+                                    });
+                                });
+                            }
+                        }).Render();
+                }
+                else
+                {
+                    @Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BlockWrapper.cshtml", Model.FolderContentModel);
+                }
+            });
+        });
+    });
+
+    //settings.ClientSideEvents.PaneResized = "OnSplitterPaneResized";
+    //settings.ClientSideEvents.Init = "function(s,e){ fp_browser_adjustSize(s); }";
+
+}).GetHtml()

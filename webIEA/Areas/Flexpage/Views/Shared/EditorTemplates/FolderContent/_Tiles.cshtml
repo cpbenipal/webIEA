@@ -1,0 +1,54 @@
+﻿@model Flexpage.Models.FolderContentModel
+
+
+<!--Tiles Settings-->
+<div id="tiles-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <div class="form-fields">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <label>Show files as tiles</label>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.EditorFor(m => m.ShowTiles, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                        </div>
+                    </div>
+                </div>
+                <div class="opacity-activated">
+                    <div class="form-fields">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <label>Show preview</label>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.EditorFor(m => m.ShowPreview, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-fields">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <label>Manual tile generation</label>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.EditorFor(m => m.ManualTileGeneration, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-fields">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <label>Show tile name</label>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.EditorFor(m => m.ShowTileName, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,509 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+@model Flexpage.Models.PictureModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+
+}
+<!--Size-->
+<div class="panel panel-default">
+    <div class="panel-heading  panel-page">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapsePA1" class="align-box">Size <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Size options"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+        </h4>
+    </div>
+    <div id="collapsePA1" class="panel-collapse collapse collapse-field-container">
+        <!--Size content-->
+        <div class="row">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="col-md-12 form-group element-center">
+                        @Html.CheckBoxFor(m => m.ConstrainProportions, new { @class = "form-control" })
+                        <label class="form-check-label" for="ConstrainProportions">
+                            Constrain proportions
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <label>Width:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.WidthType, SizeType.Auto, new { id = "WidthType" + SizeType.Auto.ToString() })
+                            Auto
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.WidthType, SizeType.Full, new { id = "WidthType" + SizeType.Full.ToString() })Full width
+                        </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="col-md-4">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(s => s.WidthType, SizeType.Custom, new { id = "WidthType" + SizeType.Custom.ToString() })Custom
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(m => m.CustomWidth, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.DropDownListFor(m => m.CustomWidthUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <label>Height:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.HeightType, SizeType.Auto, new { id = Guid.NewGuid() })
+                            Auto
+                        </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.HeightType, SizeType.Full, new { id = Guid.NewGuid() })Full height
+                        </label>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="col-md-4">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(s => s.HeightType, SizeType.Custom, new { id = Guid.NewGuid() })Custom
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(m => m.CustomHeight, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.DropDownListFor(m => m.CustomHeightUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType), Model.CustomHeightUnit), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Image effects-->
+<div class="panel panel-default">
+    <div class="panel-heading  panel-page">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapsePA2" class="align-box">Image effects <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Image effects"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+        </h4>
+    </div>
+    <div id="collapsePA2" class="panel-collapse collapse collapse-field-container">
+        <!--Image effects content-->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="element-center form-group">
+                    @Html.CheckBoxFor(m => m.Tint, new { @class = "form-control" })
+                    <label class="form-check-label" for="Tint">Tint <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Adds color tint to an image"></i></label>
+                </div>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-group element-center">
+                    @Html.CheckBoxFor(m => m.Blur, new { @class = "form-control" })
+                    <label class="form-check-label" for="Blur">Blur</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group element-center">
+                    @Html.CheckBoxFor(m => m.BlackAndWhite, new { @class = "form-control" })
+                    <label class="form-check-label" for="BlackAndWhite">
+                        Black and white
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2 form-group color-picker-field form-element-inner">
+                <div class="input-group colorpicker-component" id="Advanced_ImageColor">
+                    @Html.HiddenFor(m => m.TintColor, new { @class = "form-control color-data" })
+                    <label class="form-check-label">Color</label>
+                    <span class="input-group-addon color-picker-box"><i></i></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"> <label>Opacity</label></div>
+                <div class="col-md-2 element-center slider-scale">
+                    <div class="slidecontainer element-center">
+                        @Html.TextBoxFor(model => model.TintOpacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+                        <span class="opacity-percentage">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Slogan-->
+<div class="panel panel-default">
+    <div class="panel-heading  panel-page">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapsePA3" class="align-box">Slogan <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Short text above image"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+        </h4>
+    </div>
+    <div id="collapsePA3" class="panel-collapse collapse collapse-field-container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group color-picker-field">
+                                <div class="input-group colorpicker-component" id="Advanced_SloganForeColor">
+                                    @Html.HiddenFor(m => m.Slogan.ForeColor, new { @class = "form-control color-data" })
+                                    <label class="form-check-label">Text Color</label>
+                                    <span class="input-group-addon color-picker-box"><i></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group color-picker-field" id="Advanced_SloganBackColor">
+                                <div class="input-group colorpicker-component">
+                                    @Html.HiddenFor(m => m.Slogan.BackColor, new { @class = "form-control color-data" })
+                                    <label class="form-check-label">Background Color</label>
+                                    <span class="input-group-addon color-picker-box"><i></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Slogan.Effect, TextEffect.Shadow, new { @class = "" })
+                                Shadow
+                            </label>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Slogan.Effect, TextEffect.Glow, new { @class = "" })
+                                Glow
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Adds shadow or glow to the text"></i>
+                            </label>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.Slogan.Effect, TextEffect.None, new { @class = "" })
+                                None
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-4 form-group color-picker-field form-element-inner">
+                            <div class="input-group colorpicker-component" id="Advanced_SloganColor">
+                                @Html.HiddenFor(m => m.Slogan.EffectColor, new { @class = "form-control color-data" })
+                                <label class="form-check-label">Color</label>
+                                <span class="input-group-addon color-picker-box"><i></i></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"> <label>Opacity</label></div>
+                            <div class="col-md-4 element-center slider-scale">
+                                <div class="slidecontainer element-center">
+                                    @Html.TextBoxFor(model => model.Slogan.EffectOpacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+                                    <span class="opacity-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-2 form-group">
+                        <label>Position:</label>
+                        <div class="position">
+                            @Html.HiddenFor(m => m.Slogan.Position, new { @class = "form-control square-data" })
+                            <div class="square" data-position="TopLeft"></div>
+                            <div class="square" data-position="Top"></div>
+                            <div class="square" data-position="TopRight"></div>
+                            <div class="square" data-position="MiddleLeft"></div>
+                            <div class="square" data-position="Middle">
+                                <div class="blue-square"></div>
+                            </div>
+                            <div class="square" data-position="MiddleRight"></div>
+                            <div class="square" data-position="BottomLeft"></div>
+                            <div class="square" data-position="Bottom"></div>
+                            <div class="square" data-position="BottomRight"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="element-center form-group">
+                                    @Html.CheckBoxFor(m => m.Slogan.Padding.IsApplyIndent)
+                                    <label class="form-check-label" for="SloganApplyPadding">
+                                        Padding:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBoxFor(i => i.Slogan.Padding.Amount, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.EnumDropDownListFor(m => m.Slogan.Padding.SizeUnitType, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-1">
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Internal padding of the text"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="element-center form-group">
+                                    @Html.CheckBoxFor(m => m.Slogan.Margin.IsApplyIndent)
+                                    <label class="form-check-label" for="SloganApplyMargin">
+                                        Margin:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBoxFor(i => i.Slogan.Margin.Amount, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownListFor(m => m.Slogan.Margin.SizeUnitType, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-1">
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="External margin of the text"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Call to action-->
+<div class="panel panel-default">
+    <div class="panel-heading  panel-page">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapsePA4" class="align-box">Call To Action <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Hyperlink above image"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+        </h4>
+    </div>
+    <div id="collapsePA4" class="panel-collapse collapse collapse-field-container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group color-picker-field">
+                                <div class="input-group colorpicker-component" id="Advanced_CallToActionForeColor">
+                                    @Html.HiddenFor(m => m.CallToAction.ForeColor, new { @class = "form-control color-data" })
+                                    <label class="form-check-label">Text Color</label>
+                                    <span class="input-group-addon color-picker-box"><i></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group color-picker-field">
+                                <div class="input-group colorpicker-component" id="Advanced_CallToActionBackColor">
+                                    @Html.HiddenFor(m => m.CallToAction.BackColor, new { @class = "form-control color-data" })
+                                    <label class="form-check-label">Background Color</label>
+                                    <span class="input-group-addon color-picker-box"><i></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.CallToAction.Effect, TextEffect.Shadow)
+                                Shadow
+                            </label>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.CallToAction.Effect, TextEffect.Glow)
+                                Glow
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Adds shadow or glow to the text"></i>
+                            </label>
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label class="radio-inline">
+                                @Html.RadioButtonFor(m => m.CallToAction.Effect, TextEffect.None)
+                                None
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 form-group color-picker-field form-element-inner">
+                            <div class="input-group colorpicker-component" id="Advanced_CallToActionColor">
+                                @Html.HiddenFor(m => m.CallToAction.EffectColor, new { @class = "form-control color-data" })
+                                <label class="form-check-label">Color</label>
+                                <span class="input-group-addon color-picker-box"><i></i></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2"> <label>Opacity</label></div>
+                            <div class="col-md-4 element-center slider-scale">
+                                <div class="slidecontainer element-center">
+                                    @Html.TextBoxFor(model => model.CallToAction.EffectOpacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+                                    <span class="opacity-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Call To Action URL:</label>
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(m => m.CallToAction.UseUrl, false, new { onclick = "javascript: jQuery('#CallToAction_Url').val('');" })Page:
+                            @*<input type="radio" name="callToActionSelectTargetURl" value="PageUrl" onclick="javascript: jQuery('#CallToAction_Url').val('');">Page:*@
+                        </label>
+                        @Html.DropDownListFor(m => m.CallToAction.Page, new SelectList(ViewData["PagesList"] as List<string>), new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(m => m.CallToAction.UseUrl, true, new { onclick = "javascript: jQuery('#CallToAction_Page').val('');" })URL:
+                            @*<input type="radio" name="callToActionSelectTargetURl" value="ManualUrl" onclick="javascript: jQuery('#CallToAction_Page').val('');">URL:*@
+                        </label>
+                        @Html.TextBoxFor(m => m.CallToAction.Url, new { @class = "form-control form-group" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row form-group">
+                    <div class="col-md-2 form-group">
+                        <label>Position:</label>
+                        <div class="position" id="call-to-action-position">
+                            @Html.HiddenFor(m => m.CallToAction.Position, new { @class = "form-control square-data" })
+                            <div class="square" data-position="TopLeft"></div>
+                            <div class="square" data-position="Top"></div>
+                            <div class="square" data-position="TopRight"></div>
+                            <div class="square" data-position="MiddleLeft"></div>
+                            <div class="square" data-position="Middle">
+                                <div class="blue-square"></div>
+                            </div>
+                            <div class="square" data-position="MiddleRight"></div>
+                            <div class="square" data-position="BottomLeft"></div>
+                            <div class="square" data-position="Bottom"></div>
+                            <div class="square" data-position="BottomRight"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="element-center form-group">
+                                    @Html.CheckBoxFor(m => m.CallToAction.Padding.IsApplyIndent, new { @class = "form-check-input" })
+                                    <label class="form-check-label">Padding</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBoxFor(model => model.CallToAction.Padding.Amount, null, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownListFor(m => m.CallToAction.Padding.SizeUnitType, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)),
+                                    new { @class = "form-control", @value = Model.CallToAction.Padding.SizeUnitType })
+                            </div>
+                            <div class="col-md-1">
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Internal padding of the text"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="element-center form-group">
+                                    @Html.CheckBoxFor(m => m.CallToAction.Margin.IsApplyIndent, new { @class = "form-check-input" })
+                                    <label class="form-check-label">Margin</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBoxFor(model => model.CallToAction.Margin.Amount, null, new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownListFor(m => m.CallToAction.Margin.SizeUnitType, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-1">
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="External margin of the text"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7 form-group">
+                        <label>Display:</label>
+                        @Html.EnumDropDownListFor(m => m.CallToAction.DisplayPosition, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Languages-->
+<div style="display:none;">
+    <div class="panel panel-default">
+        <div class="panel-heading  panel-page">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapsePA5" class="align-box">Languages <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Default tooltip"></i><span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+            </h4>
+        </div>
+        <div id="collapsePA5" class="panel-collapse collapse collapse-field-container">
+            <div class="row">
+                <div class="languages-fields">
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">All languages</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">EN</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">FR</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">DE</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">IT</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">ES</label>
+                        </div>
+                    </div>
+                    <div class="lang">
+                        <div class="element-center form-group">
+                            <input class="form-check-input" type="checkbox">
+                            <label class="form-check-label">NL</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

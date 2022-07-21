@@ -1,0 +1,77 @@
+﻿@model Flexpage.Abstract.DTO.EventCategoryEditorModel
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        fp_popupControlChangeTitle('EVENT CATEGORY', '#fp_EventCategoryEditorContainer');
+    });
+
+    function fp_changeLanguage(langCode) {
+        let isDirty = IsFormDirty('fp_EventCategoryEditorContainer');
+        fp_PostAjaxForm('#fp_EventCategoryEditorContainer', { command: 'changelanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+    }
+
+    $('.event-colorpicker').colorpicker({
+    });
+
+</script>
+
+<div id="fp_EventCategoryEditorContainer">
+    @using (Ajax.BeginForm("UpdateEventCategory", "Events", null,
+            new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_EventCategoryEditorContainer" }, new { id = "fp_EventCategoryBlockEditorForm", forTraking = "" }))
+    {
+        <div id="HiddenInputCategory">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => Model.ID)
+        </div>
+        <div class="create-calendar">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector2.cshtml", Model.LanguageSelector)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="titleCal">Event Name:</label>
+                        @Html.EditorFor(m => m.Name, "LocalizedString", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group col-md-4 fp_p-0">
+                        <label for="titleCal">Text Color:</label>
+                        <div class="color-picker-field">
+                            <div class="event-colorpicker input-group colorpicker-component">
+                                @Html.HiddenFor(m => Model.TextColor, new { @class = "form-control input-lg" })
+                                <span class="input-group-addon color-picker-box"><i></i></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 fp_p-0">
+                        <label for="titleCal">BgColor:</label>
+                        <div class="color-picker-field">
+                            <div class="event-colorpicker input-group colorpicker-component">
+                                @Html.HiddenFor(m => Model.BgColor, new { @class = "form-control input-lg" })
+                                <span class="input-group-addon color-picker-box"><i></i></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 fp_p-0">
+                        <label for="titleCal">Border Color:</label>
+                        <div class="color-picker-field">
+                            <div class="event-colorpicker input-group colorpicker-component">
+                                @Html.HiddenFor(m => Model.BorderColor, new { @class = "form-control input-lg" })
+                                <span class="input-group-addon color-picker-box"><i></i></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

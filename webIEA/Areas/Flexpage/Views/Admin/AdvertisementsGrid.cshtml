@@ -1,0 +1,79 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Models.AdvertisementImageModel>(settings =>
+{
+    settings.Name = "fp_Advertisements_Grid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "AdvertisementsGrid" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "DeleteAdvertisementImage", ID = ViewData["ID"] };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnAdvertisementEdit", Text = "Edit" });
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnAdvertisementDelete", Text = "Delete" });
+
+    settings.CommandColumn.Caption = "Actions";
+    settings.CommandColumn.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+
+    settings.Columns.Add(m => m.Name, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Ascending;
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Name";
+    });
+    settings.Columns.Add(m => m.Description, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Description";
+    });
+    settings.Columns.Add(m => m.Tag, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Tag";
+    });
+    settings.Columns.Add(m => m.LanguageCodes, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Languages";
+    });
+    settings.Columns.Add(m => m.PeriodsList, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Periods";
+    });
+    settings.Columns.Add(m => m.Active, column =>
+    {
+        column.Width = new Unit(15, UnitType.Percentage);
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Active";
+    });
+    settings.Columns.Add(m => m.ImagePath, column =>
+    {
+        column.ColumnType = MVCxGridViewColumnType.Image;
+        column.Width = new Unit(15, UnitType.Percentage);
+        //column.EditCellStyle.CssClass = "";
+
+        var editorSettings = (ImageEditProperties)column.PropertiesEdit;
+        editorSettings.ImageWidth = System.Web.UI.WebControls.Unit.Pixel(70);
+        editorSettings.ImageHeight = System.Web.UI.WebControls.Unit.Pixel(50);
+
+        column.HeaderStyle.HorizontalAlign = column.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        column.Caption = "Image";
+    });
+
+    settings.CommandColumn.ShowClearFilterButton = settings.Settings.ShowFilterRow = settings.Settings.ShowFilterRowMenu = true;
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_advertisementGrid_CustomButtonClick";
+}).Bind(Model).GetHtml())

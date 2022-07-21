@@ -1,0 +1,57 @@
+﻿@using System.Web.UI.WebControls
+@model List<Flexpage.Models.WhoPermissionsModel>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_WhoPermissionsGrid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "GetWhoPermissions", id = -1 };
+    settings.Width = Unit.Percentage(100);
+    settings.KeyFieldName = "Id";
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = true; 
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.SettingsText.EmptyDataRow = "Please select a general permission at the left";
+    settings.PreviewFieldName = "Name";
+    settings.SettingsBehavior.AllowSort = false;
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Id";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "ListPermissionsId";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Name";
+        column.Visible = true;
+    });
+
+    settings.HtmlDataCellPrepared = (sender, e) => {  
+        string htmlId = string.Format("{0}", e.GetValue("Id"));
+        string htmlType = string.Format("{0}", e.GetValue("Type"));  
+
+        e.Cell.Attributes.Add("data-id", htmlId);  
+        e.Cell.Attributes.Add("data-type", htmlType);  
+    };
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Type";
+        column.Visible = true;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Permission";
+        column.Visible = true;
+    });
+
+    settings.ClientSideEvents.ContextMenu = "generalPermissionService.contextWhoMenu";
+    settings.ClientSideEvents.RowClick = "function(s,e) { generalPermissionService.clickRowWhoPermission(s,e);}";
+
+}).Bind(Model).GetHtml()

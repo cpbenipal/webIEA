@@ -1,0 +1,97 @@
+﻿@using System.Web.UI.WebControls
+@model List<Flexpage.Models.ScheduleItem>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_LinkScheduleBlockGrid";
+    settings.CallbackRouteValues = new { Controller = "Admin", Action = "LoadScheduleBlock"};
+
+    settings.Width = Unit.Percentage(100);
+    settings.SettingsBehavior.AllowSelectByRowClick = false;
+    settings.KeyFieldName = "ID";
+    settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "ID";
+        n.Visible = false;
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "IsLinked";
+        n.Settings.AllowSort = DevExpress.Utils.DefaultBoolean.True;
+        n.SetDataItemTemplateContent(c =>
+        {
+            int id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+            bool enabled = (bool)c.Grid.GetRowValues(c.VisibleIndex, "IsLinked");
+            Html.DevExpress().CheckBox(settingsType =>
+            {
+                settingsType.Name = "LinkCheckBox"+ id;
+                settingsType.Checked = enabled;
+            }).Render();
+        });
+
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Name";
+        n.Visible = true;
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Hide";
+        n.Caption = "Hide";
+        n.ToolTip = "Check/uncheck to hide/show this block during the set period of this schedule";
+        n.SetDataItemTemplateContent(c =>
+        {
+            int id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+            bool enabled = (bool)c.Grid.GetRowValues(c.VisibleIndex, "Hide");
+            Html.DevExpress().CheckBox(settingsType =>
+            {
+                settingsType.Name = "HideCheckBox" + id;
+                settingsType.Checked = enabled;
+            }).Render();
+        });
+
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "AffectTM";
+        n.Caption = "Affected by TM";
+        n.ToolTip = "Affected by TM: Check/uncheck to add this block to the Time Machine";
+        n.SetDataItemTemplateContent(c =>
+        {
+            var id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+            bool enabled = (bool)c.Grid.GetRowValues(c.VisibleIndex, "AffectTM");
+            Html.DevExpress().CheckBox(settingsType =>
+            {
+                settingsType.Name = "TMCheckBox" + id;
+                settingsType.Checked = enabled;
+            }).Render();
+        });
+
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "IsActive";
+        n.Caption = "Is Active";
+        n.ToolTip = "Shows if this schedule is active";
+        n.SetDataItemTemplateContent(c =>
+        {
+            var id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+            string enabled = (bool)c.Grid.GetRowValues(c.VisibleIndex, "IsActive") ? "Yes" : "No";
+            Html.DevExpress().Label(settingsType =>
+            {
+                settingsType.Name = "ActiveLabel" + id;
+                settingsType.Text = enabled;
+            }).Render();
+        });
+    });
+
+    //settings.ClientSideEvents.SelectionChanged = "function(s, e) { EditCustomProperty.OnSelectionChanged(s,e,"+Model.ObjectID+") }";
+
+}).Bind(Model).GetHtml()
+

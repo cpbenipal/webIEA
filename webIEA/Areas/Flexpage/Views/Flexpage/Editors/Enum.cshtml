@@ -1,0 +1,72 @@
+﻿@model Flexpage.Models.EnumModel
+
+<script type="text/javascript">
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_enumChangeLanguage(langCode) {
+        $("#fp_enumCurrentLanguage").val(langCode);
+        fp_PostAjaxForm('#fp_EnumEditorContainer', { command: 'changelanguage', parameters: langCode });
+    }
+
+    function fp_enumBeginCallback(s, e) {
+        e.customArgs["enumid"] = @Model.ID;
+        e.customArgs["name"] = $("#fp_enumNameTextBox").val(); 
+        e.customArgs["langCode"] = $("#fp_enumCurrentLanguage").val();
+        console.log("fp_enumBeginCallback ");
+    }
+
+    function fp_enum_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete record?', function() { s.DeleteRow(e.visibleIndex); });
+    }
+
+    fp_popupControlChangeTitle('ENUM', '#fp_EnumEditorContainer');
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        //setTimeout(fp_PopupToggleButtonsContainer, 500, "#fp_EnumEditorContainer", "none");
+        //fp_ControlsForTracking(_controlsForTracking);
+    });
+</script>
+
+<div class="flexpage" id="fp_EnumEditorContainer">
+    @using (Ajax.BeginForm("UpdateEnumValuesList", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_EnumEditorContainer" }, new { id = "fp_EnumForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.CurrentLanguage, new { @class = "form-control", @id = "fp_enumCurrentLanguage" })
+        @*<div class="row" style="margin-top: 8px">
+            <div class="col-md-3 fp_label">
+                Name
+            </div>
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "fp_enumNameTextBox" })
+            </div>
+        </div>*@
+        <div class="row records-button" style="margin-bottom: 16px">
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+            </div>
+            @*<div class="col-md-2">
+                <div class="pull-right">
+                    <a data-toggle="modal" data-target="#news-add-new">
+                        <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command:'add', blockType: 'Enum' }, fp_afterAddEnum)">
+                            Add new
+                        </button>
+                    </a>
+                </div>
+            </div>*@
+        </div>
+        <!--records-->
+        <div class="flexpage records-field">
+            @Html.Action("EnumValuesGrid", "Admin", new { enumid = Model.ID, langCode = Model.CurrentLanguage })
+        </div>
+    }
+</div>

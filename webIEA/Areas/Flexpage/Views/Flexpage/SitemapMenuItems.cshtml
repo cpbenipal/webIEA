@@ -1,0 +1,32 @@
+﻿@model Flexpage.Abstract.DTO.SitemapMenuLevelModel
+
+@{
+    string cssClass = $"level{Model.Level} {(Model.Level == 0 ? "topLevel" : "submenu")} fp_sitemapMenu-level";
+}
+
+@foreach (Flexpage.Abstract.DTO.SitemapMenuNodeModel item in Model.Items)
+{
+    string itemCssClass = item.IsCurrent ? "active" : "";
+    string target = string.IsNullOrEmpty(item.Target) ? "_self" : item.Target;
+
+    if (item.IsVisible)
+    {
+        <li id="fp_sitemapMenu-item_@item.ID" class="@cssClass @itemCssClass fp_sitemapMenu-item" level="@Model.Level">
+            @if (!string.IsNullOrEmpty(item.URL))
+            {
+                string href = $"{item.URL}";
+                <a href="@href" id="fp_sitemapMenu-link_@item.ID" class="@cssClass navbar-brand fp_sitemapMenu-item-text" target="@target">@item.Text</a>
+            }
+            else
+            {
+                <span class="@cssClass navbar-brand fp_sitemapMenu-item-text">@item.Text</span>
+            }
+
+            @if (item.SubMenu != null)
+            {
+                @Html.Partial("~/Areas/Flexpage/Views/Flexpage/SitemapSubMenu.cshtml", item.SubMenu)
+            }
+        </li>
+    }
+}
+

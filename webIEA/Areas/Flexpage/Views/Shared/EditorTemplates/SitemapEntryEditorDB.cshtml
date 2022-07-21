@@ -1,0 +1,157 @@
+﻿@using Flexpage.Abstract.DTO;
+@model Flexpage.Abstract.DTO.SitemapNodeModel
+
+@{
+    var getHrefLink = new Func<string, int, string>((section, index) => string.Format("#collapse{0}{1}", section, index));
+    var getDestID = new Func<string, int, string>((section, index) => string.Format("collapse{0}{1}", section, index));
+}
+
+@Html.HiddenFor(m => m.ID)
+@Html.HiddenFor(m => m.ParentID, new { @class = "sitemapNodeParent" })
+@Html.HiddenFor(m => m.SitemapID)
+@Html.HiddenFor(m => m.HasChildren)
+@Html.HiddenFor(m => m.OrderNumber, new { @class = "sitemapNodeIndex" })
+@Html.HiddenFor(m => m.DefaultTitle)
+
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" aria-expanded="false" href='@getHrefLink("LangTitles", Model.ID)' class="anchor-collapse">Title <span class="pull-right">
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Localized page title"></i> <i class="fa fa-chevron-down rotate"></i></span></a>
+            </h4>
+        </div>
+        <div id='@getDestID("LangTitles", Model.ID)' class="panel-collapse collapse collapse-field-container">
+            <div class="form-horizontal">
+                @foreach (var lang in Model.Title)
+                {
+                    <div class="form-group">
+                        @Html.Raw("<label for='" + lang + " -title' class='col-sm-1 control-label'>" + lang.Key + "</label>")
+                        <div class="col-sm-11">
+                            @Html.TextBoxFor(m => m.Title[lang.Key], new { @class = "form-control sitemapNodeTitle", @placeholder = "Page title" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel-group">
+    <div class="panel panel-default ">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" aria-expanded="false" href='@getHrefLink("LangDescription", Model.ID)' class="anchor-collapse">Description <span class="pull-right">
+                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Localized page description"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+            </h4>
+        </div>
+        <div id="@getDestID("LangDescription", Model.ID)" class="panel-collapse collapse collapse-field-container">
+            <div class="form-horizontal">
+
+                @foreach (var lang in Model.Description)
+                {
+                    <div class="form-group">
+                        @Html.Raw("<label for='" + lang + " -description' class='col-sm-1 control-label'>" + lang.Key + "</label>")
+                        <div class="col-sm-11">
+                            @Html.TextBoxFor(m => m.Description[lang.Key], new { @class = "form-control", @placeholder = "Page description" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group">
+    <div class="panel panel-default ">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse"  aria-expanded="false" href='@getHrefLink("TargetUrl", Model.ID)' class="anchor-collapse">Page <span class="pull-right">
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Page URL"></i> <i class="fa fa-chevron-down rotate"></i></span></a>
+            </h4>
+        </div>
+        <div id='@getDestID("TargetUrl", Model.ID)' class="panel-collapse collapse collapse-field-container">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="page-url" class="col-sm-2 control-label">URL:</label>
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(m => m.URL, new { @class = "form-control", @placeholder = "http://" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="page-target" class="col-sm-2 control-label">Target:</label>
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(m => m.Target, new { @class = "form-control", @placeholder = "_blank" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group">
+    <div class="panel panel-default ">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse"  aria-expanded="false" href='@getHrefLink("VisibilitySettings", Model.ID)' class="anchor-collapse">Visibility <span class="pull-right">
+                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Page visibility per role and language"></i> <i class="fas fa-chevron-down rotate"></i></span></a>
+            </h4>
+        </div>
+        <div id='@getDestID("VisibilitySettings", Model.ID)' class="panel-collapse collapse collapse-field-container">
+            <div style="padding-bottom:10px">
+                <a class="fb_checkAll">check all</a> | <a class="fb_uncheckAll">uncheck all</a>
+            </div>
+            <div>
+                <label>Roles:</label>
+                <div>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.EditorFor(m => m.Roles[role.Key]) @role.Key
+                                </label>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+                <label>Languages:</label>
+                <div>
+                    @foreach (var lang in Model.Languages)
+                    {
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.EditorFor(m => m.Languages[lang.Key]) @lang.Key
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".fb_checkAll").on("click", fb_checkAll);
+    $(".fb_uncheckAll").on("click", fb_uncheckAll);
+    function fb_checkAll(event) {
+        $(event.target).closest(".panel-collapse").find("[id*='_Roles_']").prop("checked", true);
+        $(event.target).closest(".panel-collapse").find("[id*='_Roles_']").addClass("tracker-dirty");
+        $(event.target).closest(".panel-collapse").find("[id*='_Languages_']").prop("checked", true);
+        $(event.target).closest(".panel-collapse").find("[id*='_Languages_']").addClass("tracker-dirty");
+        var $panel = $(event.target).closest(".panel-collapse").closest(".active-homepage");
+        if ($panel.length > 0) {
+            $panel.find(".btn-cancel").removeClass("hidden");
+        }
+    }
+    function fb_uncheckAll(event) {
+        $(event.target).closest(".panel-collapse").find("[id*='_Roles_']").prop("checked", false);
+        $(event.target).closest(".panel-collapse").find("[id*='_Roles_']").addClass("tracker-dirty");
+        $(event.target).closest(".panel-collapse").find("[id*='_Languages_']").prop("checked", false);
+        $(event.target).closest(".panel-collapse").find("[id*='_Languages_']").addClass("tracker-dirty");
+        var $panel = $(event.target).closest(".panel-collapse").closest(".active-homepage");
+        if ($panel.length > 0) {
+            $panel.find(".btn-cancel").removeClass("hidden");
+        }
+    }
+</script>

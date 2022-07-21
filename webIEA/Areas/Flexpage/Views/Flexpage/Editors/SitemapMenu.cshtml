@@ -1,0 +1,75 @@
+﻿@model Flexpage.Abstract.DTO.SitemapMenuEditModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('MENU', '#fp_SitemapMenuEditBlockEditorContainer');
+    function fp_changeSitemap(s, e) {
+        var sitemapName = s.lastSuccessText;
+        fp_PostAjaxForm('#fp_SitemapMenuEditBlockEditorContainer', { command: 'changesitemap', parameters: sitemapName });
+    }
+</script>
+
+<div id="fp_SitemapMenuEditBlockEditorContainer" class="page-menu-block">
+    @using (Ajax.BeginForm("UpdateSitemapMenu", "MenuBlock", null,
+        new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_SitemapMenuEditBlockEditorContainer" },
+        new { id = "fp_SitemapMenuEditBlockEditorForm", forTraking = "all" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        <!--settings-->
+        <div class="modal-body" style="margin-bottom:0;min-height: 400px;">
+            <div class="row">
+                <form>
+                    <div class="col-xs-6">
+                        <div class="form-group" style="height: 56px;">
+                            <label for="SiteMap">Sitemap:</label>
+                            <div style="position:fixed;padding:0;width:44%;height: 33px;z-index: 2;">
+                                @Html.DevExpress().ComboBox(settings => {
+                                    settings.Name = "SitemapID";
+                                    settings.Width =  new System.Web.UI.WebControls.Unit(100,System.Web.UI.WebControls.UnitType.Percentage);
+                                    settings.SelectedIndex = Model.Sitemaps.FindIndex(s=>s.ID==Model.SitemapID);
+                                    settings.ControlStyle.CssClass = "form-control";
+                                    settings.Properties.TextField = "Name";
+                                    settings.Properties.ValueField = "ID";
+                                    settings.Properties.ClientSideEvents.SelectedIndexChanged = "function (s, e) {fp_changeSitemap(s,e)}";
+                                }).BindList(Model.Sitemaps).GetHtml()
+                            </div>
+                        </div>
+                        <div class="form-group" style="height: 56px;">
+                            <label for="SiteMap">Root node:</label>
+                            <div style="position:fixed;padding:0;width:44%;height: 33px;z-index: 1;">
+                                @Html.DevExpress().ComboBox(settings => {
+                                    settings.Name = "RootNodeID";
+                                    settings.Width =  new System.Web.UI.WebControls.Unit(100,System.Web.UI.WebControls.UnitType.Percentage);
+                                    settings.SelectedIndex = Model.SitemapNodes.FindIndex(s=>s.NodeID == Model.RootNodeID);
+                                    settings.ControlStyle.CssClass = "form-control";
+                                    settings.Properties.TextField = "NodeTitle";
+                                    settings.Properties.ValueField = "NodeID";
+                                    settings.SetItemTemplateContent((container) =>
+                                    {
+                                        ViewContext.Writer.Write(
+                                            "<span style=\"padding-left:"+ (int)DataBinder.Eval(container.DataItem, "NodeLevel") * 7 + "px\">" +
+                                                        DataBinder.Eval(container.DataItem, "NodeTitle") +
+                                                    "</span>"
+                                        );
+                                    });
+                                }).BindList(Model.SitemapNodes).GetHtml()
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label for="Name">Name:</label>
+                            @Html.TextBoxFor(m => Model.MenuName, new { @class = "form-control" })
+                        </div>
+                        <div class="form-check" style="margin-top:24px;">
+                            <div class="panel-page element-center form-fields">
+                                @Html.EditorFor(m => Model.ShowMenuName, new { @class = "form-check-input" })
+                                <label for="ShowName">Show menu name</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+</div>

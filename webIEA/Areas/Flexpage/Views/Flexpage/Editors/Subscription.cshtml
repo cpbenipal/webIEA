@@ -1,0 +1,218 @@
+﻿@model Flexpage.Models.SubscriptionModel
+
+<script type="text/javascript">
+
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_subscriptionUpdateLocalizedTexts(container) {
+        console.log("fp_subscriptionUpdateLocalizedTexts");
+        $(container).find(".fp_LocalizedText").each(function () {
+            var n = $(this).find(".fp_htmlEditorName").val();
+            var html = eval(n + '.GetHtml()');
+            $(this).find(".fp_LocalizedTextCurrentText").val(html);
+            // var s = '$(this).find(".fp_LocalizedTextCurrentText").val(' + n + '.GetHtml());';
+            // var s = '$("#' + $(this).attr('id') + '").find(".fp_LocalizedTextCurrentText").val(' + n + '.GetHtml());';
+            // eval(s);
+       });
+    }
+
+    function fp_subscriptionChangeLanguage(langCode) {
+        $("#fp_subscriptionCurrentLanguage").val(langCode);
+        fp_PostAjaxForm('#fp_SubscriptionEditorContainer', { command: 'changelanguage', parameters: langCode });
+    }
+
+    function fp_prePostAjaxForm() {
+        fp_subscriptionUpdateLocalizedTexts("#fp_SubscriptionEditorContainer");
+        fp_subscriptionSaveUncollapsed();
+    }
+
+    function fp_preSaveBlock() {
+        fp_subscriptionUpdateLocalizedTexts("#fp_subscriptionCurrentLanguage");
+    }
+
+    function fp_subscriptionSaveUncollapsed() {
+        var elems = $("#fp_SubscriptionEditorContainer").find(".in");
+        var resObj = [];
+        elems.each(function (index) {
+            resObj.push(this.id);
+        });
+        jQuery("#Uncollapsed").val(JSON.stringify(resObj));
+    }
+
+    function fp_subscriptionLoadUncollapsed() {
+        console.log("uncollapsed = " + $("#Uncollapsed").val());
+        var ul = JSON.parse($("#Uncollapsed").val());
+        // console.log("uncollapsed = @Model.Uncollapsed");
+        // var ul = JSON.parse("@Model.Uncollapsed");
+        for (var i = 0; i < ul.length; i++) {
+            $('#' + ul[i]).switchClass("collapse", "in");
+        }
+    }
+
+
+    fp_popupControlChangeTitle('SUBSCRIPTION', '#fp_SubscriptionEditorContainer');
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        //setTimeout(fp_PopupToggleButtonsContainer, 500, "#fp_EnumEditorContainer", "none");
+        //fp_ControlsForTracking(_controlsForTracking);
+        fp_subscriptionLoadUncollapsed();
+
+        var fp_subscriptionTextList_Over = false;
+        $("#fp_subscriptionTextList").sortable({
+            // group: 'nested',
+            update: function (event, ui) {
+            },
+
+            out: function (event, ui) {
+                fp_subscriptionTextList_Over = false;
+            },
+
+            over: function (event, ui) {
+                fp_subscriptionTextList_Over = true;
+            },
+
+            beforeStop: function (event, ui) {
+                if (fp_subscriptionTextList_Over == false) {
+                    fp_ConfirmDialog('Delete', 'Are you sure you want to delete the text?', function () {
+                        fp_PostAjaxForm('#fp_SubscriptionEditorContainer', { command: 'deletetext', parameters: ui.helper.data("index") });
+                    });
+                }
+            }
+        });
+    });
+
+    function fp_subscriptionAddNewText() {
+        fp_PostAjaxForm('#fp_SubscriptionEditorContainer', { command: 'addtext', parameters: '' });
+    }
+</script>
+
+<div class="flexpage page-forms" id="fp_SubscriptionEditorContainer">
+    @using (Ajax.BeginForm("UpdateSubscription", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_SubscriptionEditorContainer" }, new { id = "fp_EnumForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.Uncollapsed)
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Description.ID)
+        @Html.HiddenFor(m => m.Description.CmsTextID)
+        @Html.HiddenFor(m => m.Description.NotificationTypeId)
+        @Html.HiddenFor(m => m.Description.SubscriptionID)
+
+        @*@Html.EditorFor(m => m.ShortDescription, "_LocalizedStringData")*@
+        <div class="row records-button" style="margin-bottom: 16px">
+            <div class="col-md-12">
+                @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector")
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="col-md-1 fp_label">
+                Enabled
+            </div>
+            <div class="col-md-1 fp_label">
+                @Html.CheckBoxFor(m => m.Enabled, new { @class = "custom-control-input" })
+            </div>
+            <div class="col-md-1 fp_label">
+                Code
+            </div>
+            <div class="col-md-5">
+                @Html.TextBoxFor(m => m.Code, new { @class = "form-control", @id = "fp_subscriptionCodeTextBox" })
+            </div>
+            <div class="col-md-3 fp_label text-right">
+                Send registration mail
+            </div>
+            <div class="col-md-1 fp_label">
+                @Html.CheckBoxFor(m => m.SendRegistrationMail, new { @class = "custom-control-input" })
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="col-md-12 fp_label">
+                Description
+            </div>
+            <div class="col-md-12">
+                @Html.EditorFor(m => m.Description.CmsText.LocalizedTitle, "_LocalizedStringData")
+                @Html.EditorFor(m => m.Description.CmsText.FullText, "_LocalizedText")
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+            <div class="col-md-2 fp_label">
+                Start date
+            </div>
+            <div class="col-md-2">
+                @Html.DevExpress().DateEdit(
+     settings =>
+     {
+         settings.Name = "StartDate";
+         settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+         settings.ControlStyle.CssClass = "flexpage calendar";
+         settings.Properties.EditFormat = EditFormat.Custom;
+         settings.Properties.DisplayFormatString = settings.Properties.EditFormatString = "dd'/'MM'/'yyyy";
+         settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+         settings.Properties.CalendarProperties.ShowClearButton = false;
+         settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+         settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+         settings.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+         settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+     }
+     ).Bind(Model.StartDate).GetHtml()
+            </div>
+            <div class="col-md-2 fp_label text-right">
+                End date
+            </div>
+            <div class="col-md-2">
+                @Html.DevExpress().DateEdit(
+         settings =>
+         {
+             settings.Name = "EndDate";
+             settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+             settings.ControlStyle.CssClass = "flexpage calendar";
+             settings.Properties.EditFormat = EditFormat.Custom;
+             settings.Properties.DisplayFormatString = settings.Properties.EditFormatString = "dd'/'MM'/'yyyy";
+             settings.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+             settings.Properties.CalendarProperties.ShowClearButton = false;
+             settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+             settings.Properties.ClientSideEvents.LostFocus = "fp_DevControlChanged";
+             settings.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+             settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+         }
+         ).Bind(Model.EndDate).GetHtml()
+            </div>
+            <div class="col-md-2 fp_label text-right">
+                Max seats
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.MaxSeats, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row" style="margin-top: 8px">
+        </div>
+
+        <div class="flexpage records-field" style="overflow-x: hidden">
+            <ul id="fp_subscriptionTextList">
+
+                @{
+                    if (Model.SubscriptionText != null)
+                    {
+                        for (int fieldNum = 0; fieldNum < Model.SubscriptionText.Count; fieldNum++)
+                        {
+                            @Html.EditorFor(m => m.SubscriptionText[fieldNum], "_SubscriptionText")
+                        }
+                    }
+                }
+            </ul>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div style="cursor: pointer; width: 100%; border: 2px solid white; background-color: #FFFFFF" onclick="fp_subscriptionAddNewText()">
+                        <b>Click here to add new mail text, or drag it out of this list to remove</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

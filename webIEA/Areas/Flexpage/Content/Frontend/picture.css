@@ -1,0 +1,112 @@
+﻿body {
+}
+
+.picture-block {
+    position: relative;
+    text-align: center;
+}
+
+.picture-block .picture-effect--tint {
+  position: relative;
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.picture-block .picture-effect--tint:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  background: var(--tint-color-var);
+  opacity: var(--tint-opacity-color-var);
+  transition: all .3s linear;
+}
+
+.picture-block .picture-effect--blur {
+    -webkit-filter: blur(1px); /* Safari */
+    filter: blur(1px);
+}
+
+.picture-block .picture-effect--black-and-white {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+
+}
+
+.text-position--bottom-left {
+    position: absolute;
+    bottom: 8px;
+    left: 16px;
+}
+
+/* Top left text */
+.text-position--top-left {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+}
+
+/* Top left text */
+.text-position--top {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+/* Top right text */
+.text-position--top-right {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+}
+
+/* Bottom right text */
+.text-position--bottom-right {
+    position: absolute;
+    bottom: 8px;
+    right: 16px;
+}
+
+/* Bottom right text */
+.text-position--bottom {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+/* Centered text */
+.text-position--centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.text-position--center-left {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translate(0, -50%);
+}
+
+.text-position--center-right {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translate(0, -50%);
+}
+
+.text-effect--shadow {
+    text-shadow: 2px 2px #808080;
+}
+
+.text-effect--glow {
+    text-shadow: 0 0 3px var(--glow-color-var);
+}

@@ -1,0 +1,65 @@
+﻿<style type="text/css">
+    /*.PwLinkPopup_edtError {
+        background-position: -80px -259px;
+        width: 14px;
+        height: 14px;
+        background-image: url(/DXR.axd?r=1_102-EvvXj);
+        background-repeat: no-repeat;
+        background-color: transparent;
+    }
+
+    .input-group {
+        width: 500px;
+    }
+
+    .openBrowserButton {
+        border: 1px solid #ccc;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .input-group-btn {
+    }
+
+    .dxpcLite .dxheCustomDialog .dxhecd-Buttons {
+        background: none;
+        border: none;
+    }
+
+    .dxbButton {
+        background: #23598e;
+        color: #fff;
+        padding: 5px 25px !important;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;
+        border: none;
+        box-shadow: none;
+        border-radius: 15px;
+        margin-top: 0px;
+        height: auto !important;
+    }
+
+    .dx-vam {
+        font-size: 14px;
+        font-weight: normal;
+    }*/
+</style>
+
+<label for="linkURL">URL: </label>
+<img id="urlErrorImg" title="This field is required" class="PwLinkPopup_edtError" src="/DXR.axd?r=1_58-EvvXj" alt="This field is required" style="display:none;">
+<div class="input-group">
+    <input id="linkURL" type="text" name="URL" class="form-control" />
+    <label class="input-group-btn">
+        <span class="btn openBrowserButton" onclick="OpenPWPopup()">
+            ...
+        </span>
+    </label>
+</div>
+<label for="linkText">Text: </label>
+<img id="textErrorImg" title="This field is required" class="PwLinkPopup_edtError" src="/DXR.axd?r=1_58-EvvXj" alt="This field is required" style="display:none;">
+<div class="input-group">
+    <input id="linkText" type="text" name="Text" class="form-control" />
+</div>
+<label for="linkTooltip">Tool Tip: </label>
+<div class="input-group">
+    <input id="linkTooltip" type="text" name="ToolTip" class="form-control" />
+</div>

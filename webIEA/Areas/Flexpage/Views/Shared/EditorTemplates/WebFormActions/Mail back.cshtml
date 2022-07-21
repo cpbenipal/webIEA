@@ -1,0 +1,33 @@
+﻿@model Flexpage.Models.WebFormActionModel
+@{
+    bool correctJSON = false;
+    var p = Model.ParseParameter(new { AddressField = "" }, out correctJSON);
+    var actionIndex = Model.Form.FormActions.IndexOf(Model);
+    var parameterFieldID = String.Format("WebFormAction_MailBack_ParameterField{0}", actionIndex);
+    var editorID = String.Format("WebFormAction_MailBack{0}", actionIndex);
+    var comboboxName = String.Format("WebFormAction_MailBack_MailFieldCombo{0}", actionIndex);
+}
+@Html.HiddenFor(m => m.Parameter, new { @class = "form-control", @readonly = "readonly", @id = parameterFieldID })
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/WebFormActions/FormFieldSelector.cshtml",
+    new Flexpage.Models.WebFormActionFieldSelectorModel("Form field with back address", Model.ReadOnly, comboboxName,
+    Model.ReadOnly ? null : Model.Form.Fields.Where(e => e.TypeName == "email").Select(e => e.Name).ToList(), p.AddressField as string))
+
+@if (!Model.ReadOnly)
+{
+    <script language="JavaScript">
+            actionEditors.push({
+                Name: '@editorID',
+                Refresh: function (formFields) {
+                    console.log("MailBack.Refresh");
+                    var items = fp_webFormGetFieldNamesByType(formFields, 'email');
+                    @Html.Raw("fp_webFormFillFieldComboItems(" + comboboxName + ", items);")
+                },
+                Update: function () {
+                    console.log("MailBack.Update");
+                    @Html.Raw("var av = fp_webFormToString(" + comboboxName + ".GetValue());")
+                    $('#@parameterFieldID').val('{AddressField:"'+av+'"}');
+                }
+            });
+    </script>
+}

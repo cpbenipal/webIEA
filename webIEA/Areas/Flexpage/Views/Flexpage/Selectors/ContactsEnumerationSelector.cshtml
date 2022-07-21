@@ -1,0 +1,35 @@
+﻿@model Flexpage.Models.ContactsEnumerationSelectorModel
+@{ 
+    Model.ContactsEnumerationModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.None;
+}
+<script type="text/javascript">
+    (function () {
+        fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+             fp_loadScripts(EventManager.settings.PathJs.contactsEnumeration, 'EventManagerContactsEnumeration', function () {
+                var args = { ID:@(Model.ContactsEnumerationModel.ID), allowUpload: '@(Model.ContactsEnumerationModel.AllowUpload)' == "True" };
+                var contactsEnumerationEM@(Model.ID) = new EventManagerContactsEnumeration(args);
+                setTimeout(function () {
+                     EventManager.bus.publish(EventManager.settings.Events.browserContacts.endCallback,
+                        { "ID": '@Model.ContactsEnumerationModel.ID.ToString()' });
+                }, 500);
+            });
+        });
+    })();
+</script>
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+@Html.Partial("~/Areas/Flexpage/Views/Flexpage/ContactsEnumeration.cshtml", Model.ContactsEnumerationModel)
+
+<script type="text/javascript">
+
+    fp_popupControlChangeTitle('ADD CONTACTS TO FOLDER: @(Json.Encode( Model.Title))'.toUpperCase(), '#fp_ContactsEnumeration_Grid'+@Model.ContactsEnumerationModel.ID);
+
+    function fp_getSelectedObject() {
+        var value = $("#SelectionChanged").val().toString().split(',');
+        var result = [];
+        for (var i = 0; i < value.length; i++) {
+            result.push({ contactID: value[i] });
+        }
+        return result;
+    }
+</script>

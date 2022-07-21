@@ -1,0 +1,74 @@
+@import "../variables";
+
+button {
+    font-family: 'Muli', sans-serif;
+    font-weight: 500;
+}
+
+.btn-orange {
+  background: $squash !important;
+  color: #fff;
+  padding: 5px 25px;
+  margin-bottom: 25px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+
+  &:hover {
+    color: #fff;
+  }
+}
+.btn-transparent {
+  background: transparent;
+  color: $warm-grey;
+  padding: 5px 25px;
+  margin-bottom: 25px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  border: none;
+  box-shadow: none;
+
+  &:hover {
+    color: $warm-grey;
+  }
+}
+.btn-blue {
+  background: transparent;
+  color: $dusk-blue;
+  padding: 5px 25px;
+  margin-bottom: 25px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  border: none;
+  box-shadow: none;
+
+  &:hover {
+    color: $dusk-blue;
+  }
+}
+.btn-blue-fullcolor-radius {
+  background: $dusk-blue;
+  color: #fff;
+  padding: 5px 25px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  border: none;
+  box-shadow: none;
+  border-radius: 15px;
+  margin-top: 30px;
+
+  &:hover {
+    color: #fff;
+  }
+  &:active {
+    color: #fff;
+  }
+  &:visited {
+    color: #fff;
+  }
+  &:focus {
+       color: #fff;
+     }
+}
+.btn.pull-right {
+    margin-left: 10px;
+}

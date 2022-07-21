@@ -1,0 +1,18 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.contactDetails, 'EventManagerContactDetails', function () {
+                    var args = { ID:@(Model.ID) };
+                    var contactDetailsEM@(Model.ID) = new EventManagerContactDetails(args);
+                });
+            });
+        }, 4000);
+    })();
+</script>
+<div class="fp_contactDetails" data-alias="@Model.SourceBlockAlias" >
+    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactDetails.cshtml", Model)
+</div>

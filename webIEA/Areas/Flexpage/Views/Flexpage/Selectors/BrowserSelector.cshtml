@@ -1,0 +1,28 @@
+﻿@model Flexpage.Models.BrowserSelectorModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+@{
+    string title = (string)ViewData["Title"];
+}
+<div class="fp_browserSelector">
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Browser.cshtml", Model)
+</div>
+<script type="text/javascript">
+    @{
+        Session["DelayFooterAppend"] = true; 
+     }
+    $(function () {
+        fp_popupControlChangeTitle('@(title!=null? title.ToString():"")'.toUpperCase(), '.fp_browserSelector');
+    });
+        var _selectedFolder = '';
+    
+    function fp_getSelectedObject(e) {
+        var $rows = $(".fp_folderContent [class*='dxgvSelectedRow']");
+        var result = [];
+        if ($rows.length > 0) {
+            $rows.each(function (i, row) {
+                    result.push({ id: $(row).find("[data-rowid]").first().attr("data-rowid") })
+            });
+        }
+        return result;
+    }
+</script>

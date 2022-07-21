@@ -1,0 +1,238 @@
+﻿@using System.Web.Configuration
+@using Flexpage.Models
+@using FlexPage2.Areas.Flexpage.Models.Enums
+@model SocialMediaFeedModel
+
+@*Facebook initialization*@
+@if (!string.IsNullOrEmpty(@WebConfigurationManager.AppSettings["FacebookAppId"]))
+{
+    <script type="text/javascript">
+            $(document).ready(function() {
+                initFaceBookAsync("@WebConfigurationManager.AppSettings["FacebookAppId"]",
+                    "@WebConfigurationManager.AppSettings["FacebookApiVersion"]");
+            });
+    </script>
+}
+
+<div id="fb-root"></div>
+<script type="text/javascript">
+    var FACEBOOK_MEDIA = "Facebook";
+    var TWITTER_MEDIA = "Twitter";
+    var INSTAGRAM_MEDIA = "Instagram";
+    const GRID = "Grid";
+    const LINE = "Line";
+
+    var instagramAppId = "@WebConfigurationManager.AppSettings["InstagramAppId"]";
+    var instagramRedirectUri = "@WebConfigurationManager.AppSettings["InstagramRedirectUri"]";
+
+    fp_popupControlChangeTitle('SOCIAL MEDIA FEED', '#fp_SocialMediaFeedBlockEditorContainer');
+
+    @if (!string.IsNullOrEmpty(@WebConfigurationManager.AppSettings["FacebookAppId"]))
+    {
+        <text>
+        FB.XFBML.parse(document.getElementById('fp_SocialMediaFeedBlockEditorContainer'));
+
+        checkLoginState();
+        onMediaTypeChange();
+        onTwitterBlockTypeChange();
+
+        function checkLoginState() {
+            FB.getLoginStatus(function (loginStatusResponse) {
+                if (loginStatusResponse.status === "connected") {
+                    FB.api("/me", function(profeileResponse) {
+                        if (profeileResponse && profeileResponse.id) {
+                            $("#FacebookUid").val(profeileResponse.id);
+                        }
+                    });
+                }
+            });
+        }
+        </text>
+    }
+    function onMediaTypeChange() {
+        var media = $('#Media').val();
+
+        switch (media) {
+            case FACEBOOK_MEDIA:
+                $('#facebookFieldId').show();
+                $('#twitterFieldId').hide();
+                $('#mainDataTableId').show();
+                $('#instagraFieldId').hide();
+                $('#instagramAuthContainerId').hide();
+                break;
+            case TWITTER_MEDIA:
+                $('#facebookFieldId').hide();
+               // $('#twitterFieldId').show();
+                $('#twitterLabel').show();
+                $('#instagraFieldId').hide();
+
+                $('#mainDataTableId').show();
+                $('#instagramAuthContainerId').hide();
+                $("#twitterDisplayType").show();
+                break;
+            case INSTAGRAM_MEDIA:
+                $('#facebookFieldId').hide();
+                $('#twitterFieldId').hide();
+                $('#twitterLabel').hide();
+                $('#instagraFieldId').show();
+                var token = localStorage.getItem(INSTAGRAM_LOCAL_SOTRAGE_TOKEN_KEY);
+                var userName = localStorage.getItem(INSTAGRAM_LOCAL_SOTRAGE_USERNAME_KEY);
+                if (token && userName) {
+                    $('#mainDataTableId').show();
+                    $('#instagramAuthContainerId').hide();
+                    $('#instagramAuthUserId').text(userName);
+                } else {
+                    $('#mainDataTableId').hide();
+                    $('#instagramAuthContainerId').show();
+                }
+                break;
+        }
+    }
+
+    function onTwitterBlockTypeChange() {
+        var type = $('#SMFType').val();
+        switch (type) {
+            case GRID:
+                $("#urlToApi").show();
+                break;
+            case LINE:
+                $("#urlToApi").hide();
+                break;
+        }
+    }
+
+    function instagramAuth() {
+        var url = "https://api.instagram.com/oauth/authorize/?client_id=" +
+            instagramAppId +
+            "&redirect_uri=" +
+            instagramRedirectUri +
+            "&response_type=token&scope=basic+public_content";
+        window.location.replace(url);
+    }
+
+</script>
+
+<div id="fp_SocialMediaFeedBlockEditorContainer" class="page-cms social-media-feed">
+    @using (Ajax.BeginForm("CreateOrUpdateSocialMediaFeed", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_SocialMediaFeedBlockEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_SocialMediaBlockEditorForm" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+        @Html.HiddenFor(m => m.FacebookUid)
+        <div class="col-md-12">
+            <h4>
+                General <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
+                           title="General Settings" data-container=".modal-content"></i>
+            </h4>
+            <div class="btn-group btn-group-justified">
+
+                <div class="col-md-3">
+                    <label>Media</label>
+                </div>
+                <div class="col-md-5">
+                    @Html.DropDownListFor(m => m.Media, new List<SelectListItem>
+                            {
+                                new SelectListItem
+                                {
+                                    Value = SocialMediaType.Twitter.ToString(), Text = "Twitter"
+                                },
+                                new SelectListItem
+                                {
+                                    Value = SocialMediaType.Facebook.ToString(), Text = "Facebook"
+                                },
+                                new SelectListItem
+                                {
+                                    Value = SocialMediaType.Instagram.ToString(), Text = "Instagram"
+                                }
+                            }, new { @class = "form-control", onchange = "onMediaTypeChange()" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" id="mainDataTableId">
+            <h4 class="">
+                Account<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
+                          title="Social Media Feed Account Info"></i>
+            </h4>
+            <div class="btn-group btn-group-justified">
+                <label class="col-md-3">Account </label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.Account, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" id="facebookFieldId" style="display: none">
+                <label class="col-md-3">Facebook </label>
+                <div class="col-md-5">
+                    <div class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="continue_with" data-show-faces="false"
+                         data-auto-logout-link="true" data-use-continue-as="false" data-scope="user_posts" onlogin="checkLoginState()"></div>
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" id="twitterFieldId" style="display: none">
+                <label class="col-md-3">Twitter login </label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.TwitterLogin, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" id="urlToApi" style="display: none">
+                <label class="col-md-3">Url</label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.TwitterUrl, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="btn-group btn-group-justified" id="instagraFieldId" style="display: none">
+                <label class="col-md-3">Instagram login </label>
+                <div class="col-md-5">
+                    <label id="instagramAuthUserId"></label>
+                </div>
+            </div>
+            <h4>
+                Layout<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top"
+                         title="Feed Layout Settings"></i>
+            </h4>
+
+            <div class="btn-group btn-group-justified">
+                <label class="col-md-3">Show picture</label>
+                <div class="col-md-5">
+                    @Html.CheckBoxFor(m => m.IsShowPicture, new { @class = "show-picture" })
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified">
+                <label class="col-md-3">Header</label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.Header, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified">
+                <label class="col-md-3">Number of posts </label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.PostsNumber, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="btn-group btn-group-justified" id="twitterDisplayType" style="display: none">
+                <label class="col-md-3">Type block</label>
+                <div class="col-md-5">
+                    @Html.DropDownListFor(m => m.SMFType, new List<SelectListItem>
+                    {
+                        new SelectListItem
+                        {
+                            Value = SMFType.Line.ToString(), Text = "Line"
+                        },
+                        new SelectListItem
+                        {
+                            Value = SMFType.Grid.ToString(), Text = "Grid"
+                        }
+                    }, new { @class = "form-control", onchange = "onTwitterBlockTypeChange()" })
+                </div>
+            </div>
+        </div>
+
+        <div id="instagramAuthContainerId" class="btn-group btn-group-justified instagramAuthContainer">
+            <label class="col-md-3 control-label">
+                For using Instagram feeds you have to be authorized as Instagram user
+            </label>
+            <div class="col-md-5">
+                <button class="btn btn-default instagramAuth" onclick="instagramAuth()">Authenticate via Instagram</button>
+            </div>
+        </div>
+    }
+</div>
+

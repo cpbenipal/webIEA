@@ -1,0 +1,22 @@
+﻿@model Flexpage.Models.ContactsEnumerationModel
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+    (function () {
+        setTimeout(function () {
+        fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+            fp_loadScripts(EventManager.settings.PathJs.contactsEnumeration, 'EventManagerContactsEnumeration', function () {
+                var args = { ID:@(Model.ID), allowUpload: '@(Model.AllowUpload)' == "True" };
+                var contactsEnumerationEM@(Model.ID) = new EventManagerContactsEnumeration(args);
+                setTimeout(function () {
+                     EventManager.bus.publish(EventManager.settings.Events.browserContacts.endCallback,
+                        { "ID": '@Model.ID.ToString()' });
+                }, 500);
+                });
+            });
+        }, 3000);
+    })();
+</script>
+<div class="fp_contactsEnumeration"  data-name="@Model.Name">
+    @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactsEnumeration/_ContactsEnumeration.cshtml", Model)
+</div>

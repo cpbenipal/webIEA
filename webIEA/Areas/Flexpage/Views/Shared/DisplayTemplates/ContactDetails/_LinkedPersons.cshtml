@@ -1,0 +1,327 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+@using Pluritech.Properties.Abstract.DTO
+
+@model Flexpage.Models.ContactDetailsModel
+@functions{
+    object GetRow(ASPxGridView grid)
+    {
+        return grid.GetRow(grid.EditingRowVisibleIndex);
+    }}
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_UpdateTab", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+        settings.Name = "сontactDetailsLinkedPersons" + Model.ID;
+        settings.KeyFieldName = "ID";
+
+        settings.Columns.Add(n =>
+        {
+            n.Caption = "Action";
+            n.Settings.AllowSort = DefaultBoolean.False;
+            n.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            n.Width = Unit.Pixel(100);
+
+            n.SetDataItemTemplateContent(c =>
+            {
+                var id = c.Grid.GetRowValues(c.VisibleIndex, "LinkedContactID");
+                ViewContext.Writer.Write("<a href='/home/contacts/" + id + "?type=Person' target='_blank'>" +
+                                         "<img class='dxIcon_" + IconID.NavigationForward16x16office2013 + " dxm-image dx-vam' " +
+                                         "src='/DXR.axd?r=1_89-nor1m' alt='"
+                                         + Resources.CultureDependent.Navigate + "' title='" + Resources.CultureDependent.Navigate + "'></a>");
+            });
+        });
+
+        settings.Columns.Add(n =>
+        {
+            n.FieldName = "LinkedContactID";
+            n.Caption = "Name";
+            n.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "LinkName";
+                p.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_GetPersons", ValueField = "LinkID", TextField = "LinkName", ContactID = Model.ContactID, contactType = Model.ContactType };
+                p.ValueField = "LinkID";
+                p.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                p.IncrementalFilteringDelay = 1000;
+                p.ValueType = typeof(string);
+                p.DataSource = Model.Persons;
+            });
+        });
+        settings.Columns.Add(lt =>
+        {
+            lt.FieldName = "LinkTypeID";
+            lt.Caption = "Link type";
+            lt.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+                p.ValueField = "ID";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.LinkTypesPersons;
+                p.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_GetLinkTypesPersons", ValueField = "ID", TextField = "Name" };
+            });
+        });
+
+        settings.Columns.Add("Description", MVCxGridViewColumnType.TextBox);
+
+        foreach (var column in Model.Columns.Where(c => c.Name.StartsWith("CustomProperty.") && c.ShowInGrid))
+        {
+            settings.Columns.Add(c =>
+            {
+                c.Caption = column.Caption;
+                c.FieldName = column.Caption;
+                c.UnboundType = UnboundColumnType.String;
+                c.EditorProperties().TextBox(p =>
+                {
+
+                });
+            });
+        }
+        settings.CustomUnboundColumnData = (s, e) =>
+        {
+            IList<CustomPropertyInfo> properties = (IList<CustomPropertyInfo>
+    )e.GetListSourceFieldValue("CustomProperties");
+            if (properties == null)
+            {
+                e.Value = "";
+                return;
+            }
+            var source = properties.FirstOrDefault(opv => e.Column.FieldName == opv.Name);
+
+            e.Value = new MvcHtmlString("<span data-column-name=\"" + e.Column.FieldName + "\">" +
+                (source == null ?
+                    "" : (source.Type == ObjectPropertyType.Bool ?
+                        (source.Value == "C" ?
+                            "true" : "false") : source.Value)) +
+                "</span>");
+        };
+        settings.HtmlDataCellPrepared = (sender, e) =>
+        {
+            var id = e.GetValue("ID");
+            if (id == null)
+                return;
+
+            e.Cell.Attributes.Add("data-rowId", id.ToString());
+        };
+
+        if (Model.AllowEdit)
+        {
+            settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_LinkedPersonAdd", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_LinkedPersonEdit", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_LinkedPersonDelete", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+            settings.CommandColumn.Visible = (bool?)ViewBag.isAdmin == true || (bool?)ViewBag.IsContactsAdmin == true;
+            settings.CommandColumn.ShowNewButton = true;
+            settings.CommandColumn.ShowDeleteButton = false;
+            settings.CommandColumn.ShowEditButton = true;
+
+
+            settings.SettingsDetail.ShowDetailButtons = true;
+            settings.SettingsDetail.ShowDetailRow = Model.Columns.Any(c => c.ShowInDetail);
+            settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+            settings.SetDetailRowTemplateContent(c =>
+            {
+                var id = (int)DataBinder.Eval(c.DataItem, "ID");
+                var person = Model.LinkedPersons.First(lc => lc.ID == id);
+                var columns = Model.Columns.Where(col => col.ShowInDetail && col.Name.StartsWith("CustomProperty."));
+                string details = "";
+                foreach (var column in columns)
+                {
+                    details += "<div>";
+                    details += column.Caption + ": ";
+                    var property = person.CustomProperties.FirstOrDefault(p => p.Name == column.Caption);
+                    details += property == null ? "" : property.Value;
+                    details += "</div>";
+                }
+                ViewContext.Writer.Write(details);
+            });
+
+            var bDelete = new GridViewCommandColumnCustomButton()
+            {
+                ID = "bDelete",
+                Text = "Delete",
+            };
+
+            bDelete.Image.IconID = IconID.EditDelete16x16office2013;
+            settings.ClientSideEvents.CustomButtonClick = "function(s, e){  if (e.buttonID == 'bDelete') deleteRowInDevexpressGrid(сontactDetailsLinkedPersons" + Model.ID + ", e.visibleIndex); }";
+            settings.CommandColumn.CustomButtons.Add(bDelete);
+
+            settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+            settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+            settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+            settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+            settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+
+            settings.SetEditFormTemplateContent(c =>
+            {
+                var row = c.Grid.GetRow(((DevExpress.Web.Data.WebDataRow)c.DataItem).VisibleIndex) as Pluritech.Contact.Abstract.DTO.LinkedView;
+                Html.DevExpress().FormLayout(flSettings =>
+                {
+                    flSettings.Name = "сontactDetailsLinkedPersons" + Model.ID + "_Edit";
+                    flSettings.ColCount = 2;
+                    flSettings.Items.Add(i =>
+                    {
+                        i.FieldName = "LinkedContactID";
+                        i.Caption = "Name";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_GetPersons", ValueField = "LinkID", TextField = "LinkName", ContactID = Model.ContactID, contactType = Model.ContactType };
+                            s.Properties.TextField = "LinkName";
+                            s.Properties.ValueField = "LinkID";
+                            s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.Contains;
+                            s.Properties.IncrementalFilteringDelay = 1000;
+                            s.Properties.ValueType = typeof(string);
+                            s.Properties.DataSource = Model.Persons;
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.FieldName = "LinkTypeID";
+                        i.Caption = "Link type";
+                        i.NestedExtension().ComboBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                            s.Properties.TextField = "Name";
+                            s.Properties.ValueField = "ID";
+                            s.Properties.ValueType = typeof(int);
+                            s.Properties.DataSource = Model.LinkTypesPersons;
+                            s.CallbackRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_GetLinkTypesPersons", ValueField = "ID", TextField = "Name" };
+                        });
+                    });
+                    flSettings.Items.Add(i =>
+                    {
+                        i.FieldName = "Description";
+                        i.ColSpan = 2;
+                        i.NestedExtension().TextBox(s =>
+                        {
+                            s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                            s.Properties.ValidationSettings.Display = Display.Dynamic;
+                            s.ShowModelErrors = true;
+                            s.Width = Unit.Percentage(100);
+                        });
+                    });
+
+                    foreach (var column in Model.Columns.Where(col => col.Name.StartsWith("CustomProperty.") && (col.ShowInGrid || col.ShowInDetail)))
+                    {
+                        var value = row != null && row.CustomProperties.Any(p => p.Name == column.Caption) ? row.CustomProperties.First(p => p.Name == column.Caption).Value : "";
+                        var type = Model.AllowedPropertiesObjectLink.First(p => p.Name == column.Caption).Type;
+                        string enums = "";
+
+                        if (type == ObjectPropertyType.Void)
+                        {
+                            continue;
+                        }
+                        flSettings.Items.Add(i =>
+                        {
+                            i.FieldName = column.Caption;
+                            switch (type)
+                            {
+                                case ObjectPropertyType.Bool:
+                                    i.NestedExtension().CheckBox(s =>
+                                    {
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "' == 'C' ? true : false);}";
+                                    });
+                                    break;
+                                case ObjectPropertyType.Enum:
+                                    i.NestedExtension().ComboBox(s =>
+                                    {
+                                        column.AllowedValues.Select(v => ($"{{\"id\":{v.Key},\"value\":\"{v.Value}\"}}")).ToList().ForEach(v => enums += v + ",");
+                                        enums = ("[" + enums.TrimEnd(',') + "]").Replace("\"{", "{").Replace("}\"", "}");
+                                        var script = "function(s, e) {var source = '" + enums + "';  var value = ('" + value + "');" +
+                                        " var lang = '" + Model.Language + "'; " +
+                                        "        JSON.parse(source).forEach(v => {	 " +
+                                        "            if (v.value.Localizations) { " +
+                                        "                if ((v.value.Localizations[lang] || v.value.Localizations[\"en\"])) { " +
+                                        "                    v.value = v.value.Localizations[lang] || v.value.Localizations[\"en\"]; " +
+                                        "                } else { " +
+                                        "                    v.value = \"(none)\"; " +
+                                        "                } " +
+                                        "            } " +
+                                        "			s.AddItem(v.value, v.id); " +
+                                        "	s.SetValue(value);	});	 " +
+                                        "}";
+                                        s.Properties.ClientSideEvents.Init = script;
+                                    });
+                                    break;
+                                case ObjectPropertyType.Int:
+                                case ObjectPropertyType.Float:
+                                    i.NestedExtension().SpinEdit(s =>
+                                    {
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "');}";
+                                    });
+                                    break;
+                                default:
+                                    i.NestedExtension().TextBox(s =>
+                                    {
+                                        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithTooltip;
+                                        s.Properties.ValidationSettings.Display = Display.Dynamic;
+                                        s.ShowModelErrors = true;
+                                        s.Width = Unit.Percentage(100);
+                                        s.Properties.ClientSideEvents.Init = "function(s, e) {s.SetValue('" + value + "');}";
+                                    });
+                                    break;
+                            }
+                        });
+                    }
+
+                    flSettings.Items.Add(i =>
+                    {
+                        i.ShowCaption = DefaultBoolean.False;
+                    }).SetNestedContent(() =>
+                    {
+                        ViewContext.Writer.Write("<div style='float:right'>");
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnUpdate";
+                            btnSettings.Text = "Update";
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ сontactDetailsLinkedPersons" + Model.ID + ".UpdateEdit(); }";
+                        }).Render();
+                        Html.DevExpress().Button(btnSettings =>
+                        {
+                            btnSettings.Name = "btnCancel";
+                            btnSettings.Text = "Cancel";
+                            btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                            btnSettings.ClientSideEvents.Click = "function(s, e){ сontactDetailsLinkedPersons" + Model.ID + ".CancelEdit(); }";
+                        }).Render();
+                        ViewContext.Writer.Write("</div>");
+                    });
+                })
+            .Bind(GetRow(c.Grid))
+            .Render();
+            });
+
+
+            settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+            {
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            });
+        }
+        settings.CommandButtonInitialize = (sender, e) =>
+        {
+            if (e.ButtonType == ColumnCommandButtonType.Edit || e.ButtonType == ColumnCommandButtonType.Delete)
+            {
+                var data = (MVCxGridView)sender;
+                Pluritech.Contact.Abstract.DTO.LinkedView value = data.GetRow(data.VisibleStartIndex) as Pluritech.Contact.Abstract.DTO.LinkedView;
+                if (value.CanEdit == 0)
+                {
+                    e.Visible = false;
+                }
+            }
+        };
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsBehavior.AllowDragDrop = false;
+    });
+
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.LinkedPersons).GetHtml()

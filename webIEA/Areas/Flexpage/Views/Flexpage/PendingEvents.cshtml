@@ -1,0 +1,11 @@
+﻿@using System.Drawing
+@using System.Web.UI.WebControls
+@model Flexpage.Models.PendingEventsModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+
+
+<div class="fp_empty fp_pendingEvents-empty">Please wait while loading</div>
+
+<div class="fp_pendingEvents hidden-visbility">
+    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/PendingEvents/_PendingEvents.cshtml", Model)
+</div>

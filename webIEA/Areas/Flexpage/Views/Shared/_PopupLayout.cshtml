@@ -1,0 +1,86 @@
+﻿@using System.Web.Configuration
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Html.DevExpress().GetStyleSheets(
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout, Theme = "Default" },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Editors },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Editors, Theme = "Default" },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.HtmlEditor, Theme = "Default" },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList, Theme = "Default" },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.GridView },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.GridView, Theme = "Default" },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Icons },
+        new StyleSheet { ExtensionSuite = ExtensionSuite.Icons, Theme = "Default" }
+    )
+    @Styles.Render("~/bundles/Flexpage/css")
+
+    <link href="https://fonts.googleapis.com/css?family=Cardo:400,400i,700|Montserrat:400,400i,500,600,600i,700,700i&amp;subset=latin-ext" rel="stylesheet">
+
+
+    @Scripts.Render("~/bundles/Flexpage/modernizr")
+    @Scripts.Render("~/bundles/Flexpage/jquery")
+    @Scripts.Render("~/bundles/Flexpage/jqueryunob")
+    @Scripts.Render("~/bundles/Flexpage/popper")
+    @Scripts.Render("~/bundles/Flexpage/bootstrap")
+    @Scripts.Render("~/bundles/Flexpage/jqueryval")
+    @Scripts.Render("~/bundles/Flexpage/keyframes")
+    @Scripts.Render("~/bundles/Flexpage/colorpicker")
+    @Scripts.Render("~/bundles/Flexpage/datepicker")
+    @Scripts.Render("~/bundles/Flexpage/respond")
+    @Scripts.Render("~/bundles/Flexpage/dropzone")
+
+
+    @Html.DevExpress().GetScripts(
+        new Script { ExtensionSuite = ExtensionSuite.GridView },
+        new Script { ExtensionSuite = ExtensionSuite.GridView },
+        new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+        new Script { ExtensionSuite = ExtensionSuite.HtmlEditor },
+        new Script { ExtensionSuite = ExtensionSuite.Editors }
+    )
+
+
+    <script type="text/javascript">
+        var fp_settings = {};
+        fp_settings['debug'] = @(WebConfigurationManager.AppSettings["Web:Debug"]);
+        fp_settings['isAdmin'] ="@(Html.Action("IsAdmin", "Layout"))"== "True";
+    </script>
+    @Scripts.Render("~/Flexpage/Content/js")
+    @Scripts.Render("~/Flexpage/Content/ImageGallery/js")
+    @Scripts.Render("~/Flexpage/js")
+
+</head>
+<body>
+    @RenderBody()
+
+
+    @RenderSection("scripts", false)
+
+    <script type="text/javascript">
+        $(function () {
+            jQuery(".align-box").click(function () {
+                jQuery(this).find(".rotate").toggleClass("down");
+            });
+            jQuery('body').on('click', '.disabled', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                return false;
+            });
+            jQuery(document).ready(function () {
+                jQuery('[data-toggle="tooltip"]').tooltip({
+                    placement: 'top'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

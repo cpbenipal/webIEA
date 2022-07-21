@@ -1,0 +1,89 @@
+@using System.Web.UI.WebControls
+@model Flexpage.Abstract.DTO.ScheduleManagerModel
+
+<script type="text/javascript">
+    function fp_preSaveBlock() {
+        $("#command").val("save");
+    }
+
+    $(function () {
+        $("#DisplayAllSchedules").on("change", fp_LoadLinkedSchedules);
+    });
+
+    function fp_LoadLinkedSchedules() {
+        $("#command").val("refresh");
+        $("#fp_ScheduleEditorForm").submit();
+    }
+
+    fp_popupControlChangeTitle('BLOCK SCHEDULES', '#fp_blockScheduleLinkContainer');
+</script>
+
+<div id="fp_blockScheduleLinkContainer" class="flexpage">
+   @using (Ajax.BeginForm("LinkBlockToSchedule", "Schedule", null, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "fp_blockScheduleLinkContainer" }, new { @id = "fp_ScheduleEditorForm", @role = "form" }))
+   {
+       <script type="text/javascript">
+           //function to recialinaze bootstrap tooltips after the form submit
+           $(function () {
+               $('[data-toggle="tooltip"]').tooltip();
+           })
+       </script>
+       @Html.Hidden("command");
+        <div class="row custom-tabs-row">
+            @Html.HiddenFor(m => m.LinkedBlockID)
+            <div class="col-xs-12 content-grid">
+                <div style="padding: 10px 0">
+                    <span style="vertical-align:top;font-weight: normal;float: left;">
+                        Show all schedules:
+                    </span>
+                    <span style="margin-left: 51px;float: left;margin-top: 3px;">
+                        <div class="col-md-3">
+                            @Html.EditorFor(m => m.DisplayAllSchedules, "SliderCheckbox")
+                        </div>
+                    </span>
+                </div>
+                <div id="BlockScheduleGrid" class="flexpage">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Hide<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Check/uncheck to hide/show this block during the set period of this schedule"></i></th>
+                                <th>Affected by TM<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Affected by TM: Check/uncheck to add this block to the Time Machine"></i></th>
+                                <th>Is Active<i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Shows if this schedule is active"></i></th>
+                            </tr>
+                            @{
+                                if (Model.ScheduleItems.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.ScheduleItems.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.HiddenFor(m => m.ScheduleItems[i].ID)
+                                                @Html.CheckBoxFor(m => m.ScheduleItems[i].IsLinked, new { @class = "form-control" })
+                                            </td>
+                                            <td>@Model.ScheduleItems[i].Name</td>
+                                            <td>@Html.CheckBoxFor(m => m.ScheduleItems[i].Hide, new { @class = "form-control" })</td>
+                                            <td>@Html.CheckBoxFor(m => m.ScheduleItems[i].AffectTM, new { @class = "form-control" })</td>
+                                            <td>@Html.CheckBoxFor(m => m.ScheduleItems[i].IsActive, new { @class = "form-control", @disabled = "disabled" })</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5">There are no linked schedules for this block</td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+

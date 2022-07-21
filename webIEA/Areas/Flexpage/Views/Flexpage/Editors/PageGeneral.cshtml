@@ -1,0 +1,23 @@
+﻿@model Flexpage.Abstract.DTO.PageModel
+
+<!--Meta tags-->
+
+
+<div class="languages">
+    @*@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.LanguageSelector)*@
+    @Html.EditorFor(m => m.LanguageSelector, "LanguageSelector2")
+</div>
+<div class="form-fields">
+    <label>Title:</label>
+    <div class="input-group custom-folder-field">
+        @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+    </div>
+</div>
+<div class="form-fields">
+    <label>Description:</label>
+    <div class="input-group custom-folder-field">
+        @Html.EditorFor(m => m.LocalizedDescription, "LocalizedString")
+    </div>
+</div>
+
+        

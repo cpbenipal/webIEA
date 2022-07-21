@@ -1,0 +1,112 @@
+﻿@using System.Web.UI.WebControls
+
+@model Flexpage.Models.ContactDetailsModel
+@{
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.CallbackRouteValues = new
+        {
+            Controller = "ContactDetails",
+            Action = "ContactDetails_UpdateTab",
+            blockID = Model.ID,
+            contactID = Model.ContactID,
+            contactType = Model.ContactType,
+            selectTabIndex = Model.SelectTabIndex,
+            selectTab = Model.SelectTab,
+            edit = Model.AllowEdit
+        };
+        settings.Name = "сontactDetailsTelecoms" + Model.ID;
+        settings.KeyFieldName = "ID";
+        settings.Columns.Add(id=> {
+            id.FieldName = "IsDefault";
+            id.Caption = "Is Default";
+            id.EditorProperties().CheckBox(p =>
+            {
+                p.ValueType = typeof(bool?);
+            });
+        });
+        settings.Columns.Add(t =>
+        {
+            t.FieldName = "TypeID";
+            t.Caption = "Type";
+            t.EditorProperties().ComboBox(p =>
+            {
+                p.TextField = "Name";
+                p.ValueField = "ID";
+                p.ValueType = typeof(int);
+                p.DataSource = Model.TelecomTypes;
+            });
+        });
+        settings.Columns.Add("Value", MVCxGridViewColumnType.TextBox);
+        settings.Columns.Add("Description", MVCxGridViewColumnType.TextBox);
+        settings.SetDataItemTemplateContent(c =>
+        {
+            if(c.Column.FieldName == "IsDefault")
+            {
+                ViewContext.Writer.Write("<div data-field='" + c.Column.FieldName + "' data-text='"+ c.Text + "' >");
+                if (c.Text == "Checked")
+                {
+                    Html.DevExpress().Image(img =>
+                    {
+                        img.Name = "Img" + c.VisibleIndex;
+                        img.Properties.EmptyImage.IconID = IconID.ContentCheckbox16x16;
+                    }).Render();
+                }
+                ViewContext.Writer.Write( "</div>");
+            }
+            else
+            {
+                ViewContext.Writer.Write("<div data-field='" + c.Column.FieldName + "' data-text='" + c.Text + "' >" + c.Text + "</div>");
+            }
+        });
+        if (Model.AllowEdit)
+        {
+            settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_TelecomsAdd", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_TelecomsEdit", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "ContactDetails", Action = "ContactDetails_TelecomsDelete", blockID = Model.ID, contactID = Model.ContactID, contactType = Model.ContactType, selectTabIndex = Model.SelectTabIndex, selectTab = Model.SelectTab, edit = Model.AllowEdit };
+            settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+            settings.SettingsBehavior.ConfirmDelete = true;
+            settings.CommandColumn.Visible = (bool?)ViewBag.isAdmin == true || (bool?)ViewBag.IsContactsAdmin == true;
+            settings.CommandColumn.ShowNewButton = true;
+            settings.CommandColumn.ShowDeleteButton = false;
+            settings.CommandColumn.ShowEditButton = true;
+
+            var bDelete = new GridViewCommandColumnCustomButton()
+            {
+                ID = "bDelete",
+                Text = "Delete",
+            };
+
+            bDelete.Image.IconID = IconID.EditDelete16x16office2013;
+            settings.ClientSideEvents.CustomButtonClick = "function(s, e){  if (e.buttonID == 'bDelete') deleteRowInDevexpressGrid(сontactDetailsTelecoms" + Model.ID + ", e.visibleIndex); }";
+            settings.CommandColumn.CustomButtons.Add(bDelete);
+
+            settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+            settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+            settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+            settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+            settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+            settings.EditFormLayoutProperties.ColCount = 2;
+            settings.EditFormLayoutProperties.Items.Add("IsDefault");
+            settings.EditFormLayoutProperties.Items.Add("Type");
+            settings.EditFormLayoutProperties.Items.Add("Value");
+            settings.EditFormLayoutProperties.Items.Add("Description");
+
+            settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+            {
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+            });
+
+
+            settings.ClientSideEvents.EndCallback = "fp_changeTelecoms" + Model.ID.ToString();
+        }
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsBehavior.AllowDragDrop = false;
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.Telecoms).GetHtml()

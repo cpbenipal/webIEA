@@ -1,0 +1,118 @@
+﻿.breadcrumbs {
+    width: 100%;
+    text-align: left;
+}
+
+    .breadcrumbs ul {
+        list-style-type: none;
+        text-align: left;
+    }
+
+.breadcrumbs-toplevel-element {
+    display: inline-block;
+    position: relative;
+    padding: 5px;
+}
+
+.breadcrumbs-submenu-element {
+    display: block;
+    position: relative;
+    padding: 5px;
+}
+
+.breadcrumbs-link, .breadcrumbs-submenu-link {
+    color: #777;
+}
+
+.breadcrumbs li a.level0 {
+    text-decoration: none;
+    padding: 5px 4px;
+}
+
+        .breadcrumbs li span.level0 {
+            text-decoration: none;
+            padding: 5px 4px;
+        }
+
+    .breadcrumbs .breadcrumbs-list .current {
+        text-decoration: none;
+    }
+
+        .breadcrumbs .breadcrumbs-list .current:hover {
+            text-decoration: none;
+cursor:default;
+        }
+
+    .breadcrumbs li a.level0:link,
+    .breadcrumbs li a.level0:visited {
+        text-decoration: none;
+    }
+
+    .breadcrumbs li a.level0:hover {
+       cursor: pointer;
+        text-decoration: underline;
+    }
+
+    .breadcrumbs li span {
+        text-decoration: underline;
+    }
+
+
+    .breadcrumbs li span.level1 {
+        display: block;
+        line-height: 16px;
+        padding: 5px 15px 5px 5px;
+        /*min-width: 131px;*/
+    }
+
+    .breadcrumbs li span.level1 {
+        display: block;
+        line-height: 16px;
+        padding: 5px 15px 5px 5px;
+        /*min-width: 131px;*/
+    }
+.breadcrumbs ul.breadcrumbs-submenu {
+    display: block;
+    margin-left: 5px;
+    margin-top: 2px;
+    position: absolute;
+    text-align: left;
+    zoom: 1;
+    border: 1px solid rgba(0, 0, 0, .15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    border-radius: 4px;
+    padding: 0px;
+    background-color: white;
+    z-index: 1000;
+}
+
+        /*.breadcrumbs ul.breadcrumbs-submenu li {
+            line-height: 0px;
+        }*/
+
+        .breadcrumbs ul.breadcrumbs-submenu,
+        .breadcrumbs ul.breadcrumbs-submenu * {
+            z-index: 15;
+        }
+
+    .breadcrumbs li a.level1 {
+        display: block;
+        line-height: 16px;
+        padding: 5px 15px 5px 5px;
+        /*min-width: 131px;*/
+    }
+
+        .breadcrumbs li a.level1:link,
+        .breadcrumbs li a.level1:visited {
+            text-decoration: underline;
+        }
+
+.breadcrumb-separator {
+    display: inline;
+    padding: 0px 2px;
+}
+
+    .breadcrumb-separator img {
+        width: 10px;
+        height: 10px;
+    }

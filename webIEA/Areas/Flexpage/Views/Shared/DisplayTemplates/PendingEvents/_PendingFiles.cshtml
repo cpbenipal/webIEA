@@ -1,0 +1,57 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Domain.Enum
+@using Flexpage.Helpers;
+@using Pluritech.Contact.Abstract.DTO;
+
+@model List<PublishingQueueFile>
+
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_PendingEvents_File_Grid";
+    settings.CallbackRouteValues = new
+    {
+        Controller = "Admin",
+        Action = "PendingEvents_FileUpdate",
+    };
+
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Admin", Action = "PendingEvents_FileDelete" };
+    settings.Width = Unit.Percentage(100);
+    settings.KeyFieldName = "ShortcutID";
+
+    settings.Columns.Add(column =>
+    {
+        column.Visible = false;
+        column.Name = "ShortcutID";
+        column.FieldName = "ShortcutID";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Date";
+        column.FieldName = "Date";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "File Name";
+        column.FieldName = "FileName";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.Name = "Folder Name";
+        column.FieldName = "FolderName";
+    });
+    settings.HtmlDataCellPrepared = (sender, e) =>
+    {
+        var id = e.GetValue("ShortcutID");
+        if (id == null)
+            return;
+
+        e.Cell.Attributes.Add("data-rowId", id.ToString());
+    };
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.EndCallback = "function(s,e) { endCallback(); }";
+    if ((bool?)ViewBag.IsAdmin == true)
+    {
+        settings.ClientSideEvents.ContextMenu = "fp_contextMenuFiles";
+    }
+}).Bind(Model).GetHtml()

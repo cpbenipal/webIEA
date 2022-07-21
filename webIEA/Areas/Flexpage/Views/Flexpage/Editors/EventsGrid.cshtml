@@ -1,0 +1,64 @@
+﻿@using System.Web.UI.WebControls;
+
+@(Html.DevExpress().GridView<Flexpage.Abstract.DTO.EventGridModel>(settings =>
+{
+    settings.Name = "fp_NewsBlock_Grid";
+    settings.CallbackRouteValues = new 
+    { 
+        Controller  = "Events", 
+        Action      = "EventsGrid" 
+    };
+    settings.SettingsEditing.DeleteRowRouteValues = new 
+    { 
+        Controller  = "Events", 
+        Action      = "DeleteEvent", 
+        ID          = ViewData["ID"] 
+    };
+    settings.Width = Unit.Percentage(100);
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass            = "main_row";
+    settings.Styles.CommandColumn.CssClass  = "command";
+
+    settings.KeyFieldName           = "ID";
+    settings.CommandColumn.Visible  = true;
+
+    var btnEdit = new GridViewCommandColumnCustomButton()
+    {
+        ID      = "btnEdit",
+        Text    = "Edit",
+    };
+    var btnDelete = new GridViewCommandColumnCustomButton()
+    {
+        ID      = "btnDelete",
+        Text    = "Delete",
+    };
+
+    settings.CommandColumn.CustomButtons.Add(btnEdit);
+    settings.CommandColumn.CustomButtons.Add(btnDelete);
+
+    settings.CommandColumn.Caption = "Actions";
+
+    settings.Columns.Add(m => m.StartDate, column =>
+    {
+        column.Width = new Unit(120, UnitType.Pixel);
+        column.SortIndex = 0;
+        column.SortOrder = DevExpress.Data.ColumnSortOrder.Descending;
+        column.PropertiesEdit.DisplayFormatString = "dd/MM/yyyy";
+    });
+    settings.Columns.Add(m => m.Title, column =>
+    {
+        column.Width = new Unit(40, UnitType.Percentage);
+    });
+    settings.Columns.Add(m => m.ImageUrl, column =>
+    {
+    });
+    settings.Columns.Add(m => m.CategoryName, column =>
+    {
+        column.Width = new Unit(150, UnitType.Pixel);
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_events_CustomButtonClick";
+
+}).Bind(Model).GetHtml())

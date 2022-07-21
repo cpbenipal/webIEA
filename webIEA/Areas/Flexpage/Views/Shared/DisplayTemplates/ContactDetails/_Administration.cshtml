@@ -1,0 +1,133 @@
+﻿
+@model Flexpage.Models.ContactDetailsModel
+
+@if (Model.Administration != null)
+{
+    if (Model.Edit)
+    {
+        using (Ajax.BeginForm("ContactDetails_SaveAdministration", "ContactDetails", new { }, new AjaxOptions
+        {
+            UpdateTargetId = "tabControl" + Model.ID + "_C" + Model.SelectTabIndex + " div",
+            OnSuccess = "fp_onSuccess" + Model.ID.ToString(),
+            OnFailure = "fp_onFailure" + Model.ID.ToString(),
+            LoadingElementId = "LoadingPanel" + Model.ID.ToString()
+        }, new { @id = "formAdministration" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.ContactID)
+            @Html.HiddenFor(m => m.ContactType)
+            @Html.HiddenFor(m => m.SelectTabIndex)
+            @Html.HiddenFor(m => m.SelectTab)
+            @Html.HiddenFor(m => m.Administration.Login)
+            @Html.HiddenFor(m => m.Administration.Password)
+            <div class="col-md-12 form-fields">
+                <div class="col-md-2">
+                    @Html.DisplayName("Web login")
+                </div>
+                <div class="col-md-10">
+                    @Html.DevExpress().ButtonEdit(s=> { s.Name = "Login"; s.Text = Model.Administration.Login;  }).GetHtml()
+                    @Html.ValidationMessageFor(model => model.Administration.Login)
+                </div>
+            </div>
+
+            <div class="col-md-12 form-fields">
+                <div class="col-md-2">
+                    @Html.DisplayName("Password")
+                </div>
+
+                <div class="col-md-10">
+                    @Html.DevExpress().ButtonEdit(s => { s.Name = "Password"; s.Text = Model.Administration.Password; }).GetHtml()
+                    @Html.ValidationMessageFor(model => model.Administration.Password)
+                </div>
+            </div>
+            if (ViewData["EditError"] != null)
+            {
+                <div class="col-md-12 form-fields">
+                    <div class="col-md-12 field-validation-error">
+                        @ViewData["EditError"]
+                    </div>
+                </div>
+            }
+            if (Model.AllowPasswordEdit)
+            {
+                <div class="col-md-12 form-fields">
+                    <span class="fp_contactDetails-btn fp_contactDetails-btn__save">
+                        @Html.DevExpress().Button(settings => {
+                       settings.Name = "Save";
+                       settings.Text = "Save";
+                       settings.RenderMode = ButtonRenderMode.Button;
+                   }).GetHtml()
+                    </span>
+                    <span class="fp_contactDetails-btn fp_contactDetails-btn__generatePassword">
+                        @Html.DevExpress().Button(settings => {
+                       settings.Name = "Generate";
+                       settings.Text = "Generate";
+                       settings.RenderMode = ButtonRenderMode.Button;
+                   }).GetHtml()
+                    </span>
+                    <span class="fp_contactDetails-btn fp_contactDetails-btn__removeAuth">
+                        @Html.DevExpress().Button(settings => {
+                       settings.Name = "Remove";
+                       settings.Text = "Remove";
+                       settings.RenderMode = ButtonRenderMode.Button;
+                   }).GetHtml()
+                    </span>
+                    <span class="fp_contactDetails-btn fp_contactDetails-btn__cancel">
+                        @Html.DevExpress().Button(settings => {
+                       settings.Name = "Cancel";
+                       settings.Text = "Cancel";
+                       settings.RenderMode = ButtonRenderMode.Button;
+                   }).GetHtml()
+                    </span>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        if (Model.AllowPasswordEdit)
+        {
+            <div class="col-xs-10">
+                <span class="fp_contactDetails-btn fp_contactDetails-btn__edit">
+                    @Html.DevExpress().Button(settings => {
+                                       settings.Name = "Edit";
+                                       settings.Text = "Edit";
+                                       settings.RenderMode = ButtonRenderMode.Button;
+                                   }).GetHtml()
+                </span>
+            </div>
+        }
+        if (string.IsNullOrEmpty(Model.Administration.Login))
+        {
+            <div class="col-md-12 form-fields">
+                <div class="col-md-2">
+                    No login and password
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="col-md-12 form-fields">
+                <div class="col-md-2">
+                    @Html.DisplayName("Web login")
+                </div>
+
+                <div class="col-md-10">
+                    @Html.DisplayFor(m => m.Administration.Login)
+                </div>
+            </div>
+
+            <div class="col-md-12 form-fields">
+                <div class="col-md-2">
+                    @Html.DisplayName("Password")
+                </div>
+
+                <div class="col-md-10">
+                    ******
+                </div>
+            </div>
+        }
+    }
+}

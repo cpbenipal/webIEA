@@ -1,0 +1,390 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@model Flexpage.Models.GalleryModel
+
+@{
+    int type = (int)Model.GalleryBlockType;
+}
+
+<script>
+    function simpleToggle(elem) {
+        const activeClass = "item-active-modal";
+        $(".header-modal-menu ." + activeClass).removeClass(activeClass);
+        $(elem).addClass(activeClass);
+    }
+</script>
+
+<div id="galleryManager" class="flexpage galleryManager page-gallery-block gallery-block">
+    <div id="in-editor-modal-header-content" style="display:none">
+        <div class="col-md-7">
+            <h3 class="modal-title">GALLERY</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="header-modal-menu">
+                <a onclick="javascript: jQuery('#galleryManager').find('#EditorType').val(1); useSimple(); simpleToggle(this); return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Simple?"item-active-modal":"")">Simple <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show mostly used image options"></i></a>
+                <a onclick="javascript: jQuery('#galleryManager').find('#EditorType').val(2); useAdvanced(); simpleToggle(this); return false;" class="@(Model.EditorType == Flexpage.Models.EditorType.Advanced?"item-active-modal":"")">Advanced <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show advanced image options"  data-container=".modal-content"></i></a>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="fp_beforeClosePopUp(this)">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        @using (Ajax.BeginForm("UpdateGallery", "Admin", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "galleryManager" }, new { @id = "fp_BlockEditorForm", role = "form", forTraking = "" }))
+        {
+            @Html.HiddenFor(m => m.ID)
+            @Html.HiddenFor(m => m.EditorType)
+            @Html.HiddenFor(m => m.Alias)
+            @Html.HiddenFor(m => m.Step)
+            @Html.HiddenFor(m => m.CurrentImageNum)
+
+            <ul class="nav nav-pills tabs-navigation">
+                @{
+                    if (type == 0)
+                    {
+                        <li class="active">
+                            <a data-toggle="pill" href="#gallery-type-single-simple">Type</a>
+                        </li>
+                        <li class="disabled"><a href="#">Settings</a></li>
+                        <li class="disabled">
+                            <a href="#">Items</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="disabled"><a href="#">Type</a></li>
+                        <li class='@(Model.Step == WidgetStep.Step2 ? "active" : "")'><a data-toggle="pill" href="#gallery-settings" onclick="jQuery('#Step').val('Step2');">Settings</a></li>
+                        <li class='@(Model.Step == WidgetStep.Step3 ? "active" : "")'><a data-toggle="pill" href="#gallery-items-single-simple" onclick="jQuery('#Step').val('Step3');">Items</a></li>
+                    }
+                }
+            </ul>
+            <div class="tab-content">
+                <!--Tab TYPE-->
+                @{
+                    if (type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-type-single-simple' class='tab-pane fade in active gallery-type'>")
+                    }
+                    else
+                    {
+                        @Html.Raw("<div id='gallery-type-single-simple' class='tab-pane fade in  gallery-type'>")
+                    }
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="text-center">Start by selecting the type of display</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-4 left">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('1'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/single.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/single-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">SINGLE IMAGE</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a single image in the picture block</p>
+                        </div>
+                        <div class="col-md-4 middle">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('2'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/gallery.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/gallery-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">GALLERY</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Display a gallery of selected images</p>
+                        </div>
+                        <div class="col-md-4 right">
+                            <div class="content-box">
+                                <a onclick="jQuery('#Step').val('2');jQuery('#BlockType').val('3'); jQuery(this).closest('form').submit();">
+                                    @*<img src="assets/icons/gallery/slider.svg" alt="" class="img-main">*@
+                                    @*<img src="assets/icons/gallery/slider-selected.svg" alt="" class="img-hover">*@
+                                    <div class="block-title text-center">SLIDER</div>
+                                </a>
+                            </div>
+                            <p class="text-center">Use the slider to display images or references </p>
+                        </div>
+                    </div>
+                </div>
+                @Html.Raw("</div>")
+
+                @{
+                    if (type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-settings' class='tab-pane fade gallery-settings-simple'>")
+                    }
+                    else
+                    {
+                        if (Model.Step == WidgetStep.Step2)
+                        {
+                            @Html.Raw("<div id='gallery-settings' class='tab-pane fade in active gallery-settings-simple'>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<div id='gallery-settings' class='tab-pane fade gallery-settings-simple'>")
+                        }
+                    }
+                }
+                <!--Tab SETTINGS-->
+                @if (Model.EditorType == Flexpage.Models.EditorType.Simple)
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_GallerySimple.cshtml", Model);
+                }
+                else
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_GalleryAdvanced.cshtml", Model);
+                }
+                @Html.Raw("</div>")
+
+                <!--Tab ITEMS-->
+                @{
+                    if (type == 0)
+                    {
+                        @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade gallery-items-simple'>")
+                    }
+                    else
+                    {
+                        if (Model.Step == WidgetStep.Step3)
+                        {
+                            @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade in active gallery-items-simple'>")
+                        }
+                        else
+                        {
+                            @Html.Raw("<div id='gallery-items-single-simple' class='tab-pane fade gallery-items-simple'>")
+                        }
+                    }
+                }
+
+                <!--Items Details - Image Details-->
+                <div class="row"  style="margin: 0">
+                    <div class="col-md-12" style="padding-right:0">
+                        <div class="col-md-8">
+                            <div class="add-image">
+                                <div id="gallery_externalDropZone" class="dropZoneExternal">
+                                    <div id="gallery_dragZone" class="fp_h-100-i fp_w-100-i">
+                                        <span class="dragZoneText fp_h-100-i fp_w-100-i fp_flex-i  fp_justify-content-center fp_align-items-center" >Drag an image here</span>
+                                    </div>
+                                    <img id="uploadedImage" src='@(Model.CurrentImageNum >= 0 && Model.GalleryImageModels.Count > 0 ? Model.GalleryImageModels[Model.CurrentImageNum].Url: "")'
+                                         alt="" style='@(Model.CurrentImageNum >= 0 && Model.GalleryImageModels.Count > 0 ? "" : "display:none;")' class="gallery-uploaded-image" onload="onGalleryImageLoad()" />
+                                    <div id="gallery_dropZone" class="fp_h-100-i fp_w-100-i" style='display:none;'>
+                                        <span class="dropZoneText fp_flex-i fp_h-100-i fp_w-100-i fp_justify-content-center fp_align-items-center">Drop an image here</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                               {
+                                   Name = "fu_GalleryImageModels_CurrentLocalization",
+                                   OnFileUploaded = "fp_gallery_ImageUploaded",
+                                   DialogTriggerID = "gallery_externalDropZone",
+                                   EnableDragAndDrop = true,
+                                   EnableFileList = false,
+                                   EnableMultiSelect = false,
+                                   ExternalDropZoneID = "gallery_externalDropZone",
+                                   UploadMode = UploadControlUploadMode.Auto,
+                                   OnDropZoneEnter = "fp_Gallery_DropZoneEnter",
+                                   OnDropZoneLeave = "fp_Gallery_DropZoneLeave",
+                                   ShowUploadButton = false,
+                                   BrowseButtonCssClass = "pictureFileUpload",
+                               })
+                                </div>
+                            </div>
+                            <div class="added-image">
+                                <a data-toggle="pill" href="#gallery_images_imageNum_None" class="gallery_images_list" onclick='return gallery_imageList_click(this, "-1");'>
+                                    <img src="~/areas/Flexpage/Content/Images/images/add-image.svg" data-id="-1" class='@(Model.CurrentImageNum == -1 ? "galleryManager-imageItem selected" : "galleryManager-imageItem")' />
+                                </a>
+                                @{
+                                    for (int imageNum = 0; imageNum < Model.GalleryImageModels.Count; imageNum++)
+                                    {
+                                        GalleryImageModel pictureSettings = Model.GalleryImageModels[imageNum];
+                                        @Html.HiddenFor(m => m.GalleryImageModels[imageNum].ID)
+                                        @Html.HiddenFor(m => m.GalleryImageModels[imageNum].Url)
+                                        @Html.HiddenFor(m => m.GalleryImageModels[imageNum].IsProtected)
+                                        @Html.HiddenFor(m => m.GalleryImageModels[imageNum].OrdNum, new { value = imageNum })
+                                        <a data-toggle="pill" href="#gallery_images_imageNum_@(imageNum + 1)" onclick='return gallery_imageList_click(this, @imageNum);' class="gallery_images_list">
+                                            <img id="gallery_imagesList_image_@(imageNum + 1)" src="@pictureSettings.Url" data-id="@pictureSettings.ID" class='@(imageNum == Model.CurrentImageNum ? "galleryManager-imageItem selected" : "galleryManager-imageItem")' />
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-4 image-details">
+                            <div class="tab-content">
+                                <div id="gallery_images_imageNum_None" class='tab-pane imageTab imageNum_None @(Model.CurrentImageNum == -1 ?"active" : "")'>
+                                    <h4>
+                                        Image details
+                                    </h4>
+                                    <p>
+                                        Select an image from the left to see its details.
+                                    </p>
+                                </div>
+
+                                @for (int i = 0; i < Model.GalleryImageModels.Count; i++)
+                                {
+                                    <div id="gallery_images_imageNum_@(i + 1)" class="tab-pane imageTab imageNum_@(i + 1)  @(Model.CurrentImageNum == i ?"active" : "")">
+                                        @Html.EditorFor(m => m.GalleryImageModels[i].LocalizedImageDetails, "LocalizedImageDetails")
+                                        <div class="form-group pull-right">
+                                            <a onclick="fp_Gallery_DeleteImage();">Delete image</a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.Raw("</div>")
+            </div>
+
+            <script type="text/javascript">
+                function fp_changeImageLanguage(langCode) {
+                    let isDirty = IsFormDirty('fp_BlockEditorForm');
+                    fp_PostAjaxForm('#galleryManager', { command: 'changeImageLanguage', parameters: langCode }, 'fp_TrackInitialize(' + isDirty + ')');
+                }
+
+                function gallery_getUrlControlName() {
+                    var imageNum = $('#CurrentImageNum').val();
+                    if (imageNum != -1)
+                        return "GalleryImageModels_" + imageNum + "__Url";
+                    return null;
+                }
+
+                function gallery_getImageName() {
+                    var imageNum = +$('#CurrentImageNum').val();
+                    if (imageNum != -1)
+                        return 'gallery_imagesList_image_' + (imageNum + 1);
+                    return null;
+                }
+
+                function fp_gallery_ImageUploaded(sender, event) {
+                    var urlControl = gallery_getUrlControlName();
+                    if (event.isValid && ($('#CurrentImageNum').val() < 0 || urlControl == null)) {
+                        fp_PostAjaxForm('#galleryManager', { command: 'addImage', parameters: event.callbackData });
+                        return;
+                    }
+
+                    if (urlControl != null) {
+                        $('#galleryManager input[type=hidden]#' + urlControl).val(event.callbackData);
+                    }
+                    if (event.isValid) {
+                        //alert(gallery_getImageName());
+
+                        $('#' + gallery_getImageName()).attr("src", event.callbackData);
+                        $("#uploadedImage").attr("src", event.callbackData);
+                    }
+                    setElementVisible("uploadedImage", event.isValid);
+                }
+
+                function onGalleryImageLoad() {
+                    var uploadedImage = $("#uploadedImage");
+
+                    if (uploadedImage.attr("src") != null && uploadedImage.attr("src") != "")
+                        setElementVisible("gallery_dragZone", false);
+                    else
+                        setElementVisible("gallery_dragZone", true);
+                }
+
+                function setElementVisible(elementId, visible) {
+                    var el = $("#" + elementId);
+                    if (visible)
+                        el.show();
+                    else
+                        el.hide();
+                }
+                function fp_Gallery_DropZoneEnter(sender, event) {
+                    if (event.dropZone.id == 'gallery_externalDropZone')
+                        setElementVisible('gallery_dropZone', true);
+                }
+
+                function fp_Gallery_DropZoneLeave(sender, event) {
+                    if (event.dropZone.id == 'gallery_externalDropZone')
+                        setElementVisible('dropZone', false);
+                }
+
+                function fp_Gallery_DeleteImage() {
+                    fp_PostAjaxForm('#galleryManager', { command: 'deleteImage', parameters: $('#CurrentImageNum').val() });
+                }
+
+                function gallery_imageList_click(me, num) {
+                    $('#CurrentImageNum').val(num);
+                    gallery_setActive(me, num);
+                }
+
+                function useAdvanced() {
+                    fp_PostAjaxForm('#galleryManager', { command: 'changeEditorType', parameters: 'Advanced' }, 'fp_TrackInitialize(' + false + ')');
+                }
+
+                function useSimple() {
+                    fp_PostAjaxForm('#galleryManager', { command: 'changeEditorType', parameters: 'Simple' }, 'fp_TrackInitialize(' + false + ')');
+                }
+
+                function fp_preSaveBlock() {
+                }
+
+                jQuery(document).ready(function () {
+                    onGalleryImageLoad();
+                    let _controlsForTracking = [
+                        '#ColumnsPerPage',
+                        '#AllImages',
+                        '#RowsPerPage',
+                        '#EnablePaging',
+                        '#PagingStyles',
+                        '#GalleryBlockType',
+                        '#EnableClickToEnlarge',
+                        '#EnableZoom',
+                        '#ZoomFactor',
+                        '#AlignThumbnails',
+                        '#ThumbnailWidth',
+                        '#ThumbnailHeight',
+                        '#RenderThumbnailActualSize',
+                        '#FixedImages',
+                        '#RandomImageAtLoad',
+                        '#RandomImages',
+                        '#ImagesChangeInterval',
+                        '#ImageEffect',
+                        '#AddWaterMark',
+                        '#WatermarkText'
+                    ];
+
+                    fp_ControlsForTracking(_controlsForTracking);
+                });
+
+                function gallery_setActive(me, num) {
+                    $('a.gallery_images_list').each(function (index, element) {
+                        element = $(element);
+                        var childImg = element.find('img.galleryManager-imageItem');
+                        if (childImg.hasClass('selected'))
+                            childImg.removeClass('selected');
+                    });
+
+                    var me = $(me);
+                    var childImg = me.find('img.galleryManager-imageItem');
+                    if (!childImg.hasClass('selected')) {
+                        childImg.addClass('selected');
+                        $("#uploadedImage").attr("src", num != -1? childImg.attr("src") : "");
+                        onGalleryImageLoad();
+                        setElementVisible("uploadedImage", num != -1);
+                    }
+                }
+
+                var previous=-1;
+                $('#GalleryBlockType').on('focus', function () {
+                    previous = $(this).val();
+                }).change(function() {
+                    if ($(this).val() != '3'){
+                        $('.thumbnail-width').removeClass('thumbnail-width-hide');
+                        $('.thumbnails-alignment').removeClass('thumbnails-alignment-hide');
+                        if(previous == 3)
+                            $('#RenderThumbnailActualSize').prop('checked', false);
+                    }
+                    else{
+                        $('.thumbnail-width').addClass('thumbnail-width-hide');
+                        $('.thumbnails-alignment').addClass('thumbnails-alignment-hide');
+                    }
+                });
+
+            </script>
+        }
+    </div>
+</div>

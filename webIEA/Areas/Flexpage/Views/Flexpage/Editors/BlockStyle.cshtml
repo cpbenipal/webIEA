@@ -1,0 +1,40 @@
+﻿@model Flexpage.Models.BlockStyleModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('BLOCK STYLE', '#fp_StyleEditorContainer');
+</script>
+
+<div id="fp_StyleEditorContainer">
+    @using (Ajax.BeginForm("SaveBlockStyle", "Admin", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "fp_StyleEditorContainer" }, new { id = "fp_StyleEditorContainer" }))
+    {
+        @Html.HiddenFor(m => Model.BlockID)
+        <div class="row">
+            <div class="col-md-12"> 
+                <div class="form-group">
+                    <label for="CustomCss">Custom Css Class:</label>
+                    <span class="info">
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="Specify custom CSS Class style"></i>
+                    </span>
+                    @Html.TextBoxFor(m => Model.CustomCssClass, new { @type = "text", @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="CustomView">Custom View:</label>
+                    <span class="info">
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Override default block layout. Attention! Some block settings could be ignored by custom view."></i>
+                    </span>
+                    @Html.DropDownListFor(m => Model.CustomView,
+                        new SelectList(Model.AvailableBlockViews.Select(n => new { value = n, text = n })
+                    , "value", "text"), new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="CustomCss">Custom Css:</label>
+                    <span class="info">
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="Specify custom CSS style"></i>
+                    </span>
+                    @Html.TextAreaFor(m => Model.CustomCss, new { @type = "text", @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

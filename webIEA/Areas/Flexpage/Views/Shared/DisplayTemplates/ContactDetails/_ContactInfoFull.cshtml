@@ -1,0 +1,83 @@
+﻿@model Pluritech.Contact.Abstract.DTO.ContactViewModel
+
+@if ((bool?)ViewBag.Edit == true)
+{
+    
+    <div class="col-xs-12 form-fields">
+        <div class="col-xs-5">
+            @Html.DisplayNameFor(m => m.Language)
+        </div>
+
+        <div class="col-xs-7">
+            @Html.DevExpress().ComboBox(settings =>
+           {
+               var langs = (List<SelectListItem>)ViewBag.Languages;
+               settings.Name = "Language";
+               settings.SelectedIndex = langs.FindIndex(l=>l.Text==Model.Language);
+
+               langs.ForEach(l =>
+               {
+                   settings.Properties.Items.Add(l.Text, l.Value);
+               });
+
+           }).GetHtml()
+            @Html.ValidationMessageFor(model => model.Language)
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 form-fields">
+        <div class="col-xs-5">
+            @Html.DisplayNameFor(m => m.TradeNumber)
+        </div>
+
+        <div class="col-xs-7">
+            @Html.DevExpress().ButtonEditFor(m => m.TradeNumber).GetHtml()
+            @Html.ValidationMessageFor(model => model.TradeNumber)
+        </div>
+
+    </div>
+    <div class="col-xs-12 form-fields">
+        <div class="col-xs-5">
+            @Html.DisplayNameFor(m => m.VAT)
+        </div>
+
+        <div class="col-xs-7">
+            @Html.DevExpress().ButtonEditFor(m => m.VAT).GetHtml()
+            @Html.ValidationMessageFor(model => model.VAT)
+        </div>
+    </div>
+
+
+}
+else
+{
+
+        <div class=" col-xs-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Language)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.Language)
+            </div>
+        </div>
+        <div class="col-xs-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.TradeNumber)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.TradeNumber)
+            </div>
+        </div>
+        <div class="col-xs-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.VAT)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.VAT)
+            </div>
+        </div>
+}

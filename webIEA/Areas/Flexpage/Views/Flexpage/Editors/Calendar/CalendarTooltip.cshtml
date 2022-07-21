@@ -1,0 +1,21 @@
+﻿@using Flexpage.Models
+
+@model List<Flexpage.Models.EventModel>
+
+<div>
+    @foreach (Flexpage.Models.EventModel day in Model)
+    {
+        <span style="background-color: @day.EventCategory.BgColor; border: 1px solid @day.EventCategory.BorderColor; padding: 5px; margin: 3px 0;">
+            @if (day.IsPrimary)
+            {
+            <strong style="font-weight: 900">
+                @day.LocalizedTitle.GetText()
+            </strong>
+            }
+            else
+            {
+                @day.LocalizedTitle.GetText()
+            }
+        </span>
+    }
+</div>

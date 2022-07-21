@@ -1,0 +1,71 @@
+﻿@using System.Web.UI.WebControls;
+@model Flexpage.Abstract.DTO.ILocalizedTextModel
+
+@Html.HiddenFor(m => m.ID)
+@Html.HiddenFor(m => m.CurrentLanguage)
+@Html.HiddenFor(m => m.CurrentText)
+@Html.HiddenFor(m => m.ParentModelFieldName)
+@Html.HiddenFor(m => m.MaxFileSize)
+@if (Model.Texts != null)
+{
+    foreach (string key in Model.Texts.Keys)
+    {
+        @Html.HiddenFor(m=>m.Texts[key].Text)
+    }
+}
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/HtmlEditorPartial.cshtml", new Flexpage.Abstract.DTO.HtmlEditorModel { Text = Model.CurrentText ?? "",
+    Name = "fp_HtmlEditor_" + Model.ParentModelFieldName, MaxFileSize = Model.MaxFileSize,
+    Width = new Unit(100, UnitType.Percentage), Height = new Unit(400, UnitType.Pixel)})
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        window.cms_processPWLink = function (objs) {
+            if (objs && objs.length > 0) {
+                const urlStr = `/Flexpage/DownloadFile?id=${objs[0].id}`;
+                $('#linkURL').val(urlStr);
+            }
+        };
+    });
+
+    function fp_HtmlEditor_OnCustomDialogOpened(s,e) {
+
+    }
+
+    function fp_HtmlEditor_OnCustomDialogClosing(s, e) {
+        if (e.name == "PWLink" && e.status == "ok") {
+            e.handled = false;
+            let url = $('#linkURL').val();
+            let text = $('#linkText').val();
+            let tooltip = $('#linkTooltip').val();
+            if (!url) {
+                e.handled = true;
+                $('#urlErrorImg').show();
+            }
+            else {
+                $('#urlErrorImg').hide();
+            }
+
+            if (!text) {
+                e.handled = true;
+                $('#textErrorImg').show();
+            }
+            else {
+                $('#textErrorImg').hide();
+            }
+
+            if (!e.handled) {
+                const link = `<a href="${url}" title="${tooltip}">${text}</a>`;
+                @($"fp_HtmlEditor_{Model.ParentModelFieldName}.ExecuteCommand(ASPxClientCommandConsts.PASTEHTML_COMMAND, link);")
+            }
+        }
+    }
+
+    function fp_HtmlEditor_OnCustomDialogClosed(s, e) {
+
+    }
+
+    function OpenPWPopup() {
+        fp_popupControlOpen({ command: 'browserchoose', blockType: 'CMSFileSelector', action: 'GetPopupChooseObjectContent', controller: 'Admin', alwaysCallOnClose: true, title: 'Choose PW File' }, function () { });
+    }
+</script>

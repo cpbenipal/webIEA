@@ -1,0 +1,23 @@
+﻿@model Flexpage.Abstract.DTO.ResourceModel
+@{
+    var scripts = Model.devExpressScripts.Any() ? Model.devExpressScripts.Select(s => new Script { ExtensionSuite = (ExtensionSuite)s }).ToArray() : new Script[] { };
+    var styles = Model.devExpressStyles.Any() ? Model.devExpressStyles.Select(s => new StyleSheet { ExtensionSuite = (ExtensionSuite)s }).ToArray() : new StyleSheet[] { };
+}
+@if (Model.criticalScriptBundle != null)
+{
+    @Scripts.Render(Model.criticalScriptBundle.Path)
+}
+@if (Model.styleBundle != null)
+{
+    @Styles.Render(Model.styleBundle.Path)
+}
+@Html.DevExpress().GetScriptsEx(
+    scripts
+    )
+@Html.DevExpress().GetStyleSheets(
+    styles
+    )
+@if (Model.deferredScriptBundle != null)
+{
+    @Scripts.RenderFormat("<script src='{0}' defer></script>", (Model.deferredScriptBundle.Path))
+}

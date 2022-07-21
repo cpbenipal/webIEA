@@ -1,0 +1,18 @@
+﻿@model Flexpage.Models.WebFormFieldValueModel
+
+@if(Model is Flexpage.Models.WebFormBoolFieldValueModel)
+{
+    <p class="form-value">@(Model.BoolValue ? "yes" : "no")</p>
+}
+else
+{
+    if(Model is Flexpage.Models.WebFormEnumFieldValueModel)
+    {
+        var item = Model.Items.FirstOrDefault(i => i.Value.ToString() == Model.StringValue);
+        <p class="form-value">@(item != null ? item.Text : "")</p>
+    }
+    else
+    {
+        <p class="form-value">@Model.StringValue</p>
+    }
+}

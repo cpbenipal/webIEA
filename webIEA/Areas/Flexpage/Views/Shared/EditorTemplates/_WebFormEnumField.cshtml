@@ -1,0 +1,3 @@
+﻿@model Flexpage.Models.WebFormFieldValueModel
+
+@Html.DropDownListFor(m => m.StringValue, Model.Items.Select(e => new SelectListItem() { Text = e.Text, Value = e.Value.ToString() }), new { @class = "form-control", @style = "width: 100%", @data_toggle = "tooltip", @data_placement = "bottom", @title = Model.Title })

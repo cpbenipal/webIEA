@@ -1,0 +1,41 @@
+@import "../variables";
+
+.page-breadcrumbs {
+  h4 {
+    margin-bottom: 20px;
+  }
+  label {
+    font-weight: 400;
+  }
+    
+  .preview-breadcrumbs {
+    color: $warm-grey;
+    margin: 0 0 20px 0;
+  }
+  .submenu-breadcrumbs {
+    margin-top: 30px;
+  }
+  .characters-library {
+    tr {
+      td {
+        text-align: center;
+        font-size: 16px;
+      }
+    }
+  }
+  .upload-image {
+    button {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      img {
+        width: 130px;
+        padding: 15px;
+      }
+    }
+
+    p {
+      padding: 0 15px;
+    }
+  }
+}

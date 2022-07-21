@@ -1,0 +1,8 @@
+﻿@model Flexpage.Abstract.DTO.EventViewModel
+
+<span class="newsRec-shortView-date">@Model.StartDate.ToString("dd.MM.yyyy")</span>
+@if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+{
+    <img class="newsRec-fullView-img" src="@Model.ImageUrl" />
+}
+<span class="newsRec-fullView-text">@Html.Raw(Model.ViewText)</span>

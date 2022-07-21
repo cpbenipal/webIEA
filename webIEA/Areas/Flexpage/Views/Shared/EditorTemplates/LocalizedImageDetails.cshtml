@@ -1,0 +1,27 @@
+﻿@model Flexpage.Models.LocalizedImageDetailsModel
+
+
+<h4>
+    Image details
+</h4>
+<div class="languages">
+    @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.LanguageSelector)
+</div>
+<div class="form-fields">
+    <label>URL:</label>
+    <div class="input-group custom-folder-field">
+        @Html.EditorFor(m => m.LocalizedLinkUrl, "LocalizedString")
+    </div>
+</div>
+<div class="form-group form-fields">
+    <label for="img-title">Title:</label>
+    @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+</div>
+<div class="form-group form-fields">
+    <label for="alt-text">Alt text:</label>
+    @Html.EditorFor(m => m.LocalizedAlternateText, "LocalizedString")
+</div>
+<div class="form-group form-fields">
+    <label for="description">Description:</label>
+    @Html.EditorFor(m => m.LocalizedDescription, "LocalizedString")
+</div>

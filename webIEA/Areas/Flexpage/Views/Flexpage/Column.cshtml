@@ -1,0 +1,55 @@
+﻿@model Flexpage.Models.ColumnModel
+@{
+    if(Model.WidthType == 0&& Model.CustomWidthUnit == 0)
+    {
+    <style>
+        #@("multicolumn-"+ @Model.MultiColumnID) > #multicolumn-col@(Model.ID) {
+            min-width: @(Model.Width + "px");
+        }
+        @@media(min-width: 768px) {
+            #@("multicolumn-"+ @Model.MultiColumnID) > #multicolumn-col@(Model.ID) {
+                -ms-flex-preferred-size:@(Model.Width + "px");
+                flex-basis: @(Model.Width + "px");
+                max-width: @(Model.Width + "px");
+                width: @(Model.Width + "px");
+            }
+        }
+    </style>
+    }
+    else if(Model.WidthType == 1 || Model.WidthType == 0 && Model.CustomWidthUnit == 1)
+    {
+<style>
+    #@("multicolumn-"+ @Model.MultiColumnID) > #multicolumn-col@(Model.ID) {
+        min-width: @(Model.Width + "%");
+    }
+    @@media(min-width: 768px) {
+        #@("multicolumn-"+ @Model.MultiColumnID) > #multicolumn-col@(Model.ID) {
+            -ms-flex-preferred-size: @(Model.Width + "%");
+            flex-basis: @(Model.Width + "%");
+            max-width: @(Model.Width + "%");
+            width: @(Model.Width + "%");
+        }
+    }
+</style>
+    }
+
+}
+
+<div id="@("multicolumn-col" + Model.ID)" class="multicolumn-col @(Model.WidthType == 2?"multicolumn-col_minimum":"")">
+    <div class="multicolumn-col-content">
+        @if (Model.ShowHeader)
+        {
+            <h4 class="text-center">@Model.Title.NotEmptyLocalization</h4>
+        }
+        else
+        {
+            if (Model.IsAdmin())
+            {
+                <br /><br />
+            }
+        }
+        @Html.Partial("~/Areas/Flexpage/Views/Flexpage/BlockList.cshtml", Model)
+    </div>
+</div>
+
+

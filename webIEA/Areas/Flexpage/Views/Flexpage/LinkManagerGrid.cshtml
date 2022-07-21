@@ -1,0 +1,140 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Data
+@using Flexpage.Models
+@using Pluritech.Contact.Abstract.DTO;
+
+@model LinkManagerModel
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "LinkManagerGrid";
+    settings.CallbackRouteValues = new { Controller = "Link", Action = "LinkManagerGrid" };
+
+
+    settings.KeyFieldName = "Id";
+    settings.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+    settings.Width = Unit.Percentage(100);
+
+    settings.Settings.ShowFilterRow = false;
+    settings.Settings.ShowFooter = true;
+
+    settings.Columns.Add("Name");
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "ParentName";
+        c.Caption = "Parent Name";
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "TargetName";
+        c.Caption = "Target Name";
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "ParentTypeID";
+        c.Caption = "Parent Type";
+        c.EditorProperties().ComboBox(cb =>
+        {
+            cb.ValueField = "ID";
+            cb.TextField = "Name";
+            cb.ValueType = typeof(int);
+            cb.DataSource = Model.AvailableTypes;
+        });
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "TargetTypeID";
+        c.Caption = "Target Type";
+        c.EditorProperties().ComboBox(cb =>
+        {
+            cb.ValueField = "ID";
+            cb.TextField = "Name";
+            cb.ValueType = typeof(int);
+            cb.DataSource = Model.AvailableTypes;
+        });
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "IsSymmetric";
+        c.EditorProperties().CheckBox(cb => { });
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "IsSystem";
+        c.ReadOnly = true;
+        c.EditFormSettings.Visible = DefaultBoolean.False;
+    });
+    settings.Columns.Add(c =>
+    {
+        c.FieldName = "Transition";
+        c.ColumnType = MVCxGridViewColumnType.ComboBox;
+        var combo = c.PropertiesEdit as ComboBoxProperties;
+        combo.ValueType = typeof(eTransitionType);
+        combo.DataSource = System.Enum.GetValues(typeof(eTransitionType));
+    });
+
+    settings.KeyFieldName = "ID";
+
+    settings.CellEditorInitialize = (sender, e) =>
+    {
+        var grid = sender as MVCxGridView;
+        var row = grid.GetRow(e.VisibleIndex) as LinkTypeModel;
+        if (row != null)
+        {
+            var systemFields = new string[] { "ParentTypeID", "TargetTypeID", "IsSymmetric" };
+            if (row.IsSystem && systemFields.Contains(e.Column.FieldName))
+            {
+                e.Editor.ClientEnabled = false;
+            }
+        }
+    };
+
+    settings.InitNewRow += (s, e) =>
+    {
+        e.NewValues["IsSymmetric"] = false;
+    };
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = false;
+    settings.SettingsBehavior.AllowSelectByRowClick = false;
+    settings.CommandColumn.Visible = true;
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Link", Action = "LinkTypeAdd" };
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Link", Action = "LinkTypeEdit" };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Link", Action = "LinkTypeDelete" };
+
+    settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+    settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+
+    settings.CommandColumn.ShowSelectCheckbox = false;
+    settings.CommandColumn.ShowSelectButton = false;
+    // settings.CommandColumn.ShowNewButton = true;
+    settings.CommandColumn.ShowDeleteButton = true;
+    settings.CommandColumn.ShowEditButton = true;
+    settings.CommandColumn.SelectAllCheckboxMode = GridViewSelectAllCheckBoxMode.None;
+    settings.CommandColumn.ShowNewButtonInHeader = true;
+
+
+    settings.SettingsCommandButton.EditButton.RenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+    settings.SettingsCommandButton.EditButton.Image.Width = Unit.Pixel(16);
+    settings.SettingsCommandButton.EditButton.Image.Height = Unit.Pixel(16);
+
+    settings.SettingsCommandButton.NewButton.RenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+    settings.SettingsCommandButton.NewButton.Image.Width = Unit.Pixel(16);
+    settings.SettingsCommandButton.NewButton.Image.Height = Unit.Pixel(16);
+
+    settings.SettingsCommandButton.DeleteButton.RenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.DeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+    settings.SettingsCommandButton.DeleteButton.Image.Width = Unit.Pixel(16);
+    settings.SettingsCommandButton.DeleteButton.Image.Height = Unit.Pixel(16);
+
+    settings.CommandButtonInitialize = (sender, e) =>
+    {
+        var grd = sender as MVCxGridView;
+        if (e.ButtonType == ColumnCommandButtonType.Delete)
+        {
+            var val = grd.GetRowValues(e.VisibleIndex, "IsSystem");
+            e.Visible = !(bool)val;
+        }
+    };
+
+    settings.CommandColumn.Width = Unit.Pixel(20);
+}).Bind(Model.Items).GetHtml()

@@ -1,0 +1,267 @@
+﻿@using Pluritech.Properties.Abstract.DTO
+@using Flexpage.Models
+@model CustomPropertyInfo
+
+@{
+    List<Property> props = ViewData["AllowedProperties"] as List<Property>;
+    string langCode = ViewData["langCode"] as string;
+    string enums = "[";
+    foreach (Property p in props.Where(prop => prop.EnumValues.Keys.Count > 0))
+    {
+        enums += string.Format("{{\"id\":{0},\"values\":[{1}]}},", p.ID, string.Join(","
+            , p.EnumValues.Select(v => v.Value is string ? string.Format("{{\"id\":{0},\"value\":\"{1}\"}}", v.Key, v.Value): string.Format("{{\"id\":{0},\"value\":\"{1}\"}}", v.Key, v.Value))));
+    }
+    enums = enums.TrimEnd(',') + "]";
+    Property propEdit = null;
+    if (Model.ID > 0)
+    {
+        propEdit = props.Find(p => p.ID == Model.ID);
+    }
+}
+
+
+<div class="custom-property-edit-form">
+    <input type="hidden" id="cb_allowedproperties" value="@Html.Raw(string.Join(",", props.Select(p => string.Format("{{'id':{0},'type':'{1}'}}", p.ID, p.Type))))" />
+    <input type="hidden" id="cb_allowedenums" value="@enums" />
+    <input type="hidden" id="cb_langCode" value="@langCode" />
+    @Html.HiddenFor(m => m.Type)
+
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            @if (Model.ID > 0)
+            {
+                @Html.DevExpress().Label(
+                    settings =>
+                    {
+                        settings.Name = "CB_Property";
+                        settings.Text = Model.Name;
+                        settings.Properties.ClientSideEvents.Init = "function(s, e) { cb_Init(s, 1); }";
+                    }
+                ).GetHtml()
+            }
+            else
+            {
+                @Html.DevExpress().ComboBox(
+                    settings =>
+                    {
+                        settings.Name = "CB_NewProperty";
+                        settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                        settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                        settings.Style.Add(HtmlTextWriterStyle.Display, "table");
+                        settings.Properties.ClientSideEvents.SelectedIndexChanged = "cb_Property_Selected";
+                        settings.Properties.ClientSideEvents.Init = "function(s, e) { cb_Init(s, 0); }";
+                        settings.Properties.ValueField = "ID";
+                        settings.Properties.ValueType = typeof(int);
+                        settings.Properties.TextField = "Name";
+                    }
+                ).BindList(props).GetHtml()
+            }
+        </div>
+        <div class="col-xs-12 col-md-1">
+            Value:
+        </div>
+
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Value)
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Void)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Void hidden">
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Bool)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Bool hidden">
+                    @Html.DevExpress().CheckBox(
+                             settings =>
+                             {
+                                 settings.Name = "CB_Editor_Bool";
+                             }
+                         ).Bind(@Model.Value == "1").GetHtml()
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.String)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor String Int hidden">
+                    @Html.DevExpress().TextBox(
+                             settings =>
+                             {
+                                 settings.Name = "CB_Editor_String";
+                                 settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                             }
+                         ).Bind(@Model.Value).GetHtml()
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.DateTime)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor DateTime hidden">
+                    @Html.DevExpress().DateEdit(
+                             settings =>
+                             {
+                                 settings.Name = "CB_Editor_Date";
+                                 settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                 settings.Properties.ClientSideEvents.Init = "function(s,e) { cb_Property_SetDateEditorValue(s, '" + Model.Value + "'); }";
+                                 settings.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                             }
+                         ).GetHtml()
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Float)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Float hidden">
+                    @Html.DevExpress().SpinEdit(
+                             settings =>
+                             {
+                                 settings.Name = "CB_Editor_Float";
+                                 settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                             }
+                         ).Bind(@Model.Value).GetHtml()
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Enum)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Enum hidden">
+                    @{
+
+                    }
+                    @Html.DevExpress().ComboBox(
+                                     settings =>
+                                     {
+                                         settings.Name = "CB_Editor_Enum";
+                                         settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                                         settings.Properties.EnableClientSideAPI = true;
+                                         settings.Properties.ClientSideEvents.Init = "function(s,e) { cb_Property_SetEnumValue('" + Model.Value + "'); }";
+                                     }
+                                 ).GetHtml()
+                </div>
+            </div>
+        }
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Html)
+        {
+            <div class="col-xs-12 col-md-7">
+                <div class="cb_editor Html hidden">
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_CustomPropertiesEditTemplateHtml.cshtml", new CustomPropertiesEditTemplateHtmlModel() { Value = Model.Value })
+                </div>
+            </div>
+        }
+
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.Color)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Html hidden">
+                    @{
+                        Html.DevExpress().ColorEdit(settingsType =>
+                        {
+                            settingsType.Name = "color" + Model.ID;
+                            settingsType.ControlStyle.CssClass = "EditInput";
+                            settingsType.Attributes.Add("data-id", Model.ID.ToString());
+                        }).Bind(Model.DisplayValue).GetHtml();
+                    }
+                </div>
+            </div>
+        }
+
+        @if (propEdit == null || propEdit.Type == ObjectPropertyType.File)
+        {
+            <div class="col-xs-12 col-md-4">
+                
+                <div class="cb_editor File hidden">
+                    @{
+                        @Html.DevExpress().TextBox(
+                            settings =>
+                            {
+                                settings.Name = "CB_Editor_FileView";
+                                
+                                settings.Width = new System.Web.UI.WebControls.Unit(80, System.Web.UI.WebControls.UnitType.Percentage);
+                            }
+                        ).Bind(@Model.DisplayValue).GetHtml()
+
+                        @Html.DevExpress().Button(
+                           btnSettings =>
+                           {
+                               btnSettings.Name = "btnSelectFile";
+                               btnSettings.RenderMode = ButtonRenderMode.Link;
+                               btnSettings.Text = "";
+                               btnSettings.Images.Image.IconID = IconID.ActionsOpenfile16x16gray;
+                               btnSettings.ClientSideEvents.Click = "function(s, e){ fp_OpenFileSelectPopup(); }";
+                           }
+                        ).GetHtml()
+
+                        @Html.DevExpress().TextBox(
+                            settings =>
+                            {
+                                settings.Name = "CB_Editor_File";
+                                settings.ClientVisible = false;
+                                
+                                settings.Width = new System.Web.UI.WebControls.Unit(80, System.Web.UI.WebControls.UnitType.Percentage);
+                            }
+                        ).Bind(@Model.Value).GetHtml()
+                    }
+                    <style>
+
+                    </style>
+                </div>
+            </div>
+        }
+
+
+        @if (propEdit == null && props.Any(p => p.Type == ObjectPropertyType.Tag) 
+            || propEdit != null && propEdit.Type == ObjectPropertyType.Tag)
+        {
+            <div class="col-xs-12 col-md-4">
+                <div class="cb_editor Tag hidden">
+                    @Html.DevExpress().TokenBox(
+                             settings =>
+                             {
+                                 settings.Name = "CB_Editor_Tag";
+                                 settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+
+                                 settings.Properties.TextField = "Name";
+                                 settings.Properties.ValueField = "ID";
+
+                                 settings.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                                 settings.Properties.IncrementalFilteringDelay = 500;
+                                 settings.Properties.ClientSideEvents.Init = "function(s,e) { cb_Property_SetTagValue('" + Model.Value + "'); }";
+                             }
+                         ).GetHtml()
+                    </div>
+            </div>
+        }
+
+        <div class="col-xs-12 col-md-12" align="center">
+            @Html.DevExpress().Button(
+               btnSettings =>
+                    {
+                   btnSettings.Name = "btnUpdate";
+                   btnSettings.RenderMode = ButtonRenderMode.Link;
+                   btnSettings.Text = "";
+                   btnSettings.Images.Image.IconID = IconID.SaveSave16x16office2013;
+                   btnSettings.ClientSideEvents.Click = "function(s, e){ cb_Property_Read(s); сontactDetailsCustomProperties" + ViewData["ModelID"] + ".UpdateEdit(); }";
+               }
+            ).GetHtml()
+            @Html.DevExpress().Button(
+                btnSettings =>
+                     {
+                    btnSettings.Name = "btnCancel";
+                    btnSettings.RenderMode = ButtonRenderMode.Link;
+                    btnSettings.Text = "";
+                    btnSettings.Images.Image.IconID = IconID.ActionsCancel16x16office2013;
+                    btnSettings.Style[HtmlTextWriterStyle.MarginLeft] = "5px";
+                    btnSettings.ClientSideEvents.Click = "function(s, e){ сontactDetailsCustomProperties" + ViewData["ModelID"] + ".CancelEdit(); }";
+                }
+             ).GetHtml()
+        </div>
+    </div>
+</div>

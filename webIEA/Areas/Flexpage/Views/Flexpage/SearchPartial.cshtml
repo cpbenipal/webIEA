@@ -1,0 +1,54 @@
+﻿@model Flexpage.Service.DTO.SearchModel
+
+@using(Ajax.BeginForm("UpdateSearch", "Flexpage", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_searchWrapper" }, new { id = "fp_SearchForm" }))
+{
+    <div class="searchControls row">
+        @Html.HiddenFor(m => m.Token)
+        <div class="col-md-11 form-fields">
+            @Html.TextBoxFor(m => m.SearchString, new { @class = "form-control" })
+        </div>
+        <div class="col-md-1 form-fields">
+            <a href="javascript:void(0)" onclick="fp_doSearch()" class="orange-btn">Search</a>
+        </div>
+
+    </div>
+    <br />
+    <div class="searchResults">
+        @if(Model.SearchException != null)
+        {
+            <div class="result">
+                <p class="annotation">@Html.Raw(Model.SearchException.Message)</p>
+            </div>
+        }
+        else if(Model.SearchResults == null)
+        {
+            if(!string.IsNullOrWhiteSpace(Model.SearchString))
+            {
+            <div class="result">Searching ...</div>
+            }
+        }
+        else if(Model.SearchResults.Count() == 0)
+        {
+            <div class="result">Nothing was found</div>
+        }
+        else
+        {
+            int idx = 1;
+            foreach(var res in Model.SearchResults)
+            {
+                <div class="result">
+                    @if(!string.IsNullOrWhiteSpace(res.Url))
+                    {
+                        <a href="/@res.Url.TrimStart('/')" class="url">@Html.Raw(string.Format("{0}. {1}", idx, res.Title))</a>
+                    }
+                    else
+                    {
+                        <p>@Html.Raw(string.Format("{0}. {1}", idx, res.Title))</p>
+                    }
+                    <p class="annotation">@Html.Raw(res.Annotation)</p>
+                </div>
+                idx++;
+            }
+        }
+    </div>
+}

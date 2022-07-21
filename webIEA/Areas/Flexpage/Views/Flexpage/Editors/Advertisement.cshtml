@@ -1,0 +1,240 @@
+﻿@using Flexpage.Models
+@using Flexpage.Domain.Enum;
+@model AdvertisementModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('ADVERTISEMENT', '#fp_AdvertisementEditorContainer');
+
+    function fp_advertisementGrid_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnAdvertisementDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete this advertisement?', function () { s.DeleteRow(e.visibleIndex); });
+        else if (e.buttonID == 'btnAdvertisementEdit')
+            fp_popupControlOpen({ command: 'edit', blockType: 'AdvertisementImage', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true }, fp_afterAddAdvertisement);
+    }
+
+    function fp_afterAddAdvertisement() {
+        fp_Advertisements_Grid.PerformCallback();
+        fp_updateAllowedTags();
+    }
+
+    function fp_updateAllowedTags() {
+
+        $.ajax({
+            url: '/Admin/GetAdvertisementTags',
+            data: null,
+            type: "GET",
+            cache: false,
+            success: function (result) {
+
+                if (result) {
+
+                    // refresh options
+                    var tagsList = $('#allowedTagsList');
+                    var selectedTag = tagsList.val();
+                    if (result.indexOf(selectedTag) == -1) {
+                        result.push(selectedTag);
+                    }
+
+                    tagsList.empty();
+                    $.each(result, function (i, val) {
+                        tagsList.append($('<option>', {
+                            value: val,
+                            text: val
+                        }));
+                    });
+
+                    tagsList.val(selectedTag);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+
+            }
+        });
+    }
+
+    $(function() {
+        $('#ChangingOptions input[type=radio]').change(function() {
+            if ($(this).val() == 'Random') {
+                $('#InputCycleDelay').prop('disabled', true);
+                $('#ImagesPerLoad').prop('disabled', true);
+            }
+            else {
+                $('#InputCycleDelay').prop('disabled', false);
+                $('#ImagesPerLoad').prop('disabled', false);
+            }
+        });
+
+        @if (Model.DisplayType == DisplayTypeAdvertisement.Random)
+        {
+            <text>
+                $('#InputCycleDelay').prop('disabled', true);
+                $('#ImagesPerLoad').prop('disabled', true);
+            </text>
+        }
+    });
+</script>
+
+<div class="advertisement-block" id="fp_AdvertisementEditorContainer">
+    <ul class="nav nav-pills tabs-navigation">
+        <li class="active"><a data-toggle="pill" href="#general-tab">General</a></li>
+        <li><a data-toggle="pill" href="#advertisements-tab">Advertisements</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="general-tab">
+            @using (Ajax.BeginForm("UpdateAdvertisement", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_AdvertisementEditorContainer" }, new { id = "fp_AdvertisementBlockEditorForm", forTraking = "all" }))
+            {
+                @Html.HiddenFor(m => m.ID)
+                @Html.HiddenFor(m => m.Alias)
+
+                <div class="row general-options">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="TagName">Tag name:</label>
+                            <span class="info">
+                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose what advertisements to show" data-container=".modal-content"></i>
+                            </span>
+                            @Html.DropDownListFor(m => Model.TagName, new SelectList(Model.AllowedTags.Select(n => new { value = n, text = n }), "value", "text"),
+                                new { @class = "form-control", id="allowedTagsList" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <h4>
+                            Size <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Size options" data-container=".modal-content"></i>
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12 form-group element-center">
+                                @Html.CheckBoxFor(m => m.ConstrainProportions, new { @class = "form-control" })
+                                <label class="form-check-label" for="ConstrainProportions">
+                                    Constrain proportions
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-12 form-group">
+                                    <label>Width:</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="radio-inline">
+                                        @Html.RadioButtonFor(s => s.WidthType, SizeType.Auto, new { id = "WidthType" + SizeType.Auto.ToString() })
+                                        Auto
+                                    </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="radio-inline">
+                                        @Html.RadioButtonFor(s => s.WidthType, SizeType.Full, new { id = "WidthType" + SizeType.Full.ToString() })Full width
+                                    </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="col-md-4">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(s => s.WidthType, SizeType.Custom, new { id = "WidthType" + SizeType.Custom.ToString() })Custom
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.CustomWidth, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.DropDownListFor(m => m.CustomWidthUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-12 form-group">
+                                    <label>Height:</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="radio-inline">
+                                        @Html.RadioButtonFor(s => s.HeightType, SizeType.Auto)
+                                        Auto
+                                    </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="radio-inline">
+                                        @Html.RadioButtonFor(s => s.HeightType, SizeType.Full)Full height
+                                    </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="col-md-4">
+                                        <label class="radio-inline">
+                                            @Html.RadioButtonFor(s => s.HeightType, SizeType.Custom)Custom
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.TextBoxFor(m => m.CustomHeight, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.DropDownListFor(m => m.CustomHeightUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType), Model.CustomHeightUnit), new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="ChangingOptions">
+                            <div class="col-md-12">
+                                <div class="col-md-12 form-group">
+                                    <label>Changing options:</label>
+                                    <span class="info">
+                                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="This option takes into account the tags, the advertisement activity, date and language restrictions" data-container=".modal-content"></i>
+                                    </span>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="radio-inline">
+                                        <p>@Html.RadioButtonFor(s => s.DisplayType, DisplayTypeAdvertisement.Random)Show random advertisement on a page load</p>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="radio-inline">
+                                        <p>@Html.RadioButtonFor(s => s.DisplayType, DisplayTypeAdvertisement.Cycle)Cycle through advertisement images with @Html.TextBoxFor(m => m.CycleDelay, new { @style = "width:35px", @id = "InputCycleDelay" }) sec delay</p>
+                                    </label>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-group">
+                                        <p>
+                                            @Html.TextBoxFor(s => s.ImagesPerLoad, new { @style = "width:35px", @id = "ImagesPerLoad" }) Images loaded at once
+                                            <span class="info">
+                                                <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Smaller batch makes the page load faster, but for session to timeout properly it must be equal to the total image count" data-container=".modal-content"></i>
+                                            </span>
+                                        </p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="tab-pane fade" id="advertisements-tab">
+            <div class="flexpage records-field">
+
+                <div class="row records-button">
+                    <div class="col-md-10">
+                        <h4 class="title-main-block">Advertisements</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="pull-right">
+                            <a data-toggle="modal" data-target="#advertisementsList-add-new">
+                                <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command:'add', blockType: 'AdvertisementImage' }, fp_afterAddAdvertisement)">
+                                    Add new
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                @Html.Partial("~/Areas/Flexpage/Views/Admin/AdvertisementsGrid.cshtml", new List<Flexpage.Models.AdvertisementImageModel>())
+            </div>
+        </div>
+    </div>
+</div>
+

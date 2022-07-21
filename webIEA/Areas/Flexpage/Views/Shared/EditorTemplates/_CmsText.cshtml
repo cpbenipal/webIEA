@@ -1,0 +1,25 @@
+﻿@model Flexpage.Models.CmsTextModel
+
+@{
+    HashSet<string> langs = new HashSet<string>();
+    foreach (string key in Model.FullText.Texts.Keys)
+    {
+        if (!string.IsNullOrWhiteSpace(Model.FullText.Texts[key]?.Text))
+        {
+            langs.Add(key);
+        }
+    }
+}
+
+@Html.HiddenFor(m => m.ID)
+@Html.HiddenFor(m => m.Alias)
+@Html.HiddenFor(m => m.IncludeInSearch)
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.LanguageSelector)
+ 
+<div class="title">
+    <label>Title:</label>
+    @Html.EditorFor(m => m.LocalizedTitle, "LocalizedString")
+</div>
+<label>Description</label>
+@Html.EditorFor(m => m.FullText, "LocalizedText")

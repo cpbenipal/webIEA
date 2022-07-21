@@ -1,0 +1,14 @@
+﻿@model Flexpage.Abstract.DTO.EventViewModel
+
+<span class="newsRec-shortView-date">@Model.StartDate.ToString("dd.MM.yyyy")</span>
+<a class="newsRec-shortView-title" href="@string.Format("{0}?newsRecordID={1}", Model.FullNewsPageUrl, Model.ID)">
+    @{ if (Model.IsHeaderLink)
+        {
+            @Model.Title
+        }
+        else
+        {
+            @Html.Raw(Model.ViewText)
+        }
+    }
+</a>

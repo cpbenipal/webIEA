@@ -1,0 +1,32 @@
+﻿@model Flexpage.Models.WebFormFieldValueModel
+
+@Html.HiddenFor(m => m.FieldID)
+@if (Model.IsSystem)
+{
+    @Html.HiddenFor(m => m.StringValue)
+}
+else
+{
+    <div class="col-md-12 field-container @Model.FieldName.Replace(" ", "-")">
+        <div class="col-md-6 field-title">
+            @((Model.Title ?? Model.FieldName) + (Model.IsMandatory ? "*" : ""))
+        </div>
+        <div class="col-md-6 field-content">
+            @if (ViewData["ReadOnlyMode"] is bool && (bool)ViewData["ReadOnlyMode"])
+            {
+                @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_WebFormFieldReadOnly.cshtml", Model)
+            }
+            else
+            {
+                @Html.Partial(String.Format("~/Areas/Flexpage/Views/Shared/EditorTemplates/{0}.cshtml", Model.View), Model)
+                @Html.ValidationMessageFor(m => m.StringValue, null, new { @class = "field-error-message" })
+                if (!String.IsNullOrEmpty(Model.Description))
+                {
+                    <div>
+                        @Html.Label(Model.Description, new { @class = "field-description" })
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

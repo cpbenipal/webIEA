@@ -1,0 +1,165 @@
+﻿@model Flexpage.Models.SubscriberListModel
+
+<script type="text/javascript">
+
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_subscribersListChangeLanguage(langCode) {
+        $("#fp_subscriberListCurrentLanguage").val(langCode);
+        fp_PostAjaxForm('#fp_subscriberManagerContainer', { command: 'changelanguage', parameters: langCode });
+    }
+
+    function fp_subscriberListBeginCallback(s, e) {
+        e.customArgs["subscriptionID"] = @Model.SubscriptionID;
+        e.customArgs["langCode"] = $("#fp_subscriberListCurrentLanguage").val();
+        console.log("fp_subscriberListBeginCallback ");
+    }
+
+    var SubscribersService = function(fpGrid) {
+        this.urlDelete = "/Admin/DeleteSubscriber";
+        this.urlNotify = "/Admin/NotifySubscriber";
+        this.urlEditForm = "/Admin/SubscriberForm";
+        this.grid = fpGrid;
+    }
+
+    SubscribersService.prototype.hideBlock = function ( blockHide, blockShow, isShowButton, isRefresh, data) {
+        $(blockHide).fadeOut("hide", function () {
+            var visible = isShowButton ? "visible" : "hidden";
+
+            if (data)
+                $(blockShow).html(data);
+
+            $(".fp_popupButtonsContainer").css("visibility", visible);
+            $(blockShow).show();
+
+            if (isRefresh)
+                fp_Subscribers_Grid.Refresh();
+        });
+    }
+
+    SubscribersService.prototype.send = function(url, data, callback) {
+        $(".fp_popupPleaseWaitDiv").show();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            error: function (data) {
+                $(".fp_popupPleaseWaitDiv").hide();
+            },
+            success: function (data) {
+                callback(data);
+                $(".fp_popupPleaseWaitDiv").hide();
+            }
+        });
+    }
+
+    SubscribersService.prototype.showGrid = function(isRefresh) {
+        this.hideBlock(".subscriberForm", "#fp_subscriberManagerContainer", false, isRefresh, false);
+    }
+
+    SubscribersService.prototype.showForm = function(data) {
+        this.hideBlock("#fp_subscriberManagerContainer", ".subscriberForm",true, false, data);
+    }
+    console.log(fp_Subscribers_Grid);
+    var subscribersService = new SubscribersService(fp_Subscribers_Grid);
+
+
+    function fp_Subscribers_Grid_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the news?', function () {
+                subscribersService.send(subscribersService.urlDelete,
+                    { subscriberId: s.GetRowKey(e.visibleIndex) },
+                    function(data) { fp_Subscribers_Grid.Refresh(); });
+            });
+        else if (e.buttonID == 'btnNotify') {
+            subscribersService.send(subscribersService.urlNotify,
+                { subscriberId: s.GetRowKey(e.visibleIndex) },
+                function(data) { fp_Subscribers_Grid.Refresh(); });
+        }
+        else if (e.buttonID == 'btnEdit') {
+            subscribersService.send(subscribersService.urlEditForm,
+                { subscriberId: s.GetRowKey(e.visibleIndex) },
+                function(data) {
+                    subscribersService.showForm(data);
+                });
+        }
+    }
+
+    function fp_beforeClosePopUp(element, idpostfix) {
+        if ($(".subscriberForm").css("display") == "none") {
+            var isDirty = false;
+            $('#fp_PopupContent_' + idpostfix).find('[fortraking]').each(function () {
+                var formID = $(this).attr('id');
+                if (formID) {
+                    isDirty = IsFormDirty(formID);
+                }
+            });
+
+            if (isDirty) {
+                fp_ConfirmDialog('Close popup', 'Unsaved changes will be lost.</br>Are you sure you want to close the window ?', function () {
+                    fp_closePopUp(element);
+                });
+            }
+            else {
+                fp_closePopUp(element);
+            }
+        } else {
+           subscribersService.showGrid(true);
+        }
+    }
+
+    function fp_saveBlock(idPostfix, blocklistID, blockAfter, parameters) {
+        $("#fp_popupPleaseWaitDiv").css("display", "block");
+        var form = $("#fp_CmsBlockEditorForm");
+
+        subscribersService.send($(form).attr('action'),form.serialize(),
+            function(data) {
+                subscribersService.showGrid(true);
+            });
+    }
+
+    function fp_subscriberListAfterAddEnum() {
+        fp_subscriberList_Grid.PerformCallback();
+        fp_initJS();
+    }
+
+    fp_popupControlChangeTitle('SUBSCRIBERS MANAGER', '#fp_subscriberManagerContainer');
+    // fp_PopupToggleButtonsContainer("#fp_EnumManagerContainer", "none");
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        //fp_ControlsForTracking(_controlsForTracking);
+    });
+
+</script>
+
+
+
+<div class="flexpage" id="fp_subscriberManagerContainer">
+    <h4>@Model.SubscriptionDescription</h4>
+    
+    <div class="flexpage records-field">
+        @using (Html.BeginForm())
+        {
+            @Html.Hidden("SubscriptionID", Model.SubscriptionID)
+            @Html.Hidden("langCode", Model.Settings.CurrentUiCulture.Name)
+            @Html.Action("SubscribersGrid", "Admin", new { subscriptionID = Model.SubscriptionID, langCode = Model.Settings.CurrentUiCulture.Name })
+        }
+    </div>
+</div>
+
+<div class="subscriberForm" style="display: none">
+
+</div>
+
+
+
+

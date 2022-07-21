@@ -1,0 +1,11 @@
+﻿@model Flexpage.Abstract.DTO.SitemapMenuLevelModel
+
+@{ 
+    string cssClass = "level" + Model.Level.ToString();
+    cssClass += Model.Level > 0 ? " submenu" : "";
+    string display = Model.Level == 0 ? "" : "display:none";
+}
+
+<ul style="@display" level='@Model.Level' class='@cssClass nav navbar-nav fp_sitemapMenu-navbar fp_flex fp_w-100 fp_flex-wrap'>
+    @Html.Partial("~/Areas/Flexpage/Views/Flexpage/SitemapMenuItems.cshtml", Model)
+</ul>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>blocks/custom-html</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="blocks/custom-html" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(4.000000, 0.000000)" fill="#727376">
+            <path d="M2.5,45.25 L37.5,45.25 L37.5,2.75 L2.5,2.75 L2.5,45.25 Z M38.75,0.25 L1.25,0.25 C0.56,0.25 0,0.81 0,1.5 L0,46.5 C0,47.19125 0.56,47.75 1.25,47.75 L38.75,47.75 C39.44125,47.75 40,47.19125 40,46.5 L40,1.5 C40,0.81 39.44125,0.25 38.75,0.25 Z" id="Fill-1"></path>
+            <polygon id="Fill-3" points="8.75 11.5 31.25 11.5 31.25 9 8.75 9"></polygon>
+            <polygon id="Fill-4" points="8.75 20.35375 31.25 20.35375 31.25 17.85375 8.75 17.85375"></polygon>
+            <polygon id="Fill-5" points="8.75 29.20875 31.25 29.20875 31.25 26.70875 8.75 26.70875"></polygon>
+            <polygon id="Fill-6" points="8.75 38.0625 20 38.0625 20 35.5625 8.75 35.5625"></polygon>
+        </g>
+    </g>
+</svg>

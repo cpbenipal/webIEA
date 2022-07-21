@@ -1,0 +1,226 @@
+﻿@using Flexpage.Models
+@model Flexpage.Models.FolderTreeListModel
+@{
+    string selector = ".fp_nodeStyleTreeList";
+    if (Model.SaveSelectedNode && Session[Model.SaveSelectedKey] != null)
+    {
+        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(Session[Model.SaveSelectedKey].ToString());
+        string treeListName = "fp_FolderTreeList_List" + Model.ID;
+        string rowId = json["rowId"];
+        if (!String.IsNullOrEmpty(treeListName) && !String.IsNullOrEmpty(rowId))
+        {
+            selector ="#"+ treeListName + "_R-" + rowId;
+        }
+    }
+}
+<style type="text/css">
+    .fp_nodeStyleTreeList.dxtv-ndHov {
+        padding: 3px 5px 4px;
+    }
+</style>
+<script type="text/javascript">
+
+    function fp_folderTreeList_NodeClick@(Model.ID.ToString())(s, e) {
+        if(s.IsEditing && e.htmlEvent.srcElement.tagName === 'INPUT')
+            return;
+
+        s.UpdateEdit();
+        if (typeof (EventManager) != "undefined") {
+            EventManager.bus.publish(EventManager.settings.Events.folderTreeList.clickNode, {
+                s: s, e: e,
+                "filterCustomProperties": '@ViewData["FilterCustomProperties"]', "filterExtension": '@ViewData["FilterExtension"]',"typeContextMenu":"@(Model.TypeContextMenu)"
+            });
+        }
+    }
+
+    function fp_folderTreeList_ExpandedChanging@(Model.ID.ToString())(s, e) {
+        if (typeof (EventManager) != "undefined") {
+            EventManager.bus.publish(EventManager.settings.Events.folderTreeList.expandedChangingFolder, { "s": s, "event": e, "ID":@(Model.ID.ToString()) });
+        }
+    }
+
+    
+    function fp_folderTreeList_Init@(Model.ID.ToString())(s,e) {
+        $(function () {
+            $('@selector').first().click();
+        });
+    }
+    function fp_contextMenu@(Model.ID.ToString())(s,e) {
+        if (typeof (EventManager) != "undefined") {
+            EventManager.tools.applyRename(e);
+            EventManager.bus.publish(EventManager.settings.Events.folderTreeList.showContextMenu, { "ID": '@Model.ID.ToString()', "pageY": e.pageY, "pageX": e.pageX, "event": e,"s":s, 'isAdmin': '@(Model.IsPWAdminMode)' == 'True',"typeContextMenu":"@(Model.TypeContextMenu)" });
+        }
+        return false;
+    }
+
+   
+
+    function fp_popupMenuItemClick@(Model.ID.ToString())(s, e) {
+        if (typeof (EventManager) != "undefined") {
+            EventManager.bus.publish(EventManager.settings.Events.folderTreeList.clickContextMenu,
+                { "ID": '@Model.ID.ToString()', "event": e });
+            EventManager.bus.publish(EventManager.settings.Events.hideAllContextMenu, { "event": e });
+        }
+    }
+
+    function fp_folderTreeList_EndCallback@(Model.ID.ToString())(s, e) {
+         if (typeof (EventManager) != "undefined") {
+             EventManager.bus.publish(EventManager.settings.Events.folderTreeList.endCallback,
+                 { "ID": '@Model.ID.ToString()' });
+             EventManager.bus.publish(EventManager.settings.Events.folderContent.endCallback,
+                 { "ID": '@Model.ID.ToString()', "refreshFiles": true });
+             EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.endCallback,
+                { "ID": '@Model.ID.ToString()', "refreshContacts": true });
+        }
+        
+    }
+
+    function fp_refreshNode@(Model.ID.ToString())() {
+    @("fp_FolderTreeList_List" + Model.ID).PerformCallback({ "action": "refresh", "args": @Model.ID.ToString() });
+    }
+</script>
+
+
+
+@Html.HiddenFor(m => m.Name)
+@Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderTreeList/_FolderTreeListView.cshtml", Model)
+
+<div class="fp_folderTreeListPopupMenu">    
+    @Html.DevExpress().PopupMenu(
+            settings =>
+            {
+                settings.Name = "PopupMenu" + Model.ID.ToString();
+                settings.AllowSelectItem = false;
+                
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Create folder";
+                    item.Name = "Create";
+                    item.Image.IconID = IconID.ActionsAdd16x16office2013;
+                });
+                if(Model.AllowUpload)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Upload file(s)";
+                        item.Name = "UploadFile";
+                        item.Image.IconID = IconID.ActionsSave16x16devav;
+                    });
+                }
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Copy folder";
+                    item.Name = "Copy";
+                    item.Image.IconID = IconID.EditCopy16x16office2013;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Cut folder";
+                    item.Name = "Cut";
+                    item.Image.IconID = IconID.EditCopy16x16office2013;
+                });
+                if (Model.PWBrowser)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Add Contact";
+                        item.Name = "AddContact";
+                        item.Image.IconID = IconID.ActionsAdd16x16office2013;
+                    });
+                }
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Rename";
+                    item.Name = "Rename";
+                    item.Image.IconID = IconID.DataRenamedatasource16x16;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Delete";
+                    item.Name = "Delete";
+                    item.Image.IconID = IconID.EditDelete16x16office2013;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Reset time to leave";
+                    item.Name = "ResetTimeToLeave";
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Reset publishing overrides";
+                    item.Name = "ResetPublishingOverrides";
+
+                });
+
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Properties";
+                    item.Name = "Properties";
+                    item.Image.IconID = IconID.SetupProperties16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "Refresh");
+                    item.Name = "Refresh";
+                    item.Image.IconID = IconID.ActionsRefresh16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Paste";
+                    item.Name = "Paste";
+                    item.Image.IconID = IconID.EditPaste16x16office2013;
+                    item.BeginGroup = true;
+                });
+                settings.Items.Add(item =>
+                {
+                    item.Text = "Paste file shortcut";
+                    item.Name = "PasteShortcut";
+                    item.Image.IconID = IconID.EditPaste16x16office2013;
+                    item.BeginGroup = true;
+                });
+                if (Model.PWBrowser)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "ExportContacts");
+                        item.Name = "ExportContacts";
+                        item.Image.IconID = IconID.ExportExporttoxls16x16office2013;
+                    });
+                }
+
+                //TO DO: Seems like there is always null in ViewBag.IsAuthenticated ! That's strange!
+                if (ViewBag.IsAuthenticated != null && ViewBag.IsAuthenticated)
+                {
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Open local version";
+                        item.Name = "OpenLocalVersion";
+                        item.Image.IconID = IconID.ActionsOpen16x16office2013;
+                        item.BeginGroup = true;
+                    });
+                    settings.Items.Add(item =>
+                    {
+                        item.Text = "Notification";
+                        item.Name = "AddNotification";
+                        item.Image.IconID = "xaf_action_bell_svg_16x16";
+                        item.Image.Url = "~/areas/flexpage/content/images/bell.png";
+                        item.BeginGroup = true;
+                    });
+                }
+                settings.ClientSideEvents.ItemClick = ("fp_popupMenuItemClick" + Model.ID.ToString());
+
+            }).GetHtml()
+</div>
+
+<div class="fp_folderTreeListLoadingPanel">
+    @Html.DevExpress().LoadingPanel(
+        settings => {
+            settings.Name = "LoadingPanel" + Model.ID.ToString();
+            settings.Modal = true;
+            settings.Enabled = true;
+        }
+        ).GetHtml()
+</div>

@@ -1,0 +1,410 @@
+@import "../variables";
+
+.item-active-modal {
+    font-weight: 600;
+}
+
+.header-modal-menu {
+    margin-top: 5px;
+    text-align: right;
+
+    a {
+        color: $white !important;
+        margin: 10px;
+        font-size: 16px;
+        cursor: pointer !important;
+        margin-right: 10px;
+    }
+}
+
+.gallery-block {
+
+    input[type='radio']:after {
+        border: 3px solid $gray-light;
+    }
+
+    label {
+        font-weight: 400;
+    }
+
+    .header-modal-menu {
+        margin-top: 5px;
+        text-align: right;
+
+        a {
+            color: $white;
+            margin: 10px;
+            font-size: 16px;
+        }
+    }
+
+    .nav-pills {
+        margin-top: -16px;
+    }
+
+    .gallery-type {
+        h5 {
+            font-size: 16px;
+            margin: 50px 0;
+        }
+
+        .content-box {
+            width: 200px;
+            display: block;
+            margin: 0 auto;
+            padding: 30px;
+            position: relative;
+
+            img {
+                display: block;
+                margin: 0 auto
+            }
+
+            .img-hover {
+                margin: 0 auto;
+                display: none;
+            }
+        }
+
+        .content-box:hover {
+            background-color: $white-two;
+            border-radius: 10px;
+
+            .img-hover {
+                display: block;
+            }
+
+            .img-main {
+                display: none;
+            }
+
+            a {
+                color: $dusk-blue;
+            }
+        }
+
+        p {
+            margin-top: 20px;
+            font-weight: 400;
+        }
+    }
+
+    .simple-pagination {
+        text-align: center;
+    }
+
+    .simple-pagination > ul {
+        display: inline-block;
+    }
+
+    .thumbnail-width-hide, .thumbnails-alignment-hide {
+        display: none;
+    }
+}
+
+.fpGallery {
+    .gallery-block {
+        overflow-x: hidden;
+        /*.justified-gallery {
+            -webkit-transition: all 0.6s ease-in-out left;
+            -o-transition: all 0.6s ease-in-out left;
+            transition: all 0.6s ease-in-out left;
+        }
+
+        @media all and (transform-3d), (-webkit-transform-3d) {
+            .justified-gallery {
+                -webkit-transition: all 0.6s ease-in-out;
+                -o-transition: all 0.6s ease-in-out;
+                transition: all 0.6s ease-in-out;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                -webkit-perspective: 1000px;
+                perspective: 1000px;
+            }
+
+            .justified-gallery.next,
+            .justified-gallery.right {
+                left: 0;
+                -webkit-transform: translate3d(100%, 0, 0);
+                transform: translate3d(100%, 0, 0);
+            }
+
+            .justified-gallery.prev,
+            .justified-gallery.left {
+                left: 0;
+                -webkit-transform: translate3d(-100%, 0, 0);
+                transform: translate3d(-100%, 0, 0);
+            }
+
+            .justified-gallery.left,
+            .justified-gallery.right,
+            .justified-gallery.active {
+                left: 0;
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+            }
+        }*/
+    }
+}
+
+.gallery-settings-simple {
+    h4 {
+        font-size: 18px;
+        margin-top: 30px;
+    }
+}
+
+.gallery-items-simple {
+    .added-image {
+        padding: 30px;
+
+        img {
+            display: inline-block;
+            width: 112px;
+            height: 112px;
+            margin-left: 13px;
+            margin-right: 13px;
+            margin-bottom: 15px;
+            border: 2px solid black;
+            opacity: 1;
+            float: left;
+        }
+
+        img:hover {
+            opacity: 0.7;
+        }
+
+        img.selected {
+            border: 6px solid black;
+        }
+
+        button {
+            width: 122px;
+        }
+    }
+
+    .add-image {
+        min-height: 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+
+        img {
+            width: auto;
+            height: auto;
+            border: none;
+        }
+    }
+
+    .resizedropzone {
+        display: inline-block;
+        width: 112px;
+        height: 112px;
+        min-height: 0;
+        padding: 0;
+        margin-left: 13px;
+        margin-right: 13px;
+        margin-bottom: 15px;
+        border: none;
+        opacity: 1;
+        float: left;
+
+        img {
+            border: none;
+            margin: 0;
+        }
+
+        .dz-message {
+            margin: 0;
+        }
+
+        .dz-message p {
+            display: none;
+        }
+    }
+
+    .image-details {
+        min-height: 450px;
+        background: $gray-light;
+
+        h4 {
+            margin-top: 30px;
+        }
+
+        p {
+            font-weight: 400;
+        }
+
+        input {
+            background: $white-clear;
+        }
+
+        .input-group-btn {
+            background: $white-clear;
+        }
+    }
+}
+
+.color-picker-field {
+    display: flex;
+
+    .color-picker {
+        width: 30px;
+        height: 25px;
+        border-radius: 4px;
+        border: 2px solid $gray-soft;
+        margin-left: 10px;
+        margin-top: -5px;
+    }
+}
+
+.slider-scale {
+    .slidecontainer {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 7px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        -webkit-transition: all 2s;
+        transition: all 2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: $dusk-blue;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: $dusk-blue;
+        cursor: pointer;
+    }
+}
+
+.form-element-inner {
+    margin-left: 20px;
+}
+
+.page-gallery-block {
+    .colorpicker-component {
+        margin-right: 20px;
+        margin-bottom: 10px;
+    }
+
+    .panel {
+        margin-bottom: 0;
+    }
+
+    .panel-heading {
+        border-radius: 0;
+    }
+
+    .panel-title {
+        margin-top: 0;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 0;
+    }
+
+    .panel-default > .panel-heading {
+        background-color: $white-clear;
+        border-bottom: 1px solid $warm-grey;
+        background-image: none;
+    }
+
+    .panel-collapse {
+        background: $white-clear;
+    }
+
+    h5 {
+        font-weight: 400;
+    }
+}
+
+.position {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60px;
+    height: 60px;
+
+    .square {
+        width: 20px;
+        height: 20px;
+        border: 1px solid $gray-soft;
+
+        .blue-square {
+            width: 18px;
+            height: 18px;
+            background: $dusk-blue;
+        }
+    }
+}
+
+.languages-fields {
+    display: flex;
+    flex-wrap: wrap;
+
+    .lang {
+        margin-right: 20px;
+    }
+}
+
+.aligned-left {
+    margin-left: -15px;
+}
+
+@media(max-width: 990px) {
+    .slider-scale {
+        .slidecontainer {
+            padding: 10px 0 30px 0;
+            width: 200px;
+        }
+    }
+
+    .page-gallery-block {
+        .image-details {
+            padding: 30px 30px;
+        }
+
+        .added-image {
+            .col-md-3 {
+                img {
+                    width: 200px;
+                    display: block;
+                    margin: 20px auto;
+                }
+            }
+        }
+    }
+
+    .gallery-block .gallery-type p {
+        margin-top: 0;
+    }
+
+    .gallery-block .header-modal-menu a {
+        font-size: 14px;
+    }
+
+    .slider-percentage {
+        margin-left: 0;
+    }
+}

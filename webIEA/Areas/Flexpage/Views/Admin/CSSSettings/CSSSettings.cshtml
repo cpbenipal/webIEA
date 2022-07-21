@@ -1,0 +1,126 @@
+﻿@model  Flexpage.Abstract.DTO.CSSSettingsModel
+    <style>
+        .fp_TextBoxCssClass{
+            display:none;
+        }
+        .fp_BrowseButtonCssClass:hover, .fp_BrowseButtonCssClass a:hover {
+            color: #337ab7 !important;
+        }
+    </style>
+<div id="fp_CSSSettingsContainer" class="CSSSettings-block">
+    @using (Ajax.BeginForm("UpdateCSSSettings", "CSSSettings", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_CSSSettingsContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_CSSSettingsEditorForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => Model.ID)
+        <div class="fp_flex fp_mb-15">
+            @Html.CheckBoxFor(m => m.DisableCustomCss, new { @class = "form-control" }) <span class="fp_pl-5"> Disable All custon CSS</span>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading  panel-page">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1" class="align-box">CSS Files <span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                </h4>
+            </div>
+        </div>
+        <div id="collapse1" class="collapse collapse-field-container">
+            <div class="fp_pb-10">
+                You could upload CSS files here to add it as <link> in the header of every page of the website.
+                If you want to add CSS to particular page only, please use the page manager instead.
+                The CSS files will be linked in specified order. Use [=] icon to change the order.
+            </div>
+            <div id="fp_CssSettingFilesUpload">
+                @Html.Partial("~/Areas/Flexpage/Views/Admin/CSSSettings/CSSSettingsFiles.cshtml", Model)
+            </div>
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+       {
+           Name = "fp_CssSettingFilesUploaded",
+           OnFileUploaded = "fp_CssSettingFilesUploaded",
+           TextBoxCssClass = "fp_TextBoxCssClass",
+           BrowseButtonCssClass = "fp_BrowseButtonCssClass",
+           BrowseButtonText="Add new CSS",
+           EnableDragAndDrop = false,
+           EnableFileList = false,
+           EnableMultiSelect = false,
+           UploadMode = UploadControlUploadMode.Auto,
+           ShowUploadButton = false,
+           Controller = "CSSSettings",
+           Action = "UploadCSSSettingsFile",
+           TextChanged = String.Empty,
+           AllowedFileExtensions = new string[] { ".css" },
+           Index = (Model.CssSettingFiles.Count() + 1) * 10
+       })
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading  panel-page">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse2" class="align-box">Custom CSS<span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+                </h4>
+            </div>
+        </div>
+        <div id="collapse2" class="collapse collapse-field-container">
+            @Html.TextAreaFor(m => m.CustomCSS, new { @class = "form-control" })
+            <div class="fp_pt-10">
+                @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+           {
+               Name = "fp_CustomCssUploaded",
+               OnFileUploaded = "fp_CustomCssUploaded",
+               TextBoxCssClass = "fp_TextBoxCssClass",
+               BrowseButtonCssClass = "fp_BrowseButtonCssClass",
+               BrowseButtonText = "Upload CSS file",
+               EnableDragAndDrop = false,
+               EnableFileList = false,
+               EnableMultiSelect = false,
+               UploadMode = UploadControlUploadMode.Auto,
+               ShowUploadButton = false,
+               Controller = "CSSSettings",
+               Action = "UploadCustomCss",
+               TextChanged = String.Empty,
+               AllowedFileExtensions = new string[] { ".css" }
+           })
+            </div>
+        </div>
+
+    }
+</div>
+    <script>
+        
+        var fp_Init = function () {
+            $('.fp_CssSettingFiles_IsEnabled').on("click", function (event) {
+                $(event.target).toggleClass('fa-plus');
+                $(event.target).toggleClass('fa-minus');
+                var $IsEnabled = $(event.target).closest(".fp_CssSettingFile")
+                    .find("#CssSettingFiles_" + $(event.target).closest(".fp_CssSettingFile").attr("data-index") + "__IsEnabled");
+                $IsEnabled.val((!($IsEnabled.val() == "True"))?"True":"False");
+            });
+            $("#fp_CssSettingFiles").sortable({
+                update: function () {
+                    $(".fp_CssSettingFile").each((index, elem) => {
+                        $("#CssSettingFiles_" + $(elem).attr("data-index") + "__Index").val((index+1)*10);
+                    });
+                }
+            });
+            $(".fp_CssSettingFiles_Delete").on("click", function () {
+                $(this).closest(".fp_CssSettingFile").remove();
+            })
+        }
+        fp_Init();
+        function fp_CssSettingFilesUploaded(sender, event) {
+            var index = $(".fp_CssSettingFile").length;
+            if (event.callbackData) {
+                $.ajax({
+                    url: "/CSSSettings/LoadCssSettingFile",
+                    data: { "index": index, "model": JSON.parse(event.callbackData) },
+                    type: "POST",
+                    success: function (html, status, xhr) {
+                        $("#fp_CssSettingFiles").append(html);
+                        fp_Init();
+                    }
+                });
+
+            }
+        }
+        function fp_CustomCssUploaded(sender, event) {
+            $("#CustomCSS").append(event.callbackData);
+        }
+        fp_popupControlChangeTitle('CSS Settings', '#fp_CSSSettingsContainer');
+    </script>

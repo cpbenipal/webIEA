@@ -1,0 +1,22 @@
+﻿@model Flexpage.Models.WebFormActionFieldSelectorModel
+<div class="col-md-12 fp_label">
+    @Model.Title
+</div>
+<div class="col-md-12">
+    @if (Model.ReadOnly)
+    {
+        @Html.TextBox("FormFieldSelectorText", Model.Value, new { @class = "form-control", @readonly = "readonly" });
+    }
+    else
+    {
+        @Html.DevExpress().ComboBox(settings =>
+        {
+            settings.Name = Model.ComboboxName;
+            settings.Width = new System.Web.UI.WebControls.Unit("100%");
+            settings.SelectedIndex = Model.Items.IndexOf(Model.Value);
+            settings.Properties.ValueType = typeof(string);
+            settings.Properties.Items.AddRange(Model.Items);
+            settings.Properties.EnableClientSideAPI = true;
+        }).GetHtml()
+    }
+</div>

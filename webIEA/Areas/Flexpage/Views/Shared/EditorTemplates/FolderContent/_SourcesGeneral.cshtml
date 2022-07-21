@@ -1,0 +1,183 @@
+﻿@model Flexpage.Models.FolderContentModel
+@{
+    var sourceType = 1;
+    if (Model.SourceType == 0)
+    {
+        sourceType = 0;
+    }
+    if (Model.SourceType == 1 || Model.SourceType == 2)
+    {
+        sourceType = 1;
+    }
+    if (Model.FileSource == 2 || Model.SourceType == 3)
+    {
+        sourceType = 3;
+    }
+}
+
+<!--General settings-->
+<div id="general-settings" class="tab-pane fade">
+    <div class="row custom-tabs-row">
+        <div class="col-md-6">
+
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show archived files</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowArchivedFiles, "SliderCheckbox")
+                </div>
+            </div>
+
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Allow zip downloads</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.AllowZipDownload, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Grouping set currect language first</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.GroupingSetCurrentLanguageFirst, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="form-fields">
+                <div class="col-md-12">
+                    <label for="dateFormat">Date format: <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Default tooltip"></i></label>
+                    @Html.TextBoxFor(m => m.DateFormat, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show all languages in line</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowAllLanguagesInLine, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Show more languages text</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowMoreLanguagesText, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Enable restrict language</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.EnableRestrictLanguage, "SliderCheckbox")
+                </div>
+            </div>
+
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Allow upload</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.AllowUpload, "SliderCheckbox")
+                </div>
+            </div>
+            <div class="row form-fields">
+                <div class="col-md-9">
+                    <label>Use Description as Name</label>
+                </div>
+                <div class="col-md-3">
+                    @Html.EditorFor(m => m.ShowDescriptionAsName, "SliderCheckbox")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Sources settings-->
+<div id="sources-settings" class="tab-pane fade in active">
+    <div class="row custom-tabs-row">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <label for="fileSource" style="margin-bottom:0">@Model.ContentType.GetDisplay() Source:</label>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="col-md-12">
+                
+                <div class="form-fields">
+                    <label class="radio-inline col-xs-12">
+                        <input type="radio" name="SourceType" value="1" @(sourceType == 1 ? "checked='checked'" : "") />Use this Pluriworks folder:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see files from the specified folder"></i>
+                    </label>
+
+                    <div class="input-group custom-folder-field sourceType @(sourceType== 1  ? "" : "dissable")" for="SourceType1">
+                        @Html.TextBoxFor(m => m.PWFolderName, new { @class = "form-control" })
+                        <label class="input-group-btn">
+                            <span class="btn" onclick="fp_folderContent_chooseFolder()">
+                                <i class="far fa-folder"></i>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-fields sourceType @(sourceType== 1  ? "" : "dissable")" for="SourceType1">
+                    <label class="checkbox col-xs-12" style="margin-left: 15px;">
+                        <input class="checkbox" type="checkbox" name="WithParameter" value="@((sourceType== 1 &&Model.WithParameter).ToString().ToLower())" @(sourceType == 1 && Model.WithParameter ? "checked='checked'" : "") />With parameter:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Advanced option: enable this checkbox to add a filter parameter into the folder name. Ex: \path\{year}\"></i>
+                    </label>
+                    @Html.TextBoxFor(m => m.Filter, new { @class = "form-control" })
+                </div>
+                <div class="form-fields">
+                    <label for="file-source col-xs-12">
+                        Enumerate:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Show files from specified folder only or from it's subfolders"></i>
+                    </label>
+                </div>
+                <div class="form-fields sourceType @(sourceType== 1 ? "" : "dissable")" for="SourceType1">
+                    @Html.DropDownListFor(m => m.FileSource, new SelectList(new List<object>
+                    {
+                        new {value = "0", text = "Specific Folder"},
+                        new {value = "1", text = "Folder and Subfolders"}
+                    }, "value", "text"), new { @class = "form-control" })
+                </div>
+                <div class="form-fields">
+                    <label class="radio-inline col-xs-12">
+                        <input type="radio" name="SourceType" value="0" @(sourceType == 0 ? "checked='checked'" : "") />Link this block to the following TreeList block:
+                        <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see files from a folder selected in the linked tree list block"></i>
+                    </label>
+                </div>
+                <div class="form-fields sourceType @(sourceType == 0  ? "" : "dissable")" for="SourceType0">
+                    @Html.Hidden("SourceBlockAliasValue", Model.SourceBlockAlias)
+                    @Html.DropDownListFor(m => m.SourceBlockAlias, new SelectList(new List<string>())
+                        , new {@class = "form-control"})
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" style="margin-top: 18px;">
+            <div class="col-md-12">
+                <label class="radio-inline col-xs-12">
+                    <input type="radio" name="SourceType" value="3" @(sourceType == 3 ? "checked='checked'" : "") />Entire Site
+                    <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Choose this option to see the all files"></i>
+                </label>
+                <div class="form-fields sourceType @(sourceType== 3 ? "" : "dissable")" for="SourceType3">
+                    <label for="criteriaSource">Criteria for source:</label>
+                    @Html.DropDownListFor(m => m.SourceCriteria, new SelectList(new List<Object>
+                    {
+                        new {value = "PublishingDate", text = "Publishing Date"},
+                        new {value = "EntryDate", text = "Entry Date"},
+                    }, "value", "text"), new {@class = "form-control"})
+                </div>
+                <div class="form-fields sourceType @(sourceType== 3  ? "" : "dissable")" for="SourceType3">
+                    <label for="numberFiles">Number of files to show: <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Set the max amount of files"></i></label>
+                    @Html.TextBoxFor(m => m.LastDocQnty, new { @class = "form-control", @min = 1, @step = "1", @type = "number" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>

@@ -1,0 +1,62 @@
+﻿@model Flexpage.Models.FAQModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script type="text/javascript">
+    fp_popupControlChangeTitle('FAQ', '#fp_FAQBlockEditorContainer');
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.faqEdit, 'EventManagerFAQEdit', function () {
+                 var args = { ID:@(Model.ID) };
+                        var faqEM@(Model.ID) = new EventManagerFAQEdit(args);
+                });
+            });
+        }, 0);
+    })();
+    function fp_faqUpdateLocalizedTexts@(Model.ID)(container) {
+        console.log("fp_faqUpdateLocalizedTexts");
+        $(container).find(".fp_LocalizedText").each(function() {
+            var n = $(this).find(".fp_htmlEditorName").val();
+            var html = eval(n + '.GetHtml()');
+            $(this).find(".fp_LocalizedTextCurrentText").val(html);
+        });
+    }
+
+    function fp_preUpdateQuestion@(Model.ID)() {
+        fp_faqUpdateLocalizedTexts@(Model.ID)("#question");
+        fp_faqUpdateLocalizedTexts@(Model.ID)("#answer");
+    }
+
+    function fp_preSaveQuestion(grid) {
+        grid.UpdateEdit();
+    }
+
+    function fp_changeQuestionLanguage(lang) {
+        fp_preUpdateQuestion@(Model.ID)();
+        EventManager.bus.publish(EventManager.settings.Events.faqEdit.changeLanguageQuestionEdit,
+            { lang: lang, ID: @(Model.ID) });
+    }
+  
+</script>
+
+<div id="fp_FAQBlockEditorContainer" class="faq-block-edit">
+    @using (Ajax.BeginForm("UpdateFAQView", "FAQBlock", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "faq-block-edit", InsertionMode = InsertionMode.Replace }))
+    {
+        @Html.HiddenFor(m => Model.ID)
+        @Html.HiddenFor(m => Model.Alias)
+        @Html.HiddenFor(m => Model.BlocklistID)
+        @Html.HiddenFor(m => Model.BlockType)
+         @Html.HiddenFor(m => Model.BlockAfter)
+    <div class="row" id="folder-content">
+        <ul class="nav nav-pills tabs-navigation">
+            <li><a data-toggle="pill" href="#general">General</a></li>
+            <li class="active"><a data-toggle="pill" href="#items">Items</a></li>
+            <li><a data-toggle="pill" href="#sections">Sections</a></li>
+        </ul>
+        <div class="tab-content">
+            @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FAQ/_General.cshtml", Model);}
+            @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FAQ/_Items.cshtml", Model);}
+            @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FAQ/_Sections.cshtml", Model); }
+        </div>
+    </div>
+    }
+</div>

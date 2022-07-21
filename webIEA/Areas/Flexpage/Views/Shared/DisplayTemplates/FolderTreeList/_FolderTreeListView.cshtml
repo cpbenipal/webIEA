@@ -1,0 +1,153 @@
+﻿@using Flexpage.Models
+@model Flexpage.Models.FolderTreeListModel
+
+@Html.DevExpress().TreeList(settings => {
+    settings.Name = "fp_FolderTreeList_List" + Model.ID.ToString();
+    settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+
+    // The "OverviewPartial" action from the HomeController will handle the TreeList callbacks.
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "FolderTreeList_BindingPartial", PWBrowser = Model.PWBrowser,TypeContextMenu = Model.TypeContextMenu, SaveSelectedKey = Model.SaveSelectedKey };
+    settings.CustomActionRouteValues = new { Controller = "Flexpage", Action = "FolderTreeList_CustomAction", PWBrowser = Model.PWBrowser, TypeContextMenu = Model.TypeContextMenu, SaveSelectedKey= Model.SaveSelectedKey };
+
+    settings.SettingsEditing.AddNewNodeRouteValues = new { Controller = "Flexpage", Action = "FolderTreeList_BindingPartial_AfterAdd",
+        PWBrowser = Model.PWBrowser,
+        TypeContextMenu = Model.TypeContextMenu,
+        SaveSelectedKey=Model.SaveSelectedKey
+    };
+    settings.SettingsEditing.UpdateNodeRouteValues = new { Controller = "Flexpage", Action = "FolderTreeList_BindingPartial_AfterUpdate",
+        PWBrowser = Model.PWBrowser,
+        TypeContextMenu = Model.TypeContextMenu,
+        SaveSelectedKey = Model.SaveSelectedKey
+    };
+    settings.SettingsEditing.DeleteNodeRouteValues = new { Controller = "Flexpage", Action = "FolderTreeList_BindingPartial_AfterDelete",
+        PWBrowser = Model.PWBrowser,
+        TypeContextMenu = Model.TypeContextMenu,
+        SaveSelectedKey = Model.SaveSelectedKey
+    };
+
+    // Defining the key field and parent field names.
+    settings.KeyFieldName = "ID";
+    settings.ParentFieldName = "ParentID";
+    settings.Styles.Node.CssClass = "fp_nodeStyleTreeList";
+
+
+    // Adding columns for the required data fields.
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Name";
+        ((TextBoxProperties)column.PropertiesEdit).ClientSideEvents.Init = "function(s, e) {  if(s.GetText() === '') { s.SetText('New folder'); } s.Focus(); }";
+        column.SetDataCellTemplateContent(t =>
+        {
+            var imgs = DataBinder.Eval(t.DataItem, "Images") as List<string>;
+            if(imgs == null)
+                imgs = new List<string>();
+            ViewContext.Writer.Write(string.Format(@"
+<div class='fp_textTreeListNode' data-id='{1}' data-rowId='{2}' data-path='{3}' data-name='{4}' data-level='{5}' 
+data-perm='{7}' data-export={8} data-showContacts={9}  data-showNotifications={10} data-parentId='{11}' data-saveSelectedKey='{12}'><span>{0}{6}</span></div>"
+                , DataBinder.Eval(t.DataItem, "Name")
+                , Model.ID
+                , DataBinder.Eval(t.DataItem, "ID")
+                , HttpUtility.HtmlEncode((DataBinder.Eval(t.DataItem, "FullName") ?? "").ToString())
+                , Model.Name
+                , DataBinder.Eval(t.DataItem, "Level")
+                , string.Join("", imgs.Select(i => string.Format("<img class='fp_textTreeListNodeImg' src='/Areas/Flexpage/Content/Images/frontend/browser/{0}.png'/> ", i)))
+                , DataBinder.Eval(t.DataItem, "Permissions")
+                , DataBinder.Eval(t.DataItem, "IsExportContact")
+                , DataBinder.Eval(t.DataItem, "ShowContacts")
+                , DataBinder.Eval(t.DataItem, "ShowNotifications")
+                , DataBinder.Eval(t.DataItem, "ParentID")
+                , Model.SaveSelectedKey));
+        });
+    });
+
+    //settings.SettingsBehavior.ExpandCollapseAction = DevExpress.Web.ASPxTreeList.TreeListExpandCollapseAction.NodeDblClick;
+
+    settings.Settings.ShowTreeLines = true;
+    settings.Settings.ShowColumnHeaders = false;
+
+    settings.SettingsBehavior.AllowFocusedNode = true;
+    settings.SettingsBehavior.FocusNodeOnExpandButtonClick = false;
+    if (Model.ShowRootNode)
+    {
+        settings.PreRender = (sender, e) =>
+        {
+            if (Session["TreeListState"] == null)
+                ((MVCxTreeList)sender).ExpandToLevel(1);
+        };
+    }
+    settings.ClientSideEvents.BeginCallback = "function (s, e) { e.customArgs['blockID'] = " + Model.ID.ToString() + ";}";
+    settings.ClientSideEvents.EndCallback = "fp_folderTreeList_EndCallback" + Model.ID.ToString();
+    settings.ClientSideEvents.NodeClick = "fp_folderTreeList_NodeClick" + Model.ID.ToString();
+    settings.ClientSideEvents.Init = "fp_folderTreeList_Init" + Model.ID.ToString();
+    settings.ClientSideEvents.ContextMenu = "fp_contextMenu" + Model.ID.ToString();
+
+    //Enable saving layout of the TreeList
+    if (Model.SaveSelectedNode)
+    {
+        settings.SettingsCookies.StoreSelection = true;
+        settings.SettingsCookies.StoreExpandedNodes = true;
+        settings.ClientLayout = (sender, e) =>
+        {
+            if (e.LayoutMode == ClientLayoutMode.Loading)
+            {
+                if (Session["fp_FolderTreeList_List" + Model.ID] != null)
+                    e.LayoutData = Session["fp_FolderTreeList_List" + Model.ID].ToString();
+            }
+            else
+            {
+                Session["fp_FolderTreeList_List" + Model.ID] = e.LayoutData;
+            }
+        };
+    }
+
+    if (Model.SelectedFolderID != null)
+    {
+        settings.BeforeGetCallbackResult = (s, e) =>
+        {
+            var tree = s as MVCxTreeList;
+            var key = Model.SelectedFolderID.ToString();
+            tree.FindNodeByKeyValue(key).Expanded = true;
+            tree.FindNodeByKeyValue(key).Focus();
+
+        };
+        settings.PreRender = (s, e) =>
+        {
+            MVCxTreeList treeList = (MVCxTreeList)s;
+
+            var key = Model.SelectedFolderID.ToString();
+            var n = treeList.FindNodeByKeyValue(key);
+            if (n != null)
+            {
+                n.MakeVisible();
+                n.Focus();
+                n.Selected = true;
+                n.Expanded = true;
+            }
+        };
+        //settings.PreRender = (s, e) =>
+        //{
+        //    MVCxTreeList treeList = (MVCxTreeList)s;
+        //    var key = Model.SelectedFolderID.ToString();
+        //    var n = treeList.FindNodeByKeyValue(key);
+
+        //    var iterator = treeList.CreateNodeIterator();
+        //    var node = iterator.Current;
+
+        //    while (node != null)
+        //    {
+        //        if (node != treeList.RootNode)
+        //        {
+        //            if (Model.SelectedFolderID.Value == (int)node.GetValue("ID"))
+        //            {
+        //                node.Selected = true;
+        //                node.Expanded = true;
+        //                node.Focus();
+        //            }
+        //        }
+        //        node = iterator.GetNext();
+        //    }
+        //};
+    }
+
+
+}).BindToVirtualData(Model.VirtualModeCreateChildren, Model.VirtualModeNodeCreating).GetHtml()

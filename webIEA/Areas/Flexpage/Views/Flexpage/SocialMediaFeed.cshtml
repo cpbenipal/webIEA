@@ -1,0 +1,167 @@
+﻿@using System.Web.Configuration
+@using FlexPage2.Areas.Flexpage.Models.Enums
+@model Flexpage.Models.SocialMediaFeedModel
+@{
+    ViewBag.Title = "SocialMediaFeed";
+    var mediaAccount = (Model.Account != null) ? Model.Account.ToUpper() : "";
+}
+@*<h2 class="cmstitle text-center">@Model.Header</h2>*@
+
+@*Facebook initialization*@
+@if (!string.IsNullOrEmpty(@WebConfigurationManager.AppSettings["FacebookAppId"]))
+{
+    <script type="text/javascript">
+            $(document).ready(function() {
+                initFaceBookAsync("@WebConfigurationManager.AppSettings["FacebookAppId"]",
+                    "@WebConfigurationManager.AppSettings["FacebookApiVersion"]");
+            });
+    </script>
+}
+
+@switch (Model.Media)
+{
+    case SocialMediaType.Twitter:
+        if (Model.SMFType == SMFType.Grid)
+        {
+            <text>
+                <a class="twitter-grid"
+                   href="https://twitter.com/@Model.TwitterUrl"
+                   data-tweet-limit="@Model.PostsNumber"
+                   data-width="600"
+                   data-cards="hidden"
+                   data-show-replies="false"
+                   data-chrome="noheader"></a>
+            </text>
+        }
+        else
+        {
+            <div class="tweeter">
+                <div class="tweeter-header">
+                    @Model.Header
+                    <a href="https://twitter.com/@Model.Account" class="follow-tweeter" target="_blank">
+                        <img src="/content/assets/icons/twitter-logo.svg" alt="">
+                        Follow @@@mediaAccount
+                    </a>
+                </div>
+                <div class="tweeter-tweets">
+                    <a class="twitter-timeline"
+                       href="https://twitter.com/@Model.Account?ref_src=twsrc%5Etfw"
+                       data-tweet-limit="@Model.PostsNumber"
+                       data-width="400"
+                       data-cards="hidden"
+                       data-show-replies="false"
+                       data-chrome="noheader"
+                       data-cards="hidden"></a>
+                </div>
+                <div class="see-all">
+                    <a href="https://twitter.com/@Model.Account" target="_blank">See all ></a>
+                </div>
+            </div>
+        }
+        if (!Model.IsShowPicture)
+        {
+            <text>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $('.tweeter-tweets').on('DOMSubtreeModified propertychange',
+                            "#twitter-widget-0",
+                            function () {
+                                $(".twitter-timeline").contents().find(".timeline-Tweet-media").css("display", "none");
+                                $(".twitter-block").css("height", "100%");
+                            });
+                    });
+                </script>
+            </text>
+        }
+        break;
+
+    case SocialMediaType.Facebook:
+        @*<div class="tweeter">
+                <div class="tweeter-header">
+                    Post
+                    <a href="#" class="follow-tweeter">
+                        <img src="/content/assets/icons/facebook-logo.svg" alt="">
+                        Like @@COPACOGECA
+                    </a>
+                </div>
+                <div class="tweeter-tweets">
+                    <div class="tweet">
+                        <div class="title">
+                            <div class="image"><img src="/content/assets/images/avatar-facebook.jpg" alt=""></div>
+                            <div class="content">COPA-COGECA <br>1,125,333 likes</div>
+                            <div class="time">May 14</div>
+                        </div>
+                        <div class="news">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        </div>
+                        <div class="link">
+                            <a href="#">goo.gl/fb/F3FB9</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="see-all">
+                    <a href="#">See all ></a>
+                </div>
+            </div>*@
+        <div id="fb-root"></div>
+        <div id="posts_@Model.ID">
+
+        </div>
+        if (!string.IsNullOrEmpty(@WebConfigurationManager.AppSettings["FacebookAppId"]))
+        {
+            <script>
+                 var appId = "@WebConfigurationManager.AppSettings["FacebookAppId"]";
+                 var facebookAppSecret = "@WebConfigurationManager.AppSettings["FacebookAppSecret"]";
+                 var facebookRedirectUri = "@WebConfigurationManager.AppSettings["FacebookRedirectUri"]";
+                 fbEnsureInit(getUserFeeds);
+
+                 function getUserFeeds() {
+                     FB.api("/oauth/access_token?client_id=" + appId + "&client_secret=" + facebookAppSecret
+                         + "&redirect_uri=" + facebookRedirectUri + "&grant_type=client_credentials",
+                         function (response) {
+                             if (response && response.access_token) {
+                                 FB.api("/" + @Model.FacebookUid + "/feed?fields=permalink_url&limit=" + @Model.PostsNumber,
+                                     { access_token: response.access_token },
+                                     function(response) {
+                                         if (response && response.data) {
+                                             response.data.forEach(function(element) {
+                                                 $("#posts_@Model.ID").append("<div class='fb-post' data-href='" + element.permalink_url + "'data-width='500'></div>");
+                                             });
+
+                                             FB.XFBML.parse(document.getElementById("posts_@Model.ID"));
+                                         }
+                                     }
+                                 );
+                             }
+                         }
+                     );
+                 }
+            </script>
+        }
+        break;
+
+    case SocialMediaType.Instagram:
+        <div id="instagram_posts_@Model.ID">
+
+        </div>
+        <script>
+            var token = localStorage.getItem(INSTAGRAM_LOCAL_SOTRAGE_TOKEN_KEY);
+            if (token) {
+                // Now Instagram api allows getting posts only of authenticated user
+                $.get("https://api.instagram.com/v1/users/self/media/recent/?access_token=" + token + "&count=" + @Model.PostsNumber, function (response) {
+                    if (response.data) {
+                        response.data.forEach(function(element) {
+                            var link = element.link;
+                            $.get("https://api.instagram.com/oembed?url=" + link, function (response) {
+                                $("#instagram_posts_@Model.ID").append(response.html);
+                            }, 'jsonp');
+                        });
+                    }
+                }, 'jsonp');
+            }
+        </script>
+        break;
+}
+
+
+

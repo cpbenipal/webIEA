@@ -1,0 +1,32 @@
+﻿@using Flexpage.Models
+@model CustomPropertiesEditTemplateHtmlModel
+
+@Html.DevExpress().HtmlEditorFor(m => m.Value,
+settings =>
+{
+    settings.Name =Model.Name;
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "CustomProperties_EditTemplateHtml" };
+    settings.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+    settings.Height = new System.Web.UI.WebControls.Unit(300, System.Web.UI.WebControls.UnitType.Pixel);
+    HtmlEditorToolbar toolbar = new HtmlEditorToolbar();
+    toolbar.Items.Add(new ToolbarUndoButton());
+    toolbar.Items.Add(new ToolbarRedoButton());
+    ToolbarFontNameEdit fontNameEdit = new ToolbarFontNameEdit(true);
+    fontNameEdit.CreateDefaultItems();
+    toolbar.Items.Add(fontNameEdit);
+    ToolbarFontSizeEdit fontSizeEdit = new ToolbarFontSizeEdit(true);
+    fontSizeEdit.CreateDefaultItems();
+    toolbar.Items.Add(fontSizeEdit);
+    toolbar.Items.Add(new ToolbarBoldButton());
+    toolbar.Items.Add(new ToolbarItalicButton());
+    toolbar.Items.Add(new ToolbarUnderlineButton());
+    toolbar.Items.Add(new ToolbarStrikethroughButton());
+    toolbar.Items.Add(new ToolbarJustifyLeftButton(true));
+    toolbar.Items.Add(new ToolbarJustifyCenterButton());
+    toolbar.Items.Add(new ToolbarJustifyRightButton());
+    //toolbar.Items.Add(new ToolbarInsertImageDialogButton(true));
+    settings.Toolbars.Add(toolbar);
+    settings.SettingsHtmlEditing.EnablePasteOptions =true;
+    settings.SettingsHtmlEditing.PasteMode =  HtmlEditorPasteMode.SourceFormatting;
+
+}).GetHtml()

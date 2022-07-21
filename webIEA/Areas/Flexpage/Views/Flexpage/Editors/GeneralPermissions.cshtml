@@ -1,0 +1,80 @@
+﻿@using Flexpage.Models
+@model GeneralPermissionsModel
+
+@Scripts.Render("~/Flexpage/GeneralPermissionService")
+
+<div id="fp_generalPermission" class="row">
+@using (Ajax.BeginForm("UpdateGeneralPermissions", "Admin", null, new AjaxOptions() {HttpMethod = "POST", UpdateTargetId = "fp_generalPermission", InsertionMode = InsertionMode.Replace}, new {id = "generalPermissionForm", forTraking = ""}))
+{
+    @Html.Hidden("ModelId", Model.ID)
+    @Html.Hidden("selectPermissionId")
+    @Html.Hidden("selectWhoPermissionId")
+    @Html.HiddenFor(m => m.JsonDataSave)
+
+    <div class="col-md-6">
+        <label>List of permissions:</label>
+        <div class="list-grid">
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/GeneralPermissions/_GeneralPermissionsListGrid.cshtml", new List<ListPermissionsModel>())
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label>Who:</label>
+        <div class="who-grid">
+            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/GeneralPermissions/_GeneralPermissionsWhoGrid.cshtml", new List<WhoPermissionsModel>())
+        </div>
+    </div>
+}
+</div>
+ <div class="fp_folderTreeListPopupMenu">
+        @Html.DevExpress().PopupMenu(
+             settings =>
+             {
+                 settings.Name = "PopupMenuWho";
+                 settings.AllowSelectItem = false;
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Add person";
+                     item.Name = "AddPerson";
+                     item.Image.IconID = IconID.PeopleAssignto16x16office2013;
+                 });
+               
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Add Group";
+                     item.Name = "AddGroup";
+                     item.Image.IconID = IconID.PeopleUsergroup16x16office2013;
+                 });
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Add everyone";
+                     item.Name = "AddEveryone";
+                     item.Image.IconID = IconID.ActionsAdd16x16office2013;
+                 });
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Add ASP.NET user";
+                     item.Name = "AddASPNETUser";
+                     item.Image.IconID = IconID.ActionsAdd16x16office2013;
+                 });
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Delete";
+                     item.Name = "Delete";
+                     item.Image.IconID = IconID.ActionsDelete16x16office2013;
+                 });
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Permit";
+                     item.Name = "Permit";
+                     item.Image.IconID = IconID.PeopleRole16x16office2013;
+                 });
+                 settings.Items.Add(item =>
+                 {
+                     item.Text = "Deny";
+                     item.Name = "Deny";
+                     item.Image.IconID = IconID.SetupProperties16x16office2013;
+                 });
+                 settings.ClientSideEvents.ItemClick = ("generalPermissionService.popupMenuItemWhoClick");
+
+             }).GetHtml()
+    </div>

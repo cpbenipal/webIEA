@@ -1,0 +1,34 @@
+﻿@model Flexpage.Models.WebFormModel
+
+@Html.EditorFor(m => m, "_Block")
+@Html.HiddenFor(m => m.Name)
+@Html.HiddenFor(m => m.FormID)
+@Html.HiddenFor(m => m.ShowFormTitle)
+@Html.EditorFor(m => m.Title, "../../../Areas/Flexpage/Views/Shared/EditorTemplates/_LocalizedStringData")
+
+@if (Model.ShowFormTitle)
+{
+    <div class="webform-title">
+        <h4 class="text-center">@Model.Title.NotEmptyLocalization</h4>
+    </div>
+}
+@if (!String.IsNullOrWhiteSpace(Model.ErrorMessages))
+{
+    <div class="webform-error-summary">
+        @Html.Label("ErrorMessagesLabel", Model.ErrorMessages, new { style = "color: red" })
+    </div>
+}
+<div class="fields-container">
+    @for (int i = 0; i < Model.FieldValues.Count; i++)
+    {
+        @Html.EditorFor(m => m.FieldValues[i], "../../../Areas/Flexpage/Views/Shared/EditorTemplates/_WebFormField")
+    }
+</div>
+<div class="row">
+    <div class="col-md-12 sections-list">
+        @for (int i = 0; i < Model.Sections.Count; i++)
+        {
+            @Html.EditorFor(m => m.Sections[i], "../../../Areas/Flexpage/Views/Shared/EditorTemplates/_WebFormSection")
+        }
+    </div>
+</div>

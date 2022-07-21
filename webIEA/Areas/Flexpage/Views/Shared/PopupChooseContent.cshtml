@@ -1,0 +1,59 @@
+﻿@model Flexpage.Models.BlockCommandModel
+
+<script>console.log("popupchoosecontent opened");</script>
+
+<div id=@("fp_ObjectSelectorContainer_" + Model.IDPostfix)>
+    @Html.Action("GetObjectSelectorView",(string.IsNullOrEmpty( Model.Controller)? "Admin": Model.Controller), Model)
+</div>
+
+<div class="new_footer_content" style="display: none">
+    <div class="col-md-6 pull-left left">
+    </div>
+    <div class="col-md-6 pull-right right">
+        <a href="javascript:void(0)" onclick="fp_chooseObjectContent_OK(this)">OK</a>
+        <a href="javascript:void(0)" data-dismiss="modal" aria-label="Close" onclick="fp_closePopUp(this)">CANCEL</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        @{
+            bool delayFooterAppend = (bool?)Session["DelayFooterAppend"] == true ? true : false;
+         }
+        if (@delayFooterAppend.ToString().ToLower()) {
+            setTimeout(fp_appendModalFooter, 4000)
+        }
+        else {
+            fp_appendModalFooter();
+        }
+    });
+
+    function fp_chooseObjectContent_OK(btn) {
+        var res = {};
+        if (typeof fp_getSelectedObject === "function")
+            res = fp_getSelectedObject();
+        if (typeof window.parent.flexpage.fp_afterObjectSelected === "function")
+            window.parent.flexpage.fp_afterObjectSelected(res);
+
+        fp_blockEventAfterClose(btn);
+    }
+
+    function fp_appendModalFooter() {
+        var popup = $("#flexpage-popup-control_" + @Model.IDPostfix);
+
+        var detachedChilds = popup.find('.new_footer_content').children().detach().show();
+        if (detachedChilds.length > 0) {
+            popup.find(".modal-footer").html('');
+            popup.find(".modal-footer").append(detachedChilds);
+        }
+    }
+    function fp_showModalFooter() {
+        var popup = $("#flexpage-popup-control_" + @Model.IDPostfix);
+
+        var detachedChilds = popup.find('.new_footer_content').children().detach().show();
+        if (detachedChilds.length > 0) {
+            popup.find(".modal-footer").html('');
+            popup.find(".modal-footer").append(detachedChilds);
+        }
+    }
+</script>

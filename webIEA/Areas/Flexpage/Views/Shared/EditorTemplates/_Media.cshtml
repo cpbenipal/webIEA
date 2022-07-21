@@ -1,0 +1,196 @@
+﻿@using Flexpage.Code.Common;
+@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+@model Flexpage.Models.MediaModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+}
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_Block.cshtml", Model)
+@Html.HiddenFor(m => m.EditorType)
+@Html.HiddenFor(m => m.Step)
+@Html.HiddenFor(m => m.Index)
+@Html.EditorFor(m => m.CurrentLocalization, "LocalizedMedia")
+
+@for (int i = 0; i < Model.Localizations.Count; i++)
+{
+    @Html.EditorFor(m => m.Localizations[i], "LocalizedMedia")
+}
+
+<style>
+    .videoplayer-container {
+        position: relative;
+    }
+
+        .videoplayer-container .videoplayer {
+            width: 100%;
+            height: 100%
+        }
+
+        .videoplayer-container .videoplayer-alt {
+        }
+
+        .videoplayer-container .videoplayer-overlay {
+            pointer-events: none;
+            display: block;
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        div.video-details input.check-box{
+            margin-left: -6px;
+        }
+
+        div.video-details div.form-group{
+            padding-left: 0;
+            padding-right:5px;
+            margin-right: 15px;
+        }
+</style>
+
+<input id="GalleryBlockType" name="GalleryBlockType" type="hidden" value="@type" />
+
+<div class="col-md-6">
+    @*<div class="languages" style="padding-top: 16px">
+        @Html.EditorFor(m => m.VideoLanguageSelector, "LanguageSelector")
+    </div>*@
+    <br />
+
+    @if (Model.CurrentLocalization == null || Model.CurrentLocalization.MediaUrl == null)
+    {
+        <div id="externalVideoDropZone" class="dropZoneExternalFree" style="width: 100%; height: 250px">
+            <div id="videoDragZone">
+                <span class="freeDragZoneText">Drag @Model.MediaType.Name.ToLower() here</span>
+            </div>
+            <div id="videoDropZone" style='display:none;'>
+                <span class="freeDropZoneText">Drop @Model.MediaType.Name.ToLower() here</span>
+            </div>
+        </div>
+        <div class="videoUploadContainer">
+            @{
+                var allowedFileExtensions = new string[] { ".webm", ".ogv", ".ogg", ".mp4" };
+                if (Model.MediaType.Name == "Audio")
+                {
+                    allowedFileExtensions = new string[] { ".mp3", ".wav", ".ogg" };
+                }
+            }
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+       {
+           Name = "fp_videoVideoUploader",
+           OnFileUploaded = "fp_videoVideoUploaded",
+           DialogTriggerID = "externalVideoDropZone",
+           EnableDragAndDrop = true,
+           EnableFileList = false,
+           EnableMultiSelect = false,
+           ExternalDropZoneID = "externalVideoDropZone",
+           UploadMode = UploadControlUploadMode.Auto,
+           OnDropZoneEnter = "fp_videoVideoDropZoneEnter",
+           OnDropZoneLeave = "fp_videoVideoDropZoneLeave",
+           ShowUploadButton = false,
+           BrowseButtonCssClass = "pictureFileUpload",
+           AllowedFileExtensions = allowedFileExtensions
+       })
+        </div>
+    }
+    else
+    {
+        @* @Html.DisplayFor(m => new PlayerModel(m), "_Player") *@
+        @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_Player.cshtml", new PlayerModel(Model) { Width = "100%", Height = "100%" })
+        <div class="form-group">
+            <a href="#" onclick="fp_videoDeleteVideo();">Delete @Model.MediaType.Name.ToLower()</a>
+        </div>
+        if (Model.MediaType.Name != MediaTypeName.Audio.GetDisplay())
+        {
+            if (Model.CurrentLocalization.ThumbUrl != null)
+            {
+                <div class="form-group">
+                    <a href="#" onclick="fp_videoDeleteThumb();">Delete thumbnail</a>
+                </div>
+            }
+            else
+            {
+                <div id="externalThumbDropZone" class="dropZoneExternalFree" style="width: 100%; height: 250px">
+                    <div id="thumbDragZone">
+                        <span class="freeDragZoneText">Drag a thumbnail here</span>
+                    </div>
+                    <div id="thumbDropZone" style='display:none;'>
+                        <span class="freeDropZoneText">Drop a thumbnail here</span>
+                    </div>
+                </div>
+                <div class="thumbUploadContainer">
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                       {
+                           Name = "fp_videoThumbUploader",
+                           OnFileUploaded = "fp_videoThumbUploaded",
+                           DialogTriggerID = "externalThumbDropZone",
+                           EnableDragAndDrop = true,
+                           EnableFileList = false,
+                           EnableMultiSelect = false,
+                           ExternalDropZoneID = "externalThumbDropZone",
+                           UploadMode = UploadControlUploadMode.Auto,
+                           OnDropZoneEnter = "fp_videoThumbDropZoneEnter",
+                           OnDropZoneLeave = "fp_videoThumbDropZoneLeave",
+                           ShowUploadButton = false,
+                           BrowseButtonCssClass = "pictureFileUpload"
+                       })
+                </div>
+            }
+        }
+    }
+</div>
+<div class="col-md-6 video-details" style="background: #eeeeee">
+    <h4>@Model.MediaType.Name details</h4>
+    <div class="col-md-3 element-center form-group">
+        @Html.EditorFor(m => m.DisplayTitle)
+        <label class="form-check-label">Display title</label>
+    </div>
+    <div class="col-md-4 element-center form-group">
+        @Html.EditorFor(m => m.Loop)
+        <label class="form-check-label">Loop playback</label>
+    </div>
+    <div class="col-md-5 form-group element-center">
+        @Html.EditorFor(m => m.ApplySizeConstraints)
+        <label class="form-check-label">Constrain proportions</label>
+    </div>
+    <div class="col-md-12 form-group color-picker-field">
+        <div class="col-md-3 form-group color-picker-field">
+            <div class="input-group colorpicker-component" id="Simple_ImageColor">
+                @Html.HiddenFor(m => m.Color, new { @class = "form-control color-data" })
+                <label class="form-check-label">Color</label>
+                <span class="input-group-addon color-picker-box"><i></i></span>
+            </div>
+        </div>
+        <div class="col-md-2"> <label>Opacity</label></div>
+        <div class="col-md-4 element-center slider-scale">
+            <div class="slidecontainer">
+                @Html.TextBoxFor(model => model.Opacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 image-details">
+        <div class="languages">
+            @Html.EditorFor(m => m.InfoLanguageSelector, "LanguageSelector")
+        </div>
+    </div>
+    <div class="col-md-12 image-details">
+        <div class="form-group form-fields">
+            <label for="img-title">Title:</label>
+            @Html.EditorFor(m => m.Title, "LocalizedString")
+        </div>
+    </div>
+    <div class="col-md-12 image-details">
+        <div class="form-group form-fields">
+            <label for="description">Description:</label>
+            @Html.EditorFor(m => m.Description, "LocalizedString")
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,75 @@
+﻿@model Flexpage.Models.DisclaimerModel
+
+<script type="text/javascript">
+
+    fp_popupControlChangeTitle('WEBSITE DISCLAIMER', '#fp_disclaimerContainer');
+
+    $("#fp_disclaimerForm").on("submit",
+        function() {
+            $("#CmsText_Texts_" + $(".languages .language-selected").data("code") + "_").val(fp_HtmlEditor_CmsText.GetHtml());
+            $("#CmsText_CurrentText").val(fp_HtmlEditor_CmsText.GetHtml());
+        });
+
+    $(document).ready(function () {
+        if (Boolean('@(ViewBag.SuccessValidation)'))
+            alert('The form has been submitted successfully.');
+
+        $('#ID').val('@Model.ID');
+    });
+
+    function fp_changeLanguage(langCode) {
+        $("#CmsText_Texts_" + $(".languages .language-selected").data("code") + "_").val($("#CmsText_CurrentLanguage").val());
+        $("#HiddenInputDisclaimer #NewLanguageCode").val(langCode);
+
+        var action = $("#fp_disclaimerForm").attr("Action");
+
+        $("#fp_disclaimerForm").attr("Action", action +"?command=ChangeLanguage").submit();
+
+    } 
+
+</script>
+
+<div id="fp_disclaimerContainer" class="page-disclaimer flexpage">
+    @using (Ajax.BeginForm("UpdateDisclaimer", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_disclaimerContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_disclaimerForm" }))
+    {
+        <div id="HiddenInputDisclaimer">
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(m => Model.ID)
+            @Html.HiddenFor(m => Model.NewLanguageCode)
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="element-center form-fields">
+                        @Html.EditorFor(m => Model.Enabled, new { @class = "form-check-input", @id = "DisclaimerEnabled" })
+                        <label for="DisclaimerEnabled">Enable Disclaimer Popup</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="element-center form-fields">
+                        @Html.EditorFor(m => Model.ResetCookie, new { @class = "form-check-input", @id = "DisclaimerResetCookie" })
+                        <label for="DisclaimerResetCookie">
+                            Reset visitor's cookie
+                            <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" data-container="body" title="Shows Disclaimer again for visitors who accepted it once"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group lang">
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/LanguageSelector.cshtml", Model.LanguageSelector)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-fields calendar-text-editor">
+                    <div class="tabs">@Html.EditorFor(m => m.CmsText, "LocalizedText")</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

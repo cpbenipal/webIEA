@@ -1,0 +1,190 @@
+﻿@model Flexpage.Abstract.DTO.ScheduleItem
+
+<script type="text/javascript">
+    $(function () {
+        $('#fp_ScheduleEditorContainer').parents('.modal-dialog').first().find('.modal-title').html('SCHEDULE');
+    });
+    parent.flexpage.fp_afterObjectSelected = function (obj) {
+        $("#fp_ScheduleEditorForm").submit();
+    };
+</script>
+
+<style type="text/css">
+    #ScheduleRecurrenceForm_ChkRecurrence {
+        display:none;
+    }
+
+    .dx-nowrap, .dxichTextCellSys {
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 14px !important;
+        line-height: 1.42857 !important;
+        color: #333333 !important;
+    }
+
+    .dxWeb_edtCheckBoxUnchecked_MetropolisBlue.dxICheckBox_MetropolisBlue.dxichSys.dx-not-acc, .dxICheckBox_MetropolisBlue.dxichSys.dx-not-acc.dxWeb_edtCheckBoxChecked_MetropolisBlue {
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: 0;
+        height: 20px;
+        width: 20px;
+        margin-top: 0;
+        border: none;
+        margin: 0;
+        line-height: normal;
+        box-sizing: border-box;
+        padding: 0;
+        display: block;
+        color: #555555;
+        background-color: #fff;
+        border-radius: 4px;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        background-position: 0px;
+    }
+
+    .dxWeb_edtCheckBoxUnchecked_MetropolisBlue.dxICheckBox_MetropolisBlue.dxichSys.dx-not-acc {
+        background-image: url(/Areas/Flexpage/Content/Images/icons/checkbox-empty.svg);
+        background-repeat: no-repeat;
+    }
+
+    .dxICheckBox_MetropolisBlue.dxichSys.dx-not-acc.dxWeb_edtCheckBoxChecked_MetropolisBlue {
+        background-image: url(/Areas/Flexpage/Content/Images/icons/checkbox-full.svg);
+        background-repeat: no-repeat;
+    }
+
+    .dxWeb_edtCheckBoxUnchecked_MetropolisBlue.dxICheckBox_MetropolisBlue.dxichSys.dx-not-acc:hover {
+        filter: brightness(90%);
+    }
+
+    .dxeIRadioButton_MetropolisBlue.dxichSys.dx-not-acc.dxEditors_edtRadioButtonUnchecked_MetropolisBlue,
+    .dxeIRadioButton_MetropolisBlue.dxichSys.dx-not-acc.dxEditors_edtRadioButtonChecked_MetropolisBlue {
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        top: -2px;
+        left: -1px;
+        position: relative;
+        content: '';
+        display: inline-block;
+        border: 2px solid #dddddd;
+        background-image: none;
+    }
+
+    .dxeIRadioButton_MetropolisBlue.dxichSys.dx-not-acc.dxEditors_edtRadioButtonUnchecked_MetropolisBlue {
+        background-color: #ffffff;
+    }
+
+    .dxeIRadioButton_MetropolisBlue.dxichSys.dx-not-acc.dxEditors_edtRadioButtonChecked_MetropolisBlue {
+        background-color: #23598e;
+    }
+
+    .dxeButtonEditSys.dxeButtonEdit_MetropolisBlue {
+        display: block;
+        height: 32px;
+        padding: 6px 6px;
+        font-size: 14px;
+        line-height: 1.42857;
+        color: #555555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    }
+
+    #fp_ScheduleEditorContainer{
+        min-height:556px;
+    }
+
+    #ScheduleRecurrenceForm_AptRecCtl_mainDiv > table:nth-child(2) {
+        margin-top: 15px;
+    }
+
+    tr {
+        margin-bottom: 5px;
+    }
+
+</style>
+
+<div id="fp_ScheduleEditorContainer" class="page-menu-block">
+
+    @using (Ajax.BeginForm("EditScheduleItem", "Schedule", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_ScheduleEditorContainer" }, new { id = "fp_ScheduleEditorForm" }))
+    {
+        @Html.HiddenFor(m => m.ID);
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-12">
+                <label for="name">Name:</label>
+                @Html.TextBoxFor(m => Model.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-6">
+                <label for="name">Start Date:</label>
+                @Html.DevExpress().DateEdit(edit =>
+                {
+                    edit.Properties.ButtonStyle.CssClass += "dxeButtonEditButton";
+                    edit.Name = "StartDate";
+                    edit.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                    edit.ControlStyle.CssClass = "flexpage calendar";
+                    edit.Properties.EditFormat = EditFormat.Custom;
+                    edit.Properties.DisplayFormatString = edit.Properties.EditFormatString = "dd'/'MM'/'yyyy";
+                    edit.Properties.CalendarProperties.FastNavProperties.DisplayMode = FastNavigationDisplayMode.Inline;
+                    edit.Properties.CalendarProperties.ShowClearButton = false;
+                    edit.Style.Add(HtmlTextWriterStyle.Display, "table");
+                    edit.Properties.PopupVerticalAlign = PopupVerticalAlign.Above;
+                }).Bind(Model.StartDate).GetHtml()
+            </div>
+            <div class="col-md-2">
+                <label for="name">Is Active:</label>
+                @Html.CheckBoxFor(m => Model.IsActive, new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+                <label for="name">Entire Day:</label>
+                @Html.CheckBoxFor(m => Model.EntireDay, new { @class = "form-control" })
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-6">
+                <label for="name">Start Time:</label>
+                @Html.DevExpress().TimeEdit(edit =>
+                {
+                    edit.Name = "StartTime";
+                    edit.Properties.EditFormat = EditFormat.Time;
+                    edit.Properties.DisplayFormatInEditMode = true;
+                    edit.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                    edit.ControlStyle.CssClass = "flexpage calendar";
+                    edit.Style.Add(HtmlTextWriterStyle.Display, "table");
+                }).Bind(Model.StartTime).GetHtml()
+            </div>
+            <div class="col-md-6">
+                <label for="name">Finish Time:</label>
+                @Html.DevExpress().TimeEdit(edit =>
+                {
+                    edit.Name = "FinishTime";
+                    edit.Properties.EditFormat = EditFormat.Time;
+                    edit.Properties.DisplayFormatInEditMode = true;
+                    edit.Width = new System.Web.UI.WebControls.Unit(100, System.Web.UI.WebControls.UnitType.Percentage);
+                    edit.ControlStyle.CssClass = "flexpage calendar";
+                    edit.Style.Add(HtmlTextWriterStyle.Display, "table");
+                    
+                }).Bind(Model.FinishTime).GetHtml()
+            </div>
+        </div>
+        <div class="schedule-overlap-fixer">
+            @Html.DevExpress().AppointmentRecurrenceForm(
+                settings =>
+                     {
+                    settings.Name = "ScheduleRecurrenceForm";
+                    settings.IsRecurring = true;
+            }).Bind(Model.RecurrenceForm).GetHtml()
+        </div>
+    }
+</div>
+

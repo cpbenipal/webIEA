@@ -1,0 +1,182 @@
+﻿@using Flexpage.Code.Common;
+@using Flexpage.Code.Helpers;
+@using Flexpage.Domain.Enum
+@using Flexpage.Models;
+@model Flexpage.Models.GalleryModel
+
+@{
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+    string currentBlockID = Model.CurrentBlockID;
+
+    string appliedClass = "gallery-block";
+    if (Model.GalleryBlockType == GalleryBlockType.Slider)
+    {
+        appliedClass = "slider-block";
+    }
+
+    int totalImages = Model.GalleryImageModels.Count;
+    var galleryImagesList = Model.GalleryImageModels;
+    if (Model.RandomImageAtLoad == true)
+    {
+        galleryImagesList.Shuffle();
+    }
+
+    var enablePaging = false;
+    if (Model.AllImages == false && Model.EnablePaging == true)
+    {
+        enablePaging = true;
+    }
+    var itemsPerPage = totalImages;
+    if (!Model.AllImages && Model.RowsPerPage > 0 && Model.ColumnsPerPage > 0)
+    {
+        itemsPerPage = Model.RowsPerPage * Model.ColumnsPerPage;
+    }
+
+    var pageCount = 1;
+    if (itemsPerPage > 0)
+    {
+        pageCount = totalImages / itemsPerPage;
+    }
+    if (pageCount <= 1)
+    {
+        Model.RandomImages = false;
+    }
+    var zoomFactor = Model.ZoomFactor.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+    if (zoomFactor.Split('.')[1] == "00")
+    {
+        zoomFactor = zoomFactor.Split('.')[0];
+    }
+}
+
+<div id="@currentBlockID" class="@appliedClass" data-enablezoom="@Model.EnableZoom.ToString().ToLowerInvariant()" data-zoomfactor="@zoomFactor" data-enableclicktoenlarge="@Model.EnableClickToEnlarge.ToString().ToLowerInvariant()" data-renderthumbnailactualSize="@Model.RenderThumbnailActualSize.ToString().ToLowerInvariant()" data-thumbnailheight="@Model.ThumbnailHeight" data-initializedonce="false" data-lookuptoapplypopup='false' data-popupadded="false" data-zoomapplied="false" data-imagealignment="@Model.AlignThumbnails" data-pagingenabled="true" data-pagingstyles="@Model.PagingStyles" data-itemperpage="@itemsPerPage" data-totalitems="@totalImages" data-pagingapplied="false" data-randomimages="@Model.RandomImages.ToString().ToLowerInvariant()" data-imageschangeinterval="@Model.ImagesChangeInterval" data-imagetransition="@Model.ImageEffect" data-randomimagesapplied="false">
+    <div class='galleryInnerContainer' style='width:100%; clear:both; overflow: hidden;'>
+        @{
+            if (Model.GalleryBlockType == GalleryBlockType.JustifiedGallery)
+            {
+
+                var data = "";
+                int counter = 0;
+                int pageIndex = 1;
+                int closediv = 0;
+                galleryImagesList.ForEach(u =>
+                {
+                    if (counter == 0)
+                    {
+                        data += string.Format(
+                            "<div class='justified-gallery' data-zoomfactor='{0}' data-lookuptoapplypopupvalue='.gallery-block' data-pageindex='{1}' data-renderthumbnailactualSize='{2}' data-thumbnailheight='{3}' data-initializedonce='false' data-imagealignment='{4}' data-randomimages='{5}' data-imageschangeinterval='{6}' data-imagetransition='{7}' data-randomimagesapplied='false' style='float:left; display:{8}; opacity:{9};'>",
+                            Model.ZoomFactor, pageIndex, Model.RenderThumbnailActualSize.ToString().ToLowerInvariant(), Model.ThumbnailHeight, Model.AlignThumbnails,
+                            Model.RandomImages.ToString().ToLowerInvariant(), Model.ImagesChangeInterval, Model.ImageEffect, (pageIndex == 1 ? "block" : "none"),
+                            (Model.ImageEffect == GalleryTransitionEffects.FadeInFadeOut ? (pageIndex == 1 ? "1" : "0") : "1"));
+                    }
+
+                    data += Html.Partial("~/Areas/Flexpage/Views/Flexpage/GalleryImage.cshtml", (object)u);
+
+                    counter++;
+                    closediv++;
+
+                    if ((counter == itemsPerPage) || (closediv == totalImages))
+                    {
+                        data += "</div>";
+                        counter = 0;
+                        pageIndex++;
+                    }
+                });
+                @Html.Raw(data);
+
+                if (Model.RowsPerPage > 0 && Model.ColumnsPerPage > 0)
+                {
+                    if (pageCount > 0)
+                    {
+                        <div id="pagination-@currentBlockID" class="flexpage-pagination flexpage-gallery-pagination" data-targetitemslist="@currentBlockID" style="clear:both;float:none;display:@(enablePaging ? "block" : "none");visibility:@(enablePaging ? "visible" : "hidden")">
+                        </div>
+                    }
+                }
+            }
+            else if (Model.GalleryBlockType == GalleryBlockType.Gallery)
+            {
+                var data = "";
+                int counter = 0;
+                int pageIndex = 1;
+                int closediv = 0;
+
+                foreach (var image in galleryImagesList)
+                {
+                    var width = Model.AlignThumbnails == GalleryThumbnailsAlignment.Justify ? (int)(100 / Model.ColumnsPerPage) + "%" : (image.GallerySettings.ThumbnailWidth + "px");
+
+                    if (counter == 0)
+                    {
+                        data += $"<div class='fp_flex-wrap fp_justify-content-center' style='display: {(pageIndex == 1 ? "flex" : "none")}' data-pageindex='{pageIndex}'>";
+                    }
+
+                    data += (image.GallerySettings.RenderThumbnailActualSize
+                        ? $"<div class='gl-block gl-block-{Model.ID}' style='margin-left:10px; margin-right: 10px; " + (Model.AlignThumbnails == GalleryThumbnailsAlignment.RightToLeft ? "float:right" : "") + $"' data-zoom='{Model.EnableZoom.ToString().ToLower()}' data-zoomfactor='{zoomFactor}' data-actualsize='{image.GallerySettings.RenderThumbnailActualSize.ToString().ToLower()}'>"
+                        : $"<div class='gl-block gl-block-{Model.ID}' style='width: {width}; min-width:{image.GallerySettings.ThumbnailWidth}px;" + (Model.AlignThumbnails == GalleryThumbnailsAlignment.RightToLeft ? "float:right" : "") + $"' data-zoom='{Model.EnableZoom.ToString().ToLower()}' data-zoomfactor='{zoomFactor}' data-actualsize='{image.GallerySettings.RenderThumbnailActualSize.ToString().ToLower()}'>");
+
+                    data += Html.Partial("~/Areas/Flexpage/Views/Flexpage/_GalleryImage.cshtml", (object)image);
+                    data += "</div>";
+
+                    counter++;
+                    closediv++;
+
+                    if ((counter == itemsPerPage) || (closediv == totalImages))
+                    {
+                        data += "</div>";
+                        counter = 0;
+                        pageIndex++;
+                    }
+
+                }
+                @Html.Raw(data);
+                @*foreach (var image in galleryImagesList.GetRange(0, (galleryImagesList.Count-1 > itemsPerPage ? itemsPerPage : galleryImagesList.Count)))
+                    {
+
+
+                            <text>
+                        <div class="gl-block" style=" width: @procent%;">
+                            @Html.Partial("~/Areas/Flexpage/Views/Flexpage/_GalleryImage.cshtml", (object)image);
+                        </div>
+                            </text>
+
+                    }*@
+                if (Model.RowsPerPage > 0 && Model.ColumnsPerPage > 0)
+                {
+                    if (pageCount > 0)
+                    {
+                        <div id="pagination-@currentBlockID" class="flexpage-pagination flexpage-gallery-pagination" data-targetitemslist="@currentBlockID" style="clear:both;float:none;display:@(enablePaging ? "block" : "none");visibility:@(enablePaging ? "visible" : "hidden")">
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                galleryImagesList.ForEach(u =>
+                {
+                    Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/GalleryImage.cshtml", (object)u);
+                });
+            }
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    var galleryFlexpage = new GalleryFlexpage( @Model.ColumnsPerPage, @Model.ID);
+    galleryFlexpage.init();
+    @if (Model.EnableZoom)
+    {
+    <text>
+        galleryFlexpage.EnableZoom();
+    </text>
+    }
+    $(".gl-block-@Model.ID a").mouseover(function() {
+        var imageAlt = $(this).find('img').attr("alt");
+        if(imageAlt.length){
+            $(this).find(".g-caption").css("display","block");
+        }
+    });
+
+    $(".gl-block-@Model.ID a").mouseout(function() {
+        $(this).find(".g-caption").css("display", "none");
+
+    });
+    createPagination($('#@currentBlockID'), $('#pagination-@currentBlockID'));
+</script>

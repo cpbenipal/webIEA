@@ -1,0 +1,46 @@
+@using System.Drawing
+@using System.Web.UI.WebControls
+@using Pluritech.Permissions.Abstract.DTO;
+@model ePermissions
+
+<div class="ui-state-default fp_fc_column">
+    <div class="col-xs-8">
+        <p>@Model</p>
+    </div>
+    <div class="col-xs-2 center-option">
+        <label>            
+            @Html.DevExpress().CheckBox(settings => {
+                settings.Name = "PermAllow_" + Model;
+                settings.Text = " ";
+                settings.Properties.AllowGrayed = true;
+                settings.Properties.AllowGrayedByClick = false;
+                settings.Properties.ClientSideEvents.CheckedChanged = "function(s,e) { fp_objectproperties_permission_clicked(s); }";
+                settings.Properties.DisplayImageChecked.Url = "/areas/flexpage/content/images/icons/checkbox-full.svg";
+                settings.Properties.DisplayImageChecked.Width = Unit.Pixel(20);
+                settings.Properties.DisplayImageChecked.Height = Unit.Pixel(20);
+                settings.Properties.DisplayImageUnchecked.Url = "/areas/flexpage/content/images/icons/checkbox-empty.svg";
+                settings.Properties.DisplayImageUnchecked.Width = Unit.Pixel(20);
+                settings.Properties.DisplayImageUnchecked.Height = Unit.Pixel(20);
+
+
+            }).Bind(false).GetHtml()
+        </label>
+    </div>
+    <div class="col-xs-2 center-option">
+        <label>
+            @Html.DevExpress().CheckBox(settings => {
+                settings.Name = "PermDeny_" + Model;
+                settings.Text = " ";
+                settings.Properties.AllowGrayed = true;
+                settings.Properties.AllowGrayedByClick = false;
+                settings.Properties.ClientSideEvents.CheckedChanged = "function(s,e) { fp_objectproperties_permission_clicked(s); }";
+                settings.Properties.DisplayImageChecked.Url = "/areas/flexpage/content/images/icons/checkbox-full.svg";
+                settings.Properties.DisplayImageChecked.Width = Unit.Pixel(20);
+                settings.Properties.DisplayImageChecked.Height = Unit.Pixel(20);
+                settings.Properties.DisplayImageUnchecked.Url = "/areas/flexpage/content/images/icons/checkbox-empty.svg";
+                settings.Properties.DisplayImageUnchecked.Width = Unit.Pixel(20);
+                settings.Properties.DisplayImageUnchecked.Height = Unit.Pixel(20);
+            }).Bind(false).GetHtml()
+        </label>
+    </div>
+</div>

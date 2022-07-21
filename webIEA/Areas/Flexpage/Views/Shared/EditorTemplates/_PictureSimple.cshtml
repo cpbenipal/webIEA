@@ -1,0 +1,172 @@
+﻿@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@using Flexpage.Domain.Enum;
+@model Flexpage.Models.PictureModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+
+}
+
+<div class="col-md-7">
+    <h4>
+        Size <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Size options"></i>
+    </h4>
+        <div class="row">
+                <div class="col-md-12 form-group element-center">
+                    @Html.CheckBoxFor(m => m.ConstrainProportions, new { @class = "form-control" })
+                    <label class="form-check-label" for="ConstrainProportions">
+                        Constrain proportions
+                    </label>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="padding:0">
+                <div class="col-md-12 form-group">
+                    <label>Width:</label>
+                </div>
+                <div class="col-md-2">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(s => s.WidthType, SizeType.Auto, new { id = "WidthType" + SizeType.Auto.ToString() })
+                        Auto
+                    </label>
+                </div>
+                <div class="col-md-2">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(s => s.WidthType, SizeType.Full, new { id = "WidthType" + SizeType.Full.ToString() })Full width
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.WidthType, SizeType.Custom, new { id = "WidthType" + SizeType.Custom.ToString() })Custom
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.TextBoxFor(m => m.CustomWidth, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.DropDownListFor(m => m.CustomWidthUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType)), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="padding:0">
+                <div class="col-md-12 form-group">
+                    <label>Height:</label>
+                </div>
+                <div class="col-md-2">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(s => s.HeightType, SizeType.Auto)
+                        Auto
+                    </label>
+                </div>
+                <div class="col-md-2">
+                    <label class="radio-inline">
+                        @Html.RadioButtonFor(s => s.HeightType, SizeType.Full)Full height
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label class="radio-inline">
+                            @Html.RadioButtonFor(s => s.HeightType, SizeType.Custom)Custom
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.TextBoxFor(m => m.CustomHeight, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.DropDownListFor(m => m.CustomHeightUnit, System.Web.Mvc.Html.EnumHelper.GetSelectList(typeof(SizeUnitType), Model.CustomHeightUnit), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="col-md-5">
+    <h4>
+        Effects <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Image effects"></i>
+    </h4>
+    <div class="row">
+        <div class="">
+            <div class="col-md-12 element-center form-group">
+                @Html.CheckBoxFor(m => m.Tint, new { @class = "form-control" })
+                <label class="form-check-label" for="Tint">Tint <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Adds color tint to an image"></i></label>
+            </div>
+            <div class="col-md-4 form-group color-picker-field">
+                <div class="input-group colorpicker-component" id="Simple_ImageColor">
+                    @Html.HiddenFor(m => m.TintColor, new { @class = "form-control color-data" })
+                    <label class="form-check-label">Color</label>
+                    <span class="input-group-addon color-picker-box"><i></i></span>
+                </div>
+            </div>
+            <div class="col-md-2"> <label>Opacity</label></div>
+            <div class="col-md-6 element-center slider-scale">
+                <div class="slidecontainer element-center">
+                    @Html.TextBoxFor(model => model.TintOpacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+                    <span class="opacity-percentage">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 form-group element-center">
+            @Html.CheckBoxFor(m => m.Blur, new { @class = "form-control" })
+            <label class="form-check-label" for="Blur">Blur</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 form-group element-center">
+            @Html.CheckBoxFor(m => m.BlackAndWhite, new { @class = "form-control" })
+            <label class="form-check-label" for="BlackAndWhite">
+                Black and white
+            </label>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(model => model.Slogan.ForeColor)
+@Html.HiddenFor(model => model.Slogan.BackColor)
+@Html.HiddenFor(model => model.Slogan.Position, new { value = Model.Slogan.Position })
+@Html.HiddenFor(model => model.Slogan.Padding.IsApplyIndent)
+@Html.HiddenFor(model => model.Slogan.Padding.Amount)
+@Html.HiddenFor(model => model.Slogan.Padding.SizeUnitType)
+@Html.HiddenFor(model => model.Slogan.Margin.IsApplyIndent)
+@Html.HiddenFor(model => model.Slogan.Margin.Amount)
+@Html.HiddenFor(model => model.Slogan.Margin.SizeUnitType)
+@Html.HiddenFor(model => model.Slogan.Effect, new { @value = TextEffect.None })
+@Html.HiddenFor(model => model.Slogan.EffectColor, new { @value = "#FFFFFF" })
+@Html.HiddenFor(model => model.Slogan.EffectOpacity, new { @value = 75 })
+
+@Html.HiddenFor(model => model.CallToAction.ForeColor)
+@Html.HiddenFor(model => model.CallToAction.BackColor)
+@Html.HiddenFor(model => model.CallToAction.Position, new { value = Model.CallToAction.Position })
+@Html.HiddenFor(model => model.CallToAction.Padding.IsApplyIndent)
+@Html.HiddenFor(model => model.CallToAction.Padding.Amount)
+@Html.HiddenFor(model => model.CallToAction.Padding.SizeUnitType)
+@Html.HiddenFor(model => model.CallToAction.Margin.IsApplyIndent)
+@Html.HiddenFor(model => model.CallToAction.Margin.Amount)
+@Html.HiddenFor(model => model.CallToAction.Margin.SizeUnitType)
+@Html.HiddenFor(model => model.CallToAction.Effect, new { @value = TextEffect.None })
+@Html.HiddenFor(model => model.CallToAction.EffectColor, new { @value = "#FFFFFF" })
+@Html.HiddenFor(model => model.CallToAction.EffectOpacity, new { @value = 75 })
+@Html.HiddenFor(model => model.CallToAction.Url)
+@Html.HiddenFor(model => model.CallToAction.Page)
+@Html.HiddenFor(model => model.CallToAction.DisplayPosition, new { @value = AlignedDisplayPosition.AlignPosition })
+<script>
+    $(function() {
+        $('#cp1').colorpicker();
+    });
+
+    
+</script>

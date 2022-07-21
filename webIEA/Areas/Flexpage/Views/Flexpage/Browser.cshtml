@@ -1,0 +1,164 @@
+﻿@using System.Drawing
+@using System.Web.UI.WebControls
+@model Flexpage.Models.BrowserModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+@{
+    ViewBag.InitPerformCallback = false;
+    if (Model.ContextMenu)
+    {
+        Model.FolderTreeListModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.Browser;
+        Model.FolderContentModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.Browser;
+        if (Model.ContactsEnumerationModel != null)
+        {
+            Model.ContactsEnumerationModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.Browser;
+        }
+    }
+    else
+    {
+        Model.FolderTreeListModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.None;
+        Model.FolderContentModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.None;
+        if (Model.ContactsEnumerationModel != null)
+        {
+            Model.ContactsEnumerationModel.TypeContextMenu = Flexpage.Models.TypeContextMenu.None;
+        }
+    }
+
+}
+<script>
+    function fp_ActiveTabChanged@(Model.FolderTreeListModel.Alias)(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.browser.updateByPathFolder, {
+            s: s, e: e,
+            "filterCustomProperties": '@ViewData["FilterCustomProperties"]', "filterExtension": '@ViewData["FilterExtension"]', contacts: "@(Model.Contacts)" == "True",
+            "typeContextMenu": "@(Model.FolderContentModel.TypeContextMenu)"
+        });
+    }
+
+
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.browser, 'EventManagerBrowser', function () {
+                        fp_loadScripts(EventManager.settings.PathJs.browserSearch, 'EventManagerBrowserSearch', function () {
+                            var args = { ID:@(Model.ID) };
+                            var browserContactsEM@(Model.ID) = new EventManagerBrowser(args);
+                            var browserSearchEM@(Model.ID) = new EventManagerBrowserSearch(args);
+                    });
+                });
+            });
+        }, 4000);
+    })();
+
+
+    function fp_browser_adjustSize(browser) {
+        var size = 550 + Math.max(0, jQuery(window).height() - jQuery('body').outerHeight());
+        browser.SetHeight(size);
+    }
+
+    $(function () {
+
+        $('.fp_browser').bind('contextmenu', function(e) {
+            return false;
+        });
+    });
+
+    $(function() {
+        $("#tabControl@(Model.ID.ToString())_T1").addClass("hidden");
+        var uploadFileWaitBlock = $(".uploadFileWaitBlock");
+
+        var height = uploadFileWaitBlock.height(),
+            padding = parseInt(uploadFileWaitBlock.css("padding-top")) * 2 + 21;
+
+        uploadFileWaitBlock.width(uploadFileWaitBlock.width());
+
+        $(".uploadFileWaitBlock").css("bottom", (height + padding) * -1);
+
+        string = $(".uploadFileWaitBlock").text().trim();
+        str = string.split('');
+        $(".uploadFileWaitBlock").text("");
+        $.each(str, function(i) {
+            $(".uploadFileWaitBlock").append('<span class="flicker">'+str[i]+'</span>');
+        });
+
+        var letters = [];
+
+        $.each($(".uploadFileWaitBlock .flicker"), function() {
+            letters.push($(this));
+        });
+
+        var hide = true;
+
+        function startAnimate() {
+            for(var i = 0; i < letters.length; i++) {
+                if (hide)
+                    letters[i].delay(100 * (i - 1)).animate({opacity: 0},100);
+                else
+                    letters[i].delay(100 * (i - 1)).animate({opacity: 1},100);
+            }
+            hide = !hide;
+        }
+
+        setInterval(startAnimate, 100 * letters.length);
+    });
+</script>
+<div class="fp_empty fp_browser-empty">Please wait while loading</div>
+<div class="hidden-visbility browserSearch">
+    @{
+        if (Model.BrowserSearch)
+        {
+            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BrowserSearchControl.cshtml", new Pluritech.Pluriworks.Service.DTO.BrowserSearchResultModel() { BlockID=Model.ID, InFileFolderName=true });
+        }
+    }
+</div>
+<div class="uploadFileWaitBlock hidden-visbility" style="display: none;">
+    @Flexpage.Helpers.ResourceHelper.GetResourseValue("CultureDependent", "UploadingText")
+</div>
+<div id="fp_browser@(Model.ID.ToString())" class="fp_browser hidden-visbility">
+    @Html.Hidden("FolderContentSelectFolderName", Model.SelectFolderName)
+    @Html.Hidden("FolderContentSelectFolderNameLoad", Model.SelectFolderName)
+    @Html.Hidden("ContactsEnumerationSelectFolderName", Model.SelectFolderName)
+    @Html.Hidden("ContactsEnumerationSelectFolderNameLoad", "")
+    @{
+        if (Model.BrowserSearch)
+        {
+            @Html.DevExpress().PageControl(
+                searchTabs =>
+                {
+                    searchTabs.Name = "fp_browserSearchTabs" + Model.ID.ToString();
+                    searchTabs.Width = Unit.Percentage(100);
+                    searchTabs.Styles.Content.BorderTop.BorderWidth = 0;
+                    searchTabs.Styles.Content.Paddings.Padding = 0;
+                    for (var i = 0; i < 5; i++)
+                    {
+                        MVCxTabPage page = searchTabs.TabPages.Add("&nbspSearch result " + (i+1) + "&nbsp", "BrowserSearchTab" + i);
+                        page.ClientVisible = false;
+                        page.Index = i;
+                        if (page.Index == 0)
+                        {
+                            page.TabStyle.CssClass = "fp-browser-search-first-tab";
+                        }
+                        page.SetTabTemplateContent(t =>
+                        {
+                            ViewContext.Writer.Write("<span class='dxtc-link'><span class='dx-vam'>");
+                            ViewContext.Writer.Write(t.TabPage.Text);
+                            ViewContext.Writer.Write("[<a href='javascript:fp_closeBrowserSearchTab(" + page.Index + ")'>X</a>]");
+                            ViewContext.Writer.Write("</span></span>");
+                        });
+                    }
+                    searchTabs.TabPages.Add(s =>
+                    {
+                        s.Index = 0;
+                        s.Name = "BrowserSearchTabMain";
+                        s.Text = "Browser";
+                        s.SetContent(() =>
+                        {
+                            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BrowserContent.cshtml", Model);
+                        });
+                    });
+                }).GetHtml()
+        }
+        else
+        {
+            Html.RenderPartial("~/Areas/Flexpage/Views/Flexpage/BrowserContent.cshtml", Model);
+        }
+    }
+</div>

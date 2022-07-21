@@ -1,0 +1,98 @@
+﻿@using System.Drawing
+@using System.Web.UI.WebControls
+@using DevExpress.CodeParser
+@using System.Globalization
+
+
+@model Flexpage.Abstract.DTO.ICalendarModel
+@{
+    var langCode = Model.LanguageSelector.CurrentLangCode??"en";
+    var cultureInfo = new CultureInfo(langCode);
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    Html.DevExpress().Calendar(settings =>
+    {
+    settings.Name = "calendar_" + Model.ID;
+    settings.Properties.HighlightToday = false;
+    settings.Properties.HighlightWeekends = false;
+    settings.Properties.ShowClearButton = false;
+    settings.Properties.ShowTodayButton = true;
+    settings.Properties.ShowDayHeaders = true;
+    settings.Properties.ShowHeader = true;
+    settings.Properties.ShowWeekNumbers = Model.ShowWeekNumbers;
+    settings.Properties.EnableMultiSelect = false;
+    settings.CallbackRouteValues = new { Controller = "CalendarBlock", Action = "SmallCalendar", modelId = Model.ID, langCode = langCode };
+    settings.Properties.ClientInstanceName = "calendar_" + Model.ID;
+    settings.Properties.EnableClientSideAPI = true;
+    settings.Properties.ClientSideEvents.Init = "fp_InitCalendarSmall" + Model.ID;
+    settings.Properties.ClientSideEvents.EndCallback = "fp_EndCallbackCalendarSmall" + Model.ID;
+    if (Model.MultiMonthMode)
+    {
+        settings.Properties.Rows = Model.MultimonthViewMode == Flexpage.Abstract.DTO.eCalendarMultimonthViewMode.Flex ? Model.Rows : 1;
+        settings.Properties.Columns = Model.MultimonthViewMode == Flexpage.Abstract.DTO.eCalendarMultimonthViewMode.Flex ? Model.Columns : 3;
+        settings.VisibleDate = Model.MultimonthViewMode == Flexpage.Abstract.DTO.eCalendarMultimonthViewMode.Flex
+            ? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-Model.MonthOffset)
+            : new DateTime(DateTime.Now.Year, 3 * ((DateTime.Now.Month - 1) / 3 + 1) - 2, 1);
+    }
+    else
+    {
+        settings.Properties.Rows = 1;
+        settings.Properties.Columns = 1;
+    }
+
+    settings.Properties.FooterStyle.Border.BorderWidth = 0;
+    if (Model.WidthType == Flexpage.Abstract.DTO.eCalendarSizeType.Custom)
+    {
+        settings.Width = new Unit(Model.CustomWidth, (Model.CustomWidthUnit == Flexpage.Abstract.DTO.eCalendarSizeUnitType.Pixel ? UnitType.Pixel : UnitType.Percentage));
+    }
+
+
+    settings.SelectedDates.Add(DateTime.Now);
+
+@*if (Model.DisableDates) {
+        settings.Properties.DisabledDates.AddRange((List<DateTime>)ViewData["DisabledDates"]);
+        settings.Properties.ClientSideEvents.CustomDisabledDate = "CustomDisabledDates";
+    }*@
+
+    settings.DayCellPrepared = (s, e) =>
+    {
+        var currentDate = e.Date;
+        var calendarDayModel = Model.CalendarEvents.FirstOrDefault(ev => (ev.StartDate == currentDate && ev.IsPrimary)
+            || (ev.StartDate == currentDate)
+            || ev.StartDate.Date <= currentDate.Date && ev.EndDate >= currentDate);
+
+
+        if (calendarDayModel != null)
+        {
+            // currentDate = calendarDayModel.StartDate;
+            if (!calendarDayModel.Category.BgColorParsed.IsEmpty)
+            {
+                e.TextControl.BackColor = calendarDayModel.Category.BgColorParsed;
+            }
+
+            if (!calendarDayModel.Category.BorderColorParsed.IsEmpty)
+            {
+                e.TextControl.BorderColor = calendarDayModel.Category.BorderColorParsed;
+                e.TextControl.BorderWidth = 1;
+            }
+            e.TextControl.ForeColor = calendarDayModel.Category.TextColorParsed;
+
+            e.TextControl.Width = 23;
+            e.TextControl.Height = 20;
+            e.TextControl.CssClass = "fp_calendar_textControl";
+
+            if (Model.SmallCalendarTooltip)
+            {
+                e.TextControl.Attributes.Add("data-date", currentDate.Date.ToString("yyyy-MM-dd", cultureInfo));
+                e.TextControl.CssClass += " tip";
+            }
+        }
+
+        if (Model.ShowBigCalendarFromSmall)
+            e.Cell.Attributes.Add("onclick", " calendar_big_" + Model.ID + ".Show()");
+        else
+            e.Cell.Attributes.Add("onclick",
+                string.Format(" flexpageCalendar.openDialogShowEvents(new Date('{0}'), {1});", currentDate.Date.ToString("yyyy-MM-dd", cultureInfo), Model.ID));
+
+    };
+}).GetHtml();
+}

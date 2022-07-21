@@ -1,0 +1,15 @@
+﻿@model Flexpage.Abstract.DTO.ILocalizedStringModel
+
+@if (Model != null)
+{
+
+    @Html.HiddenFor(m => Model.CurrentLangCode)
+    @Html.HiddenFor(m => Model.CurrentLocalization)
+    if (Model.Localizations != null)
+    {
+        foreach (string key in Model.Localizations.Keys)
+        {
+            @Html.Hidden(string.Format("Localizations[{0}]", key), Model.Localizations[key])
+        }
+    }
+}

@@ -1,0 +1,64 @@
+﻿@using Flexpage.Domain.Enum;
+@model Flexpage.Models.MediaPlaylistModel
+
+@{
+    string currentBlockID = string.Format("videoPlaylistBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+
+    Model.CurrentItem.Width = new Flexpage.Models.DimensionModel
+    {
+        Type = SizeType.Full
+    };
+
+    Model.CurrentItem.Height = new Flexpage.Models.DimensionModel
+    {
+        Type = SizeType.Full
+    };
+}
+
+<div class="videoplaylist-block" style="width: @Model.Width.CreateSizeString(); height: @Model.Height.CreateSizeString()">
+    @if (Model.DisplayTitle)
+    {
+        <div class="playlist-title">
+            <h4>
+                @Model.Info.LocalizedTitle.NotEmptyLocalization
+            </h4>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            @if (Model.CurrentItem != null)
+            {
+                
+            <div id="@currentBlockID" class="fp_videoPlaylistCurrentItemContainer">
+                @if (Model.CurrentItem.MediaType.Name == MediaTypeName.Audio.GetDisplay())
+                {
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_Audio.cshtml", Model.CurrentItem)
+
+                }
+                else
+                {
+                    @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_Video.cshtml", Model.CurrentItem)
+                }
+            </div>
+            }
+        </div>
+        <div class="col-md-4 playlist-items" id="b@(Model.ID)Items">
+            @foreach (var i in Model.Items)
+            {
+                var id = string.Format("b{0}i{1}", Model.ID, i.ID);
+                <div class="col-md-12 list-group-item playlist-item" id="@id" onclick="fp_videoPlaylistSelectItem('#@currentBlockID', @i.ID, this,'@i.MediaType.Name')">
+                    <img class="playlist-item-picture" @*height="64" width="64"*@ src="@(i.NonEmptyLocalization != null ? i.NonEmptyLocalization.GetThumbUrl() : "")" />
+                    <a class="playlist-item-link" href="#" onclick="return false;">@i.Title.NotEmptyLocalization</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.DisplayDescription)
+    {
+        <div class="playlist-description">
+            @Html.Raw(Model.Info.FullText.CurrentText)
+        </div>
+    }
+</div>

@@ -1,0 +1,10 @@
+﻿@{
+    ViewBag.Title = "Websites List";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="flexpage records-field">
+    @Html.Partial("~/Areas/Flexpage/Views/Websites/WebsitesGrid.cshtml", new List<Flexpage.Abstract.DTO.WebsiteInfoModel>())
+</div>
+

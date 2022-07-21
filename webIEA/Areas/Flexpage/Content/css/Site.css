@@ -1,0 +1,534 @@
+﻿body {
+    padding-bottom: 20px;
+    overflow-x: hidden;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+}
+
+/* Set all modal popup height*/
+/*When the modal fills the screen it has an even 2.5% on top and bottom*/
+/*Centers the modal*/
+.modal-dialog {
+    margin: 2.5vh auto;
+}
+
+/*Sets the maximum height of the entire modal to 95% of the screen height*/
+.modal-content {
+    /*max-height: 90vh;*/
+}
+
+.modal-header {
+    border-bottom: 0px solid #23598e;
+}
+/*Sets the maximum height of the modal body to 90% of the screen height*/
+.modal-body {
+    max-height: 80%;
+    padding-top: 0;
+}
+    /*Sets the maximum height of the modal image to 69% of the screen height*/
+    /*.modal-body img {
+        max-height: 69vh;
+    }*/
+
+/* Menu */
+.menu {
+}
+
+    .menu ul {
+        list-style: none;
+        text-align: left;
+    }
+
+    .menu li.topLevel {
+        display: inline;
+    }
+
+    .menu li.separator {
+        color: #fff;
+    }
+
+    .menu li a.topLevel {
+    }
+
+        .menu li a.topLevel:link,
+        .menu li a.topLevel:visited {
+            text-decoration: none;
+        }
+
+        .menu li a.topLevel:hover {
+            cursor: default;
+            text-decoration: none;
+        }
+
+        .menu li a.topLevel:active,
+        .menu li a.topLevel.active:link,
+        .menu li a.topLevel.active:visited {
+        }
+
+    .menu ul.submenu {
+        background-color: #222;
+        display: block;
+        margin-left: 0;
+        position: absolute;
+        text-align: left;
+        zoom: 1;
+    }
+
+        .menu ul.submenu li {
+            line-height: 0px;
+            width: 100%;
+        }
+
+        .menu ul.submenu,
+        .menu ul.submenu * {
+            z-index: 15;
+        }
+
+    .menu li a.submenu {
+        display: block;
+        line-height: 16px;
+        padding: 7px 12px 7px 23px;
+        width: auto;
+        min-width: 200px;
+        height: auto;
+    }
+
+        .menu li a.submenu:link,
+        .menu li a.submenu:visited {
+            text-decoration: none;
+        }
+
+        .menu li a.submenu:hover {
+        }
+
+        .menu li a.submenu:active,
+        .menu li a.submenu.active:link,
+        .menu li a.submenu.active:visited {
+        }
+/********/
+
+
+/*Image teaser Effects*/
+
+.teaser {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    min-width: 300px;
+}
+
+    .teaser.has-bgImage {
+        cursor: pointer
+    }
+
+.teaser-bgImage {
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: cover
+}
+
+.teaser-caption {
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+    font-size: 1em;
+    /*text-indent: 200%;*/
+    white-space: nowrap;
+    backface-visibility: hidden;
+    word-break: break-word
+}
+
+    .teaser-caption:after, .teaser-caption:before {
+        pointer-events: none
+    }
+
+.teaser-target-caption {
+}
+
+.teaser-slogan-caption {
+}
+.teaser-caption-target--aboveSlogan {
+}
+.teaser-caption-target--belowSlogan{
+
+}
+
+.teaser-description p:last-child, .teaser-title * {
+    margin-bottom: 0
+}
+
+.teaser-description + .teaser-wrapButton {
+    margin-top: 24px
+}
+
+.teaser-target {
+    opacity: 0;
+    z-index: 1000;
+    font-size: 0;
+    text-indent: 200%;
+    white-space: nowrap
+}
+
+.teaser-caption {
+    padding: 2em 1.5em
+}
+
+.teaser-description, .teaser-title {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+}
+
+    .teaser-description a, .teaser-title a {
+    }
+
+        .teaser-description a:active, .teaser-description a:focus, .teaser-description a:hover, .teaser-title a:active, .teaser-title a:focus, .teaser-title a:hover {
+            text-decoration: underline
+        }
+
+.teaser-caption--left-center {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%); /* CSS3 */
+    -moz-transform: translateY(-50%); /* Firefox */
+    -webkit-transform: translateY(-50%); /* Webkit */
+    -o-transform: translateY(-50%); /* Opera */
+    -ms-transform: translateY(-50%); /* IE 9 */
+    text-align: left;
+    left: 0;
+}
+
+.teaser-caption--top-left {
+    text-align: left;
+    top: 0;
+    left: 0;
+}
+
+.teaser-caption--bottom-left {
+    text-align: left;
+    top: auto;
+    left: 0;
+    bottom: 0;
+}
+
+.teaser-caption--top-center {
+    text-align: center;
+    top: 0;
+    left: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    transform: translateX(-50%); /* CSS3 */
+    -moz-transform: translateX(-50%); /* Firefox */
+    -webkit-transform: translateX(-50%); /* Webkit */
+    -o-transform: translateX(-50%); /* Opera */
+    -ms-transform: translateX(-50%); /* IE 9 */
+}
+
+.teaser-caption--center-center {
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    bottom: auto;
+}
+
+.teaser-caption--bottom-center {
+    text-align: center;
+    top: auto;
+    left: 50%;
+    right: 0;
+    bottom: 0;
+    transform: translateY(-50%);
+    transform: translateX(-50%); /* CSS3 */
+    -moz-transform: translateX(-50%); /* Firefox */
+    -webkit-transform: translateX(-50%); /* Webkit */
+    -o-transform: translateX(-50%); /* Opera */
+    -ms-transform: translateX(-50%); /* IE 9 */
+}
+
+.teaser-caption--top-right {
+    text-align: right;
+    top: 0;
+    right: 0;
+}
+
+.teaser-caption--right-center {
+    text-align: right;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%); /* CSS3 */
+    -moz-transform: translateY(-50%); /* Firefox */
+    -webkit-transform: translateY(-50%); /* Webkit */
+    -o-transform: translateY(-50%); /* Opera */
+    -ms-transform: translateY(-50%); /* IE 9 */
+    text-align: right;
+    bottom: auto;
+}
+
+.teaser-caption--bottom-right {
+    top: auto;
+    text-align: right;
+    bottom: 0;
+    right: 0;
+}
+
+/*Teaser effects*/
+.teaser-caption, .teaser-caption .teaser-title, .teaser-caption .teaser-description {
+    transition: all .5s ease-in-out, transform .60s;
+}
+
+.teaser-caption--top-left:hover .teaser-title, .teaser-caption--top-left:hover .teaser-description,
+.teaser-caption--bottom-left:hover .teaser-title, .teaser-caption--bottom-left:hover .teaser-description,
+.teaser-caption--left-center:hover .teaser-title, .teaser-caption--left-center:hover .teaser-description {
+    /*animation: animateLeftToRight .5s;*/
+    opacity: 1;
+    transition-delay: .05s;
+    transition-duration: .35s;
+    transform: scale(1.3) translateX(30px); /* CSS3 */
+    -moz-transform: scale(1.3) translateX(30px); /* Firefox */
+    -webkit-transform: scale(1.3) translateX(30px); /* Webkit */
+    -o-transform: scale(1.3) translateX(30px); /* Opera */
+    -ms-transform: scale(1.3) translateX(30px); /* IE 9 */
+}
+
+.teaser-caption--top-center:hover .teaser-title, .teaser-caption--top-center:hover .teaser-description,
+.teaser-caption--bottom-center:hover .teaser-title, .teaser-caption--bottom-center:hover .teaser-description {
+    /*animation: animateLeftToRight .5s;*/
+    opacity: 1;
+    transition-delay: .05s;
+    transition-duration: .35s;
+    transform: scale(1.3); /* CSS3 */
+    -moz-transform: scale(1.3); /* Firefox */
+    -webkit-transform: scale(1.3); /* Webkit */
+    -o-transform: scale(1.3); /* Opera */
+    -ms-transform: scale(1.3); /* IE 9 */
+}
+
+.teaser-caption--top-right:hover .teaser-title, .teaser-caption--top-right:hover .teaser-description,
+.teaser-caption--bottom-right:hover .teaser-title, .teaser-caption--bottom-right:hover .teaser-description,
+.teaser-caption--right-center:hover .teaser-title, .teaser-caption--right-center:hover .teaser-description {
+    /*animation: animateLeftToRight .5s;*/
+    opacity: 1;
+    transition-delay: .05s;
+    transition-duration: .35s;
+    transform: scale(1.3) translateX(-30px); /* CSS3 */
+    -moz-transform: scale(1.3) translateX(-30px); /* Firefox */
+    -webkit-transform: scale(1.3) translateX(-30px); /* Webkit */
+    -o-transform: scale(1.3) translateX(-30px); /* Opera */
+    -ms-transform: scale(1.3) translateX(-30px); /* IE 9 */
+}
+
+.teaserEffect--tint .teaser-bgImage, .teaserEffect--tint .teaser-image {
+    /*opacity: .6;*/ /*Opacity will be managed from code*/
+    /*transition: opacity .2s,transform .35s;*/
+    transition: all .5s ease-in-out, transform .60s;
+}
+
+
+.teaserEffect--tint:hover .teaser-bgImage, .teaserEffect--tint:hover .teaser-image {
+    opacity: 1;
+    transform: scale(1.3); /* CSS3 */
+    -moz-transform: scale(1.3); /* Firefox */
+    -webkit-transform: scale(1.3); /* Webkit */
+    -o-transform: scale(1.3); /* Opera */
+    -ms-transform: scale(1.3); /* IE 9 */
+}
+
+.teaserEffect--blur .teaser-bgImage, .teaserEffect--blur .teaser-image {
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+    transition: all .5s ease-in-out, transform .60s;
+}
+
+.teaserEffect--blur:hover .teaser-bgImage, .teaserEffect--blur:hover .teaser-image {
+    filter: unset;
+    filter: none;
+}
+
+.teaserEffect--blackAndWhite .teaser-bgImage, .teaserEffect--blackAndWhite .teaser-image {
+    filter: gray; /* IE5+ */
+    filter: grayscale(20);
+    -webkit-filter: grayscale(20);
+    -moz-filter: grayscale(20);
+    -o-filter: grayscale(20);
+    -ms-filter: grayscale(20);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=20);
+    transition: all .5s ease-in-out, transform .60s;
+}
+
+.teaserEffect--blackAndWhite:hover .teaser-bgImage, .teaserEffect--blackAndWhite:hover .teaser-image {
+    -webkit-filter: grayscale(0);
+    -moz-filter: grayscale(0);
+    -o-filter: grayscale(0);
+    -ms-filter: grayscale(0);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
+    filter: none;
+}
+/* ideally, transition speed should match zoom duration */
+mfp-with-zoom .mfp-container,
+.mfp-with-zoom.mfp-bg {
+    opacity: 0;
+    -webkit-backface-visibility: hidden; 
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+
+.mfp-with-zoom.mfp-ready .mfp-container {
+    opacity: 1;
+}
+
+.mfp-with-zoom.mfp-ready.mfp-bg {
+    opacity: 0.8;
+}
+
+.mfp-with-zoom.mfp-removing .mfp-container,
+.mfp-with-zoom.mfp-removing.mfp-bg {
+    opacity: 0;
+}
+
+
+.img-zoom-container {
+    position: relative;
+}
+
+.img-zoom-lens {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    /*set the size of the lens:*/
+    width: 40px;
+    height: 40px;
+}
+
+.img-zoom-result {
+    border: 1px solid #d4d4d4;
+    /*set the size of the result div:*/
+    width: 300px;
+    height: 300px;
+}
+.img-magnifier-container {
+    position: relative;
+}
+
+.img-magnifier-glass {
+    position: absolute;
+    border: 3px solid #000;
+    border-radius: 50%;
+    cursor: none;
+    /*Set the size of the magnifier glass:*/
+    width: 100px;
+    height: 100px;
+    z-index:200;
+    display:none;
+}
+
+
+/*menu styles*/
+ul.level1 {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    width: fit-content;
+    width: -moz-fit-content;
+}
+
+ul.level2, ul.level3, ul.level4 {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+li.submenu{
+    width:100%;
+}
+
+a.submenu.navbar-brand, span.submenu.navbar-brand {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin: 0 !important;
+}
+
+.fpScheduler .modal-dialog {
+    width: auto;
+}
+.fpScheduler .files-list .files-info-list {
+    height: 170px;
+}
+
+
+#CB_Editor_FileView,
+#btnSelectFile {
+    display: inline-block;
+}
+
+#btnSelectFile {
+    position: relative;
+    top: -10px;
+    left: 5px;
+}

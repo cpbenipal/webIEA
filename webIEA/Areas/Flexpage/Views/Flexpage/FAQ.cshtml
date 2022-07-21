@@ -1,0 +1,5 @@
+﻿@model Flexpage.Abstract.DTO.BlockModel
+
+<div class="fp_faq-block" id="fp_faq-block-@Model.ID">
+    @Html.Action("FAQ", "FAQBlock", new { BlockID = Model.ID })
+</div>

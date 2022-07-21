@@ -1,0 +1,350 @@
+﻿@using System.Web.UI.WebControls
+@using Pluritech.Properties.Abstract.DTO
+
+@model CustomPropertyModel
+
+<style>
+    .checkListWrapper {
+        height: 128px;
+        overflow-y: scroll;
+    }
+
+    .filePropertyWrapper {
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+
+    .filePropertyTextWrapper {
+        flex: 1;
+    }
+</style>
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "ShowAllAvailableProperties", ObjectID = Model.ObjectID, VisibleEnabled = Model.VisibleEnabled, LoadModel = true };
+
+    settings.Name = "сontactDetailsCustomProperties" + Model.ObjectID;
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.KeyFieldName = "ID";
+    settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "ID";
+        n.Visible = false;
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Type";
+        n.Visible = false;
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Enabled";
+        n.Caption = "Enabled";
+        n.Visible = Model.VisibleEnabled;
+
+        n.Settings.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+        n.SetDataItemTemplateContent(c =>
+        {
+            var id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+            var enabled = (bool)c.Grid.GetRowValues(c.VisibleIndex, "Enabled");
+            Html.DevExpress().CheckBox(settingsType =>
+            {
+                settingsType.Name = "EnabledCheckBox" + id;
+                settingsType.Checked = enabled;
+            }).Render();
+        });
+
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Title";
+        n.Caption = "Property";
+        n.Settings.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Name";
+        n.Visible = false;
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "DisplayValue";
+        n.Visible = false;
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "Value";
+        n.Visible = false;
+    });
+
+    settings.Columns.Add(n =>
+    {
+        n.Caption = "Value";
+        n.SetDataItemTemplateContent(container =>
+        {
+            var name = (string)container.Grid.GetRowValues(container.VisibleIndex, "Name");
+            var value = (string)container.Grid.GetRowValues(container.VisibleIndex, "Value");
+            var displayValue = (string)container.Grid.GetRowValues(container.VisibleIndex, "DisplayValue");
+            var id = (int)container.Grid.GetRowValues(container.VisibleIndex, "ID");
+            var type = (ObjectPropertyType)container.Grid.GetRowValues(container.VisibleIndex, "Type");
+
+            if (name == "PublishingFolder")
+            {
+                Html.DevExpress().DateEdit(settingsType =>
+                {
+                    settingsType.Name = "void" + container.KeyValue;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                    settingsType.ClientVisible = false;
+                }).Render();
+                Html.DevExpress().Button(settingsBtn =>
+                {
+                    settingsBtn.Name = "btn" + container.KeyValue;
+                    settingsBtn.Text = "Edit...";
+                    settingsBtn.ClientSideEvents.Click = "function(s, e) {EditCustomProperty.showDialog('" + name + "','" + id + "','" + Model.ObjectID + "');}";
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.String)
+            {
+                Html.DevExpress().TextBox(settingsType =>
+                {
+                    settingsType.Name = "str" + container.KeyValue;
+                    settingsType.Text = displayValue;
+                    settingsType.Width = Unit.Percentage(100);
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.Int)
+            {
+                Html.DevExpress().TextBox(settingsType =>
+                {
+                    settingsType.Name = "int" + container.KeyValue;
+                    settingsType.Text = displayValue;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                    settingsType.Properties.MaskSettings.Mask = "<0..999>";
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.Float)
+            {
+                Html.DevExpress().SpinEdit(settingsType =>
+                {
+                    settingsType.Name = "float" + container.KeyValue;
+                    settingsType.Number = !String.IsNullOrEmpty(displayValue) ? decimal.Parse(displayValue) : 0;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.Bool)
+            {
+                Html.DevExpress().CheckBox(settingsType =>
+                {
+                    settingsType.Name = "bool" + container.KeyValue;
+                    settingsType.Checked = displayValue == "C";
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.Html)
+            {
+                ViewContext.Writer.Write("<div class='EditInput' data-id=" + container.KeyValue + ">");
+
+                Html.DevExpress().HtmlEditorFor(m => displayValue,
+                settingsHtml =>
+                {
+                    settingsHtml.Name = "html" + container.KeyValue;
+                    settingsHtml.CallbackRouteValues = new
+                    {
+                        Controller = "Flexpage",
+                        Action = "CustomProperties_EditTemplateHtml",
+                        Name = "html" + container.KeyValue
+                    };
+                    settingsHtml.Width = Unit.Percentage(100);
+                    settingsHtml.Height = new System.Web.UI.WebControls.Unit(200, System.Web.UI.WebControls.UnitType.Pixel);
+                    HtmlEditorToolbar toolbar = new HtmlEditorToolbar();
+                    toolbar.Items.Add(new ToolbarUndoButton());
+                    toolbar.Items.Add(new ToolbarRedoButton());
+                    ToolbarFontNameEdit fontNameEdit = new ToolbarFontNameEdit(true);
+                    fontNameEdit.CreateDefaultItems();
+                    toolbar.Items.Add(fontNameEdit);
+                    ToolbarFontSizeEdit fontSizeEdit = new ToolbarFontSizeEdit(true);
+                    fontSizeEdit.CreateDefaultItems();
+                    toolbar.Items.Add(fontSizeEdit);
+                    toolbar.Items.Add(new ToolbarBoldButton());
+                    toolbar.Items.Add(new ToolbarItalicButton());
+                    toolbar.Items.Add(new ToolbarUnderlineButton());
+                    toolbar.Items.Add(new ToolbarStrikethroughButton());
+                    toolbar.Items.Add(new ToolbarJustifyLeftButton(true));
+                    toolbar.Items.Add(new ToolbarJustifyCenterButton());
+                    toolbar.Items.Add(new ToolbarJustifyRightButton());
+                    //toolbar.Items.Add(new ToolbarInsertImageDialogButton(true));
+                    settingsHtml.Toolbars.Add(toolbar);
+                    settingsHtml.SettingsHtmlEditing.EnablePasteOptions = true;
+                    settingsHtml.SettingsHtmlEditing.PasteMode = HtmlEditorPasteMode.SourceFormatting;
+
+                }).Render();
+                ViewContext.Writer.Write("</div>");
+
+            }
+            else if (type == ObjectPropertyType.DateTime)
+            {
+                var date = DateTime.Now;
+                if (!string.IsNullOrEmpty(displayValue) && DateTime.TryParse(displayValue, out DateTime d))
+                {
+                    date = DateTime.Parse(displayValue);
+                }
+
+                Html.DevExpress().DateEdit(settingsType =>
+                {
+                    settingsType.Name = "date" + container.KeyValue;
+                    settingsType.Date = date;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.Color)
+            {
+                var color = System.Drawing.Color.Gray;
+                if (!string.IsNullOrEmpty(displayValue))
+                    try
+                    {
+                        color = System.Drawing.ColorTranslator.FromHtml(displayValue);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                Html.DevExpress().ColorEdit(settingsType =>
+                {
+                    settingsType.Name = "color" + container.KeyValue;
+
+                    settingsType.Color = color;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+            }
+            else if (type == ObjectPropertyType.MultiselectEnum)
+            {
+                List<int> ids = new List<int>();
+                if (!string.IsNullOrEmpty(displayValue))
+                {
+                    var split = displayValue.Split('+');
+                    int val;
+                    foreach (var e in split)
+                        if (int.TryParse(e, out val))
+                            ids.Add(val);
+                }
+
+                var property = Model.AllowedProperties.FirstOrDefault(e => e.ID == id);
+                var items = property.EnumValues.Select(p => new EnumValueView() { ID = p.Key, Text = p.Value, Checked = ids.Contains(p.Key) }).ToList();
+                ViewContext.Writer.Write("<div class='checkListWrapper'>");
+                @Html.DevExpress().CheckBoxList(settingsType =>
+                {
+                    settingsType.Name = "multiSelectEnum" + container.KeyValue;
+                    settingsType.Properties.ValueField = "ID";
+                    settingsType.Properties.TextField = "Text";
+                    settingsType.Properties.RepeatLayout = RepeatLayout.Table;
+                    settingsType.Properties.RepeatDirection = RepeatDirection.Vertical;
+                    settingsType.Properties.RepeatColumns = 3;
+
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                    settingsType.Properties.Items.AddRange(items.Select(e => new DevExpress.Web.ListEditItem() { Text = e.Text, Value = e.ID, Selected = ids.Contains(e.ID), Index = e.ID }).ToList());
+
+                }).Render();
+                ViewContext.Writer.Write("</div>");
+            }
+            else if (type == ObjectPropertyType.File)
+            {
+                @Html.DevExpress().TextBox(settingsType =>
+                {
+                    settingsType.Width = new Unit("100%");
+                    settingsType.Name = "file" + container.KeyValue;
+                    settingsType.Text = value;
+                    settingsType.ClientVisible = false;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+                ViewContext.Writer.Write("<div class='filePropertyWrapper'><div class='filePropertyTextWrapper'>");
+                @Html.DevExpress().TextBox(settingsType =>
+                {
+                    settingsType.Width = new Unit("100%");
+                    settingsType.Name = "FileTextBox" + container.KeyValue;
+                    settingsType.Text = displayValue;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    // settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                }).Render();
+                ViewContext.Writer.Write("</div><div>");
+                Html.DevExpress().Button(settingsType =>
+                {
+                    settingsType.Width = new Unit("100%");
+                    settingsType.Name = "FileSelectButton" + container.KeyValue;
+                    settingsType.Text = "...";
+                    settingsType.EnableClientSideAPI = true;
+                    settingsType.ClientSideEvents.Click = "function(s, e) {fp_openBrowserPopup(" + container.KeyValue + ", " + (string.IsNullOrEmpty(value) ? "0" : value) + ");}";
+                }).Render();
+                // ViewContext.Writer.Write(@Html.Hidden("FileIDHidden" + container.KeyValue, value, new Dictionary<string, object>() { { "data-id", container.KeyValue.ToString() } }).ToHtmlString());
+                ViewContext.Writer.Write("</div></div>");
+            }
+            else if (type == ObjectPropertyType.Tag)
+            {
+                var property = Model.AllowedProperties.FirstOrDefault(e => e.ID == id);
+                var allowedTokens = property.EnumValues.Select(p => new { ID = p.Value, Text = p.Value }).ToList();
+                var selectedTokens = string.IsNullOrEmpty(value) ? new List<string>() :
+                    value.Split(',').ToList();
+
+                @Html.DevExpress().TokenBox(
+                    settingsType =>
+                    {
+                        settingsType.Name = "tokenBox" + container.KeyValue;
+                        settingsType.ControlStyle.CssClass = "EditInput";
+                        settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                        settingsType.Properties.TextField = "Text";
+                        settingsType.Properties.ValueField = "ID";
+                        settingsType.Properties.AllowCustomTokens = true;
+                        settingsType.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                        settingsType.Properties.IncrementalFilteringDelay = 500;
+                    }
+                ).BindList(allowedTokens).Bind(selectedTokens).Render();
+            }
+            else
+            {
+                Html.DevExpress().DateEdit(settingsType =>
+                {
+                    settingsType.Name = "void" + container.KeyValue;
+                    settingsType.ControlStyle.CssClass = "EditInput";
+                    settingsType.Attributes.Add("data-id", container.KeyValue.ToString());
+                    settingsType.ClientVisible = false;
+                }).Render();
+                ViewContext.Writer.Write(displayValue);
+            }
+        });
+    });
+
+    settings.SetDataItemTemplateContent(c =>
+    {
+        var id = (int)c.Grid.GetRowValues(c.VisibleIndex, "ID");
+
+        ViewContext.Writer.Write("<div class='property-values property-value" + c.VisibleIndex + "' data-field='" + c.Column.FieldName + "' data-idProp='" + id + "' data-objectId='" + Model.ObjectID + "'>" + c.Text + "</div>");
+    });
+
+    if (Model.LinkedBlockID != null)
+    {
+        settings.ClientSideEvents.EndCallback = "fp_changeCustomProperties" + Model.LinkedBlockID.ToString();
+    }
+    settings.Width = Unit.Percentage(100);
+
+    if (!Model.VisibleEnabled)
+    {
+        settings.ClientSideEvents.ContextMenu = "function(s,e){ EditCustomProperty.contextMenu(s,e); }";
+    }
+    settings.ClientSideEvents.SelectionChanged = "function(s, e) { EditCustomProperty.OnSelectionChanged(s,e," + Model.ObjectID + ") }";
+
+}).Bind(Model.Properties).GetHtml()
+

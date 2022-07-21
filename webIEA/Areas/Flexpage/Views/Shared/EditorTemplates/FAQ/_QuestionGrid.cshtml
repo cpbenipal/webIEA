@@ -1,0 +1,69 @@
+﻿@using System.Web.UI.WebControls
+@using System.Globalization
+@model Flexpage.Models.FAQModel
+
+@(Html.DevExpress().GridView(settings =>
+{
+    var cultureInfo = new CultureInfo(Model.LanguageSelector.CurrentLangCode);
+    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+    settings.Name = "fp_FAQQuestion" + Model.ID;
+    settings.CustomJSProperties = (s, e) =>
+    {
+        var grid = s as MVCxGridView;
+        e.Properties["cpAllSubsections"] = ViewBag.Subsections;
+    };
+    settings.CallbackRouteValues = new { Controller = "FAQBlock", Action = "FAQQuestionGrid", BlockID = Model.ID };
+    settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "FAQBlock", Action = "FAQQuestionAdd", BlockID = Model.ID };
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "FAQBlock", Action = "FAQQuestionEdit", BlockID = Model.ID };
+    settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "FAQBlock", Action = "FAQQuestionDelete", BlockID = Model.ID };
+    settings.Width = Unit.Percentage(100);
+    settings.Settings.ShowColumnHeaders = true;
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+    settings.Settings.ShowFilterRow = false;
+    settings.SettingsBehavior.AllowSort = false;
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.KeyFieldName = "ID";
+    settings.CommandColumn.Visible = true;
+
+    settings.SettingsBehavior.AllowSelectSingleRowOnly = true;
+    settings.SettingsBehavior.AllowSelectByRowClick = true;
+    settings.Styles.LoadingPanel.HorizontalAlign = HorizontalAlign.Center;
+    settings.Styles.LoadingPanel.VerticalAlign = VerticalAlign.Middle;
+    settings.Styles.CommandColumn.CssClass = "command";
+
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnEdit", Text = "Edit" });
+    settings.CommandColumn.CustomButtons.Add(new GridViewCommandColumnCustomButton() { ID = "btnDelete", Text = "Delete" });
+    settings.CommandColumn.Caption = "Actions";
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "QuestionNo";
+        column.Caption = "Question No";
+        column.ColumnType = MVCxGridViewColumnType.SpinEdit;
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Description";
+        column.Caption = "Description";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "IsVisible";
+        column.Caption = "IsVisible";
+        column.ColumnType = MVCxGridViewColumnType.CheckBox;
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "SectionView";
+        column.Caption = "Section";
+    });
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "SubsectionView";
+        column.Caption = "Subsection";
+    });
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_FAQ_CustomButtonClick";
+}).Bind(Model.Questions).GetHtml())

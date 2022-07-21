@@ -1,0 +1,24 @@
+﻿@using System.Web.Configuration
+@using Flexpage.Abstract.DTO
+@model Flexpage.Abstract.DTO.SitemapTreeViewModel
+
+<div class='sitemaptreeview'>
+    @if (!String.IsNullOrEmpty(Model.ExceptionMessage))
+    {
+    <h3>@Model.ExceptionMessage</h3>
+    }
+    else
+    {
+    @Html.DevExpress().TreeView(
+            settings =>
+            {
+                settings.Name = "SitemapTreeView" + Model.ID.ToString();
+                settings.AllowCheckNodes = false;
+                settings.AllowSelectNode = false;
+                settings.EnableAnimation = true;
+                settings.ShowExpandButtons = true;
+                settings.EnableHotTrack = true;
+            }).Bind(Model.Nodes).GetHtml()
+    }
+</div>
+

@@ -1,0 +1,103 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Models
+@model PublishingFolderModel
+
+@(Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "fp_webSite";
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "CustomProperty_WebSiteGrid", objectPropertyID = Model.ObjectPropertyID, folderID = Model.FolderID};
+    settings.Width = Unit.Percentage(100);
+    settings.Settings.ShowColumnHeaders = true;
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass = "main_row";
+    settings.Styles.CommandColumn.CssClass = "command";
+    settings.Settings.ShowFilterRow = false;
+
+    settings.KeyFieldName = "Id";
+    settings.CommandColumn.Visible = false;
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Id";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "EmailNotification";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Abbreviation";
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Select";
+        column.Width = Unit.Percentage(5);
+        column.Caption = "#";
+        column.SetDataItemTemplateContent(c =>
+        {
+            var id = c.Grid.GetRowValues(c.VisibleIndex, "Id");
+            var isSelect = c.Grid.GetRowValues(c.VisibleIndex, "IsSelect");
+            var emailNotification = c.Grid.GetRowValues(c.VisibleIndex, "EmailNotification");
+            var abbreviation = c.Grid.GetRowValues(c.VisibleIndex, "Abbreviation");
+
+            Html.DevExpress().CheckBox(checkboxSettings =>
+            {
+                checkboxSettings.Properties.ClientSideEvents.ValueChanged = @"
+                    function(s,e){ EditCustomProperty.selectRow(s,"+c.VisibleIndex+",'"+emailNotification+"','"+abbreviation+"',IsDefaultCheckBox" + id.ToString() + ","+id.ToString()+")" +"}";
+                checkboxSettings.Name = "isSelectCheckBox" + id.ToString();
+                checkboxSettings.Checked = (bool)isSelect;
+            }).Render();
+        });
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Name";
+        column.Caption = "Publish to";
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "IsSelect";
+        column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "IsDefault";
+        column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        column.Visible = false;
+    });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Default";
+        column.Width = Unit.Percentage(10);
+        column.SetDataItemTemplateContent(c =>
+        {
+            var id = c.Grid.GetRowValues(c.VisibleIndex, "Id");
+            var isDefault = c.Grid.GetRowValues(c.VisibleIndex, "IsDefault");
+            var emailNotification = c.Grid.GetRowValues(c.VisibleIndex, "EmailNotification");
+            var abbreviation = c.Grid.GetRowValues(c.VisibleIndex, "Abbreviation");
+
+            Html.DevExpress().CheckBox(checkboxSettings =>
+            {
+                checkboxSettings.Properties.ClientSideEvents.ValueChanged = "function(s,e){EditCustomProperty.defaultRow(s,"+c.VisibleIndex+",'"+emailNotification+"','"+abbreviation+"'," + id.ToString() + ")}";
+                checkboxSettings.Properties.ClientSideEvents.Init = "function(s,e){EditCustomProperty.defaultRow(s," + c.VisibleIndex + ",'" + emailNotification + "','" + abbreviation + "'," + id.ToString() + ")}";
+                checkboxSettings.Name = "IsDefaultCheckBox" + id.ToString();
+                checkboxSettings.Checked = (bool)isDefault;
+            }).Render();
+        });
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.RowClick = "function(s,e){ EditCustomProperty.loadProperty(s,e) }";
+
+}).Bind(Model.WebSiteModels).GetHtml())

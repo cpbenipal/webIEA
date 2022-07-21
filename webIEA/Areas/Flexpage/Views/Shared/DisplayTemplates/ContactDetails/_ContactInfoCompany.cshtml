@@ -1,0 +1,46 @@
+﻿@model Pluritech.Contact.Abstract.DTO.CompanyViewModel
+
+    @if ((bool?)ViewBag.Edit==true)
+    {
+        @Html.HiddenFor(m => m.Type)
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Name1)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DevExpress().ButtonEditFor(m => m.Name1).GetHtml()
+                @Html.ValidationMessageFor(model => model.Name1)
+            </div>
+        </div>
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Name2)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DevExpress().ButtonEditFor(m => m.Name2).GetHtml()
+                @Html.ValidationMessageFor(model => model.Name2)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Name1)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.Name1)
+            </div>
+        </div>
+        <div class="col-md-12 form-fields">
+            <div class="col-xs-5">
+                @Html.DisplayNameFor(m => m.Name2)
+            </div>
+
+            <div class="col-xs-7">
+                @Html.DisplayFor(m => m.Name2)
+            </div>
+        </div>
+    }

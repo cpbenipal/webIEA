@@ -1,0 +1,20 @@
+﻿@model Flexpage.Models.WizardFormSection
+
+@{
+    bool readOnly = ViewData["ReadOnlyMode"] is bool && (bool)ViewData["ReadOnlyMode"];
+}
+
+@for(int i = 0; i < Model.WebForms.Count; i++)
+{
+    @Html.EditorFor(m => m.WebForms[i], "../../../Areas/Flexpage/Views/Flexpage/WebFormFields", new { formIndex = i });
+    if(Model.WebForms.Count > 1 && !readOnly)
+    {
+        <a href="javascript:void(0)" class="btn btn-blue-fullcolor-radius right" onclick="fp_wizard_beforeSubmit(this, 'delete', { section: @ViewData["sectionIndex"], block: @i})">
+            Delete this
+        </a>
+    }
+}
+@if(Model.IsRepeatable && !readOnly)
+{
+    <a href="javascript:void(0)" class="btn btn-blue-fullcolor-radius" onclick="fp_wizard_beforeSubmit(this, 'add', { section: @ViewData["sectionIndex"]})">Add one more</a>
+}

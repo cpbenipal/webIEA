@@ -1,0 +1,71 @@
+﻿@model Flexpage.Models.BlockCommandModel
+
+<script>console.log("popupcustomcontent opened");</script>
+
+<div id="fp_CustomPopupContent" class="page-cms">
+    @using (Ajax.BeginForm(Model.Action, Model.Controller, Model, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_CustomPopupContent", InsertionMode = InsertionMode.Replace }, new { id = "fp_CustomPopupForm" }))
+    { }
+    <script type="text/javascript">
+        fp_PostAjaxForm($('#fp_CustomPopupContent'))
+    </script>
+</div>
+
+<div class="new_footer_content" style="display: none">
+    <div class="col-md-6 pull-left left">
+    </div>
+    <div class="col-md-6 pull-right right">
+        <a href="javascript:void(0)" onclick="fp_chooseObjectContent_OK(this)">OK</a>
+        <a href="javascript:void(0)" data-dismiss="modal" aria-label="Close" onclick="fp_closePopUp(this)">CANCEL</a>
+    </div>
+</div>
+<script>
+     $(document).ready(function() {
+        @{
+            bool delayFooterAppend = (bool?)Session["DelayFooterAppend"] == true ? true : false;
+         }
+         if (@delayFooterAppend.ToString().ToLower()) {
+
+            setTimeout(fp_appendModalFooter, 4000)
+        }
+        else {
+            fp_appendModalFooter();
+        }
+    });
+    function fp_chooseObjectContent_OK(btn) {
+        var res = {};
+        if (typeof fp_getSelectedObject === "function")
+            res = fp_getSelectedObject();
+        if (typeof window.parent.flexpage.fp_afterObjectSelected === "function")
+            window.parent.flexpage.fp_afterObjectSelected(res);
+
+        fp_blockEventAfterClose(btn);
+    }
+    function fp_appendModalFooter() {
+        var popup = $("#flexpage-popup-control_" + @Model.IDPostfix);
+        var detachedChilds = popup.find('.new_footer_content').children().detach().show();
+        if (detachedChilds.length > 0) {
+            popup.find(".modal-footer").html('');
+            popup.find(".modal-footer").append(detachedChilds);
+        }
+    }
+    function fp_showModalFooter() {
+        var popup = $("#flexpage-popup-control_" + @Model.IDPostfix);
+        var nfc = popup.find('.new_footer_content');
+        if (nfc.length < 1)
+            console.log("fp_showModalFooter(PopupCustomContent): nfc.length == " + nfc.length);
+        var nfcChildren = nfc.children();
+        if (nfcChildren.length < 1)
+            console.log("fp_showModalFooter(PopupCustomContent): nfcChildren.length == " + nfcChildren.length);
+        var detachedChilds = nfcChildren.detach();
+        if (detachedChilds.length < 1)
+            console.log("fp_showModalFooter(PopupCustomContent): detachedChilds.length == " + detachedChilds.nfcChildren);
+        if (detachedChilds.length > 0) {
+            popup.find(".modal-footer").html('');
+            popup.find(".modal-footer").append(detachedChilds);
+            detachedChilds.show();
+        }
+        else
+            console.log("fp_showModalFooter(PopupCustomContent): detachedChilds.length == " + detachedChilds.length);
+    }
+
+</script>

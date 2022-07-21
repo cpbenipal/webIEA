@@ -1,0 +1,49 @@
+﻿@using System.Web.UI.WebControls
+@using DevExpress.Utils.Extensions
+@using Flexpage.Helpers;
+@using Pluritech.Properties.Abstract.DTO
+
+@Html.DevExpress().GridView(settings =>
+{
+    settings.Name = "websiteFileShortcuts";
+    settings.KeyFieldName = "OriginalDate;WebsiteID";
+    settings.Width = Unit.Percentage(100);
+    settings.CallbackRouteValues = new
+    {
+        Controller = "Admin",
+        Action = "Publication_Update",
+        ID = ViewBag.ID
+    };
+
+    settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Admin", Action = "Publication_Edit",ID=ViewBag.ID };
+
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "WebsiteName";
+        n.Caption = "Website Name";
+    });
+    settings.Columns.Add(n =>
+    {
+        n.FieldName = "NewDate";
+        n.Caption = "Date";
+        n.EditorProperties().DateEdit(p =>
+        {
+
+        });
+    });
+    settings.EditFormLayoutProperties.ColCount = 2;
+    settings.EditFormLayoutProperties.Items.Add("Date");
+    settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+    {
+        itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+    });
+    settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+    settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+    settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+    settings.CommandColumn.ShowEditButton = true;
+    settings.CommandColumn.Visible = true;
+    settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+    settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+    settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+}).Bind(Model).GetHtml()
+

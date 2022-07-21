@@ -1,0 +1,147 @@
+﻿@model Flexpage.Models.FAQModel
+
+<div id="items" class="tab-pane fade in active">
+    <div class="row records-faq">
+        <div class="col-md-10">
+            <h4 class="title-main-block">Questions <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="top" title="Questions list"></i></h4>
+        </div>
+        <div class="col-md-2">
+            <div class="pull-right">
+                <a data-toggle="modal" data-target="#news-add-new" title='@(Model.ID == 0 ? "Should be saved before adding new items": "")'>
+                    <button id="addnewbtn" type="button" class="btn btn-orange" @(Model.ID == 0 ? "disabled" : "") onclick="fp_popupControlOpen({ command: 'edit', blockID: '@Model.ID',controller: 'FAQBlock', action: 'CreateQuestionItem' }, fp_afterAddFAQRecord)">
+                        Add new
+                    </button>
+
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row custom-tabs-faq">
+        <div class="col-xs-12 fp_position-relative">
+            @{Html.RenderPartial("~/Areas/Flexpage/Views/Shared/EditorTemplates/FAQ/_QuestionGrid.cshtml", Model);}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+    function fp_afterAddFAQRecord() {
+        var grid = eval("fp_FAQQuestion" + @Model.ID);
+        grid.PerformCallback();
+        fp_initJS();
+    }
+
+    function fp_AddItemToSection(s, e) {
+        var value = s.GetText();
+        if (value.length === 0)
+            return;
+        $.ajax({
+            url: '/FAQBlock/FAQSectionAddCombo?text=' + value,
+            type: "POST",
+            success: function (data) {
+                var result = JSON.parse(data);
+                if (!result.success) {
+                    console.log(data)
+                    fp_WarningDialog(result.error.title, result.error.message);
+                }
+                else {
+                    var ID = result.ID;
+                    var index = s.AddItem(value, ID);
+                    s.SelectIndex(index);
+
+                    var gridSections = eval("fp_FAQSection" + @Model.ID);
+                    gridSections.Refresh();
+
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseJSON);
+            }
+        });
+    }
+
+    function fp_AddItemToSubSection(s, e) {
+        var value = s.GetText();
+        if (value.length === 0)
+            return;
+        var sectionID = SectionID.GetSelectedItem().value;
+        $.ajax({
+            url: '/FAQBlock/FAQSectionAddCombo?text=' + value + '&sectionID=' + sectionID,
+            type: "POST",
+            success: function (data) {
+                var result = JSON.parse(data);
+                if (!result.success) {
+                    console.log(data)
+                    fp_WarningDialog(result.error.title, result.error.message);
+                }
+                else {
+                    var ID = result.ID;
+                    var index = s.AddItem(value, ID);
+                    s.SelectIndex(index);
+                    var grid = eval("fp_FAQQuestion" + @Model.ID);
+                    var arr = JSON.parse(grid.cpAllSubsections);
+                    arr.push({ ID: ID, Text: value });
+                    grid.cpAllSubsections = JSON.stringify(arr);
+
+                    var gridSections = eval("fp_FAQSection" + @Model.ID);
+                    gridSections.Refresh();
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseJSON);
+            }
+        });
+    }
+
+    function fp_UpdateSubsections() {
+        var subsections = JSON.parse(eval("fp_FAQQuestion" + @Model.ID).cpAllSubsections);
+        SubsectionID.ClearItems();
+        var sectionID = SectionID.GetValue();
+        if (!sectionID) {
+            SubsectionID.SetEnabled(false);
+            return;
+        }
+        SubsectionID.SetEnabled(true);
+        if (subsections) {
+            subsections = subsections.filter(el => sectionID === el.SectionID);
+            if (subsections.length > 0) {
+                subsections.forEach(el => SubsectionID.AddItem(el.Text, el.ID));
+            }
+        }
+    }
+
+    function fp_InitSubsections() {
+        console.log(eval("fp_FAQQuestion" + @Model.ID));
+        var subsections = JSON.parse(eval("fp_FAQQuestion" + @Model.ID).cpAllSubsections);
+        var sectionID = SectionID.GetValue();
+        if (!sectionID) {
+            SubsectionID.SetEnabled(false);
+            return;
+        }
+        SubsectionID.SetEnabled(true);
+        if (subsections) {
+            subsections = subsections.filter(el => sectionID !== el.SectionID);
+            if (subsections.length > 0) {
+                subsections.forEach(el => fp_RemoveItem(el.ID));
+            }
+        }
+    }
+
+    function fp_RemoveItem(value) {
+        var index = SubsectionID.FindItemByValue(value).index;
+        SubsectionID.RemoveItem(index);
+    }
+
+    function fp_FAQ_CustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the record?', function () { s.DeleteRow(e.visibleIndex); });
+        else if (e.buttonID == 'btnEdit')
+            fp_popupControlOpen({ command: 'edit', blockID: @Model.ID, blockListID: s.GetRowKey(e.visibleIndex), controller: 'FAQBlock', action: 'LoadQuestionItem', alwaysCallOnClose: true }, function () { fp_initJS(); s.PerformCallback(); });
+    }
+
+</script>

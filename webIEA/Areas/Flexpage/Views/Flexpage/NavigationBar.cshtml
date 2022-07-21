@@ -1,0 +1,181 @@
+﻿@model Flexpage.Models.NavigationBarModel
+
+<style type="text/css">
+    .sidenav {
+        min-height: 100%;
+        width: 350px;
+        margin-right: -350px;
+        position: absolute;
+        z-index: 10000;
+        top: 55px;
+        right: 0;
+        background-color: #eeeeee;
+        overflow-x: hidden;
+        transition: 0.3s;
+        display: none;
+    }
+
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 40px;
+            margin-left: 50px;
+            text-decoration: none;
+            color: #979797;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .sidenav input[type="checkbox"]:checked {
+            background: #23598e;
+        }
+
+        .sidenav .panel-heading {
+            padding: 10px 0;
+        }
+
+    .content-sidebar {
+        padding: 15px;
+    }
+
+        .content-sidebar iframe, .content-sidebar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+            .content-sidebar iframe {
+                padding: 15px;
+                border: none;
+                width: 100%;
+                height: 100%;
+            }
+
+
+    .fp-admin-menu-index {
+        z-index: 100000;
+    }
+</style>
+
+@if(Model.AdminMode)
+{
+    <script>
+
+        function openNav(event) {
+            document.getElementById("pageSettingsSidebar").style.marginRight = "0";
+            document.getElementById("pageSettingsSidebar").style.display = "block";
+
+        }
+
+        function closeNav() {
+            document.getElementById("pageSettingsSidebar").style.marginRight = "-350px";
+            document.getElementById("pageSettingsSidebar").style.display = "none";
+        }
+        jQuery(".align-box").click(function () {
+            jQuery(this).find(".rotate").toggleClass("down");
+        })
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+    <!--navigation top-->
+    <div id="navtop" class="flexpage">
+        <div class="navbar-inverse navbar-static-top">
+            <div class="container">
+                <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" href="#">
+                    <span class="glyphicon glyphicon-bar"></span>
+                    <span class="glyphicon glyphicon-bar"></span>
+                    <span class="glyphicon glyphicon-bar"></span>
+                </a>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav pull-right">
+
+                        <li>
+                            <div class="fp_flex fp_align-items-center fp_show-admin-controls">
+                                <div class="fp_show-admin-controls__text">Show admin controls</div>
+                                <div class="fp_show-admin-controls__toggle-switch">
+                                    @using (Ajax.BeginForm("ShowAdminControls", "Flexpage", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "", OnSuccess = "fp_onSuccessShow_AdminControls", InsertionMode = InsertionMode.Replace }, new { Id = "ShowAdminControlsForm" }))
+                                    {
+                                    <div class="toggle-switch">
+                                        <label class="switch">
+                                            @Html.CheckBoxFor(m => m.ShowAdminControls, new { name = "ShowAdminControls" })
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            @if (!string.IsNullOrEmpty(Model.PageName))
+                            {
+                                <a href="#" onclick="openNav()">Page settings</a>
+                            }
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <img src="/Areas/Flexpage/Content/Images/icons/user-abstract.jpg" alt="" style="width: 25px; border-radius: 50%;"> @Model.UserName <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <ul class='dropdown-menu fp-admin-menu-index'>
+                                @*Use "undefined" (without quotes) to automatically reload the page upon saving. Using an empty function "function () { }" will override the reload action,
+        in that case the page will not be reloaded upon save. Using either of aforementioned options will stop the page from reloading upon cancellilng the popup.*@
+                                <li>@Html.ActionLink("Page manager", "PagesManager", "Page")</li>
+                                <li><a href="#" onclick="fp_popupControlOpen({ command: 'edit', action: 'GetSitemapManagerContent', controller: 'SitemapManager' }, function () { })">Sitemap manager</a></li>
+                                <li>@Html.ActionLink("Schedule manager", "LoadScheduleManager", "Schedule")</li>
+                                <li>@Html.ActionLink("Subscription manager", "SubscriptionListManager", "Admin")</li>
+                                <li><a href="/Link/LinkManager">Link manager</a></li>
+                                <li>@Html.ActionLink("RSS manager", "RSSManager", "Admin")</li>
+                                <li>
+                                    <a href="#" onclick="fp_popupControlOpen({ command: 'edit', blockType: 'Disclaimer', blockAlias: 'Disclaimer', blockID: '0' }, undefined)">Disclaimer</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="fp_popupControlOpen({ command: 'edit', blockType: 'Maintenance', blockAlias: 'Maintenance', blockID: '0' }, undefined)">Maintenance</a>
+                                </li>
+                                @if (Model.IsPWAdmin)
+                                {
+                                    <li>
+                                        <a href="#" onclick="fp_popupControlOpen({ command: 'edit', blockType: 'GeneralPermissions', blockAlias: 'GeneralPermissions', blockID: '0' }, undefined)">General Permissions</a>
+                                    </li>
+                                }
+                                <li><a href="#" onclick="fp_popupControlOpen({ command: 'edit', action: 'CSSSettings', controller: 'CSSSettings' }, function () { })">CSS Settings</a></li>
+                                <li><a href="/Home/Recycle">Recycle Bin</a> </li>
+                                <li class="admin-logout" style="border-top: 1px solid grey">
+                                    @Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, null)
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!-- #navtop -->
+    <!--navigation top eng-->
+
+    if (!string.IsNullOrEmpty(Model.PageName))
+    {
+        <!--sidebar for page settings-->
+        <div id="pageSettingsSidebar" class="sidenav">
+            <a class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="content-sidebar" id="pageSettings">
+                <iframe src="/Page/PageSettings?alias=@Model.PageName&ajaxUpdateTargedID=pageSettings"></iframe>
+            </div>
+        </div>
+        <!--sidebar end-->
+    }
+
+}
+
+<script>
+    $(function () {
+        $('#ShowAdminControls').change(function (e) {
+            $("#ShowAdminControlsForm").submit();
+        });
+    });
+    fp_onSuccessShow_AdminControls = function () {
+        location.reload();
+    }
+</script>

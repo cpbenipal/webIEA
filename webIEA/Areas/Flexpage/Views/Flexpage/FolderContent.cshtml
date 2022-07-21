@@ -1,0 +1,27 @@
+﻿@model Flexpage.Models.FolderContentModel
+
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+<script>
+
+    (function () {
+        setTimeout(function () {
+            fp_loadScripts('@Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString()', 'EventManager', function () {
+                fp_loadScripts(EventManager.settings.PathJs.folderContent, 'EventManagerFolderContent', function () {
+                     var args = { ID:@(Model.ID), allowUpload: '@(Model.AllowUpload)' == "True" };
+                    var folderContentEM@(Model.ID) = new EventManagerFolderContent(args);
+                    
+                });
+            });
+        }, 4000);
+    })();
+    
+</script>
+<div class="fp_folderContent">
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/FolderContent/_FolderContent.cshtml", Model)
+</div>
+@if (Model.ShowTiles)
+{
+    <div id="disablingDiv" style="height: 3256px; display: none;"></div>
+}
+

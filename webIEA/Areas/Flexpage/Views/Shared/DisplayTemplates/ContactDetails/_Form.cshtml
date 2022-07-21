@@ -1,0 +1,9 @@
+﻿@model Flexpage.Models.ContactDetailsModel
+
+@using(Html.BeginForm())
+{
+    
+        @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_" + Model.SelectTab + ".cshtml"
+            , Model);
+    
+}

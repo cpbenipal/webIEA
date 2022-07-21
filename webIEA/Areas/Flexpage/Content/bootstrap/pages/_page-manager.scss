@@ -1,0 +1,72 @@
+@import "../variables";
+
+.sidenav {
+  min-height: 100%;
+  width: 350px;
+  margin-right: -350px;
+  position: absolute;
+  z-index: 1;
+  top: 55px;
+  right: 0;
+  background-color: $gray-light;
+  overflow-x: hidden;
+  transition: 0.3s;
+  display: none;
+
+  .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 40px;
+    margin-left: 50px;
+    text-decoration: none;
+    color: $warm-grey;
+    cursor: pointer;
+  }
+  .panel-heading {
+    padding: 10px 0;
+  }
+}
+.page-settings-collapse {
+  .content-sidebar {
+    padding: 5px 30px;
+  }
+}
+
+.collapse-field-container {
+  padding: 15px;
+}
+
+
+.page-page-manager {
+  .collapse-field-container {
+    padding: 15px 0;
+  }
+  .preview-page {
+    a {
+      color: $dusk-blue;
+      text-decoration: none;
+        span {
+          margin-left: 10px;
+        }
+    }
+  }
+  .recently-deleted-blocks {
+    width: 100%;
+  }
+}
+.panel-collapse {
+  background: $gray-light;
+}
+.content-sidebar {
+  padding: 15px;
+}
+
+@media(max-width: 380px){
+  .sidenav {
+    width: 100%;
+  }
+}
+#fp_PageEditorContainer .custom-folder-field {
+    width:100%;
+}

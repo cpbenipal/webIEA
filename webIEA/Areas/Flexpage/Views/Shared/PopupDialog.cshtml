@@ -1,0 +1,123 @@
+﻿@model Flexpage.Models.BlockCommandModel
+@{
+    Layout = "_PopupLayout.cshtml";
+
+    string id = "flexpage-popup-control_" + Model.IDPostfix;
+}
+
+<script>console.log("popupdialog opened");</script>
+<div class="modal fade" id=@id tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="overflow-y:scroll">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" id=@("flexpage-modal-header_" + Model.IDPostfix)>
+                <h3 class="modal-title"></h3>
+                <button type="button" class="close" aria-label="Close" onclick="fp_beforeClosePopUp(this, @Model.IDPostfix)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="min-height: 100px;" id=@("flexpage-modal-body_" + Model.IDPostfix)>
+                @using (Ajax.BeginForm(Model.AdminMode ? "GetPopupContent" : "GetCustomPopupContent", Model.AdminMode ? "Admin" : "Flexpage", null, new AjaxOptions {  InsertionMode = InsertionMode.Replace, UpdateTargetId = "fp_PopupContent_" + Model.IDPostfix, HttpMethod = "POST", OnComplete = "fp_PopupContent_Complete" }, new { id = "fp_popupControl_" + Model.IDPostfix, area = "flexpage" }))
+                {
+                    @Html.HiddenFor(m => m.ID, new { id = "fp_PopupContentID_" + Model.IDPostfix, value = Model.ID })
+                    @Html.HiddenFor(m => m.IDPostfix, new { id = "fp_PopupContentIDPostfix_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.Command, new { id = "fp_PopupContentCommand_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.BlockType, new { id = "fp_PopupContentBlock_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.BlockAlias, new { id = "fp_PopupContentBlockAlias_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.Parameters, new { id = "fp_PopupContentParameters_" + Model.IDPostfix, value = Model.Parameters })
+                    @Html.HiddenFor(m => m.BlocklistID, new { id = "fp_PopupContentBlocklistID_" + Model.IDPostfix, value = Model.BlocklistID })
+                    @Html.HiddenFor(m => m.Controller, new { id = "fp_PopupContentController_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.Action, new { id = "fp_PopupContentView_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.Url, new { id = "fp_PopupContentUrl_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.AllowSave, new { id = "fp_PopupContentAllowSave_" + Model.IDPostfix })
+                    @Html.HiddenFor(m => m.BlockAfter, new { id = "fp_PopupContentBlockAfter_" + Model.IDPostfix, value = Model.BlockAfter })
+                    @Html.HiddenFor(m => m.Title, new { id = "fp_PopupContentCommand_" + Model.IDPostfix, value = Model.Title })
+                    @Html.HiddenFor(m => m.OneButtonText, new { id = "fp_PopupContentCommand_" + Model.IDPostfix, value = Model.OneButtonText })
+                }
+                <div id=@("fp_PopupContent_" + Model.IDPostfix) name="fp_PopupContent">
+                </div>
+            </div>
+            <div class="modal-footer" id=@("flexpage-modal-footer_" + Model.IDPostfix)>
+            </div>
+        </div>
+        <div class="fp_popupPleaseWaitDiv" style="display: none; z-index: 1000; position: absolute;  top: 50%; left: 50%; transform: perspective(1px) translateY(-50%) translateX(-50%); text-align: center; width: 256px; height: 100px; opacity: 0.8; background-color: #23598e" id="fp_popupPleaseWaitDiv">
+            <span style="display: block; opacity: 1; color: #ffffff; font-size: x-large; padding-top: 33px">
+                Please, wait ...
+            </span>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            console.log('PopupDialog loaded')
+
+            // Moved $(window).on('load', ... outside as it was suggested here: https://github.com/jquery/jquery/issues/3194
+            // becaus it will be never called in JQuery v3.x
+        });
+        $(window).on('load',
+                function () {
+                    var params = window.parent.flexpage.params;
+                    var onCancel = window.parent.flexpage.onCancel;
+                    var popup = $('#flexpage-popup-control_' + @Model.IDPostfix);
+                    _fp_popupControlCommand(popup, params, onCancel);
+                    popup.modal();
+                });
+
+        function hidePopupMessage() {
+            var area = document.getElementById("popup-message-area");
+            var areatext = document.getElementById("popup-message-area-text");
+            //document.getElementsByClassName("navbar")[0].style.marginTop = "20px";
+            if (area)
+                area.style.display = "none";
+            if (areatext)
+                areatext.innerHTML = "";
+        }
+        var element = document.getElementsByClassName("modal-content")[0];
+        dragElement(element);
+
+
+        function dragElement(elmnt) {
+            var header = document.getElementById("@("flexpage-modal-header_" + Model.IDPostfix)");
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (header) {
+                // if present, the header is where you move the DIV from:
+                header.onmousedown = dragMouseDown;
+            } else {
+                // otherwise, move the DIV from anywhere inside the DIV:
+                debugger;
+                elmnt.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,207 @@
+@import "../variables";
+
+.checkbox label, .radio label {
+  margin-left: 10px;
+}
+.radio input[type=radio], .radio-inline input[type=radio] {
+  margin-left: -20px;
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
+  margin-left: -30px;
+}
+
+//-- ------Checkbox and Radio
+
+input[type="checkbox"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-image: $checkboxempty;
+  background-repeat: no-repeat;
+  height: 20px;
+  width: 20px;
+  margin-top: 0;
+  border:none;
+}
+input[type="checkbox"]:checked {
+  background-image: $checkboxChecked;
+  background-repeat: no-repeat;
+}
+input[type="checkbox"]:hover {
+  filter: brightness(90%);
+}
+input[type="checkbox"]:disabled {
+    background-image: $checkboxempty;
+    background-repeat: no-repeat;
+    opacity: 0.6;
+    pointer-events: none;
+}
+input[type="checkbox"]:disabled:checked {
+    background-image: $checkboxCheckedDisabled;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+input[type='radio']:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  top: -2px;
+  left: -1px;
+  position: relative;
+  background-color: $white-clear;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid $gray-soft;
+}
+input[type='radio']:checked:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  top: -2px;
+  left: -1px;
+  position: relative;
+  background-color: $dusk-blue;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid $gray-soft;
+}
+
+.panel-default {
+   border-left: none;
+   border-right: none;
+   box-shadow: none;
+   border-radius: 0;
+ }
+.panel-default>.panel-heading {
+  background-image: none;
+  background-color: $gray-light;
+}
+.panel-group {
+  /*margin-bottom: -1px;*/
+}
+.fa-info-circle {
+  margin: 0 5px;
+  color: $warm-grey;
+  font-size: 15px;
+}
+.bootstrap-select {
+  width: 100% !important;
+}
+.selectpicker  {
+  background: $white-clear;
+}
+.bootstrap-select {
+  .btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+    background-color: $white-clear !important;
+  }
+  .btn-default.active, .btn-default:active, .open>.dropdown-toggle.btn-default {
+    background-color: $white-clear;
+  }
+  .btn-default:focus, .btn-default:hover {
+    background-color: $white-clear;
+  }
+}
+.element-center {
+    display: flex;
+
+    label {
+        align-self: center;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+.form-fields {
+  margin: 20px 0;
+}
+@import "../pages/_toggle-switch.scss";
+
+//-----modals-----
+.modal-header {
+  background-color: $dusk-blue;
+}
+.modal-title {
+  float: left;
+  color: $white-clear;
+}
+.modal-dialog .close {
+  color: $white-clear;
+  font-size: 32px;
+  opacity: 1;
+  font-weight: 100;
+}
+.modal-dialog .close:hover {
+  color: $white-clear;
+  opacity: 1;
+}
+.modal-sm {
+  width: 500px;
+}
+.form-control {
+  padding: 6px 6px;
+  height: 32px;
+}
+.custom-folder-field {
+  .input-group-btn {
+    .btn {
+      padding: 5px 12px;
+      border-top: 1px solid $gray-soft;
+      border-right: 1px solid $gray-soft;
+      border-bottom: 1px solid $gray-soft;
+    }
+  }
+}
+.input-group-addon {
+  background-color: $white-clear;
+}
+input[type="checkbox"]:disabled:after {
+  border-color: #fff;
+}
+input[type="checkbox"]:disabled {
+  opacity: 1;
+}
+
+.resize-vertical {
+  resize: vertical;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background-color: $white-clear;
+}
+
+.cke-editor-custom {
+  margin-top: -41px !important;
+}
+.cke_top {
+  background: $gray-light !important;
+}
+.cke_bottom {
+  background: $gray-light !important;
+}
+
+.aligned-field-input {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+}
+.input-size {
+  margin-left: 5px;
+}
+.opacity-percentage {
+  font-weight: 400;
+  margin-top: -5px;
+  padding-left: 10px;
+}
+.align-element-top {
+  margin-top: 8px;
+}
+
+@media(max-width: 550px){
+  .modal-sm {
+    width: 300px;
+  }
+}

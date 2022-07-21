@@ -1,0 +1,178 @@
+﻿@using System.Web.UI.WebControls
+@model Flexpage.Models.CustomPropertiesModel
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+    var grid = Html.DevExpress().GridView(settings =>
+    {
+        settings.Name = "fp_CustomProperties_Grid";
+        settings.KeyFieldName = "ID";
+        settings.CallbackRouteValues = new
+        {
+            Controller = "Flexpage",
+            Action = "CustomPropertiesGrid",
+            isNew= ViewBag.isNew,
+            isEdit = ViewBag.isEdit
+        };
+
+        settings.Width = Unit.Percentage(100);
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "Name";
+            column.Caption = "Name";
+            column.EditorProperties().TextBox(p =>
+            {
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "Type";
+            column.Caption = "Type";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.ClientInstanceName = "TypeEdit";
+                p.ClientSideEvents.Init = ("InitTypeCombobox");
+                p.ClientSideEvents.SelectedIndexChanged = ("SelectedTypeChanged");
+                p.ValueType = typeof(string);
+                p.DataSource = Model.Types;
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.Name = "EnumIDComboBox";
+            column.FieldName = "EnumID";
+            column.Caption = "Enum";
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.ClientSideEvents.Init = ("InitEnumIDCombobox");
+                p.ClientInstanceName = "EnumIDEdit";
+                p.EnableClientSideAPI = true;
+                p.ValueType = typeof(string);
+                p.DataSource = Model.Enums.Select(i => new { EnumText = string.IsNullOrWhiteSpace( i.Prompt)?i.Name: i.Prompt, EnumID = i.ID }).ToList();
+                p.TextField = "EnumText";
+                p.ValueField = "EnumID";
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "IsSystem";
+            column.Caption = "IsSystem";
+
+        });
+
+        var customDeleteButton = new GridViewCommandColumnCustomButton()
+        {
+            ID = "customDelete",
+            Text = "Delete"
+        };
+        customDeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+        settings.ClientSideEvents.CustomButtonClick = "fp_CustomProperties_CustomButtonClick";
+        settings.CustomButtonInitialize = (sender, e) =>
+        {
+            var fieldValue = (bool)(sender as MVCxGridView).GetRowValues(e.VisibleIndex, "IsSystem");
+            if (fieldValue)
+            {
+                e.Visible = DefaultBoolean.False;
+            }
+        };
+        settings.CommandColumn.CustomButtons.Add(customDeleteButton);
+        settings.SettingsBehavior.ConfirmDelete = true;
+        settings.CommandColumn.Visible = (bool)ViewBag.Edit||false;
+        settings.CommandColumn.ShowCancelButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowDeleteButton = false;
+        settings.CommandColumn.ShowNewButtonInHeader = true;
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.CommandColumn.ButtonRenderMode = GridCommandButtonRenderMode.Image;
+        settings.SettingsCommandButton.EditButton.Image.IconID = IconID.EditEdit16x16office2013;
+        //settings.SettingsCommandButton.DeleteButton.Image.IconID = IconID.EditDelete16x16office2013;
+        settings.SettingsCommandButton.NewButton.Image.IconID = IconID.ActionsAdd16x16;
+        settings.SettingsCommandButton.CancelButton.Image.IconID = IconID.ActionsCancel16x16office2013;
+        settings.SettingsCommandButton.UpdateButton.Image.IconID = IconID.SaveSave16x16office2013;
+        settings.EditFormLayoutProperties.ColCount = 3;
+        settings.SettingsDetail.ShowDetailButtons = true;
+        settings.SettingsDetail.ShowDetailRow = true;
+        settings.SettingsDetail.AllowOnlyOneMasterRowExpanded = true;
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            var id = (int)DataBinder.Eval(c.DataItem, "ID");
+            var isSystem = (bool)DataBinder.Eval(c.DataItem, "IsSystem");
+            var types = Model.ObjectProperties.FirstOrDefault(op => op.ID == id).ObjectTypes;
+
+            string ADD_ITEM_TEMPLATE = "<div>{0}</div>";
+            string details = @"<form> <input name='ID' type='hidden' value=" + id + ">";
+            var i = 0;
+            foreach (var type in Model.ObjectTypes.Where(s => s.Name != "Unknown" ))
+            {
+
+                string ADD_ITEM_TEMPLATE_AUTH = @"<div class='checkbox'>
+            <label> <input " + (types.Contains((Pluritech.Properties.Abstract.ObjectType)type.ID) ? "checked= 'checked'" : "") + @"  class='check-box' data-val='{2}' name='ObjectTypes[{1}]' type='checkbox' value='{2}'>
+            <input name = 'ObjectTypes[{1}]' type='hidden' value='{2}'> {0}
+                </label></div>";
+
+                if ((bool)ViewBag.Edit && isSystem == false)
+                    details += string.Format(ADD_ITEM_TEMPLATE_AUTH, type.Caption, i, types.Contains((Pluritech.Properties.Abstract.ObjectType)type.ID).ToString().ToLower());
+                else if (types.Contains((Pluritech.Properties.Abstract.ObjectType)type.ID))
+                    details += string.Format(ADD_ITEM_TEMPLATE, type.Caption, types.Contains((Pluritech.Properties.Abstract.ObjectType)type.ID).ToString().ToLower());
+                i++;
+            }
+            ViewContext.Writer.Write(details + " <div class='fp_customProperties-btn fp_customProperties-btn__save'>");
+            if ((bool)ViewBag.Edit && isSystem == false)
+            {
+                ViewContext.Writer.Write(Html.DevExpress().Button(s =>
+                {
+                    s.Name = "Save";
+                    s.Text = "Save";
+                    s.RenderMode = ButtonRenderMode.Button;
+                }).GetHtml());
+            }
+
+
+            ViewContext.Writer.Write(" </div></form>");
+
+            //Html.RenderAction("FolderContent_GetDetailsRow", "Flexpage", c.Grid.GetRow(c.VisibleIndex) as ObjectInfo);
+        });
+        Model.EditFields.ForEach(f =>
+        {
+            settings.EditFormLayoutProperties.Items.Add(f);
+        });
+        settings.EditFormLayoutProperties.Items.AddCommandItem(itemSettings =>
+        {
+            itemSettings.ColSpan = 3;
+            itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+        });
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Flexpage", Action = "CustomProperties_Add" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Flexpage", Action = "CustomProperties_Edit" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Flexpage", Action = "CustomProperties_Delete" };
+
+        settings.CommandButtonInitialize = (sender, e) =>
+        {
+            if (e.ButtonType == ColumnCommandButtonType.Edit || e.ButtonType == ColumnCommandButtonType.Delete)
+            {
+                var fieldValue = (bool)(sender as MVCxGridView).GetRowValues(e.VisibleIndex, "IsSystem");
+                if (fieldValue)
+                {
+                    e.Visible = false;
+                }
+            }
+        };
+        settings.ClientSideEvents.Init = "function(s,e) { fp_customProperties_Init" + Model.ID.ToString() + "(s, e); }";
+        settings.ClientSideEvents.BeginCallback = "function (s, e) { fp_customProperties_beginCallback" + Model.ID.ToString() + "(s, e); }";
+        settings.ClientSideEvents.EndCallback = "function(s,e) { fp_customProperties_EndCallback" + Model.ID.ToString() + "(s, e); }";
+        settings.BeforeGetCallbackResult = (sender, e) =>
+        {
+            if (ViewBag.isNew == false && ViewBag.isEdit==false)
+            {
+                (sender as MVCxGridView).CancelEdit();
+            }
+        };
+
+    });
+
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.ObjectProperties).GetHtml()
+

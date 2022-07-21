@@ -1,0 +1,37 @@
+{
+  "name": "flexpage2-diagram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app/app.js",
+  "scripts": {
+    "all": "grunt",
+    "dev": "grunt auto-build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bluebird": "^3.5.27",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.3.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-less": "^2.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "load-grunt-tasks": "^3.5.0",
+    "stringify": "^3.1.0",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "bpmn-js": "^5.0.4",
+    "diagram-js": "^5.0.2",
+    "diagram-js-minimap": "^2.0.1",
+    "express": "^4.17.1",
+    "file-saver": "^2.0.2",
+    "jquery": "^3.3.1",
+    "bpmn-moddle": "^0.12.2",
+    "lodash": "^3.0.1"
+  }
+}

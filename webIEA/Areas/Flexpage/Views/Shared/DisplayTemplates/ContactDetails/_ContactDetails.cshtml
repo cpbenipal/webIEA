@@ -1,0 +1,51 @@
+﻿
+@model Flexpage.Models.ContactDetailsModel
+
+@if (Model.ContactID != null)
+{
+    <script>
+        function fp_activeTabChanging@(Model.ID)(s, e) {
+            EventManager.bus.publish(EventManager.settings.Events.contactDetails.tabClick,
+                {
+                    "event": e, "ID":@(Model.ID), "contactID":@(Model.ContactID), "contactType": "@(Model.ContactType)", "edit": false
+                });
+        }
+        function fp_changeTelecoms@(Model.ID)(s, e) {
+            EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.updateTelecoms,
+                {
+                    "event": e,"s":s, "ID":@(Model.ID), "contactID":@(Model.ContactID), "contactType": "@(Model.ContactType)", "edit": false
+                });
+        }
+        function fp_changeCustomProperties@(Model.ID)(s, e) {
+            EventManager.bus.publish(EventManager.settings.Events.contactsEnumeration.updateCustomProperties,
+                {
+                    "event": e,"s":s, "ID":@(Model.ID), "contactID":@(Model.ContactID), "contactType": "@(Model.ContactType)", "edit": false
+                });
+        }
+    </script>
+}
+@Scripts.Render("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js")
+<script>
+    (function () {
+        fp_loadScripts("/Areas/Flexpage/Content/Scripts/CustomPropertyEditForm.js");
+    });
+</script>
+@if (Model.Person != null || Model.Company != null)
+{
+    <div @( Model.Person != null ? " data-contactID=" + Model.Person.ID : (Model.Company != null ? " data-contactID=" + Model.Company.ID : ""))>
+        @Html.Partial($"~/Areas/Flexpage/Views/Shared/DisplayTemplates/ContactDetails/_ContactDetailsPageControl.cshtml", Model)
+    </div>
+}
+else
+{
+    <div class="fp_empty contact-detail-tab-empty">Please select a contact in the list</div>
+}
+<div class="fp_contactDetailsLoadingPanel">
+    @Html.DevExpress().LoadingPanel(
+        settings => {
+            settings.Name = "LoadingPanel" + Model.ID.ToString();
+            settings.Modal = true;
+            settings.Enabled = true;
+        }
+        ).GetHtml()
+</div>

@@ -1,0 +1,36 @@
+﻿@model Flexpage.Models.CustomPropertyAddModel
+
+<script type="text/javascript">
+    @if (Model.SelectListItems.Count > 0)
+    {
+        <text>
+    function fp_saveBlock(idPostfix, blocklistID, blockAfter, parameters) {
+        $("#fp_popupPleaseWaitDiv").css("display", "block");
+        window.parent.flexpage.SetNewPropertyId($("#SelectId").val());
+        fp_beforeClosePopUp(this, 'modal-props');
+    }
+        </text>
+
+    }
+    else
+    {
+        <text>
+    $(".fp_popupButtonsContainer").remove();
+        </text>
+    }
+</script>
+@if (Model.SelectListItems.Count == 0)
+{
+    <hз>You have already selected all available properties for the object.</hз>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-3">
+            <label>Property</label>
+        </div>
+        <div class="col-md-9">
+            @Html.DropDownListFor(m => m.SelectId, Model.SelectListItems, new { @class = "form-control" })
+        </div>
+    </div>
+}

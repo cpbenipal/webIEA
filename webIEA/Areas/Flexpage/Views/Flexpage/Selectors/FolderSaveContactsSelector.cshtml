@@ -1,0 +1,15 @@
+﻿@model Flexpage.Models.FolderSaveContactsSelectorModel
+@Scripts.Render(Html.Action("GetScriptPath", "Settings", new { area = "Flexpage" }).ToString())
+
+@Html.Partial("~/Areas/Flexpage/Views/Flexpage/FolderTreeList.cshtml", Model.FolderTreeListModel)
+@{ 
+    string title = (string)ViewData["Title"];
+}
+<script type="text/javascript">
+    var _selectedFolder = '';
+    fp_popupControlChangeTitle('@(title!=null? title.ToString():"")'.toUpperCase(), '.fp_folderTreeList');
+    function fp_getSelectedObject(e) {
+        var path = $("[class*='dxtlFocusedNode'] .fp_textTreeListNode[data-path]").attr("data-path");
+        return { path: path, id:@Model.FolderTreeListModel.ID };
+    }
+</script>

@@ -1,0 +1,29 @@
+﻿@using Flexpage.Code.Common;
+@using Flexpage.Code.Helpers;
+@using Flexpage.Models;
+@model Flexpage.Models.MediaModel
+
+@{
+    string modalID = Model.Alias + "Modal";
+    int step = (int)Model.Step;
+    int type = (int)Model.GalleryBlockType;
+}
+
+@Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_Block.cshtml", Model)
+@Html.HiddenFor(m => m.EditorType)
+@Html.HiddenFor(m => m.Step)
+@Html.HiddenFor(m => m.Index)
+@Html.EditorFor(m => m.CurrentLocalization, "LocalizedMedia")
+
+@for (int i = 0; i < Model.Localizations.Count; i++)
+{
+    @Html.EditorFor(m => m.Localizations[i], "LocalizedMedia")
+}
+
+@Html.HiddenFor(m => m.DisplayTitle)
+@Html.HiddenFor(m => m.Loop)
+@Html.HiddenFor(m => m.ApplySizeConstraints)
+@Html.HiddenFor(m => m.Color)
+@Html.HiddenFor(m => m.Opacity)
+@Html.EditorFor(m => m.Title, "_LocalizedStringData")
+@Html.EditorFor(m => m.Description, "_LocalizedStringData")

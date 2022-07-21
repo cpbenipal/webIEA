@@ -1,0 +1,75 @@
+﻿@using System.Web.UI.WebControls
+@using Flexpage.Domain.Enum
+@using Flexpage.Helpers;
+
+@model Flexpage.Models.PendingEventsModel
+<script>
+    
+    function clickStart(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.start, {});
+    }
+    function clickStop(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.stop, {});
+    }
+    function clickRefresh(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.refresh, {});
+    }
+    function clickSetDelay(s, e) {
+        EventManager.bus.publish(EventManager.settings.Events.pendingEvents.setDelay, {});
+    }
+</script>
+<span class="fp_pendingEvents-block">
+    <span class="fp_pendingEvents-btn fp_pendingEvents-btn__start">
+        @Html.DevExpress().Button(settings => {
+        settings.Name = "Start";
+        settings.Text = "";
+        settings.Enabled = !Model.Start;
+        settings.Images.Image.IconID = IconID.ArrowsPlay16x16;
+        settings.RenderMode = ButtonRenderMode.Button;
+        settings.EnableClientSideAPI = true;
+        settings.ClientSideEvents.Click = "clickStart";
+    }).GetHtml()
+    </span>
+    <span class="fp_pendingEvents-btn fp_pendingEvents-btn__stop">
+        @Html.DevExpress().Button(settings => {
+        settings.Name = "Stop";
+        settings.Text = "";
+        settings.Enabled = Model.Start;
+        settings.Images.Image.IconID = IconID.ArrowsStop16x16;
+        settings.RenderMode = ButtonRenderMode.Button;
+        settings.EnableClientSideAPI = true;
+        settings.ClientSideEvents.Click = "clickStop";
+    }).GetHtml()
+    </span>
+    <span class="fp_pendingEvents-btn fp_pendingEvents-btn__refresh">
+        @Html.DevExpress().Button(settings => {
+        settings.Name = "Refresh";
+        settings.Text = "";
+        settings.Images.Image.IconID = IconID.ActionsRefresh16x16;
+        settings.RenderMode = ButtonRenderMode.Button;
+        settings.ClientSideEvents.Click = "clickRefresh";
+    }).GetHtml()
+    </span>
+</span>
+<span class="fp_pendingEvents-block" style="padding-left:15px;">
+    <span class="fp_pendingEvents-label">
+        Queue delay(in minutes)
+    </span>
+    <span class="fp_pendingEvents-edit">
+        @Html.DevExpress().SpinEdit(settings =>
+        {
+            settings.Name = "QueueDelay";
+            settings.Number = Model.Delay;
+            settings.Width=60;
+        }).GetHtml()
+    </span>
+    <span class="fp_pendingEvents-btn fp_pendingEvents-btn__set">
+        @Html.DevExpress().Button(settings => {
+        settings.Name = "SetDelay";
+        settings.Text = "Set";
+        settings.Images.Image.IconID = IconID.ActionsRight16x16;
+        settings.RenderMode = ButtonRenderMode.Button;
+        settings.ClientSideEvents.Click = "clickSetDelay";
+    }).GetHtml()
+    </span>
+</span>

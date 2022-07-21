@@ -1,0 +1,82 @@
+﻿@model Flexpage.Models.TabModel
+<script>
+    $(".fb_tabClick").on("click", function (event) {
+        var $open = $(event.target).closest(".flexpage").find("[id$='__Open']");
+        var value = $(event.target).closest(".fb_tabClick").attr("aria-expanded") ? "False" : "True";
+        $open.val(value);
+    });
+
+</script>
+<div class="flexpage panel panel-default">
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.Order)
+    @Html.HiddenFor(m => m.Open)
+    <a class="panel-group">
+    </a><div class="panel-heading  panel-page">
+        <a class="panel-group">
+        </a><h4 class="panel-title">
+            <a class="panel-group">
+            </a>
+            @if (Model.Index > 0)
+            {
+                <a href="#" onclick="fp_tabContainer_MoveUp(@Model.Index)"><span class="pull-left"><i class="fas fa-arrow-up" style="color:#777777"></i></span></a>
+            }
+            @if (!Model.Last)
+            {
+                <a href="#" onclick="fp_tabContainer_MoveDown(@Model.Index)"><span class="pull-left"><i class="fas fa-arrow-down" style="color:#777777"></i></span></a>
+            }
+            <span class="pull-left" style="color: transparent">_</span>
+            <a class="fb_tabClick" data-toggle="collapse" href=@String.Format("#tabEditorCollapse{0}", Model.Index) @(Model.Open ? "aria-expanded=\"true\"" : "")>@Model.Title.NotEmptyLocalization <span class="pull-right"><i class="fas fa-chevron-down rotate"></i></span></a>
+        </h4>
+    </div>
+    <div id=@String.Format("tabEditorCollapse{0}", Model.Index) class="panel-collapse collapse @(Model.Open?"in":"") collapse-field-container" @(Model.Open ? "aria-expanded=\"true\"" : "")>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.EditorFor(m => m.ShowTabToUsers, new { @id = "sttu", @class = "form-check-input" })
+                    <label class="form-check-label" for="sttu">Show tab to users</label>
+                </div>
+            </div>
+            @if (Model.ID > 0)
+            {
+                var id = "HTMLLinkTextBox" + Model.ID.ToString();
+                <div class="col-md-3" style="text-align: right; margin-top: 5px">
+                    <label class="form-check-label" style="vertical-align: middle">
+                        <span class="text-preview-@Model.UID" data-text="ID:">HTML Link:</span>
+                    </label>
+                    <br />
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group input-tab-link">
+                        @Html.HiddenFor(m => m.UID)
+                        @Html.TextBox(id, Model.HTMLLink, new { @class = $"form-control html-code html-code-{Model.UID}", @readonly = "readonly", id = id })
+                        <div class="modal-id modal-id-@Model.UID" data-show="1">@Model.UID</div>
+                        <span>
+                            <i class="far fa-copy copy-icon-@Model.UID" onclick="fp_tabContainer_Copy('@id')" style="display: none"></i>
+                            <i class="fas fa-search" onclick="fpSwitchingIdOrLink('@Model.UID')"></i>
+                        </span>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="multicolumn-name">Title:</label>
+                    @Html.EditorFor(m => m.Title, "LocalizedString")
+                </div>
+            </div>
+            @if ((int)ViewData["Count"] > 1)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#" onclick="fp_tabContainer_DeleteTab(@Model.Index)" class="delete pull-right">
+                            Delete tab
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

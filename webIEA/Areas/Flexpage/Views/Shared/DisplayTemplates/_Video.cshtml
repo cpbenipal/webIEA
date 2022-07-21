@@ -1,0 +1,29 @@
+﻿@using Flexpage.Code.Helpers
+@using Flexpage.Models
+@using Flexpage.Code.Common
+@using Flexpage.Domain.Entities
+@using Flexpage.Domain.Enum
+
+@model Flexpage.Models.VideoModel
+@{
+    string currentBlockID = string.Format("videoBlock_{0}ID_{1}", (!string.IsNullOrEmpty(Model.Alias) ? "alias_" + Model.Alias + "_" : ""), Model.ID);
+}
+
+
+<div id="@currentBlockID" class="video-block">
+    @if (Model.NonEmptyLocalization != null)
+    {
+        if (Model.DisplayTitle)
+        {
+            <div class="video-title">
+                <h4 class="text-center">@Model.Title.NotEmptyLocalization</h4>
+            </div>
+        }
+        <div class="video-container">
+            @Html.Partial("~/Areas/Flexpage/Views/Shared/DisplayTemplates/_Player.cshtml", new PlayerModel(Model) { MediaType = new MediaType() { Name = MediaTypeName.Video.GetDisplay() } })
+        </div>
+    }
+    <div class="video-description">
+        @Model.Description.NotEmptyLocalization
+    </div>
+</div>

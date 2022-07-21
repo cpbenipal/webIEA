@@ -1,0 +1,58 @@
+﻿@model Flexpage.Models.FolderSelectorModel
+
+@Html.Partial("~/Areas/Flexpage/Views/Flexpage/Selectors/FolderSelectorGrid.cshtml", Model)
+
+<script type="text/javascript">
+    var _selectedFolder = '';
+    var _timeoutClick = null;
+    fp_popupControlChangeTitle('Select Folder'.toUpperCase(), '#treeList_FolderSelector');
+    function fp_folderSelector_UnselectNOtNecessaryNodes(s) {
+        if (s.cp_lastKey) {
+            var keys = s.GetVisibleSelectedNodeKeys();
+            if (keys.length == 1) return; //last key is unselected
+            s.SelectNode(s.cp_lastKey, false);
+        }
+    }
+
+    function fp_OnTreeListSelectionChanged(s, e) {
+        e.processOnServer = true;
+        fp_folderSelector_UnselectNOtNecessaryNodes(s);
+        s.GetSelectedNodeValues("FullName", function (values) {
+            if (values) {
+                _selectedFolder = values[values.length-1];
+            }
+            console.log(values);
+        });
+       
+    }
+
+    function fp_folderSelector_ClearTimeout() {
+        clearTimeout(_timeoutClick);
+        _timeoutClick = null;
+    }
+
+    function fp_folderselector_FolderClicked(btn) {
+      
+        btn = $(btn);
+        _selectedFolder = btn.attr('fullname');
+        treeList_FolderSelector.SelectNode(btn.attr('folderid'), true);
+        treeList_FolderSelector.cp_lastKey = btn.attr('folderid');
+        if (!_timeoutClick)
+            _timeoutClick = setTimeout(function () {
+                fp_folderSelector_ClearTimeout();
+                fp_folderSelector_UnselectNOtNecessaryNodes(treeList_FolderSelector);
+                
+            }, 200);
+    }
+
+    function fp_folderselector_FolderDblClicked(btn) {
+        fp_folderSelector_ClearTimeout();
+    }
+
+    function fp_getSelectedObject() {
+        if (_selectedFolder == '') {
+            _selectedFolder = "\\"; 
+        }
+        return { name: _selectedFolder };
+    }
+</script>

@@ -1,0 +1,88 @@
+@import "../variables";
+
+.blocks {
+  .selected-block {
+    padding: 50px;
+    border: 2px solid $dusk-blue-60;
+    position: relative;
+
+  }
+  .fa-edit {
+    color: $dusk-blue-80;
+    font-size: 20px;
+  }
+  .fa-cog {
+    color: $dusk-blue-80;
+    font-size: 20px;
+  }
+  .fa-copy {
+    color: $dusk-blue-80;
+    font-size: 20px;
+  }
+  .fa-trash-alt {
+    color: $squash;
+    font-size: 20px;
+  }
+  .fa-plus {
+    color: $white-clear;
+  }
+  .icons-blocks {
+    margin: 0 10px !important;
+    .col-md-3 {
+      position: relative;
+      display: inline-block;
+      margin: 20px 0;
+      padding: 20px 0;
+
+      &:hover {
+        background: $gray-soft;
+        border-radius: 10px;
+      }
+      img {
+        margin: 0 auto;
+        display: block;
+      }
+      .img-hover {
+        display: none;
+      }
+      .img-main {
+        display: block;
+
+        &:hover {
+          display: none;
+        }
+      }
+      .block-title {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 15px;
+
+        &:hover {
+          color: $dusk-blue;
+        }
+      }
+      &:hover {
+        color: $dusk-blue;
+
+        .img-hover {
+          display: block;
+          margin: 0 auto;
+        }
+        .img-main {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+@media(max-width: 380px){
+  .blocks {
+    .icons-blocks {
+      .col-xs-6 {
+        width: 100%;
+      }
+    }
+  }
+}

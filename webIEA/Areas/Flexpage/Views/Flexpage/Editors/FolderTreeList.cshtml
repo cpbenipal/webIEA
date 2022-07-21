@@ -1,0 +1,280 @@
+﻿@using Flexpage.Domain.Enum
+@using Flexpage.Models
+@model FolderTreeListModel
+
+<script type="text/javascript">
+    fp_popupControlChangeTitle('FOLDERS TREE'.toUpperCase(), '#fp_FolderTreeListEditorContainer');
+
+    function fp_folderContent_chooseFolder() {
+        fp_popupControlOpen({ command: 'choose', blockType: 'FolderSelector', alwaysCallOnClose: true }, function () { });
+    }
+    window.flexpage = window.flexpage || {};
+
+    window.flexpage.fp_afterObjectSelected = function (obj) {
+        console.log(">>", obj);
+        $('input[name=PWFolderName]').val(obj.name);
+    }
+    function fp_treeList_CollapseImage(s, e) {
+        $('#fp_FolderTreeListEditorContainer input[type=hidden][name=CollapseImage]').val(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer  .CollapseImageFileName').html(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer .removeCollapseImage').removeClass("hidden");
+    }
+    function fp_treeList_ExpandImage(s, e) {
+        $('#fp_FolderTreeListEditorContainer input[type=hidden][name=ExpandImage]').val(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer  .ExpandImageFileName').html(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer .removeExpandImage').removeClass("hidden");
+    }
+    function fp_treeList_NoExpandImage(s, e) {
+        $('#fp_FolderTreeListEditorContainer input[type=hidden][name=NoExpandImage]').val(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer  .NoExpandImageFileName').html(e.callbackData);
+        $('#fp_FolderTreeListEditorContainer .removeNoExpandImage').removeClass("hidden");
+    }
+
+    $("#fu_CollapseImage_Remove0").on("click",
+        function () {
+            $('#fp_FolderTreeListEditorContainer input[type=hidden][name=CollapseImage]').val("");
+            $('#fp_FolderTreeListEditorContainer  .CollapseImageFileName').html("");
+        });
+    $("#fu_ExpandImage_Remove0").on("click",
+        function () {
+            $('#fp_FolderTreeListEditorContainer input[type=hidden][name=ExpandImage]').val("");
+            $('#fp_FolderTreeListEditorContainer  .ExpandImageFileName').html("");
+        });
+    $("#fu_NoExpandImage_Remove0").on("click",
+        function () {
+            $('#fp_FolderTreeListEditorContainer input[type=hidden][name=NoExpandImage]').val("");
+            $('#fp_FolderTreeListEditorContainer  .NoExpandImageFileName').html("");
+        });
+</script>
+
+<div id="fp_FolderTreeListEditorContainer" class="flexpage page-cms">
+    @using (Ajax.BeginForm("UpdateFolderTreeList", "Admin", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_FolderTreeListEditorContainer", InsertionMode = InsertionMode.Replace }, new { id = "fp_FolderTreeListBlockEditorForm", forTraking = "all" }))
+    {
+
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+
+        <div class="row" id="folder-content">
+            <ul class="nav nav-pills tabs-navigation">
+                <li class="active"><a data-toggle="pill" href="#source-settings">Source settings</a></li>
+                <li><a data-toggle="pill" href="#general-settings">General settings</a></li>
+                <li><a data-toggle="pill" href="#additional-settings">Additional settings</a></li>
+            </ul>
+            <div class="tab-content">
+                <!--Source settings-->
+                <div id="source-settings" class="tab-pane fade in active">
+                    <div class="row custom-tabs-row">
+                        <div class="col-md-6">
+
+                            <div class="row form-fields">
+                                <div class="col-md-12">
+                                    <label>Use this Pluriworks folder:</label>
+                                </div>
+                                <div class="col-md-12" style="height: 40px;">
+                                    <div class="input-group custom-folder-field">
+                                        @Html.TextBoxFor(m => m.PWFolderName, new { @class = "form-control" })
+                                        <label class="input-group-btn">
+                                            <span class="btn" onclick="fp_folderContent_chooseFolder()">
+                                                <i class="far fa-folder"></i>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-12">
+                                    <label>How deep should the tree list show nested folders, starting from the root:</label>
+                                </div>
+                                <div class="col-md-12">
+                                    @if (Model.ShowType == ShowTypeLevel.All)
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 0, new { ClassName = "form-control", @checked = true })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 0, new { ClassName = "form-control" })
+                                    }
+                                    <label>Show all levels</label>
+                                </div>
+                                <div class="col-md-12">
+                                    @if (Model.ShowType == ShowTypeLevel.DownRoot)
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 1, new { ClassName = "form-control", @checked = true })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 1, new { ClassName = "form-control" })
+                                    }
+                                    @Html.TextBoxFor(m => m.RootFolder, new { @class = "form-control", @style = "max-width:60px;display: inline-block;", @type = "number" })
+                                    <label>level(s) of folders down from the root.</label>
+                                </div>
+                                <div class="col-md-12">
+                                    @if (Model.ShowType == ShowTypeLevel.Towest)
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 2, new { ClassName = "form-control pull-left", @checked = true })
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonFor(m => m.ShowType, 2, new { ClassName = "form-control pull-left" })
+                                    }
+                                    <label>Hide respectively the</label>
+                                    @Html.TextBoxFor(m => m.CountToShow, new { @class = "form-control", @style = "max-width:60px;display: inline-block;", @type = "number" })
+                                    <label>lowest level(s) of folders.</label>
+                                </div>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-9">
+                                    <label>Show only folders to which the visitor has view right:</label>
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.EditorFor(m => m.ViewRights, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--General settings-->
+                <div id="general-settings" class="tab-pane fade">
+                    <div class="row custom-tabs-row">
+                        <div class="col-md-12">
+                            <div class="row form-fields">
+                                <div class="col-md-12">
+                                    <label>Name:</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Text input" })
+                                </div>
+                            </div>
+
+                            <div class="row form-fields">
+                                <div class="col-md-4">
+                                    <label>Show root node:</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.ShowRootNode, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>Allow upload</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.AllowUpload, "SliderCheckbox")
+                                </div>
+
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-4">
+                                    <label>Use description as name:</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.UseDescrAsName, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>Keep selected node on page reload</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.SaveSelectedNode, "SliderCheckbox")
+                                </div>
+
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-4">
+                                    <label>Sort by shown names:</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.SortShownNames, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label>Enable notifications</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.EditorFor(m => m.EnableNotifications, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Additional settings-->
+                <div id="additional-settings" class="tab-pane fade">
+                    <div class="row custom-tabs-row">
+                        <div class="col-md-6">
+                            <div class="row form-fields">
+                                <div class="col-md-12">
+                                    <label>Grid lines:</label>
+
+                                    @Html.DropDownListFor(m => m.GridLines, new SelectList(System.Enum.GetNames(typeof(FolderTreeListGridLines))), new { @class = "form-control",
+                                        @value = Model.GridLines })
+                                </div>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-9">
+                                    <label>Show tree lines:</label>
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.EditorFor(m => m.ShowTreeLines, "SliderCheckbox", new { ClassName = "toggle-switch-custom" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12 ">
+                            <div class="row form-fields">
+                                <div class="col-md-12 image">
+                                    <label class="ImageFileNameLabel">Collapse Image: <span class="CollapseImageFileName">@Model.CollapseImage</span></label>
+                                    @Html.HiddenFor(m => m.CollapseImage)
+                                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                               {
+                                   Name = "fu_CollapseImage",
+                                   OnFileUploaded = "fp_treeList_CollapseImage",
+                                   UploadMode = UploadControlUploadMode.Auto,
+                                   EnableDragAndDrop = false,
+                               })
+                                    <a class="remove removeCollapseImage @(string.IsNullOrEmpty( Model.CollapseImage)?"hidden":"")" href="#" onclick="fp_RemoveImage('Collapse');">Remove</a>
+                                </div>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-12 image">
+                                    <label class="ImageFileNameLabel">Expand Image: <span class="ExpandImageFileName">@Model.ExpandImage</span></label>
+                                    @Html.HiddenFor(m => m.ExpandImage)
+                                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                               {
+                                   Name = "fu_ExpandImage",
+                                   OnFileUploaded = "fp_treeList_ExpandImage",
+                                   UploadMode = UploadControlUploadMode.Auto,
+                                   EnableDragAndDrop = false,
+                               })
+                                    <a class="remove removeExpandImage @(string.IsNullOrEmpty( Model.ExpandImage)?"hidden":"")" href="#" onclick="fp_RemoveImage('Expand');">Remove</a>
+                                </div>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-md-12 image">
+                                    <label class="ImageFileNameLabel">NoExpand Image: <span class="NoExpandImageFileName">@Model.NoExpandImage</span></label>
+                                    @Html.HiddenFor(m => m.NoExpandImage)
+                                    @Html.Partial("~/Areas/Flexpage/Views/Shared/UploadControlPartial.cshtml", new Flexpage.Models.FileUploaderModel
+                               {
+                                   Name = "fu_NoExpandImage",
+                                   OnFileUploaded = "fp_treeList_NoExpandImage",
+                                   UploadMode= UploadControlUploadMode.Auto,
+                                   EnableDragAndDrop = false,
+                               })
+                                        <a class="remove removeNoExpandImage @(string.IsNullOrEmpty( Model.NoExpandImage)?"hidden":"")" href="#" onclick="fp_RemoveImage('NoExpand');">Remove</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+<script>
+    function fp_RemoveImage(name) {
+        $("." + name + "ImageFileName").html("");
+        $('input[type=hidden][name=' + name + 'Image]').val(null);
+        $(".remove" + name + "Image").addClass("hidden");
+    }
+</script>

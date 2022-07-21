@@ -1,0 +1,563 @@
+﻿@model Flexpage.Models.WebFormModel
+<style>
+    .modal-body {
+        overflow-x: hidden;
+    }
+</style>
+<div id="fp_FormBlockEditorContainer" class="flexpage page-forms">
+    <script type="text/javascript">
+
+    fp_popupControlChangeTitle('WEB FORM', '#fp_FormBlockEditorContainer');
+
+    //function fp_changeLanguage(langCode) {
+    //    fp_StoreFromHtmlEditorToHidden('FullText');
+    //    fp_PostAjaxForm('#fp_CmsBlockEditorContainer', { command: 'changelanguage', parameters: langCode });
+    //}
+
+    //function fp_preSaveBlock() {
+    //    fp_StoreFromHtmlEditorToHidden('FullText');
+    //}
+
+    //fp_popupControlChangeTitle('CMS TEXT', '#fp_CmsBlockEditorContainer');
+
+    //$(document).ready(function () {
+    //    $('#LocalizedTitle_CurrentLocalization').addClass('tracked');
+    //});
+
+    function fp_webFormAllowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function fp_webFormAllowFieldDrop(ev) {
+        //var fieldID = ev.dataTransfer.getData("fieldID");
+        //console.log(" fp_webFormAllowFieldDrop: fieldID = " + fieldID);
+        //if (fieldID != "")
+        var f = ev.dataTransfer.types.indexOf("fieldid") > -1;
+        console.log(" fp_webFormAllowFieldDrop: hasfieldID = " + f);
+        if (f)
+            ev.preventDefault();
+    }
+
+    function fp_webFormAllowActionDrop(ev) {
+        var f = ev.dataTransfer.types.indexOf("actionid") > -1;
+        console.log(" fp_webFormAllowActionDrop: hasActionID = " + f);
+        if (f)
+            ev.preventDefault();
+    }
+
+    function fp_webFormAllowSectionDrop(ev) {
+        //var sectionID = ev.dataTransfer.getData("sectionID");
+        //console.log(" fp_webFormAllowSectionDrop: sectionID = " + sectionID);
+        //if (sectionID != "")
+        //    ev.preventDefault();
+        var f = ev.dataTransfer.types.indexOf("sectionid") > -1;
+        console.log(" fp_webFormAllowFieldDrop: hassetionID = " + f);
+        if (f)
+            ev.preventDefault();
+    }
+
+    //function fp_webFormActionDrop(ev, targetID) {
+    //    ev.preventDefault();
+    //    var actionID = ev.dataTransfer.getData("actionID");
+    //    console.log("actionID = " + actionID);
+    //    var sp = actionID + "," + targetID;
+    //    fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'moveaction', parameters: sp });
+    //}
+
+    //function fp_webFormActionsDropAreaEnter(target) {
+    //    $(target).css({ "height": "24px", "background-color": "#f8f8f8" });
+    //    // $(target).addClass("panel panel-default");
+    //}
+
+    //function fp_webFormActionsDropAreaLeave(target) {
+    //    $(target).css({ "height": "8px", "background-color": "#ffffff" });
+    //    // $(target).removeClass("panel panel-default");
+    //}
+
+    function fp_webFormActionDrag(ev, actionID) {
+        ev.dataTransfer.setData("actionID", actionID);
+    }
+
+    function fp_webFormSectionDrag(ev, sectionID) {
+        ev.dataTransfer.setData("sectionID", sectionID);
+    }
+
+    function fp_webFormSectionsDrop(ev, targetID) {
+        ev.preventDefault();
+        var sectionID = ev.dataTransfer.getData("sectionID");
+        var sp = sectionID + "," + targetID;
+        console.log("fp_webFormSectionsDrop: sectionID = " + sectionID + ", targetID = " + targetID);
+        fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'addsection', parameters: sp });
+    }
+
+    function fp_webFormFieldDrag(ev, fieldID) {
+        ev.dataTransfer.setData("fieldID", fieldID);
+        ev.dataTransfer.setData("isTemplate", false);
+    }
+
+    function fp_webFormActionsDrop(ev, targetID) {
+        ev.preventDefault();
+        var actionID = ev.dataTransfer.getData("actionID");
+        console.log("fp_webFormActionsDrop: actionID = " + actionID + "targetID = " + targetID);
+        var sp = actionID + "," + targetID;
+        fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'addaction', parameters: sp });
+    }
+
+    function fp_webFormFieldsDrop(ev, targetID, sectionID) {
+        ev.preventDefault();
+        var fieldID = ev.dataTransfer.getData("fieldID");
+        var isTemplate = ev.dataTransfer.getData("isTemplate");
+        console.log("fieldID = " + fieldID + ", isTemplate = " + isTemplate, "sectionID = " + sectionID);
+        // var params = { sourceID: fieldID, targetID: targetID };
+        // var sp = JSON.stringify(params).replace('"', "'");
+        var sp = fieldID + "," + targetID + "," + sectionID;
+        // if (isTemplate === "true")
+            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'addfield', parameters: sp });
+        // else
+        //    fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'movefield', parameters: sp });
+
+        // var data = ev.dataTransfer.getData("text");
+        // ev.target.appendChild(document.getElementById(data));
+    }
+
+    function fp_webFormItemDropAreaEnter(target) {
+        $(target).css({ "height": "32px", "background-color": "#f8f8f8" });
+        // $(target).addClass("panel panel-default");
+    }
+
+    function fp_webFormItemDropAreaLeave(target) {
+        $(target).css({ "height": "8px", "background-color": "#ffffff" });
+        // $(target).removeClass("panel panel-default");
+    }
+
+    function fp_webFormItemAppendAreaEnter(target) {
+        $(target).css({ "border": "2px solid #EEEEEE", "background-color": "#f8f8f8" });
+        // $(target).addClass("panel panel-default");
+    }
+
+    function fp_webFormItemAppendAreaLeave(target) {
+        $(target).css({"border": "2px solid white", "background-color": "#ffffff" });
+        // $(target).removeClass("panel panel-default");
+    }
+
+    function fp_webFormTemplatesDropAreaEnter(target) {
+        $(target).css({ "background-color": "#f8f8f8" });
+        // $(target).addClass("panel panel-default");
+    }
+
+    function fp_webFormTemplatesDropAreaLeave(target) {
+        $(target).css({ "background-color": "#ffffff" });
+        // $(target).removeClass("panel panel-default");
+    }
+
+    function fp_webFormTemplateDrag(ev, fieldTemplateID) {
+        ev.dataTransfer.setData("fieldID", fieldTemplateID);
+        // ev.dataTransfer.setData("isTemplate", true);
+
+    }
+
+    function fp_webFormTemplatesDrop(ev) {
+        console.log("fp_webFormTemplatesDrop ");
+        ev.preventDefault();
+        var fieldID = ev.dataTransfer.getData("fieldID");
+        if (fieldID != null) {
+            // var isTemplate = ev.dataTransfer.getData("isTemplate");
+            console.log("fp_webFormTemplatesDrop: fieldID = " + fieldID );
+            // if (isTemplate === "false")
+            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletefield', parameters: fieldID });
+        }
+        else {
+            var sectionID = ev.dataTransfer.getData("sectionID");
+            if (sectionID != null) {
+
+                console.log("fp_webFormTemplatesDrop: sectionID = " + sectionID );
+                // if (isTemplate === "false")
+                fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletesection', parameters: sectionID });
+            }
+
+        }
+
+    }
+
+    function fp_webFormSetSelectedTemplate(template, templateType) {
+        jQuery("#FormID").val(template);
+        jQuery("#TemplateType").val(templateType);
+        fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'settemplate', parameters: template });
+    }
+
+    function fp_webFormSetFieldsTemplate() {
+        templateID = $('#fp_webFormFieldsTemplateSelector').val();
+        console.log("fp_webFormSetFieldsTemplate: templateID = " + templateID);
+        fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'setfieldstemplate', parameters: templateID });
+    }
+
+    function fp_prePostAjaxForm() {
+        fp_webFormSaveUncollapsed();
+        fp_updateActionEditors();
+    }
+    var actionEditors = [];
+
+    function fp_updateActionEditors() {
+            console.log("fp_updateActionEditors");
+        actionEditors.forEach(e => {
+                if (typeof e.Update === "function")
+                    e.Update();
+            });
+    }
+
+    function fp_refreshActionEditors() {
+        console.log("fp_refreshActionEditors");
+        var items = fp_webFormGetFormFields();
+        actionEditors.forEach(e => {
+            if (typeof e.Refresh === "function")
+                e.Refresh(items);
+        });
+    }
+
+    function fp_webFormFillFieldComboItems(comboBox, items) {
+        var selectedIndex = comboBox.GetSelectedIndex();
+        comboBox.ClearItems();
+        for (var i = 0; i < items.length; i++) {
+            comboBox.AddItem(items[i], items[i]);
+        }
+        if (selectedIndex < items.length)
+            comboBox.SetSelectedIndex(selectedIndex);
+    }
+
+    function fp_webFormGetFormFields() {
+        var values = [];
+        $("input.webform-fieldname").each(function (i, e) {
+            var type = $(e).closest('.collapse-field-container').find('.webform-fieldtype option:selected').text();
+            var o = { Name: $(e).val(), Type: type };
+            values.push(o); // this is the value of each textbox 
+        });
+        return values;
+    }
+
+        function fp_webFormGetFieldNamesByType(formFields, fieldType) {
+            var items = [];
+            formFields.forEach(function (e) {
+                if (e.Type == fieldType)
+                    items.push(e.Name);
+            });
+            return items;
+        }
+
+    function fp_webFormSaveUncollapsed() {
+        var elems = $("#fp_FormBlockEditorContainer").find(".in");
+        var resObj = [];
+        elems.each(function (index) {
+            resObj.push(this.id);
+        });
+        jQuery("#Uncollapsed").val(JSON.stringify(resObj));
+    }
+
+    function fp_webFormLoadUncollapsed() {
+        console.log("uncollapsed = " + $("#Uncollapsed").val());
+        var ul = JSON.parse($("#Uncollapsed").val());
+        // console.log("uncollapsed = @Model.Uncollapsed");
+        // var ul = JSON.parse("@Model.Uncollapsed");
+        for (var i = 0; i < ul.length; i++) {
+            $('#' + ul[i]).switchClass("collapse", "in");
+        }
+    }
+
+    function fp_webFormFieldTypeChanged(oldType, sender) {
+        var tn = $(sender).find(":selected").text();
+        console.log("fp_webFormFieldTypeChanged: typeName = " + tn);
+        if (tn == "enum" || (oldType == "enum" && tn != oldType))
+            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'fieldtypechanged', parameters: tn });
+        else
+            console.log("fp_webFormFieldTypeChanged: no need in form reload because new type is not enum");
+        fp_refreshActionEditors();
+    }
+
+    function fp_webFormFieldNameChanged(sender) {
+        fp_refreshActionEditors();
+    }
+
+    /* function fp_webFormEnumValueSelected(sender, editorID) {
+        var txt = $(sender).find(":selected").text();
+
+        $('#'+editorID).val(txt);
+        console.log("fp_webFormEnumValueSelected: editorID = " + editorID + ", value = " + txt);
+    }
+
+    function fp_webFormFieldEnumChanged(oldEnum, sender) {
+        var ce = $(sender).find(":selected").text();
+        console.log("fp_webFormFieldEnumChanged: newEnum = " + ce);
+        if (oldEnum != ce)
+            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'fieldenumchanged', parameters: ce });
+        else
+            console.log("fp_webFormFieldEnumChanged: no need in form reload because enum is not changed");
+    } */
+
+    //function fp_webFormSaveAsTemplate() {
+    //    fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'saveastemplate', parameters: "" });
+    //}
+
+    function fp_webFormToString(value) {
+            return value === null ? '' : value.toString();
+    }
+
+    function fp_webFormEditTemplate() {
+
+        //fp_ConfirmDialog('Close popup', 'Are you sure you want to close the window?', function () {
+        //    fp_closePopUp(element);
+        //});
+        console.log("fp_webFormEditTemplate");
+        fp_TwoButtonsDialog('Edit template', 'Edit current template, or create a copy?', 'Edit', 'Copy', function (type) {
+            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'edittemplate', parameters: type });
+        });
+    }
+
+    function fp_webFormChangeLanguage(lang) {
+        fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'changelanguage', parameters: lang });
+    }
+
+    $(function () {
+
+        if (@(Model.ReadOnly ? "false" : "true")) {
+
+            $("#fp_webFormActionsList").sortable({
+                group: 'nested',
+                update: function (event, ui) {
+                    console.log("fp_webFormActionsList: sort changed ev = " + event + ", ui = " + ui);
+                    var i = 0;
+                    $("#fp_webFormActionsList").find("[name*='Index']").each(function () {
+                        $(this).val(i);
+                        i++;
+                    });
+                }
+            });
+            $("#fp_webFormActionsList").disableSelection();
+
+            var fp_webFormFieldsList_Over = false;
+            $("#fp_webFormFieldsList").sortable({
+                group: 'nested',
+                update: function (event, ui) {
+                    console.log("fp_webFormFieldsList: sort changed ev = " + event + ", ui = " + ui);
+                    var i = 0;
+                    $("#fp_webFormFieldsList").find("[name*='.Index']").each(function () {
+                        $(this).val(i);
+                        i++;
+                    });
+                },
+
+                out: function (event, ui) {
+                    fp_webFormFieldsList_Over = false;
+                },
+
+                over: function (event, ui) {
+                    fp_webFormFieldsList_Over = true;
+                },
+
+                beforeStop: function (event, ui) {
+                    console.log("beforeStop");
+                    if (fp_webFormFieldsList_Over == false) {
+                        if (window.confirm("Are you sure?")) {
+                            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletefield', parameters: ui.helper.data("index") + "," + ui.helper.data("sectionindex")});
+                        }
+                    }
+                }
+            });
+            $("#fp_webFormSectionsList").disableSelection();
+
+            var fp_webFormActionsList_Over = false;
+            $("#fp_webFormActionsList").sortable({
+                group: 'nested',
+                update: function (event, ui) {
+                    console.log("fp_webFormActionsList: sort changed ev = " + event + ", ui = " + ui);
+                    var i = 0;
+                    $("#fp_webFormActionsList").find("[name*='.Index']").each(function () {
+                        $(this).val(i);
+                        i++;
+                    });
+                },
+
+                out: function (event, ui) {
+                    fp_webFormActionsList_Over = false;
+                },
+
+                over: function (event, ui) {
+                    fp_webFormActionsList_Over = true;
+                },
+
+                beforeStop: function (event, ui) {
+                    if (fp_webFormActionsList_Over == false) {
+                        if (window.confirm("Are you sure?")) {
+                            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deleteaction', parameters: ui.helper.data("index")});
+                        }
+                    }
+                }
+            });
+
+            $("#fp_webFormActionsList").disableSelection();
+
+            var fp_webFormSectionsList_Over = false;
+            $("#fp_webFormSectionsList").sortable({
+                group: 'nested',
+                update: function (event, ui) {
+                    console.log("fp_webFormSectionsList: sort changed ev = " + event + ", ui = " + ui);
+                    var i = 0;
+                    $("#fp_webFormSectionsList").find("[name*='.Index']").each(function () {
+                        $(this).val(i);
+                        i++;
+                    });
+                },
+
+                out: function (event, ui) {
+                    fp_webFormSectionsList_Over = false;
+                },
+
+                over: function (event, ui) {
+                    fp_webFormSectionsList_Over = true;
+                },
+
+                beforeStop: function (event, ui) {
+                    console.log("beforeStop");
+                    if (fp_webFormSectionsList_Over == false) {
+                        if (window.confirm("Are you sure?")) {
+
+                            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletesection', parameters: ui.helper.data("index") });
+                        }
+                    }
+                }
+            });
+            $("#fp_webFormSectionsList").disableSelection();
+
+            var fp_webFormSectionFieldsList_Over = false;
+            $(".fp_webFormBlockSectionFieldsList").sortable({
+                group: 'nested',
+                update: function (event, ui) {
+                    console.log("fp_webFormBlockSectionFieldsList: sort changed ev = " + event + ", ui = " + ui);
+                    var i = 0;
+                    $(".fp_webFormBlockSectionFieldsList").find("[name*='.Index']").each(function () {
+                        $(this).val(i);
+                        i++;
+                    });
+                },
+                out: function (event, ui) {
+                    fp_webFormSectionFieldsList_Over = false;
+                },
+
+                over: function (event, ui) {
+                    fp_webFormSectionFieldsList_Over = true;
+                },
+
+                beforeStop: function (event, ui) {
+                    console.log("beforeStop");
+                    if (fp_webFormSectionFieldsList_Over == false) {
+                        if (window.confirm("Are you sure?")) {
+                            fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletefield', parameters: ui.helper.data("index") + "," + ui.helper.data("sectionindex") });
+                            //fp_PostAjaxForm('#fp_FormBlockEditorContainer', { command: 'deletefield', parameters: ui.helper.data("index") });
+                        }
+                    }
+                }
+
+            });
+            $(".fp_webFormBlockSectionFieldsList").disableSelection();
+
+
+        }
+        fp_webFormLoadUncollapsed();
+    });
+    </script>
+
+    @using (Ajax.BeginForm("UpdateWebForm", "WebFormBlock", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_FormBlockEditorContainer", InsertionMode = InsertionMode.Replace },
+    new { id = "fp_FormBlockEditorContainer", forTraking = "" }))
+    {
+
+        @* @Html.Partial("~/Areas/Flexpage/Views/Shared/EditorTemplates/_Block.cshtml", Model) *@
+        @Html.EditorFor(m => m, "_Block")
+
+        @Html.HiddenFor(m => m.Uncollapsed)
+        @Html.HiddenFor(m => m.Step)
+        @Html.HiddenFor(m => m.Type)
+        @Html.HiddenFor(m => m.TemplateTypeID)
+        @Html.HiddenFor(m => m.TemplateName)
+        @Html.HiddenFor(m => m.FormID)
+        @Html.HiddenFor(m => m.FieldsTemplateID)
+
+        <div class="row">
+            <ul class="nav nav-pills tabs-navigation">
+                <li class='@(Model.Step == 0 ? "active" : "")'><a data-toggle="pill" href="#type-custom-form" onclick="jQuery('#Step').val('0');">Type</a></li>
+                <li class='@(Model.Step == 1 ? "active" : "")'><a data-toggle="pill" href="#layout-form" onclick="jQuery('#Step').val('1');">Layout</a></li>
+            </ul>
+            <div class="tab-content">
+                <!--Tab TYPE-->
+                <div id="type-custom-form" class='tab-pane fade @(Model.Step == 0 ? "in active" : "") form-type'>
+                    <!-- System types-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="text-center">Start by selecting the type of display</h5>
+                            <h4 class="text-upper">Default types</h4>
+                        </div>
+                        <div class="col-md-12 form-items">
+                            @{
+                                int i = 0;
+                                foreach (var template in Model.SystemTemplates)
+                                {
+                                    <div class='col-md-2 @(i == 0 ? "col-md-offset-1 left" : (i == 1 ? "middle" : "right"))'>
+                                        <div class="content-box">
+                                            <a data-toggle="modal" data-target="#@template.TemplateType.ToString()" onclick='fp_webFormSetSelectedTemplate(@(template.TemplateID), "@(template.TemplateType.ToString())");'>
+                                                <img src='~/Areas/Flexpage/Content/Images/icons/forms/@(template.TemplateType.ToString() + ".svg")' alt="" class="img-main">
+                                                <img src='~/Areas/Flexpage/Content/Images/icons/forms/@(template.TemplateType.ToString() + "-selected.svg")' alt="" class="img-hover">
+                                                <div class="block-title text-center text-upper )">@template.TemplateName</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @Html.Hidden(string.Format("SystemTemplates[{0}].TemplateID", i), Model.SystemTemplates[i].TemplateID)
+                                    @Html.Hidden(string.Format("SystemTemplates[{0}].TemplateName", i), Model.SystemTemplates[i].TemplateName)
+                                    @Html.Hidden(string.Format("SystemTemplates[{0}].TemplateType", i), Model.SystemTemplates[i].TemplateType)
+
+                                    i++;
+                                }
+                            }
+                        </div>
+                    </div>
+                    <!-- user types-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="text-upper">Saved templates</h4>
+                        </div>
+                        <div class="col-md-12 form-items">
+                            @{
+                                i = 0;
+                                foreach (var template in Model.UserTemplates)
+                                {
+                                    <div class='col-md-2 rignt'>
+                                        <div class="content-box">
+                                            <a data-toggle="modal" data-target="#@template.TemplateType.ToString()" onclick='fp_webFormSetSelectedTemplate(@(template.TemplateID), "@(template.TemplateType.ToString())");'>
+                                                <img src="~/Areas/Flexpage/Content/Images/icons/forms/custom.svg" alt="" class="img-main">
+                                                <img src="~/Areas/Flexpage/Content/Images/icons/forms/custom-selected.svg" alt="" class="img-hover">
+                                                <div class="block-title text-center text-upper">@template.TemplateName</div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    @Html.Hidden(string.Format("UserTemplates[{0}].TemplateID", i), Model.UserTemplates[i].TemplateID)
+                                    @Html.Hidden(string.Format("UserTemplates[{0}].TemplateName", i), Model.UserTemplates[i].TemplateName)
+                                    @Html.Hidden(string.Format("UserTemplates[{0}].TemplateType", i), Model.UserTemplates[i].TemplateType)
+
+                                    i++;
+
+                                    if (i > 0 && i % 6 == 0)
+                                    {
+                                        <div style="clear:both;"></div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!--Tab LAYOUT 2-->
+                <div id="layout-form" class='tab-pane fade @(Model.Step == 1 ? "in active" : "")'>
+                    @Html.EditorFor(m => m, "_WebFormTemplate")
+                </div>
+                <!--LEFT------------------------------------------------------------------------------------ -->
+            </div>
+        </div>
+    }
+</div>
+

@@ -1,0 +1,90 @@
+﻿@using System.Text
+@using System.Web.UI.WebControls
+@using Flexpage.Domain.Enum
+@using Flexpage.Helpers;
+
+@model Flexpage.Models.FolderContentModel
+
+@Html.DevExpress().CardView(settings => {
+    settings.Name = "fp_FolderContent_Grid" + Model.ID.ToString(); ;
+    settings.CallbackRouteValues = new { Controller = "Flexpage", Action = "FolderContentGrid", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser };
+    settings.Width = Unit.Percentage(100);
+
+    settings.CustomBindingRouteValuesCollection.Add(
+        CardViewOperationType.Paging,
+        new { Controller = "Flexpage", Action = "FolderContent_CardPagingAction", selectFolderName = Model.SelectFolderName, PWBrowser = Model.PWBrowser }
+    );
+
+    foreach (Flexpage.Abstract.GridColumnModel col in Model.Columns)
+    {
+        if(!col.ShowInGrid && col.SortOrder == DevExpress.Data.ColumnSortOrder.None)
+            continue;
+
+        settings.Columns.Add(column =>
+        {
+            column.Caption = col.ColumnCaption ?? col.FieldName;
+            column.FieldName = col.FieldName;
+            column.UnboundType = DevExpress.Data.UnboundColumnType.String;
+            column.Visible = col.ShowInGrid;
+        });
+
+        settings.CardLayoutProperties.Items.Add(i => {
+            i.ColumnName = col.FieldName;
+            i.ShowCaption = DefaultBoolean.False;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+            i.Width = 140;
+        });
+    };
+
+    settings.SettingsPager.SettingsTableLayout.RowsPerPage = 1;
+    settings.SettingsPager.SettingsTableLayout.ColumnCount = Model.PagingSize;
+    settings.SettingsPager.ShowNumericButtons = false;
+    settings.SettingsPager.Summary.Visible = false;
+
+    settings.SettingsPager.ShowSeparators = true;
+    settings.SettingsPager.NextPageButton.Text = "NEXT PAGE";
+    settings.SettingsPager.NextPageButton.Image.Url = "/content/images/tfcb_right_arrow.png";
+    settings.SettingsPager.PrevPageButton.Text = "PREVIOUS PAGE";
+    settings.SettingsPager.PrevPageButton.Image.Url = "/content/images/tfcb_left_arrow.png";
+    if (Model.PagingMode == PagingMode.Pages)
+    {
+        settings.SettingsPager.Mode = GridViewPagerMode.ShowPager;
+    }else if (Model.PagingMode == PagingMode.ShowAll)
+    {
+        settings.SettingsPager.PageSizeItemSettings.Visible = true;
+        settings.SettingsPager.PageSizeItemSettings.ShowAllItem = true;
+        settings.SettingsPager.Mode = GridViewPagerMode.ShowAllRecords;
+    }
+    settings.Styles.Card.CssClass = "fc_tile";
+    settings.SetCardTemplateContent(c =>
+    {
+        var divImage = new StringBuilder();
+        var resValue = "/flexpage/getfiletile?id=" + DataBinder.Eval(c.DataItem, "ID").ToString();
+        var resPreviewValue = "/flexpage/getfiletile?id=" + DataBinder.Eval(c.DataItem, "ID").ToString() + "&preview=true";
+
+        divImage.Append($"<div class=tiled-content>");
+        divImage.Append("<div class=\"tiled-content-image\">");
+        ViewContext.Writer.Write(divImage.ToString());
+
+        Html.DevExpress().Image(s =>
+        {
+            s.Name = "Tile" + DataBinder.Eval(c.DataItem, "ID");
+            s.Attributes["class"] = "tile";
+        }).Bind(resValue).Render();
+
+        ViewContext.Writer.Write(
+            "<div class='info_background'></div>" +
+            string.Format("<div class='info'><p>{0}</p><a class='download' href='/flexpage/downloadfile?id={1}&revisionID=0'></a>{2}</div>"
+                    , Model.ShowTileName ? Model.GetObjectPropertyValue((Pluritech.Shared.Abstract.DTO.ObjectInfo)c.DataItem, "FileShortcut.Name") : ""
+                    , DataBinder.Eval(c.DataItem, "ID")
+                    , Model.ShowPreview ? $"<a class='magnifier' href='javascript:void(0)' onclick='pdfPreviewShow(\"{resPreviewValue}\")'></a>" : "")
+        );
+
+        ViewContext.Writer.Write("</div>");
+        ViewContext.Writer.Write("</div>");
+
+    });
+
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.BeginCallback = "function (s, e) { e.customArgs['ID'] = " + Model.ID.ToString() + ";}";
+}).BindToCustomData(Model.CardModel).GetHtml()

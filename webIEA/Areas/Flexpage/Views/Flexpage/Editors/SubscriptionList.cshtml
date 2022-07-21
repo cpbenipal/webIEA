@@ -1,0 +1,70 @@
+﻿@model Flexpage.Models.SubscriptionListModel
+
+<script type="text/javascript">
+
+    function fp_initJS() {
+        window.fp_preSaveBlock = function () {
+        }
+    }
+
+
+    function fp_subscriptionListBeginCallback(s, e) {
+        
+    }
+
+    function fp_subscriptionListCustomButtonClick(s, e) {
+        if (e.buttonID == 'btnDelete')
+            fp_ConfirmDialog('Delete', 'Are you sure you want to delete the record?', function() { s.DeleteRow(e.visibleIndex); });
+        else
+            if (e.buttonID == 'btnEdit')
+                fp_popupControlOpen({ command: 'edit', blockType: 'Subscription', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true, allowSave: 1 }, function () { fp_initJS(); s.PerformCallback(); });
+            else
+                if (e.buttonID == 'btnItems')
+                    fp_popupControlOpen({ command: 'edit', blockType: 'SubscriberList', blockID: s.GetRowKey(e.visibleIndex), alwaysCallOnClose: true, allowSave: 0 }, function () { fp_initJS(); s.PerformCallback(); });
+    }
+
+    function fp_subscriptionListAfterAddEnum() {
+        fp_SubscriptionList_Grid.PerformCallback();
+        fp_initJS();
+    }
+
+    fp_popupControlChangeTitle('SUBSCRIPTION MANAGER', '#fp_SubscriptionManagerContainer');
+    // fp_PopupToggleButtonsContainer("#fp_EnumManagerContainer", "none");
+    fp_initJS();
+
+    $(document).ready(function () {
+        let _controlsForTracking = [
+            '#IsHeaderLink',
+            '#ShowPager',
+            '#ShowAsGrid'
+        ];
+        //fp_ControlsForTracking(_controlsForTracking);
+    });
+
+    function fp_afterAddSubscription() {
+        fp_SubscriptionManager_Grid.PerformCallback();
+        fp_initJS();
+    }
+
+</script>
+
+<div class="flexpage" id="fp_SubscriptionManagerContainer">
+    @using (Ajax.BeginForm("UpdateSubscriptionList", "Admin", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "fp_SubscriptionManagerContainer" }, new { id = "fp_EnumManagerForm", forTraking = "" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.Alias)
+    <div class="row records-button" style="margin-bottom: 16px">
+        <div class="pull-right col-md-2">
+            <a data-toggle="modal" data-target="#news-add-new">
+                <button type="button" class="btn btn-orange" onclick="fp_popupControlOpen({ command: 'add', blockType: 'Subscription' }, fp_afterAddSubscription)">
+                    Add new
+                </button>
+            </a>
+        </div>
+    </div>
+        <div class="flexpage records-field">
+            @Html.Action("SubscriptionsGrid", "Admin", new { subscriptionID = Model.ID, langCode = Model.CurrentLanguage })
+            @*@Html.Partial("~/Areas/Flexpage/Views/Flexpage/Editors/NewsGrid.cshtml", new List<Flexpage.Models.NewsRecordModel>())*@
+        </div>
+    }
+</div>

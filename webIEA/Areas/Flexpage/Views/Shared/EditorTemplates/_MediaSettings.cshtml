@@ -1,0 +1,77 @@
+﻿@* @using Flexpage.Code.Helpers;
+    @using Flexpage.Models; *@
+@model Flexpage.Models.MediaModel
+<div class="col-md-12">
+    <div class="col-md-6">
+        <h4>
+            General options <i title="" class="fas fa-info-circle" data-original-title="General options" data-toggle="tooltip" data-placement="top"></i>
+        </h4>
+        <div class="row">
+            <div class="col-md-12 element-center form-group">
+                @Html.EditorFor(m => m.DisplayTitle)
+                <label class="form-check-label">Display title</label>
+            </div>
+            <div class="col-md-12 element-center form-group">
+                @Html.EditorFor(m => m.Loop)
+                <label class="form-check-label">Loop playback</label>
+            </div>
+            <div class="col-md-12 element-center form-group">
+                @Html.EditorFor(m => m.AutoPlay)
+                <label class="form-check-label">Auto play</label>
+                <i title="" class="fas fa-info-circle" data-original-title="Videos with 'Auto play' will be muted by default" data-toggle="tooltip" data-placement="top"></i>
+            </div>
+            <div class="col-md-12 element-center form-group">
+                @Html.EditorFor(m => m.DisplayControls)
+                <label class="form-check-label">Display controls</label>
+                <i title="" class="fas fa-info-circle" data-original-title="Disable only if 'Auto play' is on" data-toggle="tooltip" data-placement="top"></i>
+            </div>
+            @Html.HiddenFor(m => m.DisplayControls)
+            @if (Model.MediaType.Name != "Audio") 
+            { 
+                <div class="col-md-12 element-center form-group">
+                    <div class="row">
+                        <div class="">
+                            <div class="col-md-4 form-group color-picker-field">
+                                <div class="input-group colorpicker-component" id="Simple_ImageColor">
+                                    @Html.HiddenFor(m => m.Color, new { @class = "form-control color-data" })
+                                    <label class="form-check-label">Color</label>
+                                    <span class="input-group-addon color-picker-box"><i></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2"> <label>Opacity</label></div>
+                            <div class="col-md-6 element-center slider-scale">
+                                <div class="slidecontainer">
+                                    @Html.TextBoxFor(model => model.Opacity, null, new { @min = "1", @max = "100", type = "range", @class = "slider" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>
+            Size <i title="" class="fas fa-info-circle" data-original-title="Size options" data-toggle="tooltip" data-placement="top"></i>
+        </h4>
+        @if (Model.MediaType.Name != "Audio")
+        {
+            <div class="row">
+                <div class="col-md-12 form-group element-center">
+                    @Html.EditorFor(m => m.ApplySizeConstraints)
+                    <label class="form-check-label">
+                        Constrain proportions
+                    </label>
+                </div>
+            </div>
+        }
+        <div class="col-md-12 form-group">
+            <h5>Width:</h5>
+        </div>
+        @Html.EditorFor(m => m.Width, "Dimension")
+        <div class="col-md-12 form-group">
+            <h5>Height:</h5>
+        </div>
+        @Html.EditorFor(m => m.Height, "Dimension")
+    </div>
+</div>

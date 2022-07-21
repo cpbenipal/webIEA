@@ -1,0 +1,113 @@
+﻿@using System.Web.UI.WebControls;
+@using Flexpage.Abstract.DTO
+
+@(Html.DevExpress().GridView<EventCategoryInfoModel>(settings =>
+{
+    settings.Name = "fp_EventCategory_Grid";
+    settings.CallbackRouteValues = new 
+    { 
+        Controller  = "CalendarBlock", 
+        Action      = "Categories", 
+        Command     = eCalendarActionTypeEnum.CategoryGrid
+    };
+    settings.SettingsEditing.DeleteRowRouteValues = new 
+    { 
+        Controller  = "CalendarBlock", 
+        Action      = "Categories", 
+        Command     = eCalendarActionTypeEnum.DeleteCategory, 
+        ID          = ViewData["ID"], 
+    };
+
+    settings.Width = Unit.Percentage(100);
+    
+    settings.Settings.ShowColumnHeaders = true;
+
+    settings.Styles.AlternatingRow.CssClass = "alternate_row";
+    settings.Styles.Row.CssClass            = "main_row";
+    settings.Styles.CommandColumn.CssClass  = "command";
+
+    settings.Settings.ShowFilterRow = true;
+    settings.KeyFieldName           = "ID";
+    settings.CommandColumn.Visible  = true;
+
+    var btnEdit = new GridViewCommandColumnCustomButton()
+    {
+        ID      = "btnEdit",
+        Text    = "Edit",
+    };
+    var btnDelete = new GridViewCommandColumnCustomButton()
+    {
+        ID      = "btnDelete",
+        Text    = "Delete",
+    };
+        
+    settings.CommandColumn.CustomButtons.Add(btnEdit);
+    settings.CommandColumn.CustomButtons.Add(btnDelete);
+
+
+    settings.CommandColumn.Caption = "Actions"; 
+    
+    settings.Columns.Add(m => m.Name, column =>
+    {
+        column.Width = new Unit(80, UnitType.Percentage);
+        column.Settings.ShowFilterRowMenu = DefaultBoolean.True;
+    });
+
+    settings.CustomJSProperties = (sender, e) =>
+    {
+        if (ViewData["DeleteError"] != null)
+            e.Properties["cpEditError"] = ViewData["DeleteError"];
+    };
+    settings.Columns.Add(m => m.TextColor, column =>
+    {
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SetDataItemTemplateContent(context =>
+        {
+            var color = DataBinder.Eval(context.DataItem, "TextColor")?.ToString() ?? "";
+            ViewContext.Writer.Write("<div class=\"color-picker-field\">");
+            ViewContext.Writer.Write("<div class=\"event-colorpicker\" class=\"input-group colorpicker-component\">");
+            ViewContext.Writer.Write($"<input type=\"text\" class=\"form-control input-lg\" value=\"{color}\" style=\"display:none\"/>");
+            ViewContext.Writer.Write("<span class=\"input-group-addon color-picker-box\"><i></i></span>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+        });
+    });
+    settings.Columns.Add(m => m.BgColor, column =>
+    {
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SetDataItemTemplateContent(context =>
+        {
+            var color = DataBinder.Eval(context.DataItem, "BgColor").ToString();
+            ViewContext.Writer.Write("<div class=\"color-picker-field\">");
+            ViewContext.Writer.Write("<div class=\"event-colorpicker\" class=\"input-group colorpicker-component\">");
+            ViewContext.Writer.Write($"<input type=\"text\" class=\"form-control input-lg\" value=\"{color}\" style=\"display:none\"/>");
+            ViewContext.Writer.Write("<span class=\"input-group-addon color-picker-box\"><i></i></span>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+        });
+
+    });
+    settings.Columns.Add(m => m.BorderColor, column =>
+    {
+        column.Settings.AllowAutoFilter = DefaultBoolean.False;
+        column.Width = new Unit(10, UnitType.Percentage);
+        column.SetDataItemTemplateContent(context =>
+        {
+            var color = DataBinder.Eval(context.DataItem, "BorderColor").ToString();
+            ViewContext.Writer.Write("<div class=\"color-picker-field\">");
+            ViewContext.Writer.Write("<div class=\"event-colorpicker\" class=\"input-group colorpicker-component\">");
+            ViewContext.Writer.Write($"<input type=\"text\" class=\"form-control input-lg\" value=\"{color}\" style=\"display:none\"/>");
+            ViewContext.Writer.Write("<span class=\"input-group-addon color-picker-box\"><i></i></span>");
+            ViewContext.Writer.Write("</div>");
+            ViewContext.Writer.Write("</div>");
+
+        });
+    });
+    settings.ClientSideEvents.Init = "function(s,e) { s.PerformCallback(); }";
+    settings.ClientSideEvents.EndCallback = "function(s,e) { if (s.cpEditError && s.cpEditError != '') { alert(s.cpEditError); s.cpEditError = ''; } $('.event-colorpicker').colorpicker('disable'); }";
+    settings.ClientSideEvents.CustomButtonClick = "fp_eventCategories_CustomButtonClick";
+}).Bind(Model).GetHtml())
