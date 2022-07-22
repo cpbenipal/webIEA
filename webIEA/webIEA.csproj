@@ -54,7 +54,7 @@
       <HintPath>$(PTNugetPackages)\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Charts.v20.2.Core, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>$(PTNugetPackages)\DevExpress.Charts.Core.20.2.4\lib\net452\DevExpress.Charts.v20.2.Core.dll</HintPath>
+      <HintPath>F:\libs\PluriTechTest\DevExpress.Charts.Core.20.2.4\lib\net452\DevExpress.Charts.v20.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.CodeParser.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>$(PTNugetPackages)\DevExpress.CodeParser.20.2.4\lib\net452\DevExpress.CodeParser.v20.2.dll</HintPath>
@@ -135,7 +135,7 @@
       <HintPath>$(PTNugetPackages)\DevExpress.Web.Office.20.2.4\lib\net452\DevExpress.Web.ASPxSpreadsheet.v20.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Web.ASPxThemes.v20.2">
-      <HintPath>..\..\..\..\..\..\PluriTechTest\DevExpress.Web.Themes.20.2.4\lib\net452\DevExpress.Web.ASPxThemes.v20.2.dll</HintPath>
+      <HintPath>F:\libs\PluriTechTest\DevExpress.Web.Themes.20.2.4\lib\net452\DevExpress.Web.ASPxThemes.v20.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Web.ASPxTreeList.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>$(PTNugetPackages)\DevExpress.Web.20.2.4\lib\net452\DevExpress.Web.ASPxTreeList.v20.2.dll</HintPath>
@@ -207,7 +207,7 @@
       <HintPath>$(PTNugetPackages)\Ionic.Zip.1.8.4\lib\net461\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>C:\trunk\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <HintPath>F:\libs\PluriTechTest\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Search.Interop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
