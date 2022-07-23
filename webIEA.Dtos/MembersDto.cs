@@ -21,7 +21,7 @@ namespace webIEA.Dtos
         public bool BirthPlacePublic { get; set; }
         public string Nationality { get; set; }
         public bool NationalityPublic { get; set; }
-        public Nullable<int> LanguageID { get; set; }
+        public int LanguageID { get; set; }
         public bool LanguageIDPublic { get; set; }
         public string Phone { get; set; }
         public bool PhonePublic { get; set; }
@@ -37,12 +37,14 @@ namespace webIEA.Dtos
         public bool PrivateAddressPublic { get; set; }
         public string PrivatePostalCode { get; set; }
         public bool PrivatePostalCodePublic { get; set; }
-        public Nullable<int> StatusID { get; set; }
+        public int StatusID { get; set; }
         public bool StatusIDPublic { get; set; }
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
+        public List<ListCollectionDto> Specialization { get; set; }
+        public List<ListCollectionDto> TranieeCommission { get; set; }
     }
 
     public class RequestMemberDto
@@ -54,7 +56,7 @@ namespace webIEA.Dtos
         public Nullable<System.DateTime> DOB { get; set; }
         public string BirthPlace { get; set; }
         public string Nationality { get; set; }
-        public List<ListCollectionDto> LanguageID { get; set; }
+        public int LanguageID { get; set; }
         public string Phone { get; set; }
         public string GSM { get; set; }
         public string Street { get; set; }
@@ -62,8 +64,8 @@ namespace webIEA.Dtos
         public string Commune { get; set; }
         public string PrivateAddress { get; set; }
         public string PrivatePostalCode { get; set; }
+        public int StatusID { get; set; }
         public List<ListCollectionDto> Specialization { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
-        public List<ListCollectionDto> StatusID { get; set; }
     } 
 }
