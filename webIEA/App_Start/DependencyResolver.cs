@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using webIEA.Contracts;
+using webIEA.Repositories;
 
 namespace webIEA
 {
@@ -304,6 +306,12 @@ namespace webIEA
             //_kernel.Bind<Pluritech.EmailEngine.Business.Abstract.ITemplateFieldsProcessor>().To<Pluritech.EmailEngine.Business.TextProcessing.MailerReplacementFields>();
             //_kernel.Bind<Pluritech.EmailEngine.Business.Abstract.IResourceStringProvider>().To<Pluritech.EmailEngine.Business.TextProcessing.NoResouceProvider>();
             //_kernel.Bind<Pluritech.EmailEngine.Domain.Abstract.IEmailRepository>().To<Pluritech.EmailEngine.Domain.EmailsRepository>();
+
+            // Member profile
+
+            _kernel.Bind<IRepositoryWrapper>().To<RepositoryWrapper>();
+            _kernel.Bind<IMemberManager>().To<MemberManager>(); 
+
         }
 
     }

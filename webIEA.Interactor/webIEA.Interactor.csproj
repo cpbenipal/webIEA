@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\..\..\..\..\PluriTechTest\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -52,6 +55,10 @@
     <ProjectReference Include="..\webIEA.Dtos\webIEA.Dtos.csproj">
       <Project>{209C47F3-E8BB-4FE5-A420-3BF23C814343}</Project>
       <Name>webIEA.Dtos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\webIEA.Entities\webIEA.Entities.csproj">
+      <Project>{5B44172C-3C78-4309-951E-276526F194C3}</Project>
+      <Name>webIEA.Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

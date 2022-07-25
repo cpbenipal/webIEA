@@ -54,7 +54,7 @@
       <HintPath>$(PTNugetPackages)\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Charts.v20.2.Core, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>F:\libs\PluriTechTest\DevExpress.Charts.Core.20.2.4\lib\net452\DevExpress.Charts.v20.2.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\PluriTechTest\DevExpress.Charts.Core.20.2.4\lib\net452\DevExpress.Charts.v20.2.Core.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.CodeParser.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>$(PTNugetPackages)\DevExpress.CodeParser.20.2.4\lib\net452\DevExpress.CodeParser.v20.2.dll</HintPath>
@@ -135,7 +135,7 @@
       <HintPath>$(PTNugetPackages)\DevExpress.Web.Office.20.2.4\lib\net452\DevExpress.Web.ASPxSpreadsheet.v20.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Web.ASPxThemes.v20.2">
-      <HintPath>F:\libs\PluriTechTest\DevExpress.Web.Themes.20.2.4\lib\net452\DevExpress.Web.ASPxThemes.v20.2.dll</HintPath>
+      <HintPath>..\..\..\..\..\PluriTechTest\DevExpress.Web.Themes.20.2.4\lib\net452\DevExpress.Web.ASPxThemes.v20.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Web.ASPxTreeList.v20.2, Version=20.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>$(PTNugetPackages)\DevExpress.Web.20.2.4\lib\net452\DevExpress.Web.ASPxTreeList.v20.2.dll</HintPath>
@@ -206,8 +206,9 @@
     <Reference Include="Ionic.Zip, Version=1.8.4.21, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>$(PTNugetPackages)\Ionic.Zip.1.8.4\lib\net461\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>F:\libs\PluriTechTest\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\PluriTechTest\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Search.Interop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -2119,6 +2120,14 @@
     <ProjectReference Include="..\webIEA.Entities\webIEA.Entities.csproj">
       <Project>{5B44172C-3C78-4309-951E-276526F194C3}</Project>
       <Name>webIEA.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\webIEA.Interactor\webIEA.Interactor.csproj">
+      <Project>{EFBBBA8D-B919-416D-8A32-91EC6D10CD67}</Project>
+      <Name>webIEA.Interactor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\webIEA.Repositories\webIEA.Repositories.csproj">
+      <Project>{55204440-6F4C-469E-AC8B-601DF09F6D1A}</Project>
+      <Name>webIEA.Repositories</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

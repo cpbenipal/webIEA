@@ -2,6 +2,6 @@
 {
     public interface IRepositoryWrapper
     {
-        IMemberManager MemberManager { get; }
+       IMemberManager MemberManager { get; }
     }
 }

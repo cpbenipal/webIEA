@@ -11,16 +11,14 @@ namespace webIEA.Repositories
 {
     public class MemberManager : IMemberManager
     {
-        private readonly IRepositoryBase<MemberProfile> _repositoryBase;
-        private readonly WebIEAContext _webIEAContext;
+        private readonly IRepositoryBase<MemberProfile> _repositoryBase;        
         private readonly Mapper mapper;
 
-        public MemberManager(IRepositoryBase<MemberProfile> repositoryBase,WebIEAContext webIEAContext) 
+        public MemberManager(IRepositoryBase<MemberProfile> repositoryBase) 
         {
             var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<MemberProfile, MembersDto>());
             mapper = new Mapper(_mapConfig);
-            _repositoryBase = repositoryBase;
-            _webIEAContext = webIEAContext;
+            _repositoryBase = repositoryBase;            
         }
 
         public List<MembersDto> GetAllMembers()
@@ -76,7 +74,7 @@ namespace webIEA.Repositories
                 MemberTranieeCommissions= (ICollection<MemberTranieeCommission>)membersDto.TranieeCommission,
             };
            var result= _repositoryBase.Insert(data);
-            _webIEAContext.SaveChangesAsync();
+            _repositoryBase.Save();
             return result;
 
         }
@@ -118,8 +116,8 @@ namespace webIEA.Repositories
                 MemberSpecializations = (ICollection<MemberSpecialization>)membersDto.Specialization,
                 MemberTranieeCommissions = (ICollection<MemberTranieeCommission>)membersDto.TranieeCommission,
             };
-            var result = _repositoryBase.Insert(data);
-            _webIEAContext.SaveChangesAsync();
+            var result = _repositoryBase.Update(data);
+            _repositoryBase.Save();
             return result;
 
         }
