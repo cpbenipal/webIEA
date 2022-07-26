@@ -10,5 +10,6 @@ namespace webIEA.Contracts
         T Update(T obj);
         void Delete(object id);
         void Save();
+        void DeleteList(List<T> id);
     } 
 }

@@ -34,6 +34,7 @@ namespace webIEA
 
             // start DB migrations
             new Flexpage.Domain.Context.FlexpageRepository().MigrateDB();
+
         }
     }
 }

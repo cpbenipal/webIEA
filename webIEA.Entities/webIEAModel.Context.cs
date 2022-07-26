@@ -7,12 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace webIEA.Entities
+namespace webIEA.Dtos
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+    using webIEA.Entities;
+
     public partial class Entities : DbContext
     {
         public Entities()

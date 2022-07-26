@@ -15,6 +15,7 @@ namespace webIEA.Repositories
         }
 
         private IMemberManager _manager;
+
         public IMemberManager MemberManager 
         {
             get

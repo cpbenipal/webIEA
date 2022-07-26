@@ -15,5 +15,6 @@ namespace webIEA.Contracts
         object AddMember(RequestMemberDto requestMemberDto);
         MembersDto GetMemberById(long id);
         object UpdateMember(MembersDto membersDto);
+        object UpdateStatus(long Id, string FieldName, bool check);
     }
 }

@@ -52,5 +52,11 @@
       <Version>1.6.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\webIEA.Entities\webIEA.Entities.csproj">
+      <Project>{5B44172C-3C78-4309-951E-276526F194C3}</Project>
+      <Name>webIEA.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

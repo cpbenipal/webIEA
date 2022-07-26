@@ -44,6 +44,10 @@ namespace webIEA.Repositories
             T existing = table.Find(id);
             table.Remove(existing);
         }
+        public void DeleteList(List<T> list)
+        {
+            table.RemoveRange(list);
+        }
         public void Save()
         {
             _context.SaveChanges();

@@ -1,0 +1,120 @@
+﻿@model webIEA.Dtos.MembersDto
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Become Member</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        
+        @Html.LabelFor(model => model.FirstName)
+        @Html.CheckBoxFor(model => model.FirstNamePublic, new { htmlAttributes = new {type="checkbox", @class = "" } })
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName)
+        @Html.CheckBoxFor(model => model.LastNamePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.CheckBoxFor(model => model.EmailPublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DOB)
+        @Html.EditorFor(model => model.DOBPublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BirthPlace)
+        @Html.EditorFor(model => model.BirthPlacePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Nationality)
+        @Html.EditorFor(model => model.FirstNamePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+        
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Phone)
+        @Html.EditorFor(model => model.PhonePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.GSM)
+        @Html.EditorFor(model => model.GSM, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Street)
+        @Html.EditorFor(model => model.StreetPublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PostalCode)
+        @Html.EditorFor(model => model.PostalCodePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Commune)
+        @Html.EditorFor(model => model.Commune, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PrivateAddress)
+        @Html.EditorFor(model => model.PrivateAddressPublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PrivatePostalCode)
+        @Html.EditorFor(model => model.PrivatePostalCodePublic, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StatusID)
+        @Html.EditorFor(model => model.StatusID, new { htmlAttributes = new { type = "checkbox", @class = "" } })
+
+
+    </div>
+
+        
+    </div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,30 +10,34 @@ using webIEA.Entities;
 
 namespace webIEA.Interactor
 {
-    public class MembersInteractor 
-    { 
+    public class MembersInteractor
+    {
         private readonly IRepositoryWrapper repositoryWrapper;
 
         public MembersInteractor(IRepositoryWrapper _repositoryWrapper)
-        { 
+        {
             repositoryWrapper = _repositoryWrapper;
         }
-         
+
         public List<MembersDto> GetAllMembers()
-        { 
-            return repositoryWrapper.MemberManager.GetAllMembers(); 
+        {
+            return repositoryWrapper.MemberManager.GetAllMembers();
         }
         public MembersDto GetMemberById(long id)
-        { 
+        {
             return repositoryWrapper.MemberManager.GetMemberById(id);
         }
         public object AddMember(RequestMemberDto membersDto)
-        {            
+        {
             return repositoryWrapper.MemberManager.AddMember(membersDto);
         }
         public object UpdateMember(MembersDto membersDto)
-        {             
+        {
             return repositoryWrapper.MemberManager.UpdateMember(membersDto);
+        }
+        public object UpdateStatus(long Id, string FieldName, bool check)
+        {
+            return repositoryWrapper.MemberManager.UpdateStatus(Id, FieldName, check);
         }
     }
 }

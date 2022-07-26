@@ -2021,6 +2021,9 @@
     <Content Include="Areas\MemberProfile\Views\_ViewStart.cshtml" />
     <Content Include="Areas\MemberProfile\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\MemberProfile\Views\BecomeMember\Index.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\BecomeMember\UpdateMember.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\BecomeMember\CreateMember.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\BecomeMember\MemberDetails.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2065,6 +2068,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Areas\Flexpage\Content\Scripts\bootstrap\index.d.ts" />
     <TypeScriptCompile Include="Areas\Flexpage\Content\Scripts\Extensions\Counter\countUp.d.ts" />
+    <Content Include="Scripts\ViewScripts\Member.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_GlobalResources\Strings.resx">
