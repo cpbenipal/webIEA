@@ -18,7 +18,7 @@ namespace webIEA.Areas.MemberProfile
                 "MemberProfile_default",
                 "MemberProfile/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
-            );
+            );             
         }
     }
 }
