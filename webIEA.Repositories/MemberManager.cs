@@ -45,8 +45,7 @@ namespace webIEA.Repositories
             MembersDto m = new MembersDto();
             var data = _repositoryBase.GetById(id);
             m.Id = data.Id;
-            m.FirstName = data.FirstName;
-            //FirstNamePublic = membersDto.FirstNamePublic,
+            m.FirstName = data.FirstName;            
             m.LastName = data.LastName;
             m.DOB = data.DOB;
             m.Email = data.Email;
@@ -61,6 +60,23 @@ namespace webIEA.Repositories
             m.PrivateAddress = data.PrivateAddress;
             m.PrivatePostalCode = data.PrivatePostalCode;
             m.StatusID = (int)data.StatusID;
+
+
+            m.FirstNamePublic = data.FirstNamePublic;
+            m.LastNamePublic = data.LastNamePublic;
+            m.DOBPublic = data.DOBPublic;
+            m.EmailPublic = data.EmailPublic;
+            m.BirthPlacePublic = data.BirthPlacePublic;
+            m.NationalityPublic = data.NationalityPublic;
+            m.LanguageIDPublic = data.LanguageIDPublic;
+            m.PhonePublic = data.PhonePublic;
+            m.GSMPublic = data.GSMPublic;
+            m.StreetPublic = data.StreetPublic;
+            m.PostalCodePublic = data.PostalCodePublic;
+            m.CommunePublic = data.CommunePublic;
+            m.PrivateAddressPublic = data.PrivateAddressPublic;
+            m.PrivatePostalCodePublic = data.PrivatePostalCodePublic;
+            m.StatusIDPublic = data.StatusIDPublic;
             return m;
 
         }
