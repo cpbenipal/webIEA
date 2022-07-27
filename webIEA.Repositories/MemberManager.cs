@@ -52,7 +52,7 @@ namespace webIEA.Repositories
             m.Email = data.Email;
             m.BirthPlace = data.BirthPlace;
             m.Nationality = data.Nationality;
-            m.LanguageID = (int)data.LanguageID;
+          //  m.LanguageID = (int)data.LanguageID;
             m.Phone = data.Phone;
             m.GSM = data.GSM;
             m.Street = data.Street;
@@ -81,7 +81,7 @@ namespace webIEA.Repositories
                 BirthPlacePublic = true,
                 Nationality = membersDto.Nationality,
                 NationalityPublic = true,
-                LanguageID = membersDto.LanguageID,
+               // LanguageID = membersDto.LanguageID,
                 LanguageIDPublic = true,
                 Phone = membersDto.Phone,
                 PhonePublic = true,
@@ -97,7 +97,7 @@ namespace webIEA.Repositories
                 PrivateAddressPublic = true,
                 PrivatePostalCode = membersDto.PrivatePostalCode,
                 PrivatePostalCodePublic = true,
-                StatusID = membersDto.StatusID,
+                StatusID =null,
                 StatusIDPublic = true,
                 AddedOn = DateTime.Now,
                 ModifiedOn = DateTime.Now,
@@ -128,7 +128,7 @@ namespace webIEA.Repositories
             //data.BirthPlacePublic = membersDto.BirthPlacePublic;
             data.Nationality = membersDto.Nationality;
             // data.NationalityPublic = membersDto.NationalityPublic,
-            data.LanguageID = membersDto.LanguageID;
+           // data.LanguageID = membersDto.LanguageID;
             //  data.LanguageIDPublic = membersDto.LanguageIDPublic,
             data.Phone = membersDto.Phone;
             // data.PhonePublic = membersDto.PhonePublic,

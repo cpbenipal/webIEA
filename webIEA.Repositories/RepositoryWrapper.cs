@@ -7,9 +7,9 @@ namespace webIEA.Repositories
 {
     public class RepositoryWrapper : IRepositoryWrapper
     {
-        private readonly WebIEAContext _context;
+        private readonly WebIEAContext2 _context;
 
-        public RepositoryWrapper(WebIEAContext context)
+        public RepositoryWrapper(WebIEAContext2 context)
         {
             _context = context;
         }

@@ -64,7 +64,7 @@ namespace webIEA.Dtos
         public string Commune { get; set; }
         public string PrivateAddress { get; set; }
         public string PrivatePostalCode { get; set; }
-        public int StatusID { get; set; }
+        public int? StatusID { get; set; }
         public List<ListCollectionDto> Specialization { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
     } 

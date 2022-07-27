@@ -7,17 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace webIEA.Dtos
+namespace webIEA.Entities
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using webIEA.Entities;
-
-    public partial class Entities : DbContext
+    
+    public partial class webIEAEntities : DbContext
     {
-        public Entities()
-            : base("name=Entities")
+        public webIEAEntities()
+            : base("name=webIEAEntities")
         {
         }
     
@@ -27,6 +26,7 @@ namespace webIEA.Dtos
         }
     
         public DbSet<CourseType> CourseTypes { get; set; }
+        public DbSet<HistoryDataChanx> HistoryDataChanges { get; set; }
         public DbSet<MemberDocument> MemberDocuments { get; set; }
         public DbSet<MemberProfile> MemberProfiles { get; set; }
         public DbSet<MemberSpecialization> MemberSpecializations { get; set; }

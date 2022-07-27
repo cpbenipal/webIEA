@@ -12,6 +12,22 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="HistoryDataChanges">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="char" MaxLength="1" />
+          <Property Name="TableName" Type="varchar" MaxLength="128" />
+          <Property Name="PK" Type="varchar" MaxLength="1000" />
+          <Property Name="FieldName" Type="varchar" MaxLength="128" />
+          <Property Name="OldValue" Type="varchar" MaxLength="1000" />
+          <Property Name="NewValue" Type="varchar" MaxLength="1000" />
+          <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="UserName" Type="varchar" MaxLength="128" />
+          <Property Name="UniqueId" Type="uniqueidentifier" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
         <EntityType Name="MemberDocuments">
           <Key>
             <PropertyRef Name="ID" />
@@ -42,7 +58,7 @@
           <Property Name="BirthPlacePublic" Type="bit" Nullable="false" />
           <Property Name="Nationality" Type="nvarchar" MaxLength="200" />
           <Property Name="NationalityPublic" Type="bit" Nullable="false" />
-          <Property Name="LanguageID" Type="int" />
+          <Property Name="LanguageID" Type="nvarchar" MaxLength="50" />
           <Property Name="LanguageIDPublic" Type="bit" Nullable="false" />
           <Property Name="Phone" Type="nvarchar" MaxLength="20" />
           <Property Name="PhonePublic" Type="bit" Nullable="false" />
@@ -194,6 +210,7 @@
         </Association>
         <EntityContainer Name="webIEAModelStoreContainer">
           <EntitySet Name="CourseType" EntityType="Self.CourseType" Schema="IEA" store:Type="Tables" />
+          <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanges" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocuments" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberProfile" EntityType="Self.MemberProfile" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecializations" Schema="IEA" store:Type="Tables" />
@@ -238,6 +255,22 @@
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="TrainingCourses" Relationship="Self.FK_TrainingCourses_CourseType" FromRole="CourseType" ToRole="TrainingCourses" />
         </EntityType>
+        <EntityType Name="HistoryDataChanx">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="TableName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="PK" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="FieldName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="OldValue" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="NewValue" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="UserName" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="UniqueId" Type="Guid" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
         <EntityType Name="MemberDocument">
           <Key>
             <PropertyRef Name="ID" />
@@ -269,7 +302,7 @@
           <Property Name="BirthPlacePublic" Type="Boolean" Nullable="false" />
           <Property Name="Nationality" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="NationalityPublic" Type="Boolean" Nullable="false" />
-          <Property Name="LanguageID" Type="Int32" />
+          <Property Name="LanguageID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LanguageIDPublic" Type="Boolean" Nullable="false" />
           <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="PhonePublic" Type="Boolean" Nullable="false" />
@@ -429,8 +462,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="webIEAEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="CourseTypes" EntityType="Self.CourseType" />
+          <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanx" />
           <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocument" />
           <EntitySet Name="MemberProfiles" EntityType="Self.MemberProfile" />
           <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecialization" />
@@ -467,12 +501,29 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="webIEAModelStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="webIEAModelStoreContainer" CdmEntityContainer="webIEAEntities">
           <EntitySetMapping Name="CourseTypes">
             <EntityTypeMapping TypeName="webIEAModel.CourseType">
               <MappingFragment StoreEntitySet="CourseType">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistoryDataChanges">
+            <EntityTypeMapping TypeName="webIEAModel.HistoryDataChanx">
+              <MappingFragment StoreEntitySet="HistoryDataChanges">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="PK" ColumnName="PK" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+                <ScalarProperty Name="OldValue" ColumnName="OldValue" />
+                <ScalarProperty Name="NewValue" ColumnName="NewValue" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

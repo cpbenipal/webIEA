@@ -34,7 +34,7 @@ namespace webIEA.Entities
         public bool BirthPlacePublic { get; set; }
         public string Nationality { get; set; }
         public bool NationalityPublic { get; set; }
-        public Nullable<int> LanguageID { get; set; }
+        public string LanguageID { get; set; }
         public bool LanguageIDPublic { get; set; }
         public string Phone { get; set; }
         public bool PhonePublic { get; set; }

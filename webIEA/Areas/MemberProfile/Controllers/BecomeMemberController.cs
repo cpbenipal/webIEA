@@ -26,7 +26,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
         {
             var result = _memberManager.AddMember(requestMemberDto);
-            return RedirectToAction("Index", result);
+            return RedirectToAction("Index");
         }
         public ActionResult GetAllMembers()
         {
@@ -46,7 +46,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
         public ActionResult EditMemeber(MembersDto membersDto)
         {
             var result = _memberManager.UpdateMember(membersDto);
-            return RedirectToAction("Index", result);
+            return RedirectToAction("Index");
         }
         public ActionResult UpdateMember(long id)
         {

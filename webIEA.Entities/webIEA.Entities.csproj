@@ -46,41 +46,44 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CourseType.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="HistoryDataChanx.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEA.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEA.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEA.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IEA.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IEA.edmx</DependentUpon>
     </Compile>
     <Compile Include="MemberDocument.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="MemberProfile.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="MemberSpecialization.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="MemberStatu.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="MemberTranieeCommission.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrainingCours.cs">
-      <DependentUpon>webIEAModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="webIEAModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>webIEAModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="webIEAModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>webIEAModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="webIEAModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>webIEAModel.edmx</DependentUpon>
+      <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -92,27 +95,25 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="webIEAModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>webIEAModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.Config" />
-    <None Include="webIEAModel.edmx.diagram">
-      <DependentUpon>webIEAModel.edmx</DependentUpon>
+    <EntityDeploy Include="IEA.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>IEA.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="IEA.edmx.diagram">
+      <DependentUpon>IEA.edmx</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="webIEAModel.Context.tt">
+    <Content Include="IEA.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>webIEAModel.edmx</DependentUpon>
-      <LastGenOutput>webIEAModel.Context.cs</LastGenOutput>
+      <DependentUpon>IEA.edmx</DependentUpon>
+      <LastGenOutput>IEA.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="webIEAModel.tt">
+    <Content Include="IEA.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>webIEAModel.edmx</DependentUpon>
-      <LastGenOutput>webIEAModel.cs</LastGenOutput>
+      <DependentUpon>IEA.edmx</DependentUpon>
+      <LastGenOutput>IEA.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

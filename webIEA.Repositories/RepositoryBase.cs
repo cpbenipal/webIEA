@@ -8,14 +8,14 @@ namespace webIEA.Repositories
 {
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        private WebIEAContext _context;
+        private WebIEAContext2 _context;
         private DbSet<T> table;
         public RepositoryBase()
         {
-            this._context = new WebIEAContext();
+            this._context = new WebIEAContext2();
             table = _context.Set<T>();
         }
-        public RepositoryBase(WebIEAContext _context)
+        public RepositoryBase(WebIEAContext2 _context)
         {
             this._context = _context;
             table = _context.Set<T>();
