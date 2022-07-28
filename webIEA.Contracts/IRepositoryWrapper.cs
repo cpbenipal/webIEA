@@ -3,5 +3,6 @@
     public interface IRepositoryWrapper
     {
        IMemberManager MemberManager { get; }
+       IMemberStatusManager MemberStatusManager { get; } 
     }
 }

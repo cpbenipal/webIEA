@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using Flexpage.Domain.Abstract;
+using System.Linq;
+using System.Web.Mvc;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
@@ -8,10 +10,14 @@ namespace webIEA.Areas.MemberProfile.Controllers
     {
         // GET: MemberProfile/BecomeMember
         private readonly MembersInteractor _memberManager;
-
-        public BecomeMemberController(MembersInteractor memberManager)
+        private readonly MemberStatusInteractor _memberStatusManager;
+         
+        protected readonly ILanguageRepository _ocessor;
+        public BecomeMemberController(MembersInteractor memberManager, MemberStatusInteractor memberStatusManager, ILanguageRepository ocessor)
         {
             _memberManager = memberManager;
+            _memberStatusManager = memberStatusManager;
+            _ocessor = ocessor;
         }
         public ActionResult Index()
         {
@@ -20,11 +26,14 @@ namespace webIEA.Areas.MemberProfile.Controllers
         }
         public ActionResult CreateMember()
         {
-            return View(new RequestMemberDto());
-
+            var model = new RequestMemberDto();
+            var languages = _ocessor.GetLanguages();
+            model.Languages = languages.Select(x => new ListCollectionDto() { Id= x.ID, Key = x.Code, Value = x.Name }).ToList(); 
+            model.Statuses = _memberStatusManager.GetAllStatus();
+            return View(model);
         }
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
-        {
+        { 
             var result = _memberManager.AddMember(requestMemberDto);
             return RedirectToAction("Index");
         }

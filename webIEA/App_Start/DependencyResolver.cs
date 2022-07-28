@@ -237,6 +237,7 @@ namespace webIEA
             _kernel.Bind<Flexpage.Domain.Abstract.IWebFormRepository>().ToConstant(Flexpage.Domain.Context.DALHelper.Context);
             _kernel.Bind<Flexpage.Domain.Abstract.IWebsiteRepository>().ToConstant(Flexpage.Domain.Context.DALHelper.Context);
             _kernel.Bind<Flexpage.Domain.Abstract.IParticipantsRepository>().To<Flexpage.Domain.Context.ParticipantsRepository>();
+            _kernel.Bind<Flexpage.Domain.Abstract.ILanguageRepository>().ToConstant(Flexpage.Domain.Context.DALHelper.Context);
 
             // other 
             _kernel.Bind<Pluritech.Log.Abstract.ILog>().To(typeof(Pluritech.EventLog.EventLog));
@@ -311,6 +312,7 @@ namespace webIEA
 
             _kernel.Bind<IRepositoryWrapper>().To<RepositoryWrapper>();
             _kernel.Bind<IMemberManager>().To<MemberManager>(); 
+            _kernel.Bind<IMemberStatusManager>().To<MemberStatusManager>();
 
         }
 

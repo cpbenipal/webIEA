@@ -29,5 +29,19 @@ namespace webIEA.Repositories
                 return _manager;
             }
         }
+        private IMemberStatusManager _statusmanager; 
+
+        public IMemberStatusManager MemberStatusManager 
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<MemberStatu>(_context);
+                    _statusmanager = new MemberStatusManager(repositoryBase);
+                }
+                return _statusmanager;
+            }
+        }
     }
 }

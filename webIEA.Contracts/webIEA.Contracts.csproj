@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMemberStatusManager.cs" />
     <Compile Include="IMemberManager.cs" />
     <Compile Include="IRepositoryBase.cs" />
     <Compile Include="IRepositoryWrapper.cs" />

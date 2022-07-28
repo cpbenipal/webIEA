@@ -51,7 +51,7 @@ namespace webIEA.Repositories
             m.Email = data.Email;
             m.BirthPlace = data.BirthPlace;
             m.Nationality = data.Nationality;
-          //  m.LanguageID = (int)data.LanguageID;
+            m.LanguageID = data.LanguageID;
             m.Phone = data.Phone;
             m.GSM = data.GSM;
             m.Street = data.Street;
@@ -59,7 +59,7 @@ namespace webIEA.Repositories
             m.Commune = data.Commune;
             m.PrivateAddress = data.PrivateAddress;
             m.PrivatePostalCode = data.PrivatePostalCode;
-            //m.StatusID = (int)data.StatusID;
+            m.StatusID = (int)data.StatusID;
 
 
             m.FirstNamePublic = data.FirstNamePublic;
@@ -97,7 +97,7 @@ namespace webIEA.Repositories
                 BirthPlacePublic = true,
                 Nationality = membersDto.Nationality,
                 NationalityPublic = true,
-               // LanguageID = membersDto.LanguageID,
+                LanguageID = membersDto.LanguageID,
                 LanguageIDPublic = true,
                 Phone = membersDto.Phone,
                 PhonePublic = true,
@@ -113,7 +113,7 @@ namespace webIEA.Repositories
                 PrivateAddressPublic = true,
                 PrivatePostalCode = membersDto.PrivatePostalCode,
                 PrivatePostalCodePublic = true,
-                StatusID =null,
+                StatusID = membersDto.StatusID,
                 StatusIDPublic = true,
                 AddedOn = DateTime.Now,
                 ModifiedOn = DateTime.Now,
@@ -144,7 +144,7 @@ namespace webIEA.Repositories
             //data.BirthPlacePublic = membersDto.BirthPlacePublic;
             data.Nationality = membersDto.Nationality;
             // data.NationalityPublic = membersDto.NationalityPublic,
-           // data.LanguageID = membersDto.LanguageID;
+            data.LanguageID = membersDto.LanguageID;
             //  data.LanguageIDPublic = membersDto.LanguageIDPublic,
             data.Phone = membersDto.Phone;
             // data.PhonePublic = membersDto.PhonePublic,
@@ -160,7 +160,7 @@ namespace webIEA.Repositories
             //data.PrivateAddressPublic = membersDto.PrivateAddressPublic,
             data.PrivatePostalCode = membersDto.PrivatePostalCode;
             // PrivatePostalCodePublic = membersDto.PrivateAddressPublic,
-          //  data.StatusID = membersDto.StatusID;
+            data.StatusID = membersDto.StatusID;
             // data.StatusIDPublic = membersDto.StatusIDPublic,
             data.MemberSpecializations = (ICollection<MemberSpecialization>)membersDto.Specialization;
             data.MemberTranieeCommissions = (ICollection<MemberTranieeCommission>)membersDto.TranieeCommission;
