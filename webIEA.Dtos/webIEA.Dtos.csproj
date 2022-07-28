@@ -45,6 +45,7 @@
     <Compile Include="ListCollectionDto.cs" />
     <Compile Include="MembersDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecializationDto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

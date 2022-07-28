@@ -17,8 +17,8 @@ namespace webIEA.Entities
         public MemberProfile()
         {
             this.MemberDocuments = new HashSet<MemberDocument>();
-            this.MemberSpecializations = new HashSet<MemberSpecialization>();
             this.MemberTranieeCommissions = new HashSet<MemberTranieeCommission>();
+            this.MemberSpecializations = new HashSet<MemberSpecialization>();
         }
     
         public long Id { get; set; }
@@ -59,7 +59,7 @@ namespace webIEA.Entities
     
         public virtual ICollection<MemberDocument> MemberDocuments { get; set; }
         public virtual MemberStatu MemberStatu { get; set; }
-        public virtual ICollection<MemberSpecialization> MemberSpecializations { get; set; }
         public virtual ICollection<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
+        public virtual ICollection<MemberSpecialization> MemberSpecializations { get; set; }
     }
 }

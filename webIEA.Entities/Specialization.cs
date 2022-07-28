@@ -12,16 +12,10 @@ namespace webIEA.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class MemberSpecialization
+    public partial class Specialization
     {
         public long Id { get; set; }
-        public Nullable<long> MemberID { get; set; }
-        public Nullable<long> SpecializationId { get; set; }
-        public Nullable<System.DateTime> AddedOn { get; set; }
-        public long AddedBy { get; set; }
-        public System.DateTime ModifiedOn { get; set; }
-        public long ModifiedBy { get; set; }
-    
-        public virtual MemberProfile MemberProfile { get; set; }
+        public string Name { get; set; }
+        public Nullable<long> MemberId { get; set; }
     }
 }

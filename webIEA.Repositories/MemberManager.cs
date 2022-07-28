@@ -59,7 +59,7 @@ namespace webIEA.Repositories
             m.Commune = data.Commune;
             m.PrivateAddress = data.PrivateAddress;
             m.PrivatePostalCode = data.PrivatePostalCode;
-            m.StatusID = (int)data.StatusID;
+           // m.StatusID = (int)data.StatusID;
 
 
             m.FirstNamePublic = data.FirstNamePublic;

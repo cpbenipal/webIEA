@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="webIEAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="webIEAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CourseType">
           <Key>
             <PropertyRef Name="ID" />
@@ -87,8 +87,8 @@
           </Key>
           <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="MemberID" Type="bigint" />
-          <Property Name="Specialization" Type="nvarchar" MaxLength="100" />
-          <Property Name="AddedOn" Type="datetime" Nullable="false" />
+          <Property Name="SpecializationId" Type="bigint" />
+          <Property Name="AddedOn" Type="datetime" />
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
@@ -113,6 +113,14 @@
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Specialization">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="MemberId" Type="bigint" />
         </EntityType>
         <EntityType Name="TrainingCourses">
           <Key>
@@ -216,6 +224,7 @@
           <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecializations" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberStatus" EntityType="Self.MemberStatus" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberTranieeCommission" EntityType="Self.MemberTranieeCommission" Schema="IEA" store:Type="Tables" />
+          <EntitySet Name="Specialization" EntityType="Self.Specialization" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCourses" Schema="IEA" store:Type="Tables" />
           <AssociationSet Name="FK_MemberDocuments_MemberDocuments" Association="Self.FK_MemberDocuments_MemberDocuments">
             <End Role="MemberProfile" EntitySet="MemberProfile" />
@@ -242,8 +251,7 @@
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="webIEAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -326,21 +334,8 @@
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
           <NavigationProperty Name="MemberDocuments" Relationship="Self.FK_MemberDocuments_MemberDocuments" FromRole="MemberProfile" ToRole="MemberDocuments" />
           <NavigationProperty Name="MemberStatu" Relationship="Self.FK_Members_MemberStatus" FromRole="MemberProfile" ToRole="MemberStatus" />
-          <NavigationProperty Name="MemberSpecializations" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecializations" />
           <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_Members" FromRole="MemberProfile" ToRole="MemberTranieeCommission" />
-        </EntityType>
-        <EntityType Name="MemberSpecialization">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="MemberID" Type="Int64" />
-          <Property Name="Specialization" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AddedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="AddedBy" Type="Int64" Nullable="false" />
-          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="MemberProfile" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberSpecializations" ToRole="MemberProfile" />
+          <NavigationProperty Name="MemberSpecializations" Relationship="webIEAModel.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecialization" />
         </EntityType>
         <EntityType Name="MemberStatu">
           <Key>
@@ -426,18 +421,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MemberSpecifications_Members">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
-          <End Role="MemberSpecializations" Type="Self.MemberSpecialization" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MemberProfile">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MemberSpecializations">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_MemberTranieeCommission_Members">
           <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
           <End Role="MemberTranieeCommission" Type="Self.MemberTranieeCommission" Multiplicity="*" />
@@ -467,7 +450,6 @@
           <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanx" />
           <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocument" />
           <EntitySet Name="MemberProfiles" EntityType="Self.MemberProfile" />
-          <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecialization" />
           <EntitySet Name="MemberStatus" EntityType="Self.MemberStatu" />
           <EntitySet Name="MemberTranieeCommissions" EntityType="Self.MemberTranieeCommission" />
           <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCours" />
@@ -483,10 +465,6 @@
             <End Role="MemberStatus" EntitySet="MemberStatus" />
             <End Role="MemberProfile" EntitySet="MemberProfiles" />
           </AssociationSet>
-          <AssociationSet Name="FK_MemberSpecifications_Members" Association="Self.FK_MemberSpecifications_Members">
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-            <End Role="MemberSpecializations" EntitySet="MemberSpecializations" />
-          </AssociationSet>
           <AssociationSet Name="FK_MemberTranieeCommission_Members" Association="Self.FK_MemberTranieeCommission_Members">
             <End Role="MemberProfile" EntitySet="MemberProfiles" />
             <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
@@ -495,7 +473,46 @@
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
             <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
           </AssociationSet>
+          <EntitySet Name="Specializations" EntityType="webIEAModel.Specialization" />
+          <EntitySet Name="MemberSpecializations" EntityType="webIEAModel.MemberSpecialization" />
+          <AssociationSet Name="FK_MemberSpecifications_Members" Association="webIEAModel.FK_MemberSpecifications_Members">
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+            <End Role="MemberSpecialization" EntitySet="MemberSpecializations" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Specialization">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MemberId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="MemberSpecialization">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="MemberID" Type="Int64" />
+          <Property Name="SpecializationId" Type="Int64" />
+          <Property Name="AddedOn" Type="DateTime" Precision="3" />
+          <Property Name="AddedBy" Type="Int64" Nullable="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="MemberProfile" Relationship="webIEAModel.FK_MemberSpecifications_Members" FromRole="MemberSpecialization" ToRole="MemberProfile" />
+        </EntityType>
+        <Association Name="FK_MemberSpecifications_Members">
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="0..1" />
+          <End Type="webIEAModel.MemberSpecialization" Role="MemberSpecialization" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberProfile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberSpecialization">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -582,19 +599,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MemberSpecializations">
-            <EntityTypeMapping TypeName="webIEAModel.MemberSpecialization">
-              <MappingFragment StoreEntitySet="MemberSpecializations">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="Specialization" ColumnName="Specialization" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MemberStatus">
             <EntityTypeMapping TypeName="webIEAModel.MemberStatu">
               <MappingFragment StoreEntitySet="MemberStatus">
@@ -638,6 +642,28 @@
                 <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Specializations">
+            <EntityTypeMapping TypeName="webIEAModel.Specialization">
+              <MappingFragment StoreEntitySet="Specialization">
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberSpecializations">
+            <EntityTypeMapping TypeName="webIEAModel.MemberSpecialization">
+              <MappingFragment StoreEntitySet="MemberSpecializations">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="SpecializationId" ColumnName="SpecializationId" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -82,6 +82,9 @@
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specialization.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
     <Compile Include="TrainingCours.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>

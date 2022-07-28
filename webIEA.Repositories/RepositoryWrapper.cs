@@ -43,5 +43,19 @@ namespace webIEA.Repositories
                 return _statusmanager;
             }
         }
+        private IMemberSpecialization _specialmanager;
+
+        public IMemberSpecialization MemberSpecialization
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<Specialization>(_context);
+                    _specialmanager = new SpecializationManager(repositoryBase);
+                }
+                return _specialmanager;
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@
                 @Html.DisplayFor(x => emp.DOB)
             </td>
             <td>
-                @Html.ActionLink("Profile" ,"Index", "Details", new { id = emp.Id }, null) |
+                @Html.ActionLink("Profile" ,"MemberDetails", new { id = emp.Id }, null) |
                 @Html.ActionLink("Delete", "Delete", new { id = emp.Id })
                 @Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id })
             </td>

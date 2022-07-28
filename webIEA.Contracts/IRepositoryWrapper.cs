@@ -4,5 +4,6 @@
     {
        IMemberManager MemberManager { get; }
        IMemberStatusManager MemberStatusManager { get; } 
+        IMemberSpecialization MemberSpecialization { get; }
     }
 }
