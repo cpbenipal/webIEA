@@ -19,11 +19,11 @@ namespace webIEA.Interactor
             repositoryWrapper = _repositoryWrapper;
         }
          
-        public List<SpecializationDto> GetAllStatus() 
+        public List<SpecializationDto> GetAllSpecialization() 
         {
             return repositoryWrapper.MemberSpecialization.GetAllSpecialization();
         }
-        public SpecializationDto GetStatusById(int id) 
+        public SpecializationDto GetSpecializationById(int id) 
         {
             return repositoryWrapper.MemberSpecialization.GetSpecializationById(id);
         }       
