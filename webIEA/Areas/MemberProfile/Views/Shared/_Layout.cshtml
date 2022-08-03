@@ -20,6 +20,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <div class="languages">
+                        <div class="language @(Flexpage.Code.CMS.CmsSettings.GetCurrentOrDefaultLangCode() == "fr" ? "orange" : "")">
+                            <a href="@HttpContext.Current.Request.Url.LocalPath?lang=fr">FR</a>
+                        </div>
+                        <div class="language @(Flexpage.Code.CMS.CmsSettings.GetCurrentOrDefaultLangCode() == "nl" ? "orange" : "")">
+                            <a href="@HttpContext.Current.Request.Url.LocalPath?lang=nl">NL</a>
+                        </div>
+                    </div>
                 </ul>
             </div>
         </div>

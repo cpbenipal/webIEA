@@ -165,4 +165,7 @@
   <data name="Error" xml:space="preserve">
     <value>Sorry. There is unexpected server error. Contact your system administrator.</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
 </root>

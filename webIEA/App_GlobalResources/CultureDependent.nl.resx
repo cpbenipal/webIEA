@@ -120,6 +120,9 @@
   <data name="Copyright" xml:space="preserve">
     <value>© 2018-2020 Pluritech SPRL</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name-nl</value>
+  </data>
   <data name="FullCultureName" xml:space="preserve">
     <value>nl-BE</value>
   </data>
