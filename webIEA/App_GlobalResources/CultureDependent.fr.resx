@@ -120,6 +120,9 @@
   <data name="Copyright" xml:space="preserve">
     <value>© 2018-2020 Pluritech CVBA</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name-fr</value>
+  </data>
   <data name="FullCultureName" xml:space="preserve">
     <value>fr-BE</value>
   </data>
