@@ -12,10 +12,10 @@ namespace webIEA.Repositories
 {
     public class SpecializationManager : IMemberSpecialization
     {
-        private readonly IRepositoryBase<Specialization> _repositoryBase; 
+        private readonly IRepositoryBase<MemberSpecialization> _repositoryBase; 
         private readonly Mapper mapper;
 
-        public SpecializationManager(IRepositoryBase<Specialization> repositoryBase)
+        public SpecializationManager(IRepositoryBase<MemberSpecialization> repositoryBase)
         { 
             _repositoryBase = repositoryBase;          
         }
@@ -26,7 +26,7 @@ namespace webIEA.Repositories
             var a = data.Select(x => new SpecializationDto()
             {
                 Id = x.Id,
-                Name = x.Name,                
+               // Name = x.Name,                
             }).ToList();            
             return a;
         }
@@ -36,7 +36,7 @@ namespace webIEA.Repositories
             return new SpecializationDto()
             {
                 Id = model.Id,
-                Name = model.Name,
+               // Name = model.Name,
             };
         }  
     }

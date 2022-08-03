@@ -41,6 +41,13 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
         </EntityType>
+        <EntityType Name="MemberEmploymentStatus">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="EmploymentStatus" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="MemberProfile">
           <Key>
             <PropertyRef Name="Id" />
@@ -113,14 +120,6 @@
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Specialization">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="50" />
-          <Property Name="MemberId" Type="bigint" />
         </EntityType>
         <EntityType Name="TrainingCourses">
           <Key>
@@ -220,11 +219,11 @@
           <EntitySet Name="CourseType" EntityType="Self.CourseType" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanges" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocuments" Schema="IEA" store:Type="Tables" />
+          <EntitySet Name="MemberEmploymentStatus" EntityType="Self.MemberEmploymentStatus" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberProfile" EntityType="Self.MemberProfile" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecializations" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberStatus" EntityType="Self.MemberStatus" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberTranieeCommission" EntityType="Self.MemberTranieeCommission" Schema="IEA" store:Type="Tables" />
-          <EntitySet Name="Specialization" EntityType="Self.Specialization" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCourses" Schema="IEA" store:Type="Tables" />
           <AssociationSet Name="FK_MemberDocuments_MemberDocuments" Association="Self.FK_MemberDocuments_MemberDocuments">
             <End Role="MemberProfile" EntitySet="MemberProfile" />
@@ -473,21 +472,13 @@
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
             <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
           </AssociationSet>
-          <EntitySet Name="Specializations" EntityType="webIEAModel.Specialization" />
           <EntitySet Name="MemberSpecializations" EntityType="webIEAModel.MemberSpecialization" />
           <AssociationSet Name="FK_MemberSpecifications_Members" Association="webIEAModel.FK_MemberSpecifications_Members">
             <End Role="MemberProfile" EntitySet="MemberProfiles" />
             <End Role="MemberSpecialization" EntitySet="MemberSpecializations" />
           </AssociationSet>
+          <EntitySet Name="MemberEmploymentStatus" EntityType="webIEAModel.MemberEmploymentStatu" />
         </EntityContainer>
-        <EntityType Name="Specialization">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MemberId" Type="Int64" />
-        </EntityType>
         <EntityType Name="MemberSpecialization">
           <Key>
             <PropertyRef Name="Id" />
@@ -513,6 +504,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="MemberEmploymentStatu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="EmploymentStatus" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -645,15 +643,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Specializations">
-            <EntityTypeMapping TypeName="webIEAModel.Specialization">
-              <MappingFragment StoreEntitySet="Specialization">
-                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MemberSpecializations">
             <EntityTypeMapping TypeName="webIEAModel.MemberSpecialization">
               <MappingFragment StoreEntitySet="MemberSpecializations">
@@ -663,6 +652,14 @@
                 <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
                 <ScalarProperty Name="SpecializationId" ColumnName="SpecializationId" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberEmploymentStatus">
+            <EntityTypeMapping TypeName="webIEAModel.MemberEmploymentStatu">
+              <MappingFragment StoreEntitySet="MemberEmploymentStatus">
+                <ScalarProperty Name="EmploymentStatus" ColumnName="EmploymentStatus" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

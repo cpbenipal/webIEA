@@ -32,7 +32,7 @@ namespace webIEA.Entities
         public DbSet<MemberStatu> MemberStatus { get; set; }
         public DbSet<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
         public DbSet<TrainingCours> TrainingCourses { get; set; }
-        public DbSet<Specialization> Specializations { get; set; }
         public DbSet<MemberSpecialization> MemberSpecializations { get; set; }
+        public DbSet<MemberEmploymentStatu> MemberEmploymentStatus { get; set; }
     }
 }

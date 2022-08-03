@@ -12,10 +12,9 @@ namespace webIEA.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class Specialization
+    public partial class MemberEmploymentStatu
     {
         public long Id { get; set; }
-        public string Name { get; set; }
-        public Nullable<long> MemberId { get; set; }
+        public int EmploymentStatus { get; set; }
     }
 }
