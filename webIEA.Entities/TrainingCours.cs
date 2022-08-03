@@ -22,13 +22,13 @@ namespace webIEA.Entities
         public int ID { get; set; }
         public string TrainingName { get; set; }
         public string Description { get; set; }
-        public Nullable<int> ValidatedHours { get; set; }
+        public int ValidatedHours { get; set; }
         public bool IsShow { get; set; }
         public Nullable<int> TypeID { get; set; }
         public string Languages { get; set; }
         public Nullable<System.DateTime> StartDateTime { get; set; }
-        public string EndDateTime { get; set; }
-        public Nullable<decimal> Cost { get; set; }
+        public Nullable<System.DateTime> EndDateTime { get; set; }
+        public decimal Cost { get; set; }
         public bool IsFullTime { get; set; }
         public string Location { get; set; }
         public bool IsApproved { get; set; }

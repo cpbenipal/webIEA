@@ -15,6 +15,6 @@ namespace webIEA.Entities
     public partial class MemberEmploymentStatu
     {
         public long Id { get; set; }
-        public int EmploymentStatus { get; set; }
+        public string StatusName { get; set; }
     }
 }

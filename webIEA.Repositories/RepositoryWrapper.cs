@@ -16,7 +16,7 @@ namespace webIEA.Repositories
 
         private IMemberManager _manager;
 
-        public IMemberManager MemberManager 
+        public IMemberManager MemberManager
         {
             get
             {
@@ -29,9 +29,9 @@ namespace webIEA.Repositories
                 return _manager;
             }
         }
-        private IMemberStatusManager _statusmanager; 
+        private IMemberStatusManager _statusmanager;
 
-        public IMemberStatusManager MemberStatusManager 
+        public IMemberStatusManager MemberStatusManager
         {
             get
             {
@@ -46,16 +46,76 @@ namespace webIEA.Repositories
         private IMemberSpecialization _specialmanager;
 
         public IMemberSpecialization MemberSpecialization
+
         {
             get
             {
                 if (_manager == null)
                 {
-                    var repositoryBase = new RepositoryBase<Specialization>(_context);
-                    _specialmanager = new SpecializationManager(repositoryBase);
+                    var repositoryBase = new RepositoryBase<MemberSpecialization>(_context);
+                    _specialmanager = new MemberSpecializationManager(repositoryBase);
                 }
                 return _specialmanager;
             }
         }
+        private ICourseMemberManager _CourseMembermanager;
+
+        public ICourseMemberManager CourseMemberManager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<MemberTranieeCommission>(_context);
+                    _CourseMembermanager = new CourseMemberManager(repositoryBase);
+                }
+                return _CourseMembermanager;
+            }
+        }
+        private ITraineeCourseManager _TraineeCourseManager;
+
+        public ITraineeCourseManager TraineeCourseManager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<TrainingCours>(_context);
+                    _TraineeCourseManager = new TraineeCourseManager(repositoryBase);
+                }
+                return _TraineeCourseManager;
+            }
+        }
+        private IEmploymentStatusManager _EmploymentStatusManager;
+
+        public IEmploymentStatusManager EmploymentStatusManager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<MemberEmploymentStatu>(_context);
+                    _EmploymentStatusManager = new EmploymentStatusManager(repositoryBase);
+                }
+                return _EmploymentStatusManager;
+            }
+        }
+        private ICourseTypeManager _CourseType;
+
+        public ICourseTypeManager CourseTypeManager
+        {
+            get
+            {
+                if (_manager == null)
+                {
+                    var repositoryBase = new RepositoryBase<CourseType>(_context);
+                    _CourseType = new CourseTypeManager(repositoryBase);
+                }
+                return _CourseType;
+            }
+        }
+
+
+       
     }
 }

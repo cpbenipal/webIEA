@@ -44,7 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SpecializationManager.cs" />
+    <Compile Include="CourseMemberManager.cs" />
+    <Compile Include="CourseType.cs" />
+    <Compile Include="TraineeCourseManager .cs" />
+    <Compile Include="EmploymentStatusManager.cs" />
+    <Compile Include="MemberSpecializationManager.cs" />
     <Compile Include="MemberStatusManager.cs" />
     <Compile Include="MemberManager.cs" />
     <Compile Include="RepositoryBase.cs" />

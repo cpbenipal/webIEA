@@ -11,7 +11,10 @@ namespace webIEA.Contracts
 {
     public interface IMemberSpecialization
     {
-        List<SpecializationDto> GetAllSpecialization();
-        SpecializationDto GetSpecializationById(int id); 
+        //object Add(MemberSpecializationDto memberSpecializationDto);
+        //object Update(MemberSpecializationDto memberSpecializationDto);
+        //MemberSpecializationDto GetById(long id);
+        //List<MemberSpecializationDto> GetAll();
+        object Delete(int Id);
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace webIEA.Dtos
 {
-    public class SpecializationDto
+    public class MemberSpecializationDto
     {
         public long Id { get; set; }
+        public int MemberId { get; set; }
         public string Name { get; set; }
     }
 }

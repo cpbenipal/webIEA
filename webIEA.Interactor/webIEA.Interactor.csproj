@@ -44,7 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SpecializationInteractor.cs" />
+    <Compile Include="MemberSpecializationInteractor.cs" />
+    <Compile Include="CourseMemberInteractor.cs" />
+    <Compile Include="TraineeCourseInteractor.cs" />
+    <Compile Include="EmploymentStatusInteractor .cs" />
+    <Compile Include="CourseTypeInteractor.cs" />
     <Compile Include="MemberStatusInteractor.cs" />
     <Compile Include="MembersInteractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

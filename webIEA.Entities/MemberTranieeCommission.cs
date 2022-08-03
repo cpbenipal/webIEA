@@ -17,8 +17,6 @@ namespace webIEA.Entities
         public int Id { get; set; }
         public Nullable<long> MemberID { get; set; }
         public Nullable<int> TrainingCourseId { get; set; }
-        public string Description { get; set; }
-        public Nullable<int> AllocatedHours { get; set; }
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }

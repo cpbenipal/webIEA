@@ -4,22 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="9c410408ae134e719f30756872a19cdf" Name="Diagram1" ZoomLevel="82">
-        <EntityTypeShape EntityType="webIEAModel.CourseType" Width="1.5" PointX="3.75" PointY="13.5" IsExpanded="true" />
+      <Diagram DiagramId="4177e69ee85c4ecdb37517b61e5c2436" Name="Diagram1" ZoomLevel="39">
+        <EntityTypeShape EntityType="webIEAModel.CourseType" Width="1.5" PointX="3.75" PointY="13.25" IsExpanded="true" />
         <EntityTypeShape EntityType="webIEAModel.HistoryDataChanx" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="webIEAModel.MemberDocument" Width="1.5" PointX="5.25" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="webIEAModel.MemberProfile" Width="1.5" PointX="3" PointY="2" IsExpanded="true" />
-        <EntityTypeShape EntityType="webIEAModel.MemberStatu" Width="1.5" PointX="0.75" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.MemberDocument" Width="1.5" PointX="5.25" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.MemberEmploymentStatu" Width="1.5" PointX="7.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.MemberProfile" Width="1.5" PointX="3" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.MemberSpecialization" Width="1.5" PointX="5.25" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.MemberStatu" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="webIEAModel.MemberTranieeCommission" Width="1.5" PointX="8.25" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="webIEAModel.TrainingCours" Width="1.5" PointX="6" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="webIEAModel.TrainingCours" Width="1.5" PointX="6" PointY="11.75" IsExpanded="true" />
         <AssociationConnector Association="webIEAModel.FK_TrainingCourses_CourseType" ManuallyRouted="false" />
         <AssociationConnector Association="webIEAModel.FK_MemberDocuments_MemberDocuments" ManuallyRouted="false" />
         <AssociationConnector Association="webIEAModel.FK_Members_MemberStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="webIEAModel.FK_MemberSpecifications_Members" ManuallyRouted="false" />
         <AssociationConnector Association="webIEAModel.FK_MemberTranieeCommission_Members" ManuallyRouted="false" />
         <AssociationConnector Association="webIEAModel.FK_MemberTranieeCommission_TrainingCourses" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="webIEAModel.MemberSpecialization" Width="1.5" PointX="5.25" PointY="0.75" />
-        <AssociationConnector Association="webIEAModel.FK_MemberSpecifications_Members" />
-        <EntityTypeShape EntityType="webIEAModel.MemberEmploymentStatu" Width="1.5" PointX="9.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

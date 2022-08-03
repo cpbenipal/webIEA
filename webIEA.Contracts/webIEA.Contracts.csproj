@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ICourseMemberManager.cs" />
+    <Compile Include="IEmploymentStatusManager.cs" />
+    <Compile Include="ICourseTypeManager.cs" />
+    <Compile Include="ITraineeCourseManager .cs" />
     <Compile Include="IMemberSpecialization.cs" />
     <Compile Include="IMemberStatusManager.cs" />
     <Compile Include="IMemberManager.cs" />

@@ -11,11 +11,11 @@ namespace webIEA.Areas.MemberProfile.Controllers
         // GET: MemberProfile/BecomeMember
         private readonly MembersInteractor _memberManager;
         private readonly MemberStatusInteractor _memberStatusManager;
-        private readonly SpecializationInteractor _specializationInteractor;
+        private readonly CourseTypeInteractor _specializationInteractor;
 
         protected readonly ILanguageRepository _ocessor;
         public BecomeMemberController(MembersInteractor memberManager, MemberStatusInteractor memberStatusManager,
-            SpecializationInteractor specializationInteractor, ILanguageRepository ocessor)
+            CourseTypeInteractor specializationInteractor, ILanguageRepository ocessor)
         {
             _memberManager = memberManager;
             _memberStatusManager = memberStatusManager;
@@ -32,18 +32,18 @@ namespace webIEA.Areas.MemberProfile.Controllers
             var model = new RequestMemberDto();
             var languages = _ocessor.GetLanguages();
             model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList(); 
-            var specialization = _specializationInteractor.GetAllSpecialization();
-            model.Specialization = specialization.Select(x => new ListCollectionDto() { Id = (int)x.Id,  Value = x.Name }).ToList();
+            //var specialization = _specializationInteractor.GetAllSpecialization();
+            //model.Specialization = specialization.Select(x => new ListCollectionDto() { Id = (int)x.Id,  Value = x.Name }).ToList();
             model.Statuses = _memberStatusManager.GetAllStatus();
             return View(model);
         }
-        public ActionResult GetSpecialization()
-        {
-            var specialization = _specializationInteractor.GetAllSpecialization();
-            var data = specialization.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.Name }).ToList();
-            return Json(data, JsonRequestBehavior.AllowGet);
+        //public ActionResult GetSpecialization()
+        //{
+        //   // var specialization = _specializationInteractor.GetAllSpecialization();
+        //    //var data = specialization.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.Name }).ToList();
+        //    return Json(data, JsonRequestBehavior.AllowGet);
 
-        }
+        //}
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
         {
             var result = _memberManager.AddMember(requestMemberDto);

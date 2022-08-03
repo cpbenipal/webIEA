@@ -13,10 +13,10 @@ namespace webIEA.Entities
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class webIEAEntities : DbContext
+    public partial class webIEAEntities1 : DbContext
     {
-        public webIEAEntities()
-            : base("name=webIEAEntities")
+        public webIEAEntities1()
+            : base("name=webIEAEntities1")
         {
         }
     
@@ -28,11 +28,11 @@ namespace webIEA.Entities
         public DbSet<CourseType> CourseTypes { get; set; }
         public DbSet<HistoryDataChanx> HistoryDataChanges { get; set; }
         public DbSet<MemberDocument> MemberDocuments { get; set; }
+        public DbSet<MemberEmploymentStatu> MemberEmploymentStatus { get; set; }
         public DbSet<MemberProfile> MemberProfiles { get; set; }
+        public DbSet<MemberSpecialization> MemberSpecializations { get; set; }
         public DbSet<MemberStatu> MemberStatus { get; set; }
         public DbSet<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
         public DbSet<TrainingCours> TrainingCourses { get; set; }
-        public DbSet<MemberSpecialization> MemberSpecializations { get; set; }
-        public DbSet<MemberEmploymentStatu> MemberEmploymentStatus { get; set; }
     }
 }
