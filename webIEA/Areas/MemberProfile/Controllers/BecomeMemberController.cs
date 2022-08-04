@@ -1,4 +1,5 @@
 ﻿using Flexpage.Domain.Abstract;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using webIEA.Dtos;
@@ -31,9 +32,12 @@ namespace webIEA.Areas.MemberProfile.Controllers
         {
             var model = new RequestMemberDto();
             var languages = _ocessor.GetLanguages();
-            model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList(); 
+            model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
             //var specialization = _specializationInteractor.GetAllSpecialization();
             //model.Specialization = specialization.Select(x => new ListCollectionDto() { Id = (int)x.Id,  Value = x.Name }).ToList();
+           
+            // remove this line after above implementation
+            model.Specialization = new List<ListCollectionDto>();
             model.Statuses = _memberStatusManager.GetAllStatus();
             return View(model);
         }

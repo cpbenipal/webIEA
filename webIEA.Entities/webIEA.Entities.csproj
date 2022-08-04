@@ -113,6 +113,7 @@
       <DependentUpon>IEA.edmx</DependentUpon>
       <LastGenOutput>IEA.Context.cs</LastGenOutput>
     </Content>
+    <Content Include="IEA.edmx.sql" />
     <Content Include="IEA.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>IEA.edmx</DependentUpon>

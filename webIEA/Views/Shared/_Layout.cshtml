@@ -8,30 +8,101 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
+        <div class="container lang">
+            <div class="language">
+                <a href="/Accueil.aspx?lang=nl-be" title="Dutch" class="">
+                    NL
+                </a>
+                <a href="/Accueil.aspx?lang=en-us" title="English" class="selected">
+                    EN
+                </a>
+                <a href="/Accueil.aspx?lang=fr-be" title="French" class="">
+                    FR
+                </a>
+            </div>
+        </div>
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a class="navbar-brand page-scroll" href="/">
+                    <img id="imgImage" src="~/Content/Images/Logo-couleur.png" width="200" alt="">
+                </a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="connect_ep">
+                    <a class="page-scroll" href="/Connexion.aspx">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                        <span class="hidden-md hidden-lg hidden-xl">Sign in</span>
+                    </a>
+                </div>
+
+                <ul class="nav navbar-nav navbar-right navhome">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="~/MemberProfile/BecomeMember/CreateMember">Become Member</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="~/MemberProfile/BecomeIntern">Become Intern</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href=":;">Sign-In</a>
+                    </li>
                 </ul>
+
             </div>
+            <!-- /.navbar-collapse -->
         </div>
-    </div>
+    </nav>
+     
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <section id="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="logo">
+                                <img src="~/Content/Images/305.png" alt="" width="160">
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-md-offset-1">
+                            <h3>Institute&nbsp;for automotive&nbsp; Experts</h3>
+
+                            <p>
+                                Boulevard de la Woluwe&nbsp;46, Bte&nbsp;5<br>
+                                1200 BRUSSEL<br>
+                                <br>
+                                BE 0545.994.192<br>
+                                <br>
+                                Tel : 02/880.40.47<br>
+                                Fax : 02/763.41.83<br>
+                                E-mail :&nbsp;<a href="mailto:info@iaeiea.be">info@iaeiea.be</a>
+                            </p>
+
+                        </div>
+                        <div class="col-md-3 col-md-offset-1">
+                            <h3>LEARN more</h3>
+
+                            <ul>
+                                
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
         </footer>
     </div>
 

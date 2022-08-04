@@ -22,3 +22,27 @@ select,
 textarea {
     max-width: 280px;
 }
+.navbar-default.navbar-shrink {
+    background-color: #9fb0bc;
+    padding: 0;
+}
+
+.banner {
+    background-size: cover;
+    background-position: center center;
+    padding: 80px 0;
+}
+#breadcrumb {
+    color: #9fb0bc;
+    font-size: 11px;
+    margin-top: 165px;
+    padding-top: 0;
+    padding-bottom: 15px;
+}
+#mission {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+section {
+    padding: 60px 0;
+}
