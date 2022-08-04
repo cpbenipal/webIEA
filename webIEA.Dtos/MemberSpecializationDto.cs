@@ -10,6 +10,6 @@ namespace webIEA.Dtos
     {
         public long Id { get; set; }
         public int MemberId { get; set; }
-        public string Name { get; set; }
+        public string SpecializationName { get; set; }
     }
 }

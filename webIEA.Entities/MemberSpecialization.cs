@@ -16,8 +16,8 @@ namespace webIEA.Entities
     {
         public long Id { get; set; }
         public Nullable<long> MemberID { get; set; }
-        public Nullable<long> SpecializationId { get; set; }
-        public Nullable<System.DateTime> AddedOn { get; set; }
+        public string SpecializationName { get; set; }
+        public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }

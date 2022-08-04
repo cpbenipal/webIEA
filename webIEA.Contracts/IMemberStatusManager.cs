@@ -11,7 +11,10 @@ namespace webIEA.Contracts
 {
     public interface IMemberStatusManager
     {
-        List<StatusDto> GetAllStatus();
-        StatusDto GetStatusById(int id); 
+        object Add(StatusDto model);
+        object Update(StatusDto model);
+        StatusDto GetById(long id);
+        List<StatusDto> GetAll();
+        object Delete(int Id);
     }
 }

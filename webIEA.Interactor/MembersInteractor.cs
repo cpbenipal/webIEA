@@ -27,7 +27,7 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.MemberManager.GetMemberById(id);
         }
-        public object AddMember(RequestMemberDto membersDto)
+        public long AddMember(RequestMemberDto membersDto)
         {
             return repositoryWrapper.MemberManager.AddMember(membersDto);
         }

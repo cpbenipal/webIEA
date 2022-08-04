@@ -83,7 +83,7 @@ namespace webIEA.Repositories
             {
                 TrainingName = x.TrainingName,
                 Description = x.Description,
-                ValidatedHours = x.ValidatedHours,
+                ValidatedHours = (int)x.ValidatedHours,
                 IsShow = x.IsShow,
                 TypeID = (int)x.TypeID,
                 Languages = x.Languages,

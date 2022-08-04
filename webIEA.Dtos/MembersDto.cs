@@ -46,6 +46,11 @@ namespace webIEA.Dtos
         public long ModifiedBy { get; set; }
         public List<ListCollectionDto> Specialization { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
+        public List<ListCollectionDto> Languages { get; set; }
+        public List<ListCollectionDto> Statuses { get; set; }
+
+        public List<string> SpecializationId { get; set; }
+        public List<string> TraneeComissionId { get; set; }
     }
 
     public class RequestMemberDto
@@ -83,7 +88,7 @@ namespace webIEA.Dtos
         public List<ListCollectionDto> Specialization { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
         public List<ListCollectionDto> Languages { get; set; } 
-        public List<StatusDto> Statuses { get; set; }
+        public List<ListCollectionDto> Statuses { get; set; }
 
         public List<string> SpecializationId { get; set; }
         public List<string> TraneeComissionId { get; set; }

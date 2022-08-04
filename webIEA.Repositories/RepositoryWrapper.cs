@@ -43,9 +43,9 @@ namespace webIEA.Repositories
                 return _statusmanager;
             }
         }
-        private IMemberSpecialization _specialmanager;
+        private IMemberSpecializationManager _specialmanager;
 
-        public IMemberSpecialization MemberSpecialization
+        public IMemberSpecializationManager MemberSpecializationManager
 
         {
             get

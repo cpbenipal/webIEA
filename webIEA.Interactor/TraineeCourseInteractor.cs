@@ -18,14 +18,26 @@ namespace webIEA.Interactor
         {
             repositoryWrapper = _repositoryWrapper;
         }
-         
-        //public List<SpecializationDto> GetAllSpecialization() 
-        //{
-        //    return repositoryWrapper.MemberSpecialization.GetAllSpecialization();
-        //}
-        //public SpecializationDto GetSpecializationById(int id) 
-        //{
-        //    return repositoryWrapper.MemberSpecialization.GetSpecializationById(id);
-        //}       
+
+        public object Add(TraineeCourseDto model)
+        {
+            return repositoryWrapper.TraineeCourseManager.Add(model);
+        }
+        public object Update(TraineeCourseDto model)
+        {
+            return repositoryWrapper.TraineeCourseManager.Update(model);
+        }
+        public List<TraineeCourseDto> GetAll()
+        {
+            return repositoryWrapper.TraineeCourseManager.GetAll();
+        }
+        public TraineeCourseDto GetById(int id)
+        {
+            return repositoryWrapper.TraineeCourseManager.GetById(id);
+        }
+        public object Delete(int id)
+        {
+            return repositoryWrapper.TraineeCourseManager.Delete(id);
+        }
     }
 }

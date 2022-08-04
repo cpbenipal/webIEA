@@ -80,7 +80,7 @@ namespace webIEA.Repositories
             return m;
 
         }
-        public object AddMember(RequestMemberDto membersDto)
+        public long AddMember(RequestMemberDto membersDto)
         {
             var data = new MemberProfile
             {
@@ -122,7 +122,7 @@ namespace webIEA.Repositories
             };
             var result = _repositoryBase.Insert(data);
             _repositoryBase.Save();
-            return result;
+            return result.Id;
 
         }
         public object UpdateMember(MembersDto membersDto)

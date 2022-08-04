@@ -13,10 +13,10 @@ namespace webIEA.Entities
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class webIEAEntities1 : DbContext
+    public partial class Entities : DbContext
     {
-        public webIEAEntities1()
-            : base("name=webIEAEntities1")
+        public Entities()
+            : base("name=Entities")
         {
         }
     

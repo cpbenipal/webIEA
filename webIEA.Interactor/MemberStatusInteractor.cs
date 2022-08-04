@@ -18,14 +18,26 @@ namespace webIEA.Interactor
         {
             repositoryWrapper = _repositoryWrapper;
         }
-         
-        public List<StatusDto> GetAllStatus() 
+
+        public object Add(StatusDto model)
         {
-            return repositoryWrapper.MemberStatusManager.GetAllStatus();
+            return repositoryWrapper.MemberStatusManager.Add(model);
         }
-        public StatusDto GetStatusById(int id) 
+        public object Update(StatusDto model)
         {
-            return repositoryWrapper.MemberStatusManager.GetStatusById(id);
-        }       
+            return repositoryWrapper.MemberStatusManager.Update(model);
+        }
+        public List<StatusDto> GetAll()
+        {
+            return repositoryWrapper.MemberStatusManager.GetAll();
+        }
+        public StatusDto GetById(int id)
+        {
+            return repositoryWrapper.MemberStatusManager.GetById(id);
+        }
+        public object Delete(int id)
+        {
+            return repositoryWrapper.MemberStatusManager.Delete(id);
+        }
     }
 }

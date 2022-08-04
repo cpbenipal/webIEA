@@ -135,15 +135,27 @@
         <div class="form-group">
             @Html.LabelFor(model => model.StatusID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(x => x.StatusID, new SelectList(Model.Statuses, "ID", "StatusName"), "Select One", htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.StatusID, new SelectList(Model.Statuses, "Id", "Value"), "Select One", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.StatusID, "", new { @class = "text-danger" })
             </div>
         </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" Id="spec_div">
-                @Html.DropDownListFor(x => x.SpecializationId, new SelectList(Model.Specialization, "Id", "Value"), new { multiple = "true", @class = "form-contro selectpickerl" })
+                @Html.EditorFor(model => model.PrivateAddress, new { htmlAttributes = new { @class = "form-control" } })
+
+
                 @Html.ValidationMessageFor(model => model.Specialization, "", new { @class = "text-danger" })
+
+
+                <input type="button" value="Add" onclick="AddInput()" />
+            </div>
+        </div>   <div class="form-group">
+            @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10" Id="spec_div">
+                @Html.DropDownListFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value"), new { multiple = "true", @class = "form-contro selectpicker" })
+                @Html.ValidationMessageFor(model => model.TraneeComissionId, "", new { @class = "text-danger" })
 
             </div>
             @* <input type="button" value="Add" onclick="AddRow()" />*@
@@ -181,7 +193,12 @@
             </select>`)
             }
         });
+
     }
+    function AddInput() {
+        $('#spec_div').append('<input type="text" class="form-control" id="SpecializationId" name="SpecializationId"/>')
+    }
+
 
 
 

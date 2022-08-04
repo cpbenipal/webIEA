@@ -4,7 +4,7 @@
     {
        IMemberManager MemberManager { get; }
        IMemberStatusManager MemberStatusManager { get; } 
-        IMemberSpecialization MemberSpecialization { get; }
+        IMemberSpecializationManager MemberSpecializationManager { get; }
         ICourseMemberManager CourseMemberManager { get; }
         ITraineeCourseManager TraineeCourseManager { get; }
         ICourseTypeManager CourseTypeManager { get; }

@@ -10,7 +10,7 @@ using webIEA.Entities;
 
 namespace webIEA.Repositories
 {
-    public class MemberSpecializationManager : IMemberSpecialization
+    public class MemberSpecializationManager : IMemberSpecializationManager
     {
         private readonly IRepositoryBase<MemberSpecialization> _repositoryBase; 
         private readonly Mapper mapper;
@@ -20,42 +20,42 @@ namespace webIEA.Repositories
             _repositoryBase = repositoryBase;          
         }
 
-        //public object Add(MemberSpecializationDto memberSpecializationDto)
-        //{
-        //    var data = new MemberSpecialization
-        //    {
-        //        MemberID = memberSpecializationDto.MemberId,
-        //        SpecializationId= memberSpecializationDto.sp
-        //    };
-        //    var result = _repositoryBase.Insert(data);
-        //    return result;
-        //}
-        //public object Update(CourseTypeDto courseTypeDto)
-        //{
-        //    var data = _repositoryBase.GetById(courseTypeDto.ID);
-        //    data.Name = courseTypeDto.Name;
-        //    var result = _repositoryBase.Update(data);
-        //    _repositoryBase.Save();
-        //    return result;
-        //}
-        //public CourseTypeDto GetById(long Id)
-        //{
-        //    CourseTypeDto courseTypeDto = new CourseTypeDto();
-        //    var model = _repositoryBase.GetById(Id);
-        //    courseTypeDto.ID = model.ID;
-        //    courseTypeDto.Name = model.Name;
-        //    return courseTypeDto;
-        //}
-        //public List<CourseTypeDto> GetAll()
-        //{
-        //    var model = _repositoryBase.GetAll();
-        //    var data = model.Select(x => new CourseTypeDto
-        //    {
-        //        ID = x.ID,
-        //        Name = x.Name,
-        //    }).ToList();
-        //    return data;
-        //}
+        public object Add(MemberSpecializationDto memberSpecializationDto)
+        {
+            var data = new MemberSpecialization
+            {
+                MemberID = memberSpecializationDto.MemberId,
+                SpecializationName = memberSpecializationDto.SpecializationName
+            };
+            var result = _repositoryBase.Insert(data);
+            return result;
+        }
+        public object Update(MemberSpecializationDto memberSpecializationDto)
+        {
+            var data = _repositoryBase.GetById(memberSpecializationDto.Id);
+            data.SpecializationName = memberSpecializationDto.SpecializationName;
+            var result = _repositoryBase.Update(data);
+            _repositoryBase.Save();
+            return result;
+        }
+        public MemberSpecializationDto GetById(long Id)
+        {
+            MemberSpecializationDto memberSpecializationDto = new MemberSpecializationDto();
+            var model = _repositoryBase.GetById(Id);
+            memberSpecializationDto.Id = model.Id;
+            memberSpecializationDto.SpecializationName = model.SpecializationName;
+            return memberSpecializationDto;
+        }
+        public List<MemberSpecializationDto> GetAll()
+        {
+            var model = _repositoryBase.GetAll();
+            var data = model.Select(x => new MemberSpecializationDto
+            {
+                Id = x.Id,
+                SpecializationName = x.SpecializationName,
+            }).ToList();
+            return data;
+        }
         public object Delete(int Id)
         {
             var model = _repositoryBase.GetById(Id);
