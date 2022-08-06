@@ -31,6 +31,10 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.CourseMemberManager.GetAll();
         }
+        public List<CourseMemberDto> GetAllFiltered(long Id)
+        {
+            return repositoryWrapper.CourseMemberManager.GetAllFiltered(Id);
+        }
         public CourseMemberDto GetById(int id)
         {
             return repositoryWrapper.CourseMemberManager.GetById(id);
@@ -39,5 +43,9 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.CourseMemberManager.Delete(id);
         }
+        //public object DeleteList(List<MemberTranieeCommission> list)
+        //{
+        //    return repositoryWrapper.CourseMemberManager.DeleteList(list);
+        //}
     }
 }

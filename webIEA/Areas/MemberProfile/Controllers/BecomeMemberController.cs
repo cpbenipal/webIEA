@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using webIEA.Dtos;
+using webIEA.Entities;
 using webIEA.Interactor;
+using WebIEA.Repositories;
 
 namespace webIEA.Areas.MemberProfile.Controllers
 {
@@ -17,13 +19,15 @@ namespace webIEA.Areas.MemberProfile.Controllers
         private readonly MemberSpecializationInteractor _specializationInteractor;
         private readonly TraineeCourseInteractor _traineeCourseInteractor;
         private readonly CourseMemberInteractor _courseMemberInteractor;
+        private readonly UnitOfWorkInteractor<MemberTranieeCommission> _unitOfWork;
 
         protected readonly ILanguageRepository _ocessor;
         public BecomeMemberController(MembersInteractor memberManager, MemberStatusInteractor memberStatusManager,
             MemberSpecializationInteractor specializationInteractor,
             ILanguageRepository ocessor,EmploymentStatusInteractor employmentStatusInteractor,
             TraineeCourseInteractor traineeCourseInteractor,
-            CourseMemberInteractor courseMemberInteractor
+            CourseMemberInteractor courseMemberInteractor,
+            UnitOfWorkInteractor<MemberTranieeCommission> unitOfWorkInteractor
             )
         {
             _memberManager = memberManager;
@@ -33,9 +37,12 @@ namespace webIEA.Areas.MemberProfile.Controllers
             _employmentStatusInteractor = employmentStatusInteractor;
             _traineeCourseInteractor = traineeCourseInteractor;
             _courseMemberInteractor = courseMemberInteractor;
+            _unitOfWork = unitOfWorkInteractor;
         }
         public ActionResult Index()
         {
+            _unitOfWork.GetAllFiltered();
+
             var result = _memberManager.GetAllMembers();
             return View(result);
         }
@@ -45,7 +52,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             var languages = _ocessor.GetLanguages();
             model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
             var employmentstatus = _employmentStatusInteractor.GetAll();
-            model.Statuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
+            model.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = _traineeCourseInteractor.GetAll();
             model.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
             return View(model);
@@ -59,22 +66,31 @@ namespace webIEA.Areas.MemberProfile.Controllers
         //}
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
         {
-            var result = _memberManager.AddMember(requestMemberDto);
-            foreach (var tarnId in requestMemberDto.TraneeComissionId)
+            try
             {
-                var cmdt = new CourseMemberDto();
-                cmdt.MemberID = result;
-                cmdt.TrainingCourseId =Convert.ToInt32(tarnId);
-                 _courseMemberInteractor.Add(cmdt);
+                var result = _memberManager.AddMember(requestMemberDto);
+                foreach (var tarnId in requestMemberDto.TraneeComissionId)
+                {
+                    var cmdt = new CourseMemberDto();
+                    cmdt.MemberID = result;
+                    cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
+                    _courseMemberInteractor.Add(cmdt);
+                }
+                foreach (var sepname in requestMemberDto.Specialization)
+                {
+                    var msdt = new MemberSpecializationDto();
+                    msdt.MemberId = (int)result;
+                    msdt.SpecializationName = sepname;
+                    _specializationInteractor.Add(msdt);
+                }
+                return RedirectToAction("Index");
             }
-            foreach (var sepname in requestMemberDto.SpecializationId)
+            catch (Exception ex)
             {
-                var msdt = new MemberSpecializationDto();
-                msdt.MemberId= (int)result;
-                msdt.SpecializationName = sepname;
-                 _specializationInteractor.Add(msdt);
+                return RedirectToAction("CreateMember", requestMemberDto);
+
             }
-            return RedirectToAction("Index");
+
         }
         public ActionResult GetAllMembers()
         {
@@ -93,7 +109,18 @@ namespace webIEA.Areas.MemberProfile.Controllers
         }
         public ActionResult EditMemeber(MembersDto membersDto)
         {
+            var traineedt = _courseMemberInteractor.GetAllFiltered(membersDto.Id).ToList();
             var result = _memberManager.UpdateMember(membersDto);
+            
+            
+            var tdt = traineedt.Select(x => new MemberTranieeCommission
+            {
+                Id = (int)x.Id,
+                MemberID = x.MemberID,
+                TrainingCourseId = x.TrainingCourseId,
+
+            }).ToList();
+            
             foreach (var tarnId in membersDto.TraneeComissionId)
             {
                 var cmdt = new CourseMemberDto();
@@ -101,7 +128,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
                 cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
                 _courseMemberInteractor.Add(cmdt);
             }
-            foreach (var sepname in membersDto.SpecializationId)
+            foreach (var sepname in membersDto.Specialization)
             {
                 var msdt = new MemberSpecializationDto();
                 msdt.MemberId = (int)membersDto.Id;
@@ -113,12 +140,15 @@ namespace webIEA.Areas.MemberProfile.Controllers
         public ActionResult UpdateMember(long id)
         {
             var result = _memberManager.GetMemberById(id);
+            result.TraneeComissionId = _courseMemberInteractor.GetAllFiltered(id).Select(x => x.TrainingCourseId).ToList();
+            result.Specialization = _specializationInteractor.GetAllFiltered(id).Select(x => x.SpecializationName).ToList();
             var languages = _ocessor.GetLanguages();
             result.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
             var employmentstatus = _employmentStatusInteractor.GetAll();
-            result.Statuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
+            result.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = _traineeCourseInteractor.GetAll();
             result.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
+           
 
             return View(result);
         }

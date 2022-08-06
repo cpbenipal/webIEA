@@ -15,6 +15,8 @@ namespace webIEA.Contracts
         object Update(MemberSpecializationDto memberSpecializationDto);
         MemberSpecializationDto GetById(long id);
         List<MemberSpecializationDto> GetAll();
+        List<MemberSpecializationDto> GetAllFiltered(long Id);
         object Delete(int Id);
+        //object DeleteList(List<MemberSpecialization> list);
     }
 }

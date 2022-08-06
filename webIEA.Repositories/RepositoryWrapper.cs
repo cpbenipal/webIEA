@@ -14,6 +14,22 @@ namespace webIEA.Repositories
             _context = context;
         }
 
+
+        private IUnitOfWork _unitOfWork;
+
+        public IUnitOfWork UnitOfWork
+        {
+            get
+            {
+
+                //if (_unitOfWork == null)
+                //{
+                //    var repositoryBase = new RepositoryBase<MemberProfile>(_context);
+                //    _unitOfWork = new MemberManager(repositoryBase);
+                //}
+                return _unitOfWork;
+            }
+        }
         private IMemberManager _manager;
 
         public IMemberManager MemberManager
@@ -116,6 +132,6 @@ namespace webIEA.Repositories
         }
 
 
-       
+
     }
 }

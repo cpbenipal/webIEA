@@ -39,18 +39,17 @@ namespace webIEA.Dtos
         public string PrivatePostalCode { get; set; }
         public bool PrivatePostalCodePublic { get; set; }
         public int StatusID { get; set; }
+        public int EmploymentStatusID { get; set; }
         public bool StatusIDPublic { get; set; }
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
-        public List<ListCollectionDto> Specialization { get; set; }
+        public List<string> Specialization { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
         public List<ListCollectionDto> Languages { get; set; }
-        public List<ListCollectionDto> Statuses { get; set; }
-
-        public List<string> SpecializationId { get; set; }
-        public List<string> TraneeComissionId { get; set; }
+        public List<ListCollectionDto> EmploymentStatuses { get; set; }
+        public List<int?> TraneeComissionId { get; set; }
     }
 
     public class RequestMemberDto
@@ -85,12 +84,12 @@ namespace webIEA.Dtos
         public string PrivatePostalCode { get; set; }
         [Required]        
         public int? StatusID { get; set; }
-        public List<ListCollectionDto> Specialization { get; set; }
+        public int? EmploymentStatusID { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }
         public List<ListCollectionDto> Languages { get; set; } 
-        public List<ListCollectionDto> Statuses { get; set; }
+        public List<ListCollectionDto> EmploymentStatuses { get; set; }
 
-        public List<string> SpecializationId { get; set; }
+        public List<string> Specialization { get; set; }
         public List<string> TraneeComissionId { get; set; }
     } 
 

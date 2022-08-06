@@ -82,6 +82,7 @@ namespace webIEA.Repositories
         }
         public long AddMember(RequestMemberDto membersDto)
         {
+
             var data = new MemberProfile
             {
                 Id = membersDto.Id,
@@ -113,12 +114,11 @@ namespace webIEA.Repositories
                 PrivateAddressPublic = true,
                 PrivatePostalCode = membersDto.PrivatePostalCode,
                 PrivatePostalCodePublic = true,
-                StatusID = membersDto.StatusID,
+                StatusID = 0,
+                EmploymentStatusID = membersDto.EmploymentStatusID,
                 StatusIDPublic = true,
                 AddedOn = DateTime.Now,
                 ModifiedOn = DateTime.Now,
-                MemberSpecializations = (ICollection<MemberSpecialization>)membersDto.Specialization,
-                MemberTranieeCommissions = (ICollection<MemberTranieeCommission>)membersDto.TranieeCommission,
             };
             var result = _repositoryBase.Insert(data);
             _repositoryBase.Save();

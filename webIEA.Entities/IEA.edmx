@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="webIEAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="webIEAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="CourseType">
           <Key>
             <PropertyRef Name="ID" />
@@ -45,7 +45,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StatusName" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="MemberProfile">
@@ -81,6 +81,7 @@
           <Property Name="PrivateAddressPublic" Type="bit" Nullable="false" />
           <Property Name="PrivatePostalCode" Type="nvarchar" MaxLength="10" />
           <Property Name="PrivatePostalCodePublic" Type="bit" Nullable="false" />
+          <Property Name="EmploymentStatusID" Type="int" />
           <Property Name="StatusID" Type="int" />
           <Property Name="StatusIDPublic" Type="bit" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Nullable="false" />
@@ -248,8 +249,7 @@
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="webIEAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -341,6 +341,7 @@
           <NavigationProperty Name="MemberStatu" Relationship="Self.FK_Members_MemberStatus" FromRole="MemberProfile" ToRole="MemberStatus" />
           <NavigationProperty Name="MemberSpecializations" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecializations" />
           <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_Members" FromRole="MemberProfile" ToRole="MemberTranieeCommission" />
+          <Property Name="EmploymentStatusID" Type="Int32" />
         </EntityType>
         <EntityType Name="MemberSpecialization">
           <Key>
@@ -564,6 +565,7 @@
           <EntitySetMapping Name="MemberProfiles">
             <EntityTypeMapping TypeName="webIEAModel.MemberProfile">
               <MappingFragment StoreEntitySet="MemberProfile">
+                <ScalarProperty Name="EmploymentStatusID" ColumnName="EmploymentStatusID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="FirstNamePublic" ColumnName="FirstNamePublic" />

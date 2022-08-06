@@ -32,6 +32,11 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.MemberSpecializationManager.GetAll();
         }
+        public List<MemberSpecializationDto> GetAllFiltered(long Id)
+        {
+            return repositoryWrapper.MemberSpecializationManager.GetAllFiltered(Id);
+        }
+     
         public MemberSpecializationDto GetById(int id)
         {
             return repositoryWrapper.MemberSpecializationManager.GetById(id);
@@ -40,5 +45,9 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.MemberSpecializationManager.Delete(id);
         }
+        //public object DeleteList(List<MemberSpecialization> list)
+        //{
+        //    return repositoryWrapper.MemberSpecializationManager.DeleteList(list);
+        //}
     }
 }

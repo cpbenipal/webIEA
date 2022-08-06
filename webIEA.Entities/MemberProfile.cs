@@ -56,6 +56,7 @@ namespace webIEA.Entities
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
+        public Nullable<int> EmploymentStatusID { get; set; }
     
         public virtual ICollection<MemberDocument> MemberDocuments { get; set; }
         public virtual MemberStatu MemberStatu { get; set; }

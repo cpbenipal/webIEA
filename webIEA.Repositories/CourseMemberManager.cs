@@ -12,12 +12,12 @@ namespace webIEA.Repositories
 {
     public class CourseMemberManager : ICourseMemberManager
     {
-        private readonly IRepositoryBase<MemberTranieeCommission> _repositoryBase; 
+        private readonly IRepositoryBase<MemberTranieeCommission> _repositoryBase;
         private readonly Mapper mapper;
 
         public CourseMemberManager(IRepositoryBase<MemberTranieeCommission> repositoryBase)
-        { 
-            _repositoryBase = repositoryBase;          
+        {
+            _repositoryBase = repositoryBase;
         }
 
         public object Add(CourseMemberDto courseMemberDto)
@@ -25,9 +25,14 @@ namespace webIEA.Repositories
             var data = new MemberTranieeCommission
             {
                 MemberID = courseMemberDto.MemberID,
-                TrainingCourseId=courseMemberDto.TrainingCourseId,
+                TrainingCourseId = courseMemberDto.TrainingCourseId,
+                AddedOn=DateTime.Now,
+                ModifiedOn=DateTime.Now,
+              
             };
             var result = _repositoryBase.Insert(data);
+            _repositoryBase.Save();
+
             return result;
         }
         public object Update(CourseMemberDto courseMemberDto)
@@ -59,6 +64,17 @@ namespace webIEA.Repositories
             }).ToList();
             return data;
         }
+        public List<CourseMemberDto> GetAllFiltered(long Id)
+        {
+            var model = _repositoryBase.GetAllFiltered(x=>x.MemberID==Id);
+            var data = model.Select(x => new CourseMemberDto
+            {
+                Id = x.Id,
+                MemberID = x.MemberID,
+                TrainingCourseId = x.TrainingCourseId,
+            }).ToList();
+            return data;
+        }
         public object Delete(int Id)
         {
             var model = _repositoryBase.GetById(Id);
@@ -66,5 +82,11 @@ namespace webIEA.Repositories
             _repositoryBase.Save();
             return "";
         }
+        //public object DeleteList(List<MemberTranieeCommission> list)
+        //{
+        //    _repositoryBase.DeleteList(list);
+        //    _repositoryBase.Save();
+        //    return "";
+        //}
     }
 }

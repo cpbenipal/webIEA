@@ -81,6 +81,7 @@ namespace webIEA.Repositories
             var model = _repositoryBase.GetAll();
             var data = model.Select(x => new TraineeCourseDto
             {
+                Id = x.ID,
                 TrainingName = x.TrainingName,
                 Description = x.Description,
                 ValidatedHours = (int)x.ValidatedHours,

@@ -28,6 +28,7 @@ namespace webIEA.Repositories
                 SpecializationName = memberSpecializationDto.SpecializationName
             };
             var result = _repositoryBase.Insert(data);
+            _repositoryBase.Save();
             return result;
         }
         public object Update(MemberSpecializationDto memberSpecializationDto)
@@ -56,6 +57,16 @@ namespace webIEA.Repositories
             }).ToList();
             return data;
         }
+        public List<MemberSpecializationDto> GetAllFiltered(long Id)
+        {
+            var model = _repositoryBase.GetAllFiltered(x => x.MemberID == Id);
+            var data = model.Select(x => new MemberSpecializationDto
+            {
+                Id = x.Id,
+                SpecializationName = x.SpecializationName,
+            }).ToList();
+            return data;
+        }
         public object Delete(int Id)
         {
             var model = _repositoryBase.GetById(Id);
@@ -63,5 +74,11 @@ namespace webIEA.Repositories
             _repositoryBase.Save();
             return "";
         }
+        //public object DeleteList(List<MemberSpecialization> list)
+        //{
+        //    _repositoryBase.DeleteList(list);
+        //    _repositoryBase.Save();
+        //    return "";
+        //}
     }
 }

@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="MemberSpecializationInteractor.cs" />
     <Compile Include="CourseMemberInteractor.cs" />
+    <Compile Include="UnitOfWorkInteractor.cs" />
     <Compile Include="TraineeCourseInteractor.cs" />
     <Compile Include="EmploymentStatusInteractor .cs" />
     <Compile Include="CourseTypeInteractor.cs" />

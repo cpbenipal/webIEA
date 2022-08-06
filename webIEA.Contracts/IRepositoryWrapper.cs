@@ -2,8 +2,9 @@
 {
     public interface IRepositoryWrapper
     {
-       IMemberManager MemberManager { get; }
-       IMemberStatusManager MemberStatusManager { get; } 
+        IMemberManager MemberManager { get; }
+        IUnitOfWork UnitOfWork { get; }
+        IMemberStatusManager MemberStatusManager { get; }
         IMemberSpecializationManager MemberSpecializationManager { get; }
         ICourseMemberManager CourseMemberManager { get; }
         ITraineeCourseManager TraineeCourseManager { get; }

@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace webIEA.Contracts
 {
     public interface IRepositoryBase<T> where T : class
     {
         IEnumerable<T> GetAll();
+        IEnumerable<T> GetAllFiltered(Expression<Func<T, bool>> expression);
         T GetById(object id);
+        T FirstOrDefaultAsync(Expression<Func<T, bool>> expression);
         T Insert(T obj);
+        List<T> InsertList(List<T> obj);
         T Update(T obj);
-        void Delete(object id);
+        object Delete(object id);
         void Save();
-        void DeleteList(List<T> id);
+        object DeleteList(Expression<Func<T, bool>> expression);
     } 
 }
