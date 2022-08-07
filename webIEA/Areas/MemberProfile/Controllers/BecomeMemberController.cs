@@ -24,7 +24,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
         protected readonly ILanguageRepository _ocessor;
         public BecomeMemberController(MembersInteractor memberManager, MemberStatusInteractor memberStatusManager,
             MemberSpecializationInteractor specializationInteractor,
-            ILanguageRepository ocessor,EmploymentStatusInteractor employmentStatusInteractor,
+            ILanguageRepository ocessor, EmploymentStatusInteractor employmentStatusInteractor,
             TraineeCourseInteractor traineeCourseInteractor,
             CourseMemberInteractor courseMemberInteractor,
             UnitOfWorkInteractor<MemberTranieeCommission> unitOfWorkInteractor
@@ -41,7 +41,6 @@ namespace webIEA.Areas.MemberProfile.Controllers
         }
         public ActionResult Index()
         {
-            _unitOfWork.GetAllFiltered();
 
             var result = _memberManager.GetAllMembers();
             return View(result);
@@ -69,19 +68,28 @@ namespace webIEA.Areas.MemberProfile.Controllers
             try
             {
                 var result = _memberManager.AddMember(requestMemberDto);
-                foreach (var tarnId in requestMemberDto.TraneeComissionId)
+                if (requestMemberDto.TraneeComissionId.Count > 0)
                 {
-                    var cmdt = new CourseMemberDto();
-                    cmdt.MemberID = result;
-                    cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
-                    _courseMemberInteractor.Add(cmdt);
+                    foreach (var tarnId in requestMemberDto.TraneeComissionId)
+                    {
+                        var cmdt = new CourseMemberDto();
+                        cmdt.MemberID = result;
+                        cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
+                        _courseMemberInteractor.Add(cmdt);
+                    }
                 }
-                foreach (var sepname in requestMemberDto.Specialization)
+                if (requestMemberDto.Specialization.Count > 0)
                 {
-                    var msdt = new MemberSpecializationDto();
-                    msdt.MemberId = (int)result;
-                    msdt.SpecializationName = sepname;
-                    _specializationInteractor.Add(msdt);
+                    foreach (var sepname in requestMemberDto.Specialization)
+                    {
+                        if (sepname != "")
+                        {
+                            var msdt = new MemberSpecializationDto();
+                            msdt.MemberId = (int)result;
+                            msdt.SpecializationName = sepname;
+                            _specializationInteractor.Add(msdt);
+                        }
+                    }
                 }
                 return RedirectToAction("Index");
             }
@@ -109,31 +117,32 @@ namespace webIEA.Areas.MemberProfile.Controllers
         }
         public ActionResult EditMemeber(MembersDto membersDto)
         {
-            var traineedt = _courseMemberInteractor.GetAllFiltered(membersDto.Id).ToList();
-            var result = _memberManager.UpdateMember(membersDto);
-            
-            
-            var tdt = traineedt.Select(x => new MemberTranieeCommission
-            {
-                Id = (int)x.Id,
-                MemberID = x.MemberID,
-                TrainingCourseId = x.TrainingCourseId,
 
-            }).ToList();
-            
-            foreach (var tarnId in membersDto.TraneeComissionId)
+            var result = _memberManager.UpdateMember(membersDto);
+            _courseMemberInteractor.DeleteList(membersDto.Id);
+            if (membersDto.TraneeComissionId.Count > 0)
             {
-                var cmdt = new CourseMemberDto();
-                cmdt.MemberID = membersDto.Id;
-                cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
-                _courseMemberInteractor.Add(cmdt);
+                foreach (var tarnId in membersDto.TraneeComissionId)
+                {
+                    var cmdt = new CourseMemberDto();
+                    cmdt.MemberID = membersDto.Id;
+                    cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
+                    _courseMemberInteractor.Add(cmdt);
+                }
             }
-            foreach (var sepname in membersDto.Specialization)
+            _specializationInteractor.DeleteList(membersDto.Id);
+            if (membersDto.Specialization.Count > 0)
             {
-                var msdt = new MemberSpecializationDto();
-                msdt.MemberId = (int)membersDto.Id;
-                msdt.SpecializationName = sepname;
-                _specializationInteractor.Add(msdt);
+                foreach (var sepname in membersDto.Specialization)
+                {
+                    if (sepname != "")
+                    {
+                        var msdt = new MemberSpecializationDto();
+                        msdt.MemberId = (int)membersDto.Id;
+                        msdt.SpecializationName = sepname;
+                        _specializationInteractor.Add(msdt);
+                    }
+                }
             }
             return RedirectToAction("Index");
         }
@@ -148,13 +157,18 @@ namespace webIEA.Areas.MemberProfile.Controllers
             result.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = _traineeCourseInteractor.GetAll();
             result.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
-           
+
 
             return View(result);
         }
         public ActionResult UpdateStatus(long Id, string FieldName, bool check)
         {
             var result = _memberManager.UpdateStatus(Id, FieldName, check);
+            return RedirectToAction("Index", result);
+        }
+        public ActionResult UpdateMemberStatus(long Id)
+        {
+            var result = _memberManager.UpdateMemberStatus(Id, "StatusID", 0);
             return RedirectToAction("Index", result);
         }
 

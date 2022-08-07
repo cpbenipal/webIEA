@@ -7,12 +7,12 @@ using webIEA.Repositories;
 
 namespace WebIEA.Repositories
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWorkManager : IUnitOfWork
     {
         private readonly WebIEAContext2 _webIEAContext2;
         private Dictionary<Type, object> _repos;
      
-        public UnitOfWork(WebIEAContext2 webIEAContext2)
+        public UnitOfWorkManager(WebIEAContext2 webIEAContext2)
         {
             _webIEAContext2 = webIEAContext2;
         }

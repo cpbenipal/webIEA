@@ -45,9 +45,9 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.MemberSpecializationManager.Delete(id);
         }
-        //public object DeleteList(List<MemberSpecialization> list)
-        //{
-        //    return repositoryWrapper.MemberSpecializationManager.DeleteList(list);
-        //}
+        public object DeleteList(long Id)
+        {
+            return repositoryWrapper.MemberSpecializationManager.DeleteList(Id);
+        }
     }
 }

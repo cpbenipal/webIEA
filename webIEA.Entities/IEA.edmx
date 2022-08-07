@@ -93,7 +93,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MemberID" Type="bigint" />
           <Property Name="SpecializationName" Type="varchar" MaxLength="50" />
           <Property Name="AddedOn" Type="datetime" Nullable="false" />

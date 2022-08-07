@@ -17,16 +17,16 @@ namespace webIEA.Repositories
 
         private IUnitOfWork _unitOfWork;
 
-        public IUnitOfWork UnitOfWork
+        public IUnitOfWork UnitOfWorkManager
         {
             get
             {
 
-                //if (_unitOfWork == null)
-                //{
-                //    var repositoryBase = new RepositoryBase<MemberProfile>(_context);
-                //    _unitOfWork = new MemberManager(repositoryBase);
-                //}
+                if (_unitOfWork == null)
+                {
+                    ////var repositoryBase = new RepositoryBase<T>(_context);
+                    //_unitOfWork.GetRepository<T>();
+                }
                 return _unitOfWork;
             }
         }

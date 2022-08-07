@@ -39,5 +39,9 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.MemberManager.UpdateStatus(Id, FieldName, check);
         }
+        public object UpdateMemberStatus(long Id, string FieldName, int Status)
+        {
+            return repositoryWrapper.MemberManager.UpdateMemberStatus(Id, FieldName, Status);
+        }
     }
 }

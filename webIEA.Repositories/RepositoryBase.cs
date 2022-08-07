@@ -17,6 +17,7 @@ namespace webIEA.Repositories
             this._context = new WebIEAContext2();
             table = _context.Set<T>();
         }
+
         public RepositoryBase(WebIEAContext2 _context)
         {
             this._context = _context;

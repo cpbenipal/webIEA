@@ -22,7 +22,7 @@ namespace webIEA.Repositories
             var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<MemberProfile, MembersDto>());
             mapper = new Mapper(_mapConfig);
             _repositoryBase = repositoryBase;
-          
+
         }
 
         public List<MembersDto> GetAllMembers()
@@ -34,7 +34,8 @@ namespace webIEA.Repositories
                 FirstName = x.FirstName,
                 Email = x.Email,
                 DOB = x.DOB,
-                Phone = x.Phone
+                Phone = x.Phone,
+                StatusID= (int)x.StatusID,
             }).ToList();
             // var result = Mapper.Map<List<MemberProfile>, List<MembersDto>>(data);
             return a;
@@ -45,7 +46,7 @@ namespace webIEA.Repositories
             MembersDto m = new MembersDto();
             var data = _repositoryBase.GetById(id);
             m.Id = data.Id;
-            m.FirstName = data.FirstName;            
+            m.FirstName = data.FirstName;
             m.LastName = data.LastName;
             m.DOB = data.DOB;
             m.Email = data.Email;
@@ -59,7 +60,7 @@ namespace webIEA.Repositories
             m.Commune = data.Commune;
             m.PrivateAddress = data.PrivateAddress;
             m.PrivatePostalCode = data.PrivatePostalCode;
-           // m.StatusID = (int)data.StatusID;
+            // m.StatusID = (int)data.StatusID;
 
 
             m.FirstNamePublic = data.FirstNamePublic;
@@ -77,6 +78,7 @@ namespace webIEA.Repositories
             m.PrivateAddressPublic = data.PrivateAddressPublic;
             m.PrivatePostalCodePublic = data.PrivatePostalCodePublic;
             m.StatusIDPublic = data.StatusIDPublic;
+            m.EmploymentStatusID = (int)data.EmploymentStatusID;
             return m;
 
         }
@@ -114,7 +116,7 @@ namespace webIEA.Repositories
                 PrivateAddressPublic = true,
                 PrivatePostalCode = membersDto.PrivatePostalCode,
                 PrivatePostalCodePublic = true,
-                StatusID = 0,
+                StatusID = 1,
                 EmploymentStatusID = membersDto.EmploymentStatusID,
                 StatusIDPublic = true,
                 AddedOn = DateTime.Now,
@@ -160,10 +162,8 @@ namespace webIEA.Repositories
             //data.PrivateAddressPublic = membersDto.PrivateAddressPublic,
             data.PrivatePostalCode = membersDto.PrivatePostalCode;
             // PrivatePostalCodePublic = membersDto.PrivateAddressPublic,
-            data.StatusID = membersDto.StatusID;
+            data.EmploymentStatusID = membersDto.EmploymentStatusID;
             // data.StatusIDPublic = membersDto.StatusIDPublic,
-            data.MemberSpecializations = (ICollection<MemberSpecialization>)membersDto.Specialization;
-            data.MemberTranieeCommissions = (ICollection<MemberTranieeCommission>)membersDto.TranieeCommission;
             var result = _repositoryBase.Update(data);
             _repositoryBase.Save();
             return result;
@@ -173,6 +173,17 @@ namespace webIEA.Repositories
         {
             var data = _repositoryBase.GetById(Id);
             data.GetType().GetProperty(FieldName).SetValue(data, check, null);
+            var result = _repositoryBase.Update(data);
+            _repositoryBase.Save();
+            return result;
+
+        }
+        public object UpdateMemberStatus(long Id, string FieldName, int status)
+        {
+            var data = _repositoryBase.GetById(Id);
+            data.StatusID = data.StatusID==3?2:3;
+            //=
+            //data.GetType().GetProperty(FieldName).SetValue(data, status, null);
             var result = _repositoryBase.Update(data);
             _repositoryBase.Save();
             return result;

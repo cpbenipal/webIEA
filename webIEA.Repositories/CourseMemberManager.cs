@@ -82,11 +82,11 @@ namespace webIEA.Repositories
             _repositoryBase.Save();
             return "";
         }
-        //public object DeleteList(List<MemberTranieeCommission> list)
-        //{
-        //    _repositoryBase.DeleteList(list);
-        //    _repositoryBase.Save();
-        //    return "";
-        //}
+        public object DeleteList(long Id)
+        {
+            _repositoryBase.DeleteList(x=>x.MemberID==Id);
+            _repositoryBase.Save();
+            return "";
+        }
     }
 }

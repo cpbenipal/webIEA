@@ -13,39 +13,64 @@
 <table class="table">
     <tr>
         <th>
-            @Resources.CultureDependent.FirstName     
+            @Resources.CultureDependent.FirstName
         </th>
         <th>
-         Email
+            Email
         </th>
         <th>
-           Phone
+            Phone
         </th>
         <th>
-           DOB
-            </th>
-</tr>
+            Status
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
     @foreach (var emp in Model)
     {
-        <tr>
+<tr>
+    <td>
+        @Html.DisplayFor(x => emp.FirstName)
+    </td>
+    <td>
+        @Html.DisplayFor(x => emp.Email)
+    </td>
+    <td>
+        @Html.DisplayFor(x => emp.Phone)
+    </td>
+    @*<td>
+        @Html.DisplayFor(x => emp.DOB)
+    </td>*@
+    @{
+        if (emp.StatusID == 1)
+        {
             <td>
-                @Html.DisplayFor(x => emp.FirstName)
+                Pending
             </td>
+        }
+        else if (emp.StatusID == 2)
+        {
             <td>
-                @Html.DisplayFor(x => emp.Email)
+                Active
             </td>
+        }
+        else if (emp.StatusID == 3)
+        {
             <td>
-                @Html.DisplayFor(x => emp.Phone)
+                Suspended
             </td>
-            <td>
-                @Html.DisplayFor(x => emp.DOB)
-            </td>
-            <td>
-                @Html.ActionLink("Profile" ,"MemberDetails", new { id = emp.Id }, null) |
-                @Html.ActionLink("Delete", "Delete", new { id = emp.Id })
-                @Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id })
-            </td>
-        </tr>
+        }
+    }
+
+    <td>
+        @Html.ActionLink("Profile", "MemberDetails", new { id = emp.Id }, null) |
+        @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
+        @Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id }) |
+        @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })
+    </td>
+</tr>
 
     }
 </table> 

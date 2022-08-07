@@ -17,6 +17,6 @@ namespace webIEA.Contracts
         List<MemberSpecializationDto> GetAll();
         List<MemberSpecializationDto> GetAllFiltered(long Id);
         object Delete(int Id);
-        //object DeleteList(List<MemberSpecialization> list);
+        object DeleteList(long Id);
     }
 }

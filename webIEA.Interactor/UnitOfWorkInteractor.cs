@@ -20,41 +20,40 @@ namespace webIEA.Interactor
             repositoryWrapper = _repositoryWrapper;
         }
 
-        public object Add(T model)
-        {
-            return repositoryWrapper.UnitOfWork.GetRepository<T>().Insert(model);
-        }
-        public object Update(T model)
-        {
-            return repositoryWrapper.UnitOfWork.GetRepository<T>().Update(model);
+        //public object Add(T model)
+        //{
+        //    return repositoryWrapper.UnitOfWork.GetRepository<T>().Insert(model);
+        //}
+        //public object Update(T model)
+        //{
+        //    return repositoryWrapper.UnitOfWork.GetRepository<T>().Update(model);
 
-        }
+        //}
         public List<T> GetAll()
         {
-            return (List<T>)repositoryWrapper.UnitOfWork.GetRepository<T>().GetAll();
+            return (List<T>)repositoryWrapper.UnitOfWorkManager.GetRepository<T>();
 
         }
-        public void GetAllFiltered() 
-        {
-           
-            var repo = repositoryWrapper.UnitOfWork.GetRepository<T>();
-            //return repo.GetAllFiltered(expression);
+        //public IEnumerable<T> GetAllFiltered(Expression<Func<T, bool>> expression)
+        //{
+        //    var repo = repositoryWrapper.UnitOfWork.GetRepository<T>();
+        //    return repo.GetAllFiltered(expression);
 
-        }
-        public T GetById(int id)
-        {
-            return repositoryWrapper.UnitOfWork.GetRepository<T>().GetById(id);
+        //}
+        //public T GetById(int id)
+        //{
+        //    return repositoryWrapper.UnitOfWork.GetRepository<T>().GetById(id);
 
-        }
-        public object Delete(int id)
-        {
-            return repositoryWrapper.UnitOfWork.GetRepository<T>().Delete(id);
+        //}
+        //public object Delete(int id)
+        //{
+        //    return repositoryWrapper.UnitOfWork.GetRepository<T>().Delete(id);
 
-        }
-        public object DeleteList(Expression<Func<T, bool>> expression)
-        {
-            return repositoryWrapper.UnitOfWork.GetRepository<T>().DeleteList(expression);
+        //}
+        //public object DeleteList(Expression<Func<T, bool>> expression)
+        //{
+        //    return repositoryWrapper.UnitOfWork.GetRepository<T>().DeleteList(expression);
 
-        }
+        //}
     }
 }

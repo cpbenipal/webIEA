@@ -42,7 +42,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { type = "date", @class = "form-control" } })
+                @Html.EditorFor(model => model.DOB,"{MM/dd/yyyy}", new {value="sdsd", htmlAttributes = new { type = "date", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -122,7 +122,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.EmploymentStatusID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(x => x.StatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.EmploymentStatusID, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -130,16 +130,16 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" Id="spec_div">
-                @{ if (Model.Specialization == null)
+                @{ if (Model.Specialization.Count == 0)
                     {
-                        <input type="text" class="form-control" id="SpecializationId" name="SpecializationId" value="item" />
+                        <input type="text" class="form-control" id="Specialization" name="Specialization"  />
 
                     }
                     else
                     {
                         foreach (var item in Model.Specialization)
                         {
-                            <input type="text" class="form-control" id="SpecializationId" name="SpecializationId" value="item" />
+                            <input type="text" class="form-control" id="Specialization" name="Specialization"  value="@item"  />
                         }
                     }
                 }
@@ -193,7 +193,7 @@
 
     }
     function AddInput() {
-        $('#spec_div').append('<input type="text" class="form-control" id="SpecializationId" name="SpecializationId"/>')
+        $('#spec_div').append('<input type="text" class="form-control" id="Specialization" name="Specialization"/>')
     }
 
 

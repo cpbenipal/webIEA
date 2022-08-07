@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using webIEA.Contracts;
@@ -43,9 +44,9 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.CourseMemberManager.Delete(id);
         }
-        //public object DeleteList(List<MemberTranieeCommission> list)
-        //{
-        //    return repositoryWrapper.CourseMemberManager.DeleteList(list);
-        //}
+        public object DeleteList(long Id)
+        {
+            return repositoryWrapper.CourseMemberManager.DeleteList(Id);
+        }
     }
 }
