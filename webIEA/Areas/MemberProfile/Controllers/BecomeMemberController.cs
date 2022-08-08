@@ -1,12 +1,13 @@
 ﻿using Flexpage.Domain.Abstract;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using webIEA.Dtos;
 using webIEA.Entities;
 using webIEA.Interactor;
-using WebIEA.Repositories;
 
 namespace webIEA.Areas.MemberProfile.Controllers
 {
@@ -19,6 +20,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
         private readonly MemberSpecializationInteractor _specializationInteractor;
         private readonly TraineeCourseInteractor _traineeCourseInteractor;
         private readonly CourseMemberInteractor _courseMemberInteractor;
+        private readonly MemberDocumentInteractor _memberDocumentInteractor;
         private readonly UnitOfWorkInteractor<MemberTranieeCommission> _unitOfWork;
 
         protected readonly ILanguageRepository _ocessor;
@@ -27,7 +29,8 @@ namespace webIEA.Areas.MemberProfile.Controllers
             ILanguageRepository ocessor, EmploymentStatusInteractor employmentStatusInteractor,
             TraineeCourseInteractor traineeCourseInteractor,
             CourseMemberInteractor courseMemberInteractor,
-            UnitOfWorkInteractor<MemberTranieeCommission> unitOfWorkInteractor
+            UnitOfWorkInteractor<MemberTranieeCommission> unitOfWorkInteractor,
+            MemberDocumentInteractor memberDocumentInteractor
             )
         {
             _memberManager = memberManager;
@@ -38,10 +41,10 @@ namespace webIEA.Areas.MemberProfile.Controllers
             _traineeCourseInteractor = traineeCourseInteractor;
             _courseMemberInteractor = courseMemberInteractor;
             _unitOfWork = unitOfWorkInteractor;
+            _memberDocumentInteractor = memberDocumentInteractor;
         }
         public ActionResult Index()
         {
-
             var result = _memberManager.GetAllMembers();
             return View(result);
         }
@@ -108,6 +111,15 @@ namespace webIEA.Areas.MemberProfile.Controllers
         public ActionResult MemberDetails(long id)
         {
             var result = _memberManager.GetMemberById(id);
+            result.TraneeComissionId = _courseMemberInteractor.GetAllFiltered(id).Select(x => x.TrainingCourseId).ToList();
+            result.Specialization = _specializationInteractor.GetAllFiltered(id).Select(x => x.SpecializationName).ToList();
+            var languages = _ocessor.GetLanguages();
+            result.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
+            var employmentstatus = _employmentStatusInteractor.GetAll();
+            result.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
+            var traningcourse = _traineeCourseInteractor.GetAll();
+            result.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
+
             return View(result);
         }
         public ActionResult GetMemberById(long id)
@@ -170,6 +182,30 @@ namespace webIEA.Areas.MemberProfile.Controllers
         {
             var result = _memberManager.UpdateMemberStatus(Id, "StatusID", 0);
             return RedirectToAction("Index", result);
+        }
+        public ActionResult AddMemberDocument(long Id, HttpPostedFileBase file)
+        {
+            MemberDocumentDto dt = new MemberDocumentDto();
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
+           dt.ContentType = Path.GetExtension(file.FileName);
+            dt.MemberId = Id;
+            dt.DocumentName = Path.GetFileName(file.FileName);
+            dt.Path = fileName;
+            var path = Path.Combine(Server.MapPath("~/Content/Images"), fileName);
+            file.SaveAs(path);
+            var result = _memberDocumentInteractor.Add(dt);
+            return RedirectToAction("GetMemberDocument",Id);
+        }
+        public ActionResult GetMemberDocument(long Id)
+        {
+            var result = _memberDocumentInteractor.GetAllFiltered(Id);
+            ViewBag.MemberId = Id;
+            return View("GetMemberDocument",result);
+        }
+        public ActionResult DeleteMemberDocument(int Id)
+        {
+            var result = _memberDocumentInteractor.Delete(Id);
+            return RedirectToAction("GetMemberDocument",Id);
         }
 
 

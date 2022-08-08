@@ -71,8 +71,7 @@ namespace webIEA.Repositories
         }
         public object Delete(int Id)
         {
-            var model = _repositoryBase.GetById(Id);
-            _repositoryBase.Delete(model);
+            _repositoryBase.Delete(Id);
             _repositoryBase.Save();
             return "";
         }

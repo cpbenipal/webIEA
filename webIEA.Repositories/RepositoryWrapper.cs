@@ -51,7 +51,7 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_statusmanager == null)
                 {
                     var repositoryBase = new RepositoryBase<MemberStatu>(_context);
                     _statusmanager = new MemberStatusManager(repositoryBase);
@@ -66,7 +66,7 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_specialmanager == null)
                 {
                     var repositoryBase = new RepositoryBase<MemberSpecialization>(_context);
                     _specialmanager = new MemberSpecializationManager(repositoryBase);
@@ -80,7 +80,7 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_CourseMembermanager == null)
                 {
                     var repositoryBase = new RepositoryBase<MemberTranieeCommission>(_context);
                     _CourseMembermanager = new CourseMemberManager(repositoryBase);
@@ -94,7 +94,7 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_TraineeCourseManager == null)
                 {
                     var repositoryBase = new RepositoryBase<TrainingCours>(_context);
                     _TraineeCourseManager = new TraineeCourseManager(repositoryBase);
@@ -108,7 +108,7 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_EmploymentStatusManager == null)
                 {
                     var repositoryBase = new RepositoryBase<MemberEmploymentStatu>(_context);
                     _EmploymentStatusManager = new EmploymentStatusManager(repositoryBase);
@@ -122,12 +122,26 @@ namespace webIEA.Repositories
         {
             get
             {
-                if (_manager == null)
+                if (_CourseType == null)
                 {
                     var repositoryBase = new RepositoryBase<CourseType>(_context);
                     _CourseType = new CourseTypeManager(repositoryBase);
                 }
                 return _CourseType;
+            }
+        }
+        private IMemberDocumentManager _memberDocumentManager;
+
+        public IMemberDocumentManager MemberDocumentManager
+        {
+            get
+            {
+                if (_memberDocumentManager == null)
+                {
+                    var repositoryBase = new RepositoryBase<MemberDocument>(_context);
+                    _memberDocumentManager = new MemberDocumentManager(repositoryBase);
+                }
+                return _memberDocumentManager;
             }
         }
 

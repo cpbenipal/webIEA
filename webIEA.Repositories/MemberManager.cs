@@ -79,6 +79,8 @@ namespace webIEA.Repositories
             m.PrivatePostalCodePublic = data.PrivatePostalCodePublic;
             m.StatusIDPublic = data.StatusIDPublic;
             m.EmploymentStatusID = (int)data.EmploymentStatusID;
+            m.SpecializationPublic = data.SpecializationPublic;
+            m.TraineeCommissionPublic = data.TraineeCommissionPublic;
             return m;
 
         }
@@ -119,6 +121,8 @@ namespace webIEA.Repositories
                 StatusID = 1,
                 EmploymentStatusID = membersDto.EmploymentStatusID,
                 StatusIDPublic = true,
+                SpecializationPublic = true,
+                TraineeCommissionPublic=true,
                 AddedOn = DateTime.Now,
                 ModifiedOn = DateTime.Now,
             };

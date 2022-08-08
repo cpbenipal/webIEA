@@ -41,6 +41,9 @@ namespace webIEA.Dtos
         public int StatusID { get; set; }
         public int EmploymentStatusID { get; set; }
         public bool StatusIDPublic { get; set; }
+        public bool SpecializationPublic { get; set; }
+        public bool TraineeCommissionPublic { get; set; }
+
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }

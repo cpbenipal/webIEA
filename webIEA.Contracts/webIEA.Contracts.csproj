@@ -44,6 +44,7 @@
     <Compile Include="ICourseMemberManager.cs" />
     <Compile Include="IEmploymentStatusManager.cs" />
     <Compile Include="ICourseTypeManager.cs" />
+    <Compile Include="IMemberDocumentManager.cs" />
     <Compile Include="ITraineeCourseManager .cs" />
     <Compile Include="IMemberSpecializationManager.cs" />
     <Compile Include="IMemberStatusManager.cs" />

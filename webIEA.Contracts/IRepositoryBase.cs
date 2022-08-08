@@ -13,7 +13,7 @@ namespace webIEA.Contracts
         T Insert(T obj);
         List<T> InsertList(List<T> obj);
         T Update(T obj);
-        object Delete(object id);
+        object Delete(int id);
         void Save();
         object DeleteList(Expression<Func<T, bool>> expression);
     } 

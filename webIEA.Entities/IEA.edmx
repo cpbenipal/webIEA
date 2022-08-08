@@ -36,6 +36,7 @@
           <Property Name="DocumentName" Type="nvarchar" MaxLength="200" />
           <Property Name="ContentType" Type="nvarchar" MaxLength="50" />
           <Property Name="MemberID" Type="bigint" />
+          <Property Name="Path" Type="nvarchar" MaxLength="100" />
           <Property Name="AddedOn" Type="datetime" Nullable="false" />
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
@@ -84,6 +85,8 @@
           <Property Name="EmploymentStatusID" Type="int" />
           <Property Name="StatusID" Type="int" />
           <Property Name="StatusIDPublic" Type="bit" Nullable="false" />
+          <Property Name="SpecializationPublic" Type="bit" Nullable="false" />
+          <Property Name="TraineeCommissionPublic" Type="bit" Nullable="false" />
           <Property Name="AddedOn" Type="datetime" Nullable="false" />
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
@@ -290,6 +293,7 @@
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
           <NavigationProperty Name="MemberProfile" Relationship="Self.FK_MemberDocuments_MemberDocuments" FromRole="MemberDocuments" ToRole="MemberProfile" />
+          <Property Name="Path" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="MemberEmploymentStatu">
           <Key>
@@ -342,6 +346,8 @@
           <NavigationProperty Name="MemberSpecializations" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecializations" />
           <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_Members" FromRole="MemberProfile" ToRole="MemberTranieeCommission" />
           <Property Name="EmploymentStatusID" Type="Int32" />
+          <Property Name="SpecializationPublic" Type="Boolean" Nullable="false" />
+          <Property Name="TraineeCommissionPublic" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="MemberSpecialization">
           <Key>
@@ -543,6 +549,7 @@
           <EntitySetMapping Name="MemberDocuments">
             <EntityTypeMapping TypeName="webIEAModel.MemberDocument">
               <MappingFragment StoreEntitySet="MemberDocuments">
+                <ScalarProperty Name="Path" ColumnName="Path" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
                 <ScalarProperty Name="ContentType" ColumnName="ContentType" />
@@ -565,6 +572,8 @@
           <EntitySetMapping Name="MemberProfiles">
             <EntityTypeMapping TypeName="webIEAModel.MemberProfile">
               <MappingFragment StoreEntitySet="MemberProfile">
+                <ScalarProperty Name="TraineeCommissionPublic" ColumnName="TraineeCommissionPublic" />
+                <ScalarProperty Name="SpecializationPublic" ColumnName="SpecializationPublic" />
                 <ScalarProperty Name="EmploymentStatusID" ColumnName="EmploymentStatusID" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />

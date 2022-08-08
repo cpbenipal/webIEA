@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ListCollectionDto.cs" />
     <Compile Include="CourseTypeDto.cs" />
+    <Compile Include="MemberDocumentDto.cs" />
     <Compile Include="TraineeCourseDto.cs" />
     <Compile Include="EmploymentStatusDto.cs" />
     <Compile Include="CourseMemberDto.cs" />

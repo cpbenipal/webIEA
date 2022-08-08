@@ -13,9 +13,9 @@ namespace webIEA.Interactor
 {
     public class UnitOfWorkInteractor<T> where T : class
     {
-        private readonly IRepositoryWrapper repositoryWrapper;
+        private readonly IUnitOfWork repositoryWrapper;
 
-        public UnitOfWorkInteractor(IRepositoryWrapper _repositoryWrapper)
+        public UnitOfWorkInteractor(IUnitOfWork _repositoryWrapper)
         {
             repositoryWrapper = _repositoryWrapper;
         }
@@ -31,7 +31,7 @@ namespace webIEA.Interactor
         //}
         public List<T> GetAll()
         {
-            return (List<T>)repositoryWrapper.UnitOfWorkManager.GetRepository<T>();
+            return (List<T>)repositoryWrapper.GetRepository<T>().GetAll();
 
         }
         //public IEnumerable<T> GetAllFiltered(Expression<Func<T, bool>> expression)

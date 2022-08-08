@@ -55,7 +55,7 @@ namespace webIEA.Repositories
             _context.Entry(obj).State = EntityState.Modified;
             return obj;
         }
-        public object Delete(object id)
+        public object Delete(int id)
         {
             T existing = table.Find(id);
            var res= table.Remove(existing);

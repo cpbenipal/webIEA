@@ -1,0 +1,49 @@
+﻿@model List<webIEA.Dtos.MemberDocumentDto>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Member List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "CreateMember")
+</p>
+@using (Html.BeginForm("AddMemberDocument", "BecomeMember", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="file"  class="form-control" id="file"  />
+    <input type="hidden" name="Id" value="@ViewBag.MemberId" class="form-control" id="Id"  />
+    <button  type="submit">Upload</button>
+
+}
+
+<table class="table">
+    <tr>
+        <th>
+            Document Name
+        </th>
+        <th>
+            Content Type
+        </th>
+        <th>
+            Action
+        </th>
+
+    </tr>
+
+    @foreach (var doc in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(x => doc.DocumentName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => doc.ContentType)
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "DeleteMemberDocument", new { id = doc.Id }, null)
+            </td>
+        </tr>
+
+    }
+</table>

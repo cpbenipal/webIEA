@@ -3,9 +3,34 @@
 @{
     ViewBag.Title = "Index";
 }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" / >
+<style>
 
+    input {
+        border: 0;
+        outline: 0;
+    }
+    select {
+        border: 0;
+        outline: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+    }
+    #spec_div > div > button {
+        border: 0;
+        outline: 0;
+    }
+        #spec_div > div > button > span {
+            display:none;
+        }
+    select::-ms-expand {
+        display: none;
+    }
 
-
+    
+</style>
 
 @Html.AntiForgeryToken()
 
@@ -19,7 +44,7 @@
 
         @Html.LabelFor(model => model.FirstName)
         @Html.DisplayFor(model => model.FirstName)
-        @Html.CheckBoxFor(model => model.FirstNamePublic,  new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.FirstNamePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
 
     </div>
 
@@ -120,14 +145,47 @@
 
     </div>
 
+
     <div class="form-group">
-        @Html.LabelFor(model => model.StatusID)
-        @Html.DisplayFor(model => model.StatusID)
-        @Html.CheckBoxFor(model => model.StatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.LabelFor(model => model.EmploymentStatusID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @disabled = "true" })
 
-
+            @Html.CheckBoxFor(model => model.StatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        </div>
     </div>
 
+    <div class="form-group">
+        @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" Id="spec_div">
+            @{ if (Model.Specialization.Count == 0)
+                {
+                    <input type="text"  id="Specialization" name="Specialization" disabled="true" />
+
+                }
+                else
+                {
+                    foreach (var item in Model.Specialization)
+                    {
+                        <input type="text" id="Specialization" name="Specialization" value="@item" disabled="true" />
+                    }
+                }
+            }
+
+            @Html.CheckBoxFor(model => model.SpecializationPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+
+
+        </div>
+    </div>   <div class="form-group">
+        @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" Id="spec_div">
+            @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @disabled = "true", @class = "selectpicker" })
+
+            @Html.CheckBoxFor(model => model.TraineeCommissionPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+
+        </div>
+        @* <input type="button" value="Add" onclick="AddRow()" />*@
+    </div>
 
 </div>
 
@@ -136,14 +194,15 @@
     @Html.ActionLink("Back to List", "Index")
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script>
-    function chnagestatus(e,name) {
+    function chnagestatus(e, name) {
         debugger;
         var check = e.checked;
         var id = $('#Id').val();
         $.ajax({
             url: "/MemberProfile/BecomeMember/UpdateStatus",
-            data: { "Id": id,"FieldName":name,"check":check },
+            data: { "Id": id, "FieldName": name, "check": check },
             type: "GET",
             success: function (result) {
                 debugger;

@@ -5,7 +5,7 @@ using webIEA.Contracts;
 using webIEA.DataBaseContext;
 using webIEA.Repositories;
 
-namespace WebIEA.Repositories
+namespace webIEA.Repositories
 {
     public class UnitOfWorkManager : IUnitOfWork
     {

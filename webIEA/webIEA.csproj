@@ -2030,6 +2030,7 @@
     <Content Include="Areas\MemberProfile\Views\BecomeMember\CreateMember.cshtml" />
     <Content Include="Areas\MemberProfile\Views\BecomeMember\MemberDetails.cshtml" />
     <Content Include="Areas\MemberProfile\Views\Details\Index.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\BecomeMember\GetMemberDocument.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
