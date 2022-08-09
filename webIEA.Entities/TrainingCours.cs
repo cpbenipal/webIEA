@@ -17,6 +17,7 @@ namespace webIEA.Entities
         public TrainingCours()
         {
             this.MemberTranieeCommissions = new HashSet<MemberTranieeCommission>();
+            this.CourseLanguages = new HashSet<CourseLanguage>();
         }
     
         public int ID { get; set; }
@@ -25,19 +26,20 @@ namespace webIEA.Entities
         public Nullable<int> ValidatedHours { get; set; }
         public bool IsShow { get; set; }
         public int TypeID { get; set; }
-        public string Languages { get; set; }
         public System.DateTime StartDateTime { get; set; }
         public System.DateTime EndDateTime { get; set; }
         public decimal Cost { get; set; }
         public bool IsFullTime { get; set; }
         public string Location { get; set; }
         public bool IsApproved { get; set; }
-        public System.DateTime AddedOn { get; set; }
+        public Nullable<System.DateTime> AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
+        public int StatusID { get; set; }
     
         public virtual CourseType CourseType { get; set; }
         public virtual ICollection<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
+        public virtual ICollection<CourseLanguage> CourseLanguages { get; set; }
     }
 }

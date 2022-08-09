@@ -1,0 +1,94 @@
+﻿@model List<webIEA.Dtos.TraineeCourseDto>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Member List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddUpdate")
+</p>
+
+<table class="table">
+    <tr>
+        <th>
+            Traning Course
+        </th>
+        <th>
+            Location
+        </th>
+        @*<th>
+            Type
+        </th>*@
+        <th>
+            Start Date
+        </th>
+        <th>
+            End Date
+        </th>
+        <th>
+            Visible
+        </th>
+        <th>
+            Approved
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+    @foreach (var emp in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(x => emp.TrainingName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.Location)
+            </td>
+            @*<td>
+                @Html.DisplayFor(x => emp.TypeID)
+            </td>*@
+            <td>
+                @Html.DisplayFor(x => emp.StartDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.EndDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.IsShow)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(x => emp.DOB)
+                </td>*@
+            @{
+                if (emp.StatusID == 1)
+                {
+                    <td>
+                        Pending
+                    </td>
+                }
+                else if (emp.StatusID == 2)
+                {
+                    <td>
+                        Approved
+                    </td>
+                }
+                else if (emp.StatusID == 4)
+                {
+                    <td>
+                        Declinded
+                    </td>
+                }
+            }
+
+            <td>
+                @Html.ActionLink("Update", "AddUpdate", new { id = emp.Id }, null) |
+                @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
+                @*@Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id }) |*@
+                @Html.ActionLink("ChangeStatus", "Update Status", new { Id = emp.Id })
+            </td>
+        </tr>
+
+    }
+</table> 

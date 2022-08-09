@@ -39,6 +39,26 @@ namespace webIEA.Repositories
         {
             return table.Find(id);
         }
+        public T GetByInclude(Expression<Func<T, object>>[] includes, Expression<Func<T, bool>> expression)
+        {
+
+            foreach (var include in includes)
+            {
+                table = (DbSet<T>)table.Include(include);
+            }
+
+            return table.FirstOrDefault(expression);
+        }
+        public IEnumerable<T> GetAllInclude(Expression<Func<T, bool>>[] includes)
+        {
+
+            foreach (var include in includes)
+            {
+                table = (DbSet<T>)table.Include(include);
+            }
+
+            return table.ToList();
+        }
         public T Insert(T obj)
         {
             table.Add(obj);
@@ -58,13 +78,13 @@ namespace webIEA.Repositories
         public object Delete(int id)
         {
             T existing = table.Find(id);
-           var res= table.Remove(existing);
+            var res = table.Remove(existing);
             return res;
         }
         public object DeleteList(Expression<Func<T, bool>> expression)
         {
             var list = table.Where(expression).ToList();
-            var res=table.RemoveRange(list);
+            var res = table.RemoveRange(list);
             return res;
         }
         public void Save()

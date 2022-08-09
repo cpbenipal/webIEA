@@ -15,14 +15,18 @@ namespace webIEA.Dtos
         public int ValidatedHours { get; set; }
         public bool IsShow { get; set; }
         public int TypeID { get; set; }
-        public string Languages { get; set; }
+        public List<int> LanguageId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public float Cost { get; set; }
         public bool IsFullTime { get; set; }
         public string Location { get; set; }
         public bool IsApproved { get; set; }
+        public int StatusID { get; set; }
+        public List<ListCollectionDto> Languages { get; set; }
+        public List<ListCollectionDto> CourseType { get; set; }
+
     }
 
-  
+
 }

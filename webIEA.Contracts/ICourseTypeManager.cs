@@ -15,6 +15,7 @@ namespace webIEA.Contracts
         object Update(CourseTypeDto courseTypeDto);
         CourseTypeDto GetById(long id);
         List<CourseTypeDto> GetAll();
+        List<CourseTypeDto> GetAllFiltered(long Id);
         object Delete(int Id);
     }
 }

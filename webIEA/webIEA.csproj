@@ -682,7 +682,7 @@
     <Compile Include="Areas\Flexpage\Providers\PluriworksRoleProvider.cs" />
     <Compile Include="Areas\Flexpage\Providers\VisibilityXmlSiteMapProvider.cs" />
     <Compile Include="Areas\MemberProfile\Controllers\BecomeMemberController.cs" />
-    <Compile Include="Areas\MemberProfile\Controllers\DetailsController.cs" />
+    <Compile Include="Areas\MemberProfile\Controllers\TrainingCourseController.cs" />
     <Compile Include="Areas\MemberProfile\MemberProfileAreaRegistration.cs" />
     <Compile Include="Code\CMS\CmsSettings.cs" />
     <Compile Include="Code\Common\DevExpressExtension.cs" />
@@ -2029,8 +2029,9 @@
     <Content Include="Areas\MemberProfile\Views\BecomeMember\UpdateMember.cshtml" />
     <Content Include="Areas\MemberProfile\Views\BecomeMember\CreateMember.cshtml" />
     <Content Include="Areas\MemberProfile\Views\BecomeMember\MemberDetails.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\Details\Index.cshtml" />
     <Content Include="Areas\MemberProfile\Views\BecomeMember\GetMemberDocument.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\TrainingCourse\AddUpdate.cshtml" />
+    <Content Include="Areas\MemberProfile\Views\TrainingCourse\Index.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

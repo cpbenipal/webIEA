@@ -57,10 +57,20 @@ namespace webIEA.Repositories
             }).ToList();
             return data;
         }
+        public List<CourseTypeDto> GetAllFiltered(long Id)
+        {
+            var model = _repositoryBase.GetAllFiltered(x=>x.ID==Id);
+            var data = model.Select(x => new CourseTypeDto
+            {
+                ID = x.ID,
+                Name = x.Name,
+            }).ToList();
+            return data;
+        }
         public object Delete(int Id)
         {
             _repositoryBase.Delete(Id);
-           _repositoryBase.Save();
+            _repositoryBase.Save();
             return "";
         }
     }

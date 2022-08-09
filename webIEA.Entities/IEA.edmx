@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="webIEAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CourseLanguage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CourseID" Type="int" Nullable="false" />
+          <Property Name="LanguageID" Type="int" Nullable="false" />
+          <Property Name="AddedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="AddedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModifiedOn" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="CourseType">
           <Key>
             <PropertyRef Name="ID" />
@@ -133,18 +145,30 @@
           <Property Name="ValidatedHours" Type="int" />
           <Property Name="IsShow" Type="bit" Nullable="false" />
           <Property Name="TypeID" Type="int" Nullable="false" />
-          <Property Name="Languages" Type="nvarchar" MaxLength="50" />
           <Property Name="StartDateTime" Type="datetime" Nullable="false" />
           <Property Name="EndDateTime" Type="datetime" Nullable="false" />
           <Property Name="Cost" Type="money" Nullable="false" />
           <Property Name="IsFullTime" Type="bit" Nullable="false" />
           <Property Name="Location" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="IsApproved" Type="bit" Nullable="false" />
-          <Property Name="AddedOn" Type="datetime" Nullable="false" />
+          <Property Name="StatusID" Type="int" Nullable="false" />
+          <Property Name="AddedOn" Type="datetime" />
           <Property Name="AddedBy" Type="bigint" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
         </EntityType>
+        <Association Name="FK_CourseLanguage_TrainingCourses">
+          <End Role="TrainingCourses" Type="Self.TrainingCourses" Multiplicity="1" />
+          <End Role="CourseLanguage" Type="Self.CourseLanguage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrainingCourses">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CourseLanguage">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MemberDocuments_MemberDocuments">
           <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
           <End Role="MemberDocuments" Type="Self.MemberDocuments" Multiplicity="*" />
@@ -218,6 +242,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="webIEAModelStoreContainer">
+          <EntitySet Name="CourseLanguage" EntityType="Self.CourseLanguage" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="CourseType" EntityType="Self.CourseType" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanges" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocuments" Schema="IEA" store:Type="Tables" />
@@ -227,6 +252,10 @@
           <EntitySet Name="MemberStatus" EntityType="Self.MemberStatus" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberTranieeCommission" EntityType="Self.MemberTranieeCommission" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCourses" Schema="IEA" store:Type="Tables" />
+          <AssociationSet Name="FK_CourseLanguage_TrainingCourses" Association="Self.FK_CourseLanguage_TrainingCourses">
+            <End Role="TrainingCourses" EntitySet="TrainingCourses" />
+            <End Role="CourseLanguage" EntitySet="CourseLanguage" />
+          </AssociationSet>
           <AssociationSet Name="FK_MemberDocuments_MemberDocuments" Association="Self.FK_MemberDocuments_MemberDocuments">
             <End Role="MemberProfile" EntitySet="MemberProfile" />
             <End Role="MemberDocuments" EntitySet="MemberDocuments" />
@@ -394,19 +423,20 @@
           <Property Name="ValidatedHours" Type="Int32" />
           <Property Name="IsShow" Type="Boolean" Nullable="false" />
           <Property Name="TypeID" Type="Int32" Nullable="false" />
-          <Property Name="Languages" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Cost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
           <Property Name="IsFullTime" Type="Boolean" Nullable="false" />
           <Property Name="Location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsApproved" Type="Boolean" Nullable="false" />
-          <Property Name="AddedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AddedOn" Type="DateTime" Precision="3" />
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
           <NavigationProperty Name="CourseType" Relationship="Self.FK_TrainingCourses_CourseType" FromRole="TrainingCourses" ToRole="CourseType" />
           <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_TrainingCourses" FromRole="TrainingCourses" ToRole="MemberTranieeCommission" />
+          <Property Name="StatusID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CourseLanguages" Relationship="webIEAModel.FK_CourseLanguage_TrainingCourses" FromRole="TrainingCours" ToRole="CourseLanguage" />
         </EntityType>
         <Association Name="FK_TrainingCourses_CourseType">
           <End Role="CourseType" Type="Self.CourseType" Multiplicity="1" />
@@ -514,7 +544,37 @@
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
             <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
           </AssociationSet>
+          <EntitySet Name="CourseLanguages" EntityType="webIEAModel.CourseLanguage" />
+          <AssociationSet Name="FK_CourseLanguage_TrainingCourses" Association="webIEAModel.FK_CourseLanguage_TrainingCourses">
+            <End Role="TrainingCours" EntitySet="TrainingCourses" />
+            <End Role="CourseLanguage" EntitySet="CourseLanguages" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="CourseLanguage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseID" Type="Int32" Nullable="false" />
+          <Property Name="LanguageID" Type="Int32" Nullable="false" />
+          <Property Name="AddedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AddedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedOn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TrainingCours" Relationship="webIEAModel.FK_CourseLanguage_TrainingCourses" FromRole="CourseLanguage" ToRole="TrainingCours" />
+        </EntityType>
+        <Association Name="FK_CourseLanguage_TrainingCourses">
+          <End Type="webIEAModel.TrainingCours" Role="TrainingCours" Multiplicity="1" />
+          <End Type="webIEAModel.CourseLanguage" Role="CourseLanguage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrainingCours">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CourseLanguage">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -650,13 +710,13 @@
           <EntitySetMapping Name="TrainingCourses">
             <EntityTypeMapping TypeName="webIEAModel.TrainingCours">
               <MappingFragment StoreEntitySet="TrainingCourses">
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="TrainingName" ColumnName="TrainingName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ValidatedHours" ColumnName="ValidatedHours" />
                 <ScalarProperty Name="IsShow" ColumnName="IsShow" />
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="Languages" ColumnName="Languages" />
                 <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
                 <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
                 <ScalarProperty Name="Cost" ColumnName="Cost" />
@@ -667,6 +727,19 @@
                 <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CourseLanguages">
+            <EntityTypeMapping TypeName="webIEAModel.CourseLanguage">
+              <MappingFragment StoreEntitySet="CourseLanguage">
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

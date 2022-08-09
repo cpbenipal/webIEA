@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CourseLanguage.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
     <Compile Include="CourseType.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
