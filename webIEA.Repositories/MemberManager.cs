@@ -25,64 +25,13 @@ namespace webIEA.Repositories
 
         }
 
-        public List<MembersDto> GetAllMembers()
-        {
-            var data = _repositoryBase.GetAll().ToList();
-            var a = data.Select(x => new MembersDto()
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                Email = x.Email,
-                DOB = x.DOB,
-                Phone = x.Phone,
-                StatusID= (int)x.StatusID,
-            }).ToList();
-            // var result = Mapper.Map<List<MemberProfile>, List<MembersDto>>(data);
-            return a;
-
+        public List<MemberProfile> GetAllMembers()
+        {          
+            return _repositoryBase.GetAll().ToList();
         }
-        public MembersDto GetMemberById(long id)
-        {
-            MembersDto m = new MembersDto();
-            var data = _repositoryBase.GetById(id);
-            m.Id = data.Id;
-            m.FirstName = data.FirstName;
-            m.LastName = data.LastName;
-            m.DOB = data.DOB;
-            m.Email = data.Email;
-            m.BirthPlace = data.BirthPlace;
-            m.Nationality = data.Nationality;
-            m.LanguageID = data.LanguageID;
-            m.Phone = data.Phone;
-            m.GSM = data.GSM;
-            m.Street = data.Street;
-            m.PostalCode = data.PostalCode;
-            m.Commune = data.Commune;
-            m.PrivateAddress = data.PrivateAddress;
-            m.PrivatePostalCode = data.PrivatePostalCode;
-            // m.StatusID = (int)data.StatusID;
-
-
-            m.FirstNamePublic = data.FirstNamePublic;
-            m.LastNamePublic = data.LastNamePublic;
-            m.DOBPublic = data.DOBPublic;
-            m.EmailPublic = data.EmailPublic;
-            m.BirthPlacePublic = data.BirthPlacePublic;
-            m.NationalityPublic = data.NationalityPublic;
-            m.LanguageIDPublic = data.LanguageIDPublic;
-            m.PhonePublic = data.PhonePublic;
-            m.GSMPublic = data.GSMPublic;
-            m.StreetPublic = data.StreetPublic;
-            m.PostalCodePublic = data.PostalCodePublic;
-            m.CommunePublic = data.CommunePublic;
-            m.PrivateAddressPublic = data.PrivateAddressPublic;
-            m.PrivatePostalCodePublic = data.PrivatePostalCodePublic;
-            m.StatusIDPublic = data.StatusIDPublic;
-            m.EmploymentStatusID = (int)data.EmploymentStatusID;
-            m.SpecializationPublic = data.SpecializationPublic;
-            m.TraineeCommissionPublic = data.TraineeCommissionPublic;
-            return m;
-
+        public MemberProfile GetMemberById(long id)
+        { 
+            return _repositoryBase.GetById(id);
         }
         public long AddMember(RequestMemberDto membersDto)
         {

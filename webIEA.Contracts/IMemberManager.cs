@@ -11,9 +11,9 @@ namespace webIEA.Contracts
 {
     public interface IMemberManager
     {
-        List<MembersDto> GetAllMembers();
+        List<MemberProfile> GetAllMembers();
         long AddMember(RequestMemberDto requestMemberDto);
-        MembersDto GetMemberById(long id);
+        MemberProfile GetMemberById(long id);
         object UpdateMember(MembersDto membersDto);
         object UpdateStatus(long Id, string FieldName, bool check);
         object UpdateMemberStatus(long Id, string FieldName, int status);

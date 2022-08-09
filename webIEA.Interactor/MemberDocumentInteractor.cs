@@ -1,9 +1,11 @@
 ﻿//using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using webIEA.Contracts;
 using webIEA.Dtos;
 using webIEA.Entities;
@@ -20,8 +22,16 @@ namespace webIEA.Interactor
         }
 
 
-        public object Add(MemberDocumentDto model)
+        public object UploadDocument(long id, HttpPostedFileBase file)
         {
+            MemberDocumentDto model = new MemberDocumentDto();
+            model.Id = id;
+            var fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
+            model.ContentType = Path.GetExtension(file.FileName);            
+            model.DocumentName = Path.GetFileName(file.FileName);
+            model.Path = fileName;
+            var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Content/Images"), fileName);
+            file.SaveAs(path);
             return repositoryWrapper.MemberDocumentManager.Add(model);
         }
         public object Update(MemberDocumentDto model)
