@@ -18,7 +18,7 @@ namespace webIEA.Interactor
 
         protected readonly ILanguageRepository _ocessor;
 
-        public TraineeCourseInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor,IUnitOfWork unitOfWork)
+        public TraineeCourseInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor, IUnitOfWork unitOfWork)
         {
             repositoryWrapper = _repositoryWrapper;
             _ocessor = ocessor;
@@ -31,28 +31,35 @@ namespace webIEA.Interactor
         }
         public object AddUpdate(TraineeCourseDto model)
         {
-            int res=0;
+            int res = 0;
+            var courlangrepo = _unitOfWork.GetRepository<CourseLanguage>();
             if (model.Id == 0)
             {
-                res= repositoryWrapper.TraineeCourseManager.Add(model);
-              
+                res = repositoryWrapper.TraineeCourseManager.Add(model);
+
             }
             else
             {
                 var result = repositoryWrapper.TraineeCourseManager.Update(model);
-                _unitOfWork.GetRepository<CourseLanguage>().DeleteList(x=>x.CourseID==model.Id);
+                res = (int)model.Id;
+                courlangrepo.DeleteList(x => x.CourseID == model.Id);
+                courlangrepo.Save();
 
 
             }
-            foreach (var lng in model.LanguageId)
+            if (model.LanguageId != null)
             {
-                var dt = new CourseLanguage
+                foreach (var lng in model.LanguageId)
                 {
-                    CourseID = res,
-                    LanguageID = lng,
-                    AddedOn = DateTime.Now
-                };
-                 _unitOfWork.GetRepository<CourseLanguage>().Insert(dt);
+                    var dt = new CourseLanguage
+                    {
+                        CourseID = res,
+                        LanguageID = lng,
+                        AddedOn = DateTime.Now
+                    };
+                    courlangrepo.Insert(dt);
+                }
+                courlangrepo.Save();
             }
             return res;
         }
@@ -70,7 +77,7 @@ namespace webIEA.Interactor
             if (TId != 0 && TId != null)
             {
                 model = repositoryWrapper.TraineeCourseManager.GetById((int)TId);
-                model.LanguageId = _unitOfWork.GetRepository<CourseLanguage>().GetAllFiltered(x=>x.CourseID==TId).Select(x=>x.LanguageID).ToList();
+                model.LanguageId = _unitOfWork.GetRepository<CourseLanguage>().GetAllFiltered(x => x.CourseID == TId).Select(x => x.LanguageID).ToList();
             }
             var languages = _ocessor.GetLanguages();
             model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();

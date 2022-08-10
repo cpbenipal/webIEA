@@ -16,6 +16,8 @@ namespace webIEA.Dtos
         public bool LastNamePublic { get; set; }
         public string Email { get; set; }
         public bool EmailPublic { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public Nullable<System.DateTime> DOB { get; set; }
         public bool DOBPublic { get; set; }
         public string BirthPlace { get; set; }
