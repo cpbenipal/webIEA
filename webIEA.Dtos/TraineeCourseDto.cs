@@ -16,9 +16,9 @@ namespace webIEA.Dtos
         public bool IsShow { get; set; }
         public int TypeID { get; set; }
         public List<int> LanguageId { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddTHH:mm}")]
         public DateTime StartDateTime { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy hh:mm tt}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddTHH:mm}")]
         public DateTime EndDateTime { get; set; }
         public float Cost { get; set; }
         public bool IsFullTime { get; set; }

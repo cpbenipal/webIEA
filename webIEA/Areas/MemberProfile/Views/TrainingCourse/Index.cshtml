@@ -50,10 +50,11 @@
                 @Html.DisplayFor(x => emp.TypeID)
             </td>*@
             <td>
-                @Html.DisplayFor(x => emp.StartDateTime)
+               @emp.StartDateTime.ToString("MM/dd/yyyy hh:mm tt")
             </td>
             <td>
-                @Html.DisplayFor(x => emp.EndDateTime)
+                @emp.EndDateTime.ToString("MM/dd/yyyy hh:mm tt")
+
             </td>
             <td>
                 @Html.DisplayFor(x => emp.IsShow)
