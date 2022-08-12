@@ -681,6 +681,7 @@
     <Compile Include="Areas\Flexpage\Models\WhoPermissionsModel.cs" />
     <Compile Include="Areas\Flexpage\Providers\PluriworksRoleProvider.cs" />
     <Compile Include="Areas\Flexpage\Providers\VisibilityXmlSiteMapProvider.cs" />
+    <Compile Include="Areas\IEAdmin\Controllers\MembersController.cs" />
     <Compile Include="Areas\IEAdmin\IEAdminAreaRegistration.cs" />
     <Compile Include="Areas\Interns\InternsAreaRegistration.cs" />
     <Compile Include="Areas\Members\Controllers\BecomeMemberController.cs" />
@@ -2028,7 +2029,7 @@
     <Content Include="Areas\Members\Views\web.config" />
     <Content Include="Areas\Members\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Members\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Members\Views\BecomeMember\Index.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Members\Index.cshtml" />
     <Content Include="Areas\Members\Views\BecomeMember\Update.cshtml" />
     <Content Include="Areas\Members\Views\BecomeMember\Register.cshtml" />
     <Content Include="Areas\Members\Views\BecomeMember\Details.cshtml" />
@@ -2040,6 +2041,10 @@
     <Content Include="Areas\Interns\Views\web.config" />
     <Content Include="Areas\IEAProviders\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\IEAProviders\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Members\Details.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Members\Update.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2074,9 +2079,7 @@
     <Folder Include="Areas\Flexpage\Providers\Controllers\" />
     <Folder Include="Areas\Flexpage\Providers\Data\" />
     <Folder Include="Areas\Flexpage\Providers\Views\Shared\" />
-    <Folder Include="Areas\IEAdmin\Controllers\" />
     <Folder Include="Areas\IEAdmin\Data\" />
-    <Folder Include="Areas\IEAdmin\Views\Shared\" />
     <Folder Include="Areas\Interns\Controllers\" />
     <Folder Include="Areas\Interns\Data\" />
     <Folder Include="Areas\Interns\Views\Shared\" />

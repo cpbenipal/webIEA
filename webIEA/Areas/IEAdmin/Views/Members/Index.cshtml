@@ -61,7 +61,7 @@
     }
 
     <td>
-        @Html.ActionLink("Profile", "Details", new { id = emp.Id }, null) |
+        @Html.ActionLink("Profile","Details", new { id = emp.Id }, null) |
         @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
         @Html.ActionLink("Edit", "Update", new { id = emp.Id }) |
         @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })
