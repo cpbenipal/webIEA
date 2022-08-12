@@ -7,11 +7,11 @@ using System.Web.Mvc;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
-namespace webIEA.Areas.MemberProfile.Controllers
+namespace webIEA.Areas.Providers.Controllers
 {
     public class TrainingCourseController : Controller
     {
-        // GET: MemberProfile/Details
+        // GET: IEAProviders/TrainingCourse
         private readonly TraineeCourseInteractor _traineeCourseInteractor;
         public TrainingCourseController(TraineeCourseInteractor traineeCourseInteractor)
         {
@@ -45,7 +45,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             }
         }
         public ActionResult AddUpdateCourse(TraineeCourseDto traineeCourseDto)
-        {           
+        {
             try
             {
                 var result = _traineeCourseInteractor.AddUpdate(traineeCourseDto);

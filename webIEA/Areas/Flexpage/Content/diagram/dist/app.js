@@ -89835,7 +89835,7 @@ ElementSerializer.prototype.parseContainments = function (properties) {
   });
 };
 
-ElementSerializer.prototype.getNamespaces = function DESKTOP-MDD6GSQ\SYEDALIHAMZA {
+ElementSerializer.prototype.getNamespaces = function (local) {
 
   var namespaces = this.namespaces,
       parent = this.parent,
@@ -89855,7 +89855,7 @@ ElementSerializer.prototype.getNamespaces = function DESKTOP-MDD6GSQ\SYEDALIHAMZ
 };
 
 ElementSerializer.prototype.logNamespace = function (ns, wellknown, local) {
-  var namespaces = this.getNamespacesDESKTOP-MDD6GSQ\SYEDALIHAMZA;
+  var namespaces = this.getNamespaces(local);
 
   var nsUri = ns.uri,
       nsPrefix = ns.prefix;
@@ -89874,7 +89874,7 @@ ElementSerializer.prototype.logNamespace = function (ns, wellknown, local) {
 ElementSerializer.prototype.logNamespaceUsed = function (ns, local) {
   var element = this.element,
       model = element.$model,
-      namespaces = this.getNamespacesDESKTOP-MDD6GSQ\SYEDALIHAMZA;
+      namespaces = this.getNamespaces(local);
 
   // ns may be
   //

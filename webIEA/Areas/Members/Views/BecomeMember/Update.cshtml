@@ -1,7 +1,7 @@
 ﻿@model webIEA.Dtos.MembersDto
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Member details";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
@@ -11,7 +11,7 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Become Member</h4>
+        <h4>Update Member details</h4>
         <hr />
         @Html.EditorFor(model => model.Id, new { htmlAttributes = new { type = "hidden", @class = "form-control" } })
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -175,7 +175,7 @@
     $('#SpecializationId').selectpicker();
     function AddRow() {
         $.ajax({
-            url: "/MemberProfile/BecomeMember/GetSpecialization",
+            url: "/Members/BecomeMember/GetSpecialization",
             type: "GET",
             dataType: 'json',
             success: function (result) {

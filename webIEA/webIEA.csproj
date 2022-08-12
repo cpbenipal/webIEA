@@ -681,9 +681,12 @@
     <Compile Include="Areas\Flexpage\Models\WhoPermissionsModel.cs" />
     <Compile Include="Areas\Flexpage\Providers\PluriworksRoleProvider.cs" />
     <Compile Include="Areas\Flexpage\Providers\VisibilityXmlSiteMapProvider.cs" />
-    <Compile Include="Areas\MemberProfile\Controllers\BecomeMemberController.cs" />
-    <Compile Include="Areas\MemberProfile\Controllers\TrainingCourseController.cs" />
-    <Compile Include="Areas\MemberProfile\MemberProfileAreaRegistration.cs" />
+    <Compile Include="Areas\IEAdmin\IEAdminAreaRegistration.cs" />
+    <Compile Include="Areas\Interns\InternsAreaRegistration.cs" />
+    <Compile Include="Areas\Members\Controllers\BecomeMemberController.cs" />
+    <Compile Include="Areas\Members\MembersAreaRegistration.cs" />
+    <Compile Include="Areas\IEAProviders\Controllers\TrainingCourseController.cs" />
+    <Compile Include="Areas\IEAProviders\IEAProvidersAreaRegistration.cs" />
     <Compile Include="Code\CMS\CmsSettings.cs" />
     <Compile Include="Code\Common\DevExpressExtension.cs" />
     <Compile Include="Code\Common\ListHelper.cs" />
@@ -2022,16 +2025,21 @@
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper.js.map" />
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper-utils.min.js.map" />
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper-utils.js.map" />
-    <Content Include="Areas\MemberProfile\Views\web.config" />
-    <Content Include="Areas\MemberProfile\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\BecomeMember\Index.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\BecomeMember\UpdateMember.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\BecomeMember\CreateMember.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\BecomeMember\MemberDetails.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\BecomeMember\GetMemberDocument.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\TrainingCourse\AddUpdate.cshtml" />
-    <Content Include="Areas\MemberProfile\Views\TrainingCourse\Index.cshtml" />
+    <Content Include="Areas\Members\Views\web.config" />
+    <Content Include="Areas\Members\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Members\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Members\Views\BecomeMember\Index.cshtml" />
+    <Content Include="Areas\Members\Views\BecomeMember\Update.cshtml" />
+    <Content Include="Areas\Members\Views\BecomeMember\Register.cshtml" />
+    <Content Include="Areas\Members\Views\BecomeMember\Details.cshtml" />
+    <Content Include="Areas\Members\Views\BecomeMember\Documents.cshtml" />
+    <Content Include="Areas\IEAProviders\Views\TrainingCourse\AddUpdate.cshtml" />
+    <Content Include="Areas\IEAProviders\Views\TrainingCourse\Index.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\web.config" />
+    <Content Include="Areas\IEAProviders\Views\web.config" />
+    <Content Include="Areas\Interns\Views\web.config" />
+    <Content Include="Areas\IEAProviders\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\IEAProviders\Views\_ViewStart.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2063,7 +2071,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\MemberProfile\Data\" />
+    <Folder Include="Areas\Flexpage\Providers\Controllers\" />
+    <Folder Include="Areas\Flexpage\Providers\Data\" />
+    <Folder Include="Areas\Flexpage\Providers\Views\Shared\" />
+    <Folder Include="Areas\IEAdmin\Controllers\" />
+    <Folder Include="Areas\IEAdmin\Data\" />
+    <Folder Include="Areas\IEAdmin\Views\Shared\" />
+    <Folder Include="Areas\Interns\Controllers\" />
+    <Folder Include="Areas\Interns\Data\" />
+    <Folder Include="Areas\Interns\Views\Shared\" />
+    <Folder Include="Areas\Members\Data\" />
+    <Folder Include="Views\IEAdmin\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

@@ -1,14 +1,10 @@
 ﻿@model List<webIEA.Dtos.MembersDto>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Member list";
 }
 
-<h2>Member List</h2>
-
-<p>
-    @Html.ActionLink("Create New", "CreateMember")
-</p>
+<h2>Member List</h2> 
 
 <table class="table">
     <tr>
@@ -65,9 +61,9 @@
     }
 
     <td>
-        @Html.ActionLink("Profile", "MemberDetails", new { id = emp.Id }, null) |
+        @Html.ActionLink("Profile", "Details", new { id = emp.Id }, null) |
         @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
-        @Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id }) |
+        @Html.ActionLink("Edit", "Update", new { id = emp.Id }) |
         @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })
     </td>
 </tr>

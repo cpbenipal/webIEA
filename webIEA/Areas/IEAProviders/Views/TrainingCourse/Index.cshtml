@@ -1,10 +1,10 @@
 ﻿@model List<webIEA.Dtos.TraineeCourseDto>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Training courses";
 }
 
-<h2>Member List</h2>
+<h2>Training Courses</h2>
 
 <p>
     @Html.ActionLink("Create New", "AddUpdate")
@@ -87,7 +87,7 @@
                 @Html.ActionLink("Update", "AddUpdate", new { id = emp.Id }, null) |
                 @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
                 @*@Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id }) |*@
-                @Html.ActionLink("ChangeStatus", "Update Status", new { Id = emp.Id })
+                @Html.ActionLink("ChangeStatus", "UpdateStatus", new { Id = emp.Id })
             </td>
         </tr>
 

@@ -4,11 +4,11 @@ using System.Web.Mvc;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
-namespace webIEA.Areas.MemberProfile.Controllers
+namespace webIEA.Areas.Members.Controllers 
 {
     public class BecomeMemberController : Controller
     {
-        // GET: MemberProfile/BecomeMember
+        // GET: Members/BecomeMember
         private readonly MembersInteractor _memberManager; 
         private readonly MemberDocumentInteractor _memberDocumentInteractor; 
         public BecomeMemberController(MembersInteractor memberManager,MemberDocumentInteractor memberDocumentInteractor)
@@ -21,7 +21,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             var result = _memberManager.GetAllMembers();
             return View(result);
         }
-        public ActionResult CreateMember()
+        public ActionResult Register() 
         {
             var model = _memberManager.GetProfileInitialData(); 
             return View(model);
@@ -44,7 +44,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             {
                 return RedirectToAction("CreateMember", requestMemberDto);
 
-            }
+            } 
 
         }
         public ActionResult GetAllMembers()
@@ -52,7 +52,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             var result = _memberManager.GetAllMembers();
             return View(result);
         }
-        public ActionResult MemberDetails(long id)
+        public ActionResult Details(long id) 
         {
             var result = _memberManager.GetMemberById(id);           
 
@@ -68,7 +68,7 @@ namespace webIEA.Areas.MemberProfile.Controllers
             _memberManager.UpdateMember(membersDto);           
             return RedirectToAction("Index");
         }
-        public ActionResult UpdateMember(long id)
+        public ActionResult Update(long id) 
         {
             var result = _memberManager.GetMemberById(id);
             return View(result);
@@ -88,12 +88,12 @@ namespace webIEA.Areas.MemberProfile.Controllers
             var result = _memberDocumentInteractor.UploadDocument(Id,file);
             return RedirectToAction("GetMemberDocument",Id);
         }
-        public ActionResult GetMemberDocument(long Id)
+        public ActionResult Documents(long Id)
         {
             var result = _memberDocumentInteractor.GetAllFiltered(Id);
             ViewBag.MemberId = Id;
             return View("GetMemberDocument",result);
-        }
+        } 
         public ActionResult DeleteMemberDocument(int Id)
         {
             var result = _memberDocumentInteractor.Delete(Id);

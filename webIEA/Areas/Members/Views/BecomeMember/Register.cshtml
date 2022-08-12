@@ -1,7 +1,7 @@
 ﻿@model webIEA.Dtos.RequestMemberDto
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Become member";
 }
 @*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -177,7 +177,7 @@
     $('#SpecializationId').selectpicker();
     function AddRow() {
         $.ajax({
-            url: "/MemberProfile/BecomeMember/GetSpecialization",
+            url: "/Members/BecomeMember/GetSpecialization",
             type: "GET",
             dataType: 'json',
             success: function (result) {

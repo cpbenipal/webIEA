@@ -1,7 +1,7 @@
 ﻿@model webIEA.Dtos.MembersDto
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Profile details";
 }
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" / >
 <style>
@@ -201,7 +201,7 @@
         var check = e.checked;
         var id = $('#Id').val();
         $.ajax({
-            url: "/MemberProfile/BecomeMember/UpdateStatus",
+            url: "/Members/BecomeMember/UpdateStatus",
             data: { "Id": id, "FieldName": name, "check": check },
             type: "GET",
             success: function (result) {
