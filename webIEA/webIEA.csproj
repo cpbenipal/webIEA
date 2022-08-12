@@ -2073,6 +2073,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Shared\_IEALayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2084,7 +2085,6 @@
     <Folder Include="Areas\Interns\Data\" />
     <Folder Include="Areas\Interns\Views\Shared\" />
     <Folder Include="Areas\Members\Data\" />
-    <Folder Include="Views\IEAdmin\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
