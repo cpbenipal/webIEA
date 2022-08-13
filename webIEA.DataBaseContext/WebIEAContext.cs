@@ -13,6 +13,8 @@ namespace webIEA.DataBaseContext
          
         public virtual DbSet<MemberProfile> MemberProfile { get; set; }
         public virtual DbSet<MemberStatu> MemberStatus { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

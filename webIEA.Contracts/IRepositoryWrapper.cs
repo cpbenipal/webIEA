@@ -11,5 +11,6 @@
         ITraineeCourseManager TraineeCourseManager { get; }
         ICourseTypeManager CourseTypeManager { get; }
         IEmploymentStatusManager EmploymentStatusManager { get; }
+        IAccountManager AccountManager { get; }
     }
 }

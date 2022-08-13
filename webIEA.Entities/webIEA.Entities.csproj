@@ -91,6 +91,12 @@
     <Compile Include="TrainingCours.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRole.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework">

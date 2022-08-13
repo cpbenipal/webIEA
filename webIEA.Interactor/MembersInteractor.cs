@@ -20,7 +20,7 @@ namespace webIEA.Interactor
             repositoryWrapper = _repositoryWrapper; _ocessor = ocessor;
         }
 
-        public RequestMemberDto GetProfileInitialData() 
+        public RequestMemberDto GetProfileInitialData()
         {
             var model = new RequestMemberDto();
             var languages = _ocessor.GetLanguages();
@@ -42,13 +42,13 @@ namespace webIEA.Interactor
                 DOB = x.DOB,
                 Phone = x.Phone,
                 StatusID = (int)x.StatusID,
-            }).ToList();            
+            }).ToList();
             return model;
         }
         public MembersDto GetMemberById(long id)
         {
             var data = repositoryWrapper.MemberManager.GetMemberById(id);
-            MembersDto m = new MembersDto();            
+            MembersDto m = new MembersDto();
             m.Id = data.Id;
             m.FirstName = data.FirstName;
             m.LastName = data.LastName;
@@ -162,6 +162,10 @@ namespace webIEA.Interactor
         public object UpdateMemberStatus(long Id, string FieldName, int Status)
         {
             return repositoryWrapper.MemberManager.UpdateMemberStatus(Id, FieldName, Status);
+        }
+        public object UpdatePassword(UpdatePasswordDto dto)
+        {
+            return repositoryWrapper.AccountManager.UpdatePassword(dto);
         }
     }
 }

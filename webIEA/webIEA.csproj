@@ -484,6 +484,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.nl.resx</DependentUpon>
     </Compile>
+    <Compile Include="App_Start\CustomAuthorizeAttribute.cs" />
     <Compile Include="App_Start\MapperDep.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\DependencyResolver.cs" />
@@ -2145,6 +2146,10 @@
     <ProjectReference Include="..\webIEA.Contracts\webIEA.Contracts.csproj">
       <Project>{92F265A2-4F1F-407F-B9F3-BDC672A2B1A0}</Project>
       <Name>webIEA.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\webIEA.DataBaseContext\webIEA.DataBaseContext.csproj">
+      <Project>{CDB9E1B9-1889-4227-A08A-BF058551AFAD}</Project>
+      <Name>webIEA.DataBaseContext</Name>
     </ProjectReference>
     <ProjectReference Include="..\webIEA.Dtos\webIEA.Dtos.csproj">
       <Project>{209C47F3-E8BB-4FE5-A420-3BF23C814343}</Project>

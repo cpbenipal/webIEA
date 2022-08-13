@@ -157,6 +157,24 @@
           <Property Name="ModifiedOn" Type="datetime" Nullable="false" />
           <Property Name="ModifiedBy" Type="bigint" Nullable="false" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="loginUserId" Type="bigint" Nullable="false" />
+          <Property Name="TableName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <Association Name="FK_CourseLanguage_TrainingCourses">
           <End Role="TrainingCourses" Type="Self.TrainingCourses" Multiplicity="1" />
           <End Role="CourseLanguage" Type="Self.CourseLanguage" Multiplicity="*" />
@@ -241,6 +259,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_UserRoles">
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="webIEAModelStoreContainer">
           <EntitySet Name="CourseLanguage" EntityType="Self.CourseLanguage" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="CourseType" EntityType="Self.CourseType" Schema="IEA" store:Type="Tables" />
@@ -252,6 +282,8 @@
           <EntitySet Name="MemberStatus" EntityType="Self.MemberStatus" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="MemberTranieeCommission" EntityType="Self.MemberTranieeCommission" Schema="IEA" store:Type="Tables" />
           <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCourses" Schema="IEA" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="IEA" store:Type="Tables" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="IEA" store:Type="Tables" />
           <AssociationSet Name="FK_CourseLanguage_TrainingCourses" Association="Self.FK_CourseLanguage_TrainingCourses">
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
             <End Role="CourseLanguage" EntitySet="CourseLanguage" />
@@ -279,6 +311,10 @@
           <AssociationSet Name="FK_TrainingCourses_CourseType" Association="Self.FK_TrainingCourses_CourseType">
             <End Role="CourseType" EntitySet="CourseType" />
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_UserRoles" Association="Self.FK_User_UserRoles">
+            <End Role="UserRoles" EntitySet="UserRoles" />
+            <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -549,6 +585,12 @@
             <End Role="TrainingCours" EntitySet="TrainingCourses" />
             <End Role="CourseLanguage" EntitySet="CourseLanguages" />
           </AssociationSet>
+          <EntitySet Name="Users" EntityType="webIEAModel.User" />
+          <EntitySet Name="UserRoles" EntityType="webIEAModel.UserRole" />
+          <AssociationSet Name="FK_User_UserRoles" Association="webIEAModel.FK_User_UserRoles">
+            <End Role="UserRole" EntitySet="UserRoles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="CourseLanguage">
           <Key>
@@ -572,6 +614,38 @@
             </Principal>
             <Dependent Role="CourseLanguage">
               <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="loginUserId" Type="Int64" Nullable="false" />
+          <Property Name="TableName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserRole" Relationship="webIEAModel.FK_User_UserRoles" FromRole="User" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Users" Relationship="webIEAModel.FK_User_UserRoles" FromRole="UserRole" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_User_UserRoles">
+          <End Type="webIEAModel.UserRole" Role="UserRole" Multiplicity="1" />
+          <End Type="webIEAModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -739,6 +813,26 @@
                 <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
                 <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
                 <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="webIEAModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="loginUserId" ColumnName="loginUserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="webIEAModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRoles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

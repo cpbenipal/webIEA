@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountDto.cs" />
     <Compile Include="ListCollectionDto.cs" />
     <Compile Include="CourseTypeDto.cs" />
     <Compile Include="MemberDocumentDto.cs" />

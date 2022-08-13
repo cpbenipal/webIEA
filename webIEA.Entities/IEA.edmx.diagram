@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="fb30bae632b24897bbd1bf31c676c864" Name="Diagram1" ZoomLevel="63">
+      <Diagram DiagramId="fb30bae632b24897bbd1bf31c676c864" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="webIEAModel.CourseType" Width="1.5" PointX="3.75" PointY="13.25" IsExpanded="true" />
         <EntityTypeShape EntityType="webIEAModel.HistoryDataChanx" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="webIEAModel.MemberDocument" Width="1.5" PointX="5.25" PointY="3" IsExpanded="true" />
@@ -22,6 +22,9 @@
         <AssociationConnector Association="webIEAModel.FK_MemberTranieeCommission_TrainingCourses" ManuallyRouted="false" />
         <EntityTypeShape EntityType="webIEAModel.CourseLanguage" Width="1.5" PointX="8.25" PointY="12.875" />
         <AssociationConnector Association="webIEAModel.FK_CourseLanguage_TrainingCourses" />
+        <EntityTypeShape EntityType="webIEAModel.User" Width="1.5" PointX="12.625" PointY="1" />
+        <EntityTypeShape EntityType="webIEAModel.UserRole" Width="1.5" PointX="10.375" PointY="1.375" />
+        <AssociationConnector Association="webIEAModel.FK_User_UserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

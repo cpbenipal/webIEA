@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICourseMemberManager.cs" />
+    <Compile Include="IAccountManager.cs" />
     <Compile Include="IEmploymentStatusManager.cs" />
     <Compile Include="ICourseTypeManager.cs" />
     <Compile Include="IMemberDocumentManager.cs" />

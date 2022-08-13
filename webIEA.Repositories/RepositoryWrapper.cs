@@ -144,6 +144,20 @@ namespace webIEA.Repositories
                 return _memberDocumentManager;
             }
         }
+        private IAccountManager _accountManager;
+
+        public IAccountManager AccountManager
+        {
+            get
+            {
+                if (_accountManager == null)
+                {
+                    var repositoryBase = new RepositoryBase<User>(_context);
+                    _accountManager = new AccountManager(repositoryBase);
+                }
+                return _accountManager;
+            }
+        }
 
 
 

@@ -58,5 +58,10 @@ namespace webIEA.Areas.IEAdmin.Controllers
             var result = _memberManager.GetMemberById(id);
             return View(result);
         }
+        public ActionResult UpdatePassword(UpdatePasswordDto dto)
+        {
+            var result = _memberManager.UpdatePassword(dto);
+            return View(result);
+        }
     }
 }

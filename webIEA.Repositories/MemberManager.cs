@@ -135,8 +135,6 @@ namespace webIEA.Repositories
         {
             var data = _repositoryBase.GetById(Id);
             data.StatusID = data.StatusID==3?2:3;
-            //=
-            //data.GetType().GetProperty(FieldName).SetValue(data, status, null);
             var result = _repositoryBase.Update(data);
             _repositoryBase.Save();
             return result;
