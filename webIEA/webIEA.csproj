@@ -682,6 +682,7 @@
     <Compile Include="Areas\Flexpage\Models\WhoPermissionsModel.cs" />
     <Compile Include="Areas\Flexpage\Providers\PluriworksRoleProvider.cs" />
     <Compile Include="Areas\Flexpage\Providers\VisibilityXmlSiteMapProvider.cs" />
+    <Compile Include="Areas\IEAdmin\Controllers\AccountController.cs" />
     <Compile Include="Areas\IEAdmin\Controllers\MembersController.cs" />
     <Compile Include="Areas\IEAdmin\IEAdminAreaRegistration.cs" />
     <Compile Include="Areas\Interns\InternsAreaRegistration.cs" />
@@ -2046,6 +2047,7 @@
     <Content Include="Areas\IEAdmin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\IEAdmin\Views\Members\Details.cshtml" />
     <Content Include="Areas\IEAdmin\Views\Members\Update.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Account\LoginView.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

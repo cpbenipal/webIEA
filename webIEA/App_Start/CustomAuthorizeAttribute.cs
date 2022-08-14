@@ -22,14 +22,14 @@ namespace webIEA.App_Start
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool authorize = false;
-            if (UserId != null || UserId != "")
+            if (UserId != null && UserId != "")
             {
                 foreach (var role in allowedroles)
                 {
                     var user = (from u in context.Users join ur in context.UserRoles on u.RoleId equals ur.Id
                                where u.Id == UserId && ur.Name == role
                                select new { u }).ToList();
-                    if (user.Count>0)
+                    if (user.Count>4)
                     {
                         authorize = true;
                     }

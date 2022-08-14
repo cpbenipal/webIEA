@@ -24,20 +24,29 @@ namespace webIEA.Repositories
 
         public object register(AccountDto model)
         {
-            var password = GenratePassword();
-            var hashpass = Encrypt.GetMD5Hash(password);
-            var data = new User
+            try
             {
-                Email = model.Email,
-                Password = hashpass,
-                RoleId = model.RoleId,
-                loginUserId = model.loginUserId,
-                TableName = model.TableName,
-            };
-            var result = _repositoryBase.Insert(data);
-            _repositoryBase.Save();
-            Email.SendEmail(model.Email, "Account Details", $"your login email is {model.Email} and password is {password}");
-            return result;
+                var password = GenratePassword();
+                var hashpass = Encrypt.GetMD5Hash(password);
+                var data = new User
+                {
+                    Id=Guid.NewGuid().ToString(),
+                    Email = model.Email,
+                    Password = hashpass,
+                    RoleId = model.RoleId,
+                    loginUserId = model.loginUserId,
+                    TableName = model.TableName,
+                };
+                var result = _repositoryBase.Insert(data);
+                _repositoryBase.Save();
+                Email.SendEmail(model.Email, "Account Details", $"your login email is {model.Email} and password is {password}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
         }
         public AccountDto Login(LoginDto dt)
         {

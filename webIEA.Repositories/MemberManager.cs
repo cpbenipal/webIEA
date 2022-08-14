@@ -134,7 +134,7 @@ namespace webIEA.Repositories
         public object UpdateMemberStatus(long Id, string FieldName, int status)
         {
             var data = _repositoryBase.GetById(Id);
-            data.StatusID = data.StatusID==3?2:3;
+            data.StatusID = data.StatusID==2?3:2;
             var result = _repositoryBase.Update(data);
             _repositoryBase.Save();
             return result;

@@ -46,12 +46,12 @@ namespace webIEA.Areas.IEAdmin.Controllers
         public ActionResult UpdateStatus(long Id, string FieldName, bool check)
         {
             var result = _memberManager.UpdateStatus(Id, FieldName, check);
-            return RedirectToAction("Index", result);
+            return RedirectToAction("Index");
         }
         public ActionResult UpdateMemberStatus(long Id)
         {
             var result = _memberManager.UpdateMemberStatus(Id, "StatusID", 0);
-            return RedirectToAction("Index", result);
+            return RedirectToAction("Index");
         }
         public ActionResult Update(long id)
         {

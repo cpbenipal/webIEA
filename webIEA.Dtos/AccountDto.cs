@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace webIEA.Dtos
 {
+   public enum Roles
+    {
+        Admin=1,
+        Member=2,
+        Provider=3,
+        intern=4,
+
+    }
     public class AccountDto
     {
         public string Id { get; set; }

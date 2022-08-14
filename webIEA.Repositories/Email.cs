@@ -15,28 +15,32 @@ namespace webIEA.Repositories
         {
             try
             {
-                    var senderEmail = new MailAddress("jamilmoughal786@gmail.com", "Jamil");
-                    var receiverEmail = new MailAddress(receiver, "Receiver");
-                    var password = "Your Email Password here";
-                    var sub = subject;
-                    var body = message;
-                    var smtp = new SmtpClient
-                    {
-                        Host = "smtp.gmail.com",
-                        Port = 587,
-                        EnableSsl = true,
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential(senderEmail.Address, password)
-                    };
-                    using (var mess = new MailMessage(senderEmail, receiverEmail)
-                    {
-                        Subject = subject,
-                        Body = body
-                    })
-                    {
-                        smtp.Send(mess);
-                    }
+                var client = new SmtpClient("smtp.mailtrap.io", 2525)
+                {
+                    Credentials = new NetworkCredential("774b0db0edf0ce", "089911836de727"),
+                    EnableSsl = true
+                };
+                client.Send("from@example.com", receiver,subject, message);
+                //var senderEmail = new MailAddress("774b0db0edf0ce", "089911836de727");
+                //    var receiverEmail = new MailAddress(receiver, "Receiver");
+                //    var password = "Your Email Password here";
+                //    var sub = subject;
+                //    var body = message;
+                //    var smtp = new SmtpClient
+                //    {
+                //        Host = "smtp.mailtrap.io",
+                //        Port = 2525,
+                //        EnableSsl = true,
+                //        Credentials = new NetworkCredential(senderEmail.Address, password)
+                //    };
+                //    using (var mess = new MailMessage(senderEmail, receiverEmail)
+                //    {
+                //        Subject = subject,
+                //        Body = body
+                //    })
+                //    {
+                //        smtp.Send(mess);
+                //    }
                     return 1;
                 
             }

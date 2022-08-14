@@ -161,7 +161,21 @@ namespace webIEA.Interactor
         }
         public object UpdateMemberStatus(long Id, string FieldName, int Status)
         {
-            return repositoryWrapper.MemberManager.UpdateMemberStatus(Id, FieldName, Status);
+            var dt = repositoryWrapper.MemberManager.GetMemberById(Id);
+            if (dt.StatusID == 1)
+            {
+                var acc = new AccountDto
+                {
+                    Email = dt.Email,
+                    TableName = "MemberProfile",
+                    loginUserId = dt.Id,
+                    RoleId = (int)Roles.Member,
+
+                };
+                repositoryWrapper.AccountManager.register(acc);
+            }
+            var result = repositoryWrapper.MemberManager.UpdateMemberStatus(Id, FieldName, Status);
+            return result;
         }
         public object UpdatePassword(UpdatePasswordDto dto)
         {
