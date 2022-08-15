@@ -12,13 +12,13 @@ namespace webIEA.Dtos
         Admin=1,
         Member=2,
         Provider=3,
-        intern=4,
-
+        Intern=4
     }
     public class AccountDto
     {
         public string Id { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; } 
         public int RoleId { get; set; }
         public long loginUserId { get; set; }
         public string TableName { get; set; }

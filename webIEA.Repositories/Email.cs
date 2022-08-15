@@ -20,7 +20,7 @@ namespace webIEA.Repositories
                     Credentials = new NetworkCredential("774b0db0edf0ce", "089911836de727"),
                     EnableSsl = true
                 };
-                client.Send("from@example.com", receiver,subject, message);
+                client.Send("cpbenipal@example.com", receiver,subject, message);
                 //var senderEmail = new MailAddress("774b0db0edf0ce", "089911836de727");
                 //    var receiverEmail = new MailAddress(receiver, "Receiver");
                 //    var password = "Your Email Password here";

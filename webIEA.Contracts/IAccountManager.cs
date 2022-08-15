@@ -11,7 +11,7 @@ namespace webIEA.Contracts
 {
     public interface IAccountManager
     {
-        object register(AccountDto model);
+        User Register(User model);
         AccountDto Login(LoginDto loginDto);
         AccountDto GetById(string id);
         List<AccountDto> GetAll();

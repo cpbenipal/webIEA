@@ -314,6 +314,7 @@ namespace webIEA
             _kernel.Bind<IMemberManager>().To<MemberManager>(); 
             _kernel.Bind<IMemberStatusManager>().To<MemberStatusManager>();
             _kernel.Bind<IUnitOfWork>().To<UnitOfWorkManager>();
+            _kernel.Bind<IHashManager>().To<HashManager>();
 
         }
 

@@ -9,15 +9,15 @@ using webIEA.Interactor;
 
 namespace webIEA.Areas.IEAdmin.Controllers
 {
-    public class AccountController : Controller
+    public class LoginController : Controller
     {
         private readonly AccountInteractor _accountInteractor;
-        public AccountController(AccountInteractor accountInteractor)
+        public LoginController(AccountInteractor accountInteractor)
         {
             _accountInteractor = accountInteractor;
         }
         [AllowAnonymous]
-        public ActionResult LoginView()
+        public ActionResult Index()
         {
             return View();
         }
@@ -26,10 +26,17 @@ namespace webIEA.Areas.IEAdmin.Controllers
         public ActionResult Login(LoginDto model)
         {
             var result = _accountInteractor.Login(model);
-            Session["Id"] = result.Id;
-            Session["Email"] = result.Email;
-            Session["Role"] = result.RoleId;
-            return View("LoginView");
+            if (result != null)
+            {
+                Session.Add("Id", result.Id);
+                Session.Add("Email", result.Email);
+                Session.Add("Role", result.RoleId);
+                return RedirectToAction("Index", "Members");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Login");
+            }
         }
         [HttpPost]
         [CustomAuthorizeAttribute("Admin,Member")]

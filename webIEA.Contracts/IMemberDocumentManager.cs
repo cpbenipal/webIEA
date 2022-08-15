@@ -11,9 +11,10 @@ namespace webIEA.Contracts
 {
     public interface IMemberDocumentManager
     {
-        object Add(MemberDocumentDto model);
-        object Update(MemberDocumentDto model);
+        object Add(MemberDocument model);
+        object Update(MemberDocument model);
         MemberDocumentDto GetById(long id);
+        MemberDocument GetFirstById(long Id);
         List<MemberDocumentDto> GetAll();
         List<MemberDocumentDto> GetAllFiltered(long Id);
         object Delete(int Id);

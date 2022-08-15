@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using webIEA.Contracts;
-using webIEA.DataBaseContext;
 using webIEA.Dtos;
 using webIEA.Entities;
 
@@ -13,33 +12,22 @@ namespace webIEA.Repositories
     public class AccountManager : IAccountManager
     {
         private readonly IRepositoryBase<User> _repositoryBase;
-        private readonly Mapper mapper;
-
-        public AccountManager(IRepositoryBase<User> repositoryBase)
+        private readonly IHashManager _hashManager;
+        private readonly Mapper mapper; 
+        public AccountManager(IRepositoryBase<User> repositoryBase, IHashManager hashManager)
         {
             _repositoryBase = repositoryBase;
             var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<User, AccountDto>());
             mapper = new Mapper(_mapConfig);
+            _hashManager = hashManager;
         }
 
-        public object register(AccountDto model)
+        public User Register(User model)
         {
             try
-            {
-                var password = GenratePassword();
-                var hashpass = Encrypt.GetMD5Hash(password);
-                var data = new User
-                {
-                    Id=Guid.NewGuid().ToString(),
-                    Email = model.Email,
-                    Password = hashpass,
-                    RoleId = model.RoleId,
-                    loginUserId = model.loginUserId,
-                    TableName = model.TableName,
-                };
-                var result = _repositoryBase.Insert(data);
-                _repositoryBase.Save();
-                Email.SendEmail(model.Email, "Account Details", $"your login email is {model.Email} and password is {password}");
+            { 
+                var result = _repositoryBase.Insert(model);
+                _repositoryBase.Save();               
                 return result;
             }
             catch (Exception ex)
@@ -51,7 +39,7 @@ namespace webIEA.Repositories
         public AccountDto Login(LoginDto dt)
         {
             AccountDto AccountDto = new AccountDto();
-            dt.Password = Encrypt.GetMD5Hash(dt.Password);
+            dt.Password = _hashManager.EncryptPlainText(dt.Password);
             var model = _repositoryBase.FirstOrDefaultAsync(x => x.Email == dt.Email && x.Password == dt.Password);
             if (model != null)
             {
@@ -67,7 +55,7 @@ namespace webIEA.Repositories
         {
             AccountDto AccountDto = new AccountDto();
             var model = _repositoryBase.FirstOrDefaultAsync(x => x.Email == dt.Email && x.Password == dt.OldPassword);
-            model.Password = Encrypt.GetMD5Hash(dt.NewPassword);
+            model.Password = _hashManager.EncryptPlainText(dt.NewPassword);
             var result = _repositoryBase.Update(model);
             _repositoryBase.Save();
             return result;
@@ -115,38 +103,6 @@ namespace webIEA.Repositories
             _repositoryBase.Delete(Id);
             _repositoryBase.Save();
             return "";
-        }
-        public string GenratePassword()
-        {
-            string allowedChars = "";
-
-            allowedChars = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,";
-
-            allowedChars += "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,";
-
-            allowedChars += "1,2,3,4,5,6,7,8,9,0,!,@,#,$,%,&,?";
-
-            char[] sep = { ',' };
-
-            string[] arr = allowedChars.Split(sep);
-
-            string passwordString = "";
-
-            string temp = "";
-
-            Random rand = new Random();
-
-            for (int i = 0; i < 8; i++)
-
-            {
-
-                temp = arr[rand.Next(0, arr.Length)];
-
-                passwordString += temp;
-
-            }
-
-            return passwordString;
-        }
+        } 
     }
 }

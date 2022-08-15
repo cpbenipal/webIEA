@@ -40,11 +40,12 @@ namespace webIEA.Dtos
         public string PrivatePostalCode { get; set; }
         public bool PrivatePostalCodePublic { get; set; }
         public int StatusID { get; set; }
+        public string StatusName { get; set; } 
         public int EmploymentStatusID { get; set; }
-        public bool StatusIDPublic { get; set; }
+        public bool EmploymentStatusIDPublic { get; set; }
         public bool SpecializationPublic { get; set; }
         public bool TraineeCommissionPublic { get; set; }
-
+        public string Password { get; set; } 
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }

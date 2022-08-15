@@ -22,7 +22,7 @@ namespace webIEA.Entities
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
     
-        public virtual MemberProfile MemberProfile { get; set; }
         public virtual TrainingCours TrainingCours { get; set; }
+        public virtual MemberProfile MemberProfile { get; set; }
     }
 }

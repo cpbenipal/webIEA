@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using webIEA.App_Start;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
@@ -10,14 +11,12 @@ namespace webIEA.Areas.IEAdmin.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly MembersInteractor _memberManager;
-        private readonly MemberDocumentInteractor _memberDocumentInteractor;
-        public MembersController(MembersInteractor memberManager, MemberDocumentInteractor memberDocumentInteractor)
+        private readonly MembersInteractor _memberManager; 
+        public MembersController(MembersInteractor memberManager)
         {
-            _memberManager = memberManager;
-            _memberDocumentInteractor = memberDocumentInteractor;
+            _memberManager = memberManager;            
         }
-        // GET: IEAdmin/Members
+        // GET: IEAdmin/Members       
         public ActionResult Index()
         {
             var result = _memberManager.GetAllMembers();
@@ -50,7 +49,7 @@ namespace webIEA.Areas.IEAdmin.Controllers
         }
         public ActionResult UpdateMemberStatus(long Id)
         {
-            var result = _memberManager.UpdateMemberStatus(Id, "StatusID", 0);
+            var result = _memberManager.UpdateMemberStatus(Id, "StatusID", (int)MemberStatusEnum.Active);  
             return RedirectToAction("Index");
         }
         public ActionResult Update(long id)

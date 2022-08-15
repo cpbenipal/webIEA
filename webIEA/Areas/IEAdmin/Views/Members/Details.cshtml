@@ -151,7 +151,7 @@
         <div class="col-md-10">
             @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @disabled = "true" })
 
-            @Html.CheckBoxFor(model => model.StatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+            @Html.CheckBoxFor(model => model.EmploymentStatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
         </div>
     </div>
 

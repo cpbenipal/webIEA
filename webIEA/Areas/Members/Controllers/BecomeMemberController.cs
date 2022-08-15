@@ -69,7 +69,7 @@ namespace webIEA.Areas.Members.Controllers
         }
         public ActionResult UpdateMemberStatus(long Id)
         {
-            var result = _memberManager.UpdateMemberStatus(Id, "StatusID", 0);
+            var result = _memberManager.UpdateStatus(Id, "StatusID", false); 
             return RedirectToAction("Index", result);
         }
         public ActionResult AddMemberDocument(long Id, HttpPostedFileBase file)

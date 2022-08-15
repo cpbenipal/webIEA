@@ -21,6 +21,9 @@
             Status
         </th>
         <th>
+            Password
+        </th>
+        <th>
             Action
         </th>
     </tr>
@@ -36,32 +39,14 @@
     <td>
         @Html.DisplayFor(x => emp.Phone)
     </td>
-    @*<td>
-        @Html.DisplayFor(x => emp.DOB)
-    </td>*@
-    @{
-        if (emp.StatusID == 1)
-        {
-            <td>
-                Pending
-            </td>
-        }
-        else if (emp.StatusID == 2)
-        {
-            <td>
-                Active
-            </td>
-        }
-        else if (emp.StatusID == 3)
-        {
-            <td>
-                Suspended
-            </td>
-        }
-    }
-
     <td>
-        @Html.ActionLink("Profile","Details", new { id = emp.Id }, null) |
+        @Html.DisplayFor(x => emp.StatusName)
+    </td>
+    <td>
+        @Html.DisplayFor(x => emp.Password)
+    </td>
+    <td>
+        @Html.ActionLink("Profile", "Details", new { id = emp.Id }, null) |
         @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
         @Html.ActionLink("Edit", "Update", new { id = emp.Id }) |
         @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })

@@ -8,10 +8,10 @@ namespace webIEA.Repositories
     public class RepositoryWrapper : IRepositoryWrapper
     {
         private readonly WebIEAContext2 _context;
-
-        public RepositoryWrapper(WebIEAContext2 context)
+        private readonly IHashManager _hashManager;
+        public RepositoryWrapper(WebIEAContext2 context, IHashManager hashManager)
         {
-            _context = context;
+            _context = context; _hashManager = hashManager;
         }
 
 
@@ -153,13 +153,11 @@ namespace webIEA.Repositories
                 if (_accountManager == null)
                 {
                     var repositoryBase = new RepositoryBase<User>(_context);
-                    _accountManager = new AccountManager(repositoryBase);
+                    _accountManager = new AccountManager(repositoryBase, _hashManager);
                 }
                 return _accountManager;
             }
-        }
-
-
+        }        
 
     }
 }

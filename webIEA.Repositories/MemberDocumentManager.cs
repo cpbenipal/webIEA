@@ -20,29 +20,15 @@ namespace webIEA.Repositories
             _repositoryBase = repositoryBase;          
         }
 
-        public object Add(MemberDocumentDto model)
-        {
-            var data = new MemberDocument
-            {
-                MemberID = model.MemberId,
-                DocumentName = model.DocumentName,
-                ContentType = model.ContentType,
-                Path=model.Path,
-                AddedOn = DateTime.Now,
-                ModifiedOn = DateTime.Now,
-            };
-            var result = _repositoryBase.Insert(data);
+        public object Add(MemberDocument model)
+        {            
+            var result = _repositoryBase.Insert(model);
             _repositoryBase.Save();
             return result;
         }
-        public object Update(MemberDocumentDto MemberDocumentDto)
-        {
-            var data = _repositoryBase.GetById(MemberDocumentDto.Id);
-            data.DocumentName = MemberDocumentDto.DocumentName;
-            data.MemberID = MemberDocumentDto.MemberId;
-            data.Path = MemberDocumentDto.Path;
-            data.ContentType = MemberDocumentDto.ContentType;
-            var result = _repositoryBase.Update(data);
+        public object Update(MemberDocument memberDocument)
+        {            
+            var result = _repositoryBase.Update(memberDocument);
             _repositoryBase.Save();
             return result;
         }
@@ -56,6 +42,10 @@ namespace webIEA.Repositories
             MemberDocumentDto.ContentType = model.ContentType;
             MemberDocumentDto.Path = model.Path;
             return MemberDocumentDto;
+        }
+        public MemberDocument GetFirstById(long Id) 
+        {
+            return _repositoryBase.GetById(Id);
         }
         public List<MemberDocumentDto> GetAll()
         {

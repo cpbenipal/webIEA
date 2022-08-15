@@ -19,10 +19,10 @@ namespace webIEA.Interactor
             repositoryWrapper = _repositoryWrapper;
         }
 
-        public object Register(AccountDto model)
-        {
-            return repositoryWrapper.AccountManager.register(model);
-        }
+        //public object register(AccountDto model)
+        //{
+        //    return repositoryWrapper.AccountManager.register(model);
+        //}
         public AccountDto Login(LoginDto model)
         {
             return repositoryWrapper.AccountManager.Login(model);

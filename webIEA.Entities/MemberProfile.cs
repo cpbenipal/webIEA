@@ -50,15 +50,15 @@ namespace webIEA.Entities
         public bool PrivateAddressPublic { get; set; }
         public string PrivatePostalCode { get; set; }
         public bool PrivatePostalCodePublic { get; set; }
+        public Nullable<int> EmploymentStatusID { get; set; }
+        public Nullable<bool> EmploymentStatusIDPublic { get; set; }
         public Nullable<int> StatusID { get; set; }
-        public bool StatusIDPublic { get; set; }
+        public bool SpecializationPublic { get; set; }
+        public bool TraineeCommissionPublic { get; set; }
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
-        public Nullable<int> EmploymentStatusID { get; set; }
-        public bool SpecializationPublic { get; set; }
-        public bool TraineeCommissionPublic { get; set; }
     
         public virtual ICollection<MemberDocument> MemberDocuments { get; set; }
         public virtual MemberStatu MemberStatu { get; set; }

@@ -21,7 +21,6 @@ namespace webIEA.Interactor
             repositoryWrapper = _repositoryWrapper;
         }
 
-
         public object UploadDocument(long id, HttpPostedFileBase file)
         {
             MemberDocumentDto model = new MemberDocumentDto();
@@ -32,11 +31,29 @@ namespace webIEA.Interactor
             model.Path = fileName;
             var path = Path.Combine(HttpContext.Current.Server.MapPath("~/Content/Images"), fileName);
             file.SaveAs(path);
-            return repositoryWrapper.MemberDocumentManager.Add(model);
+
+            var data = new MemberDocument
+            {
+                MemberID = model.MemberId,
+                DocumentName = model.DocumentName,
+                ContentType = model.ContentType,
+                Path = model.Path,
+                AddedOn = DateTime.Now,
+                ModifiedOn = DateTime.Now,
+            };
+
+            return repositoryWrapper.MemberDocumentManager.Add(data);
         }
-        public object Update(MemberDocumentDto model)
+        public object Update(MemberDocumentDto MemberDocumentDto) 
         {
-            return repositoryWrapper.MemberDocumentManager.Update(model);
+            var data = repositoryWrapper.MemberDocumentManager.GetFirstById(MemberDocumentDto.Id);
+            data.DocumentName = MemberDocumentDto.DocumentName;
+            data.MemberID = MemberDocumentDto.MemberId;
+            data.Path = MemberDocumentDto.Path;
+            data.ContentType = MemberDocumentDto.ContentType;
+            data.ModifiedOn = DateTime.Now;
+            data.ModifiedBy = MemberDocumentDto.MemberId ?? 0;
+            return repositoryWrapper.MemberDocumentManager.Update(data);
         }
         public List<MemberDocumentDto> GetAll()
         {
@@ -49,7 +66,14 @@ namespace webIEA.Interactor
      
         public MemberDocumentDto GetById(int id)
         {
-            return repositoryWrapper.MemberDocumentManager.GetById(id);
+            MemberDocumentDto MemberDocumentDto = new MemberDocumentDto();
+            var model = repositoryWrapper.MemberDocumentManager.GetFirstById(id);
+            MemberDocumentDto.Id = model.ID;
+            MemberDocumentDto.MemberId = model.MemberID;
+            MemberDocumentDto.DocumentName = model.DocumentName;
+            MemberDocumentDto.ContentType = model.ContentType;
+            MemberDocumentDto.Path = model.Path;
+            return MemberDocumentDto;
         }
         public object Delete(int id)
         {

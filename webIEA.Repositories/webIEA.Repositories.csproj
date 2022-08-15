@@ -48,7 +48,7 @@
     <Compile Include="AccountManager.cs" />
     <Compile Include="CourseType.cs" />
     <Compile Include="Email.cs" />
-    <Compile Include="Encrypt.cs" />
+    <Compile Include="HashManager.cs" />
     <Compile Include="MemberDocumentManager.cs" />
     <Compile Include="TraineeCourseManager .cs" />
     <Compile Include="EmploymentStatusManager.cs" />
