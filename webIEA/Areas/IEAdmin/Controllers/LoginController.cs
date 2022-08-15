@@ -33,7 +33,11 @@ namespace webIEA.Areas.IEAdmin.Controllers
                     Session.Add("Id", result.Id);
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
-                    return RedirectToAction("Index", "Members");
+                    if (result.RoleId == (int)Roles.Admin)
+                        return RedirectToAction("Index", "Members");
+                    else if (result.RoleId == (int)Roles.Member)
+                        return RedirectToAction("Details", "BecomeMember", new { area = "Members",  id = result.loginUserId });
+
                 }
                 else
                 {
@@ -44,7 +48,7 @@ namespace webIEA.Areas.IEAdmin.Controllers
             return View();
         }
         [HttpPost]
-        [CustomAuthorizeAttribute("Admin","Member")]
+        [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult UpdatePasword(UpdatePasswordDto model)
         {
             var result = _accountInteractor.UpdatePassword(model);

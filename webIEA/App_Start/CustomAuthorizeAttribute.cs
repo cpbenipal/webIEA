@@ -14,40 +14,32 @@ namespace webIEA.App_Start
     {
         WebIEAContext2 context = new WebIEAContext2(); // my entity  
         private readonly string[] allowedroles;
-        private readonly string UserId;
+         
         public CustomAuthorizeAttribute(params string[] roles)
         {
-            this.allowedroles = roles;
-            this.UserId = (string)HttpContext.Current.Session["Id"];
+            this.allowedroles = roles;            
         }
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool authorize = false;
+            var UserId = Convert.ToString(httpContext.Session["Id"]); 
             if (UserId != null && UserId != "")
             {
+                var user = (from u in context.Users
+                            join ur in context.UserRoles on u.RoleId equals ur.Id
+                            where u.Id == UserId
+                            select new { ur.Name }).FirstOrDefault();
+
                 foreach (var role in allowedroles)
                 {
-                    var user = (from u in context.Users join ur in context.UserRoles on u.RoleId equals ur.Id
-                               where u.Id == UserId && ur.Name == role
-                               select new { u }).ToList();
-                    if (user.Count>4)
-                    {
-                        authorize = true;
-                    }
+                    if (role == user.Name) return true;
                 }
             }
             return authorize;
         }
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            //filterContext.Result = new HttpUnauthorizedResult();
-
-            filterContext.Result = new RedirectToRouteResult(
-               new RouteValueDictionary
-               {
-                    { "controller", "Members" },
-                    { "action", "UnAuthorized" }
-               });
+            filterContext.Result = new HttpUnauthorizedResult();             
         }
     }
 }
