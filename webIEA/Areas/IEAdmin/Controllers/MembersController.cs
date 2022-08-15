@@ -16,7 +16,8 @@ namespace webIEA.Areas.IEAdmin.Controllers
         {
             _memberManager = memberManager;            
         }
-        // GET: IEAdmin/Members       
+        // GET: IEAdmin/Members
+        [CustomAuthorizeAttribute("Admin")]
         public ActionResult Index()
         {
             var result = _memberManager.GetAllMembers();
@@ -61,6 +62,12 @@ namespace webIEA.Areas.IEAdmin.Controllers
         {
             var result = _memberManager.UpdatePassword(dto);
             return View(result);
+        }
+        public ActionResult UnAuthorized()
+        {
+            ViewBag.Message = "Un Authorized Page!";
+
+            return View();
         }
     }
 }

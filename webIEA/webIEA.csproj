@@ -2048,6 +2048,7 @@
     <Content Include="Areas\IEAdmin\Views\Members\Details.cshtml" />
     <Content Include="Areas\IEAdmin\Views\Members\Update.cshtml" />
     <Content Include="Areas\IEAdmin\Views\Login\Index.cshtml" />
+    <Content Include="Areas\IEAdmin\Views\Members\UnAuthorized.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

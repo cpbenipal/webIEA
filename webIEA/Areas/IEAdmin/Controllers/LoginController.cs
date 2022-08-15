@@ -25,21 +25,26 @@ namespace webIEA.Areas.IEAdmin.Controllers
         [AllowAnonymous]
         public ActionResult Login(LoginDto model)
         {
-            var result = _accountInteractor.Login(model);
-            if (result != null)
+            if (ModelState.IsValid)
             {
-                Session.Add("Id", result.Id);
-                Session.Add("Email", result.Email);
-                Session.Add("Role", result.RoleId);
-                return RedirectToAction("Index", "Members");
+                var result = _accountInteractor.Login(model);
+                if (result != null)
+                {
+                    Session.Add("Id", result.Id);
+                    Session.Add("Email", result.Email);
+                    Session.Add("Role", result.RoleId);
+                    return RedirectToAction("Index", "Members");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Incorrect username or password");
+                    return View();
+                }
             }
-            else
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            return View();
         }
         [HttpPost]
-        [CustomAuthorizeAttribute("Admin,Member")]
+        [CustomAuthorizeAttribute("Admin","Member")]
         public ActionResult UpdatePasword(UpdatePasswordDto model)
         {
             var result = _accountInteractor.UpdatePassword(model);

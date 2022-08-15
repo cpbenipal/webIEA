@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using webIEA.DataBaseContext;
 
 namespace webIEA.App_Start
@@ -39,7 +40,14 @@ namespace webIEA.App_Start
         }
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
-            filterContext.Result = new HttpUnauthorizedResult();
+            //filterContext.Result = new HttpUnauthorizedResult();
+
+            filterContext.Result = new RedirectToRouteResult(
+               new RouteValueDictionary
+               {
+                    { "controller", "Members" },
+                    { "action", "UnAuthorized" }
+               });
         }
     }
 }
