@@ -7,7 +7,7 @@ using webIEA.App_Start;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
-namespace webIEA.Areas.IEAdmin.Controllers
+namespace webIEA.Controllers
 {
     public class LoginController : Controller
     {
@@ -34,9 +34,10 @@ namespace webIEA.Areas.IEAdmin.Controllers
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
                     if (result.RoleId == (int)Roles.Admin)
-                        return RedirectToAction("Index", "Members");
-                    else if (result.RoleId == (int)Roles.Member)
-                        return RedirectToAction("Details", "BecomeMember", new { area = "Members",  id = result.loginUserId });
+                        return RedirectToAction("Index", "Member");
+                    else
+                        return RedirectToAction("Index", "Home");
+
 
                 }
                 else

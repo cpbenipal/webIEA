@@ -682,14 +682,6 @@
     <Compile Include="Areas\Flexpage\Models\WhoPermissionsModel.cs" />
     <Compile Include="Areas\Flexpage\Providers\PluriworksRoleProvider.cs" />
     <Compile Include="Areas\Flexpage\Providers\VisibilityXmlSiteMapProvider.cs" />
-    <Compile Include="Areas\IEAdmin\Controllers\LoginController.cs" />
-    <Compile Include="Areas\IEAdmin\Controllers\MembersController.cs" />
-    <Compile Include="Areas\IEAdmin\IEAdminAreaRegistration.cs" />
-    <Compile Include="Areas\Interns\InternsAreaRegistration.cs" />
-    <Compile Include="Areas\Members\Controllers\BecomeMemberController.cs" />
-    <Compile Include="Areas\Members\MembersAreaRegistration.cs" />
-    <Compile Include="Areas\IEAProviders\Controllers\TrainingCourseController.cs" />
-    <Compile Include="Areas\IEAProviders\IEAProvidersAreaRegistration.cs" />
     <Compile Include="Code\CMS\CmsSettings.cs" />
     <Compile Include="Code\Common\DevExpressExtension.cs" />
     <Compile Include="Code\Common\ListHelper.cs" />
@@ -705,6 +697,9 @@
     <Compile Include="Code\Localization\LocalizedString.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MemberController.cs" />
+    <Compile Include="Controllers\TrainingCourseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -2028,27 +2023,6 @@
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper.js.map" />
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper-utils.min.js.map" />
     <Content Include="Areas\Flexpage\Content\Scripts\bootstrap\popper-utils.js.map" />
-    <Content Include="Areas\Members\Views\web.config" />
-    <Content Include="Areas\Members\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Members\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Members\Index.cshtml" />
-    <Content Include="Areas\Members\Views\BecomeMember\Update.cshtml" />
-    <Content Include="Areas\Members\Views\BecomeMember\Register.cshtml" />
-    <Content Include="Areas\Members\Views\BecomeMember\Details.cshtml" />
-    <Content Include="Areas\Members\Views\BecomeMember\Documents.cshtml" />
-    <Content Include="Areas\IEAProviders\Views\TrainingCourse\AddUpdate.cshtml" />
-    <Content Include="Areas\IEAProviders\Views\TrainingCourse\Index.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\web.config" />
-    <Content Include="Areas\IEAProviders\Views\web.config" />
-    <Content Include="Areas\Interns\Views\web.config" />
-    <Content Include="Areas\IEAProviders\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\IEAProviders\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Members\Details.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Members\Update.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Login\Index.cshtml" />
-    <Content Include="Areas\IEAdmin\Views\Members\UnAuthorized.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2078,17 +2052,21 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_IEALayout.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Member\Details.cshtml" />
+    <Content Include="Views\Member\Index.cshtml" />
+    <Content Include="Views\Member\UnAuthorized.cshtml" />
+    <Content Include="Views\Member\Update.cshtml" />
+    <Content Include="Views\TrainingCourse\AddUpdate.cshtml" />
+    <Content Include="Views\TrainingCourse\Index.cshtml" />
+    <Content Include="Views\Member\Documents.cshtml" />
+    <Content Include="Views\Member\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Flexpage\Providers\Controllers\" />
     <Folder Include="Areas\Flexpage\Providers\Data\" />
     <Folder Include="Areas\Flexpage\Providers\Views\Shared\" />
-    <Folder Include="Areas\IEAdmin\Data\" />
-    <Folder Include="Areas\Interns\Controllers\" />
-    <Folder Include="Areas\Interns\Data\" />
-    <Folder Include="Areas\Interns\Views\Shared\" />
-    <Folder Include="Areas\Members\Data\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

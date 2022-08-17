@@ -28,14 +28,25 @@ namespace webIEA.Dtos
 
   public  class LoginDto
     {
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string Password { get; set; }
     }
   public  class UpdatePasswordDto
     {
         public string Email { get; set; }
+
+        [DataType(DataType.Password)]
+        [Required]
         public string OldPassword { get; set; }
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}", ErrorMessage = "Password must be atleast 8 characters with one at least one lower case, one upper case, one number and one special character ")]
         public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Required]
+        [Compare("NewPassword", ErrorMessage = "Password does not match")]
         public string ConfirmPassword { get; set; }
 
     }

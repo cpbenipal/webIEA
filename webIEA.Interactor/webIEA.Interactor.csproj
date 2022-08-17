@@ -35,7 +35,7 @@
       <HintPath>..\..\..\..\..\PluriTechTest\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Flexpage.Business">
-      <HintPath>..\..\..\..\..\PluriTechTest\Pluritech.Flexpage.Service.1.0.38\lib\net461\Flexpage.Business.dll</HintPath>
+      <HintPath>F:\libs\PluriTechTest\Pluritech.Flexpage.Service.1.0.38\lib\net461\Flexpage.Business.dll</HintPath>
     </Reference>
     <Reference Include="Flexpage.Domain">
       <HintPath>F:\libs\PluriTechTest\Pluritech.Flexpage.Service.1.0.38\lib\net461\Flexpage.Domain.dll</HintPath>

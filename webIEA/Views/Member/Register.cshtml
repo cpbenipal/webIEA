@@ -1,19 +1,24 @@
-﻿@model webIEA.Dtos.MembersDto
+﻿@model webIEA.Dtos.RequestMemberDto
 
 @{
-    ViewBag.Title = "Member details";
+    ViewBag.Title = "Become member";
 }
+@*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>*@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
 
-@using (Html.BeginForm("EditMemeber", "BecomeMember", FormMethod.Post))
+
+
+@using (Html.BeginForm("AddMemeber", "BecomeMember", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Update Member details</h4>
+        <h4>Become Member</h4>
         <hr />
-        @Html.EditorFor(model => model.Id, new { htmlAttributes = new { type = "hidden", @class = "form-control" } })
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -42,7 +47,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DOB,"{MM/dd/yyyy}", new { htmlAttributes = new { type = "date", @class = "form-control" } })
+                @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { type = "date", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -62,6 +67,14 @@
                 @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.LanguageID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(x => x.LanguageID, new SelectList(Model.Languages, "Id", "Value"), "Select One", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LanguageID, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -119,44 +132,26 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.LabelFor(model => model.EmploymentStatusID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EmploymentStatusID, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value"), "Select One", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StatusID, "", new { @class = "text-danger" })
             </div>
-        </div>
+        </div>*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" Id="spec_div">
-                @{ if (Model.Specialization.Count == 0)
-                    {
-                        <input type="text" class="form-control" id="Specialization" name="Specialization"  />
-
-                    }
-                    else
-                    {
-                        foreach (var item in Model.Specialization)
-                        {
-                            <input type="text" class="form-control" id="Specialization" name="Specialization"  value="@item"  />
-                        }
-                    }
-                }
+                <input type="text" class="form-control" id="Specialization" name="Specialization" />
 
                 @Html.ValidationMessageFor(model => model.Specialization, "", new { @class = "text-danger" })
 
+
                 <input type="button" value="Add" onclick="AddInput()" />
             </div>
-        </div>   <div class="form-group">
-            @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10" Id="spec_div">
-                @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @class = "form-contro selectpicker" })
-                @Html.ValidationMessageFor(model => model.TraneeComissionId, "", new { @class = "text-danger" })
-
-            </div>
-            @* <input type="button" value="Add" onclick="AddRow()" />*@
-        </div>
+        </div> 
+       
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -165,6 +160,7 @@
     </div>
 }
 
+@{ Html.RenderAction("Index", "Login", new { area = "IEAdmin" });  }
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>

@@ -7,7 +7,7 @@ using System.Web.Mvc;
 using webIEA.Dtos;
 using webIEA.Interactor;
 
-namespace webIEA.Areas.Providers.Controllers
+namespace webIEA.Controllers
 {
     public class TrainingCourseController : Controller
     {
