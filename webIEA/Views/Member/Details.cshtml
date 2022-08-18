@@ -36,7 +36,7 @@
 
 <div class="form-horizontal">
     <h4>Become Member</h4>
-    <hr />
+    @Html.Partial("~/Views/Shared/_MemberNavbar.cshtml")
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.EditorFor(model => model.Id, new { htmlAttributes = new { type = "hidden", @class = "form-control" } })
 

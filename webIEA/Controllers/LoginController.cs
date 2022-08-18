@@ -34,9 +34,9 @@ namespace webIEA.Controllers
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
                     if (result.RoleId == (int)Roles.Admin)
-                        return RedirectToAction("Index", "Member");
+                        return RedirectToAction("IndexPage", "Member");
                     else
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Details", "Member");
 
 
                 }

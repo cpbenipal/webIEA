@@ -13,7 +13,7 @@ namespace webIEA.Repositories
     {
         private readonly IRepositoryBase<User> _repositoryBase;
         private readonly IHashManager _hashManager;
-        private readonly Mapper mapper; 
+        private readonly Mapper mapper;
         public AccountManager(IRepositoryBase<User> repositoryBase, IHashManager hashManager)
         {
             _repositoryBase = repositoryBase;
@@ -25,9 +25,9 @@ namespace webIEA.Repositories
         public User Register(User model)
         {
             try
-            { 
+            {
                 var result = _repositoryBase.Insert(model);
-                _repositoryBase.Save();               
+                _repositoryBase.Save();
                 return result;
             }
             catch (Exception ex)
@@ -54,11 +54,17 @@ namespace webIEA.Repositories
         public object UpdatePassword(UpdatePasswordDto dt)
         {
             AccountDto AccountDto = new AccountDto();
-            var model = _repositoryBase.FirstOrDefaultAsync(x => x.Email == dt.Email && x.Password == dt.OldPassword);
-            model.Password = _hashManager.EncryptPlainText(dt.NewPassword);
-            var result = _repositoryBase.Update(model);
-            _repositoryBase.Save();
-            return result;
+            dt.OldPassword = _hashManager.EncryptPlainText(dt.OldPassword);
+            var model = _repositoryBase.FirstOrDefaultAsync(x => x.Id == dt.Id && x.Password == dt.OldPassword);
+            if (model != null)
+            {
+                model.Password = dt.NewPassword;
+                var result = _repositoryBase.Update(model);
+                _repositoryBase.Save();
+                return result;
+            }
+            else
+            { return dt; }
         }
         public AccountDto GetById(string Id)
         {
@@ -103,6 +109,6 @@ namespace webIEA.Repositories
             _repositoryBase.Delete(Id);
             _repositoryBase.Save();
             return "";
-        } 
+        }
     }
 }

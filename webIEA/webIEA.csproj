@@ -2054,13 +2054,16 @@
     <Content Include="Views\Shared\_IEALayout.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Member\Details.cshtml" />
-    <Content Include="Views\Member\Index.cshtml" />
+    <Content Include="Views\Member\IndexPage.cshtml" />
     <Content Include="Views\Member\UnAuthorized.cshtml" />
     <Content Include="Views\Member\Update.cshtml" />
     <Content Include="Views\TrainingCourse\AddUpdate.cshtml" />
     <Content Include="Views\TrainingCourse\Index.cshtml" />
     <Content Include="Views\Member\Documents.cshtml" />
     <Content Include="Views\Member\Register.cshtml" />
+    <Content Include="Views\Member\ChangePassword.cshtml" />
+    <Content Include="Views\Member\MemberHistory.cshtml" />
+    <Content Include="Views\Shared\_MemberNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
