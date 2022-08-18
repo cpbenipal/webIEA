@@ -20,7 +20,7 @@ namespace webIEA.Controllers
 
         }
         // GET: IEAdmin/Members
-        //   [CustomAuthorizeAttribute("Admin")]
+        [CustomAuthorizeAttribute("Admin")]
         public ActionResult Index()
         {
             var result = _memberManager.GetAllMembers();
