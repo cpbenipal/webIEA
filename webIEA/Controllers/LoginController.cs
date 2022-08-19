@@ -31,12 +31,13 @@ namespace webIEA.Controllers
                 if (result != null)
                 {
                     Session.Add("Id", result.Id);
+                    Session.Add("loginUserId", result.loginUserId);
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
                     if (result.RoleId == (int)IEARoles.Admin)
                         return RedirectToAction("IndexPage", "Member");
                     else
-                        return RedirectToAction("Details", "Member");
+                        return RedirectToAction("Details", "Member", new { id = result.loginUserId });
 
 
                 }

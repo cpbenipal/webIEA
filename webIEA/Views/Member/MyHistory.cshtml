@@ -1,0 +1,27 @@
+﻿@model IEnumerable<webIEA.Dtos.HistoryChangesListDto>
+
+@{
+    ViewBag.Title = "My history";
+    Layout = "~/Views/Shared/_IEALayout.cshtml";
+}
+
+<h2>My history</h2>
+
+ 
+<table class="table">
+     
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UpdateDate)
+        </td>
+        <td>
+           
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) 
+         
+        </td>
+    </tr>
+}
+
+</table>

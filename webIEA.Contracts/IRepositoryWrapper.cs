@@ -12,5 +12,6 @@
         ICourseTypeManager CourseTypeManager { get; }
         IEmploymentStatusManager EmploymentStatusManager { get; }
         IAccountManager AccountManager { get; }
+        IHistoryChangesManager HistoryChangesManager { get; } 
     }
 }

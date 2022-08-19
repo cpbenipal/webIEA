@@ -157,7 +157,22 @@ namespace webIEA.Repositories
                 }
                 return _accountManager;
             }
-        }        
+        }
+
+        private IHistoryChangesManager _historyManager; 
+
+        public IHistoryChangesManager HistoryChangesManager 
+        {
+            get
+            {
+                if (_historyManager == null)
+                {
+                    var repositoryBase = new RepositoryBase<HistoryDataChanx>(_context);
+                    _historyManager = new HistoryChangesManager(repositoryBase); 
+                }
+                return _historyManager;
+            }
+        }
 
     }
 }

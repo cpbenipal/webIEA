@@ -12,11 +12,12 @@ namespace webIEA.Controllers
     {
         private readonly MembersInteractor _memberManager;
         private readonly MemberDocumentInteractor _memberDocumentInteractor;
-        public MemberController(MembersInteractor memberManager, MemberDocumentInteractor memberDocumentInteractor)
+        private readonly HistoryChangesInteractor _historychangesinteractor;
+        public MemberController(MembersInteractor memberManager, MemberDocumentInteractor memberDocumentInteractor, HistoryChangesInteractor historychangesinteractor)
         {
             _memberManager = memberManager;
             _memberDocumentInteractor = memberDocumentInteractor;
-
+            _historychangesinteractor = historychangesinteractor;
         }
         // GET: IEAdmin/Members
         //   [CustomAuthorizeAttribute("Admin")]
@@ -140,10 +141,11 @@ namespace webIEA.Controllers
             return RedirectToAction("GetMemberDocument", Id);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult MemberHistory(int Id)
+        public ActionResult MyHistory() 
         {
-            var result = _memberDocumentInteractor.Delete(Id);
-            return RedirectToAction("GetMemberDocument", Id);
+            long UserId = Convert.ToInt64(Session["loginUserId"]);
+            var result = _historychangesinteractor.GetMemberHistoryLogs(UserId);
+            return View(result);
         }
     }
 }
