@@ -42,7 +42,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.DOB,"{MM/dd/yyyy}", new { htmlAttributes = new { type = "date", @class = "form-control" } })
+                @Html.EditorFor(model => model.DOB, "{MM/dd/yyyy}", new { htmlAttributes = new { type = "date", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -132,14 +132,14 @@
             <div class="col-md-10" Id="spec_div">
                 @{ if (Model.Specialization.Count == 0)
                     {
-                        <input type="text" class="form-control" id="Specialization" name="Specialization"  />
+                        <input type="text" class="form-control" id="Specialization" name="Specialization" />
 
                     }
                     else
                     {
                         foreach (var item in Model.Specialization)
                         {
-                            <input type="text" class="form-control" id="Specialization" name="Specialization"  value="@item"  />
+                            <input type="text" class="form-control" id="Specialization" name="Specialization" value="@item" />
                         }
                     }
                 }
@@ -148,7 +148,8 @@
 
                 <input type="button" value="Add" onclick="AddInput()" />
             </div>
-        </div>   <div class="form-group">
+        </div>
+        <div class="form-group">
             @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10" Id="spec_div">
                 @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @class = "form-contro selectpicker" })

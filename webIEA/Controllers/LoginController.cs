@@ -34,9 +34,9 @@ namespace webIEA.Controllers
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
                     if (result.RoleId == (int)IEARoles.Admin)
-                        return RedirectToAction("Index", "Member");
+                        return RedirectToAction("IndexPage", "Member");
                     else
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Details", "Member");
 
 
                 }
@@ -60,13 +60,6 @@ namespace webIEA.Controllers
         {
             var result = _accountInteractor.GetById(id);
             return View(result);
-        }
-        public ActionResult Logout()
-        { 
-            Session.Clear();
-            Response.Cookies.Clear();
-            Session.Abandon();
-            return RedirectToAction("Index", "Home");
         }
 
     }

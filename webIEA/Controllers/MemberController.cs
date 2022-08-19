@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
+using System;
 using System.Web;
 using System.Web.Mvc;
 using webIEA.App_Start;
@@ -20,8 +19,8 @@ namespace webIEA.Controllers
 
         }
         // GET: IEAdmin/Members
-        [CustomAuthorizeAttribute("Admin")]
-        public ActionResult Index()
+        //   [CustomAuthorizeAttribute("Admin")]
+        public ActionResult IndexPage()
         {
             var result = _memberManager.GetAllMembers();
             return View(result);
@@ -29,7 +28,7 @@ namespace webIEA.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            var model = new RequestMemberDto();
+            var model = _memberManager.GetProfileInitialData();
             return View(model);
         }
         [AllowAnonymous]
@@ -38,7 +37,7 @@ namespace webIEA.Controllers
             try
             {
                 _memberManager.AddMember(requestMemberDto);
-                return View("Index");
+                return View("IndexPage");
             }
             catch (Exception ex)
             {
@@ -69,19 +68,19 @@ namespace webIEA.Controllers
         public ActionResult EditMemeber(MembersDto membersDto)
         {
             _memberManager.UpdateMember(membersDto);
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexPage");
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateStatus(long Id, string FieldName, bool check)
         {
             var result = _memberManager.UpdateStatus(Id, FieldName, check);
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexPage");
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateMemberStatus(long Id)
         {
             var result = _memberManager.UpdateMemberStatus(Id, "StatusID", (int)MemberStatusEnum.Active);
-            return RedirectToAction("Index", "Member");
+            return RedirectToAction("IndexPage", "Member");
 
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
@@ -91,10 +90,27 @@ namespace webIEA.Controllers
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
+        public ActionResult ChangePassword(int mId)
+        {
+            var model = new UpdatePasswordDto();
+            if ((int)Session["Role"] ==(int)IEARoles.Admin)
+            {
+                var UserId = _memberManager.GetUserId(mId);
+                model.Id = (string)UserId;
+
+            }
+            else
+            {
+                model.Id = (string)Session["Id"];
+            }
+            return View(model);
+        }
+        [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult UpdatePassword(UpdatePasswordDto dto)
         {
             var result = _memberManager.UpdatePassword(dto);
-            return View(result);
+            return RedirectToAction("IndexPage", "Member");
+
         }
         //public ActionResult UnAuthorized()
         //{
@@ -119,6 +135,12 @@ namespace webIEA.Controllers
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult DeleteMemberDocument(int Id)
+        {
+            var result = _memberDocumentInteractor.Delete(Id);
+            return RedirectToAction("GetMemberDocument", Id);
+        }
+        [CustomAuthorizeAttribute("Admin", "Member")]
+        public ActionResult MemberHistory(int Id)
         {
             var result = _memberDocumentInteractor.Delete(Id);
             return RedirectToAction("GetMemberDocument", Id);

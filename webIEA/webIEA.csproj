@@ -2061,6 +2061,9 @@
     <Content Include="Views\TrainingCourse\Index.cshtml" />
     <Content Include="Views\Member\Documents.cshtml" />
     <Content Include="Views\Member\Register.cshtml" />
+    <Content Include="Views\Member\ChangePassword.cshtml" />
+    <Content Include="Views\Member\MemberHistory.cshtml" />
+    <Content Include="Views\Shared\_MemberNavbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -35,7 +35,7 @@ namespace webIEA.Dtos
     }
   public  class UpdatePasswordDto
     {
-        public string Email { get; set; }
+        public string Id { get; set; }
 
         [DataType(DataType.Password)]
         [Required]

@@ -18,11 +18,14 @@ namespace webIEA.Interactor
         private readonly IRepositoryWrapper repositoryWrapper;
         protected readonly ILanguageRepository _ocessor;
         private readonly IHashManager _hashManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MembersInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor, IHashManager hashManager) 
+
+        public MembersInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor, IHashManager hashManager,IUnitOfWork unitOfWork)
         {
             repositoryWrapper = _repositoryWrapper; _ocessor = ocessor;
             this._hashManager = hashManager;
+            this._unitOfWork = unitOfWork;
         }
 
         public RequestMemberDto GetProfileInitialData()
@@ -106,7 +109,7 @@ namespace webIEA.Interactor
             return m;
         }
         public long AddMember(RequestMemberDto membersDto)
-        { 
+        {
             var memberProfile = new MemberProfile
             {
                 Id = membersDto.Id,
@@ -148,7 +151,7 @@ namespace webIEA.Interactor
             };
             var result = repositoryWrapper.MemberManager.AddMember(memberProfile);
 
-            if (membersDto.TraneeComissionId.Count > 0) 
+            if (membersDto.TraneeComissionId.Count > 0)
             {
                 foreach (var tarnId in membersDto.TraneeComissionId)
                 {
@@ -259,11 +262,11 @@ namespace webIEA.Interactor
                     loginUserId = dt.Id,
                     RoleId = (int)IEARoles.Member,
 
-                };                
+                };
 
                 var password = CommonUtils.GenratePassword();
                 var hashed = _hashManager.HashWithSalt(password);
-                
+
                 var data = new User
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -277,7 +280,7 @@ namespace webIEA.Interactor
                 };
 
                 var response = repositoryWrapper.AccountManager.Register(data);
-                if(response != null)
+                if (response != null)
                 {
                     dt.StatusID = Status;
                     dt.ModifiedBy = 1;
@@ -287,16 +290,26 @@ namespace webIEA.Interactor
                     bool resultNotifing = mailHelper.SendMail(ConfigurationManager.AppSettings["FromAddress"], model.Email, "IAE - IEA - Account Approved", $"Your account has been approved. <br/><br/> Here's login email is {model.Email} and password is {password}.");
                     if (resultNotifing)
                     {
-                         
+
                     }
                 }
             }
-            
+
             return memberProfile;
         }
         public object UpdatePassword(UpdatePasswordDto dto)
         {
+            dto.NewPassword = _hashManager.EncryptPlainText(dto.NewPassword);
             return repositoryWrapper.AccountManager.UpdatePassword(dto);
+        }
+        public object GetUserId(int Id)
+        {
+            var rest= _unitOfWork.GetRepository<User>().FirstOrDefaultAsync(x=>x.loginUserId==Id);
+            if (rest != null)
+            {
+                return rest.Id;
+            }
+            return "";
         }
     }
 }
