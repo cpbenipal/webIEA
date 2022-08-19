@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace webIEA.Dtos
 {
-   public enum Roles
+   public enum IEARoles
     {
         Admin=1,
         Member=2,

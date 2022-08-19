@@ -260,7 +260,7 @@ namespace webIEA.Interactor
                     Email = dt.Email,
                     TableName = "MemberProfile",
                     loginUserId = dt.Id,
-                    RoleId = (int)Roles.Member,
+                    RoleId = (int)IEARoles.Member,
 
                 };
 
