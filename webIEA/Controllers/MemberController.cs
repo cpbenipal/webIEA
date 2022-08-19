@@ -93,7 +93,7 @@ namespace webIEA.Controllers
         public ActionResult ChangePassword(int mId)
         {
             var model = new UpdatePasswordDto();
-            if ((int)Session["Role"] ==(int)Roles.Admin)
+            if ((int)Session["Role"] ==(int)IEARoles.Admin)
             {
                 var UserId = _memberManager.GetUserId(mId);
                 model.Id = (string)UserId;

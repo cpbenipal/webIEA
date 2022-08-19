@@ -33,7 +33,7 @@ namespace webIEA.Controllers
                     Session.Add("Id", result.Id);
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
-                    if (result.RoleId == (int)Roles.Admin)
+                    if (result.RoleId == (int)IEARoles.Admin)
                         return RedirectToAction("IndexPage", "Member");
                     else
                         return RedirectToAction("Details", "Member");
