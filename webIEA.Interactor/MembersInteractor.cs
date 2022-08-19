@@ -49,7 +49,7 @@ namespace webIEA.Interactor
                 DOB = x.DOB,
                 Phone = x.Phone,
                 StatusID = (int)x.StatusID,
-                Password = (int)x.StatusID == 2 ? _hashManager.DecryptCipherText("WlZuQ0lQJEM=") : "",
+                Password = x.StatusID == (int)MemberStatusEnum.Active ? _hashManager.DecryptCipherText(userLogins.FirstOrDefault(xx=>xx.loginUserId == x.Id)?.Password) : "",
                 StatusName = statuses.FirstOrDefault(xx => xx.ID == x.StatusID).StatusName,
             }).ToList();
             return model;

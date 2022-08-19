@@ -2055,7 +2055,7 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Member\Details.cshtml" />
     <Content Include="Views\Member\Index.cshtml" />
-    <Content Include="Views\Member\UnAuthorized.cshtml" />
+    <Content Include="Views\Home\UnAuthorized.cshtml" />
     <Content Include="Views\Member\Update.cshtml" />
     <Content Include="Views\TrainingCourse\AddUpdate.cshtml" />
     <Content Include="Views\TrainingCourse\Index.cshtml" />

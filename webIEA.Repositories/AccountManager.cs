@@ -81,6 +81,7 @@ namespace webIEA.Repositories
                 Email = x.Email,
                 TableName = x.TableName,
                 RoleId = x.RoleId,
+                Password = x.Password,
                 loginUserId = x.loginUserId,
             }).ToList();
             return data;

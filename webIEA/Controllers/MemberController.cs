@@ -96,12 +96,12 @@ namespace webIEA.Controllers
             var result = _memberManager.UpdatePassword(dto);
             return View(result);
         }
-        public ActionResult UnAuthorized()
-        {
-            ViewBag.Message = "Un Authorized Page!";
+        //public ActionResult UnAuthorized()
+        //{
+        //    ViewBag.Message = "Un Authorized Page!";
 
-            return View();
-        }
+        //    return View();
+        //}
 
         [CustomAuthorizeAttribute("Admin", "Member")]
 
