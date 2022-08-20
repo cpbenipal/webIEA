@@ -6,7 +6,7 @@
     <title>IAE - IEA - @ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
         <div class="container lang">
@@ -59,7 +59,7 @@
                             <a class="page-scroll" href="~/Login/Logout">Logout</a>
 
                             @Html.Raw(Convert.ToString(Session["Email"]))
-                            
+
                             @Html.Raw(" As " + Enum.GetName(typeof(webIEA.Dtos.IEARoles), Convert.ToInt32(Session["Role"])))
                         }
                         else

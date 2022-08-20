@@ -4,7 +4,7 @@
     ViewBag.Title = "Member list";
 }
 
-<h2>Member List</h2> 
+<h2>Member List</h2>
 
 <table class="table">
     <tr>
@@ -29,29 +29,29 @@
     </tr>
     @foreach (var emp in Model)
     {
-<tr>
-    <td>
-        @Html.DisplayFor(x => emp.FirstName)
-    </td>
-    <td>
-        @Html.DisplayFor(x => emp.Email)
-    </td>
-    <td>
-        @Html.DisplayFor(x => emp.Phone)
-    </td>
-    <td>
-        @Html.DisplayFor(x => emp.StatusName)
-    </td>
-    <td>
-        @Html.DisplayFor(x => emp.Password)
-    </td>
-    <td>
-        @Html.ActionLink("Profile", "Details", new { id = emp.Id }, null) |
-        @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
-        @Html.ActionLink("Edit", "Update", new { id = emp.Id }) |
-        @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })
-    </td>
-</tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(x => emp.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.StatusName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => emp.Password)
+            </td>
+            <td>
+                @Html.ActionLink("Profile", "Details", new { id = emp.Id }, null) |
+                @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
+                @Html.ActionLink("Edit", "Update", new { id = emp.Id }) |
+                @Html.ActionLink("ChangeStatus", "UpdateMemberStatus", new { Id = emp.Id })
+            </td>
+        </tr>
 
     }
 </table>

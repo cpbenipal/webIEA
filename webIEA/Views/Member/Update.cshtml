@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
 
-@using (Html.BeginForm("EditMemeber", "BecomeMember", FormMethod.Post))
+@using (Html.BeginForm("EditMemeber", "Member", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
@@ -129,17 +129,25 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10" Id="spec_div">
+            <div class="col-md-10">
                 @{ if (Model.Specialization.Count == 0)
                     {
-                        <input type="text" class="form-control" id="Specialization" name="Specialization" />
+                        <div Id="spec_div">
+                            <div class="d-flex" style=" display: flex;">
+                                <input type="text" class="form-control" id="Specialization" name="Specialization" />
+                            </div>
+                        </div>
 
                     }
                     else
                     {
                         foreach (var item in Model.Specialization)
                         {
-                            <input type="text" class="form-control" id="Specialization" name="Specialization" value="@item" />
+                            <div Id="spec_div">
+                                <div class="d-flex" style=" display: flex;">
+                                    <input type="text" class="form-control" id="Specialization" name="Specialization" value="@item" />
+                                </div>
+                            </div>
                         }
                     }
                 }
@@ -160,7 +168,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Update" class="btn btn-default" />
             </div>
         </div>
     </div>
@@ -194,10 +202,12 @@
 
     }
     function AddInput() {
-        $('#spec_div').append('<input type="text" class="form-control" id="Specialization" name="Specialization"/>')
+        $('#spec_div').append('<div class="d-flex"  style=" display: flex;"><input type="text" class="form-control" id="Specialization" name="Specialization"/><i  onclick="remove(this)" style="font-size:24px" class="fa">&#xf014;</i></div>')
     }
 
-
+    function remove(e) {
+        $(e).closest('.d-flex').remove();;
+    }
 
 
 </script>

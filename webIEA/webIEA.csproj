@@ -2054,7 +2054,6 @@
     <Content Include="Views\Shared\_IEALayout.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Member\Details.cshtml" />
-    <Content Include="Views\Member\Index.cshtml" />
     <Content Include="Views\Home\UnAuthorized.cshtml" />
     <Content Include="Views\Member\Update.cshtml" />
     <Content Include="Views\TrainingCourse\AddUpdate.cshtml" />
@@ -2064,6 +2063,8 @@
     <Content Include="Views\Member\ChangePassword.cshtml" />
     <Content Include="Views\Shared\_MemberNavbar.cshtml" />
     <Content Include="Views\Member\MyHistory.cshtml" />
+    <Content Include="Views\Member\IndexPage.cshtml" />
+    <Content Include="Views\Member\HistoryDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

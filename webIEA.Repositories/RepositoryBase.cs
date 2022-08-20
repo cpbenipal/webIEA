@@ -29,7 +29,8 @@ namespace webIEA.Repositories
         }
         public IEnumerable<T> GetAllFiltered(Expression<Func<T, bool>> expression)
         {
-            return table.Where(expression).ToList();
+             var a=table.Where(expression).ToList();
+            return a;
         }
         public T FirstOrDefaultAsync(Expression<Func<T, bool>> expression)
         {

@@ -139,7 +139,7 @@
 
     <div class="form-group">
         @Html.LabelFor(model => model.PrivatePostalCode)
-        @Html.DisplayFor(Model => Model.PrivatePostalCode)
+        @Html.DisplayFor(model => model.PrivatePostalCode)
         @Html.CheckBoxFor(model => model.PrivatePostalCodePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
 
 
@@ -149,7 +149,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.EmploymentStatusID, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @disabled = "true" })
+            @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value"), "Select One", htmlAttributes: new { @disabled = "true" })
 
             @Html.CheckBoxFor(model => model.EmploymentStatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
         </div>
@@ -176,7 +176,8 @@
 
 
         </div>
-    </div>   <div class="form-group">
+     </div> 
+  <div class="form-group">
         @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10" Id="spec_div">
             @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @disabled = "true", @class = "selectpicker" })
@@ -184,7 +185,6 @@
             @Html.CheckBoxFor(model => model.TraineeCommissionPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
 
         </div>
-        @* <input type="button" value="Add" onclick="AddRow()" />*@
     </div>
 
 </div>

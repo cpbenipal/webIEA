@@ -94,7 +94,7 @@ namespace webIEA.Controllers
         public ActionResult ChangePassword(int mId)
         {
             var model = new UpdatePasswordDto();
-            if ((int)Session["Role"] ==(int)IEARoles.Admin)
+            if ((int)Session["Role"] == (int)IEARoles.Admin)
             {
                 var UserId = _memberManager.GetUserId(mId);
                 model.Id = (string)UserId;
@@ -141,11 +141,17 @@ namespace webIEA.Controllers
             return RedirectToAction("GetMemberDocument", Id);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult MyHistory() 
+        public ActionResult MyHistory()
         {
             long UserId = Convert.ToInt64(Session["loginUserId"]);
             var result = _historychangesinteractor.GetMemberHistoryLogs(UserId);
             return View(result);
+        }
+        //[CustomAuthorizeAttribute("Admin", "Member")]
+        public ActionResult HistoryDetails(string pk,DateTime date)
+        {
+            var result = _historychangesinteractor.GetHistoryDetail(pk,date);
+            return View("HistoryDetails", result);
         }
     }
 }

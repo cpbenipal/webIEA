@@ -51,6 +51,7 @@ namespace webIEA.Repositories
             return result;
 
         }
+       
         //public object UpdateMemberStatus(long Id, string FieldName, int status)
         //{
         //    var data = _repositoryBase.GetById(Id);

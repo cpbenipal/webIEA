@@ -21,7 +21,7 @@ namespace webIEA.Entities
         public string FieldName { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
         public string UserName { get; set; }
         public Nullable<System.Guid> UniqueId { get; set; }
         public Nullable<int> UpdatedBy { get; set; }

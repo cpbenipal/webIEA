@@ -3,10 +3,6 @@
 @{
     ViewBag.Title = "Become member";
 }
-@*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>*@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
 
@@ -142,10 +138,13 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10" Id="spec_div">
-                <input type="text" class="form-control" id="Specialization" name="Specialization" />
-
-                @Html.ValidationMessageFor(model => model.Specialization, "", new { @class = "text-danger" })
+            <div class="col-md-10" >
+                <div Id="spec_div">
+                    <div class="d-flex" style=" display: flex;">
+                        <input type="text" class="form-control" id="Specialization" name="Specialization" />
+                    </div>
+                </div>
+                    @Html.ValidationMessageFor(model => model.Specialization, "", new { @class = "text-danger" })             
 
                 <input type="button" value="Add" onclick="AddInput()" />
             </div>
@@ -195,10 +194,12 @@
         });
 
     }
-    function AddInput() {
-        $('#spec_div').append('<input type="text" class="form-control" id="Specialization" name="Specialization"/>')
+    function AddInput(e) {
+        $('#spec_div').append('<div class="d-flex"  style=" display: flex;"><input type="text" class="form-control" id="Specialization" name="Specialization"/><i  onclick="remove(this)" style="font-size:24px" class="fa">&#xf014;</i></div>')
     }
-
+    function remove(e) {
+        $(e).closest('.d-flex').remove();;
+    }
 
 
 

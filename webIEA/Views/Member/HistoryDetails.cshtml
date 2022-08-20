@@ -1,0 +1,190 @@
+﻿@model webIEA.Dtos.MembersDto
+
+@{
+    ViewBag.Title = "Profile details";
+}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" / >
+<style>
+
+    input {
+        border: 0;
+        outline: 0;
+    }
+    select {
+        border: 0;
+        outline: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+    }
+    #spec_div > div > button {
+        border: 0;
+        outline: 0;
+    }
+        #spec_div > div > button > span {
+            display:none;
+        }
+    select::-ms-expand {
+        display: none;
+    }
+
+    
+</style>
+
+@Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Become Member</h4>
+    @Html.Partial("~/Views/Shared/_MemberNavbar.cshtml")
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+
+        @Html.LabelFor(model => model.FirstName)
+        @Html.DisplayFor(model => model.FirstName)
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName)
+        @Html.DisplayFor(model => model.LastName)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.DisplayFor(model => model.Email)
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DOB)
+        @Html.DisplayFor(model => model.DOB)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BirthPlace)
+        @Html.DisplayFor(model => model.BirthPlace)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Nationality)
+        @Html.DisplayFor(model => model.Nationality)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Phone)
+        @Html.DisplayFor(model => model.Phone)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.GSM)
+        @Html.DisplayFor(model => model.GSM)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Street)
+        @Html.DisplayFor(model => model.Street)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PostalCode)
+        @Html.DisplayFor(model => model.PostalCode)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Commune)
+        @Html.DisplayFor(model => model.Commune)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PrivateAddress)
+        @Html.DisplayFor(model => model.PrivateAddress)
+
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.PrivatePostalCode)
+        @Html.DisplayFor(model => model.PrivatePostalCode)
+
+
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EmploymentStatusID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @disabled = "true" })
+
+            </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" Id="spec_div">
+            @{ if (Model.Specialization.Count == 0)
+                {
+                    <input type="text"  id="Specialization" name="Specialization" disabled="true" />
+
+                }
+                else
+                {
+                    foreach (var item in Model.Specialization)
+                    {
+                        <input type="text" id="Specialization" name="Specialization" value="@item" disabled="true" />
+                    }
+                }
+            }
+
+        </div>
+     </div> 
+    <div class="form-group">
+        @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" Id="spec_div">
+            @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @disabled = "true", @class = "selectpicker" })
+        </div>
+    </div>
+
+</div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script>
+    function chnagestatus(e, name) {
+        debugger;
+        var check = e.checked;
+        var id = $('#Id').val();
+        $.ajax({
+            url: "/Members/BecomeMember/UpdateStatus",
+            data: { "Id": id, "FieldName": name, "check": check },
+            type: "GET",
+            success: function (result) {
+                debugger;
+                alert('Status Changed')
+            }
+        });
+    }
+</script>
