@@ -126,8 +126,8 @@ namespace webIEA.Interactor
             m.SpecializationPublic = data.SpecializationPublic;
             m.TraineeCommissionPublic = data.TraineeCommissionPublic;
 
-            m.TraneeComissionId = repositoryWrapper.CourseMemberManager.GetAllFiltered(memberId).Select(x => x.TrainingCourseId).ToList();
-            m.Specialization = repositoryWrapper.MemberSpecializationManager.GetAllFiltered(memberId).Select(x => x.SpecializationName).ToList();
+            m.TraneeComissionId = repositoryWrapper.HistoryChangesManager.GetMemberTranieeHistory(pk,date);
+            m.Specialization = repositoryWrapper.HistoryChangesManager.GetMemberSpecializationtHistory(pk, date);
             var languages = _ocessor.GetLanguages();
             m.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();

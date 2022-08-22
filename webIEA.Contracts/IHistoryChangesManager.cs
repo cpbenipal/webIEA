@@ -8,6 +8,8 @@ namespace webIEA.Contracts
     public interface IHistoryChangesManager
     {
         List<HistoryDataChanx> GetAll();
-        List<HistoryDataChanx> GetHistoryDetail(string pk ,DateTime date);
+        List<HistoryDataChanx> GetHistoryDetail(string pk, DateTime date);
+        List<string> GetMemberSpecializationtHistory(string pk, DateTime date);
+        List<int?> GetMemberTranieeHistory(string pk, DateTime date);
     }
 }
