@@ -22,9 +22,9 @@ namespace webIEA.Repositories
         {
             return repositoryBase.GetAll().ToList(); 
         }
-        public List<HistoryDataChanx> GetHistoryDetail(string pk,DateTime date)
+        public List<HistoryDataChanx> GetHistoryDetail(string pk,DateTime? date)
         {
-            return repositoryBase.GetAllFiltered(x=>x.PK==pk && x.UpdateDate.Year==date.Year && x.UpdateDate.Month == date.Month && x.UpdateDate.Day == date.Day).ToList();
+            return repositoryBase.GetAllFiltered(x=>x.PK==pk && x.UpdateDate.Year==date.Value.Year && x.UpdateDate.Month == date.Value.Month && x.UpdateDate.Day == date.Value.Day).ToList();
         }
         //public List<HistoryDataChanx> GetTranieeHistory(string pk, DateTime date)
         //{

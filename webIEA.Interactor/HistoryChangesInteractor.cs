@@ -43,7 +43,7 @@ namespace webIEA.Interactor
         {
 
             var list = repositoryWrapper.HistoryChangesManager.GetAll().Where(x => x.PK == Convert.ToString(MemberId) && x.TableName == TableName && x.Type == "U").ToList();
-            var groupedList = list.GroupBy(x => x.UpdateDate).Select(x => x.FirstOrDefault()).ToList();
+            var groupedList = list.GroupBy(x => x.UpdateDate.ToShortDateString()).Select(x => x.FirstOrDefault()).ToList();
             return groupedList;
         }
         public static string GetTypeName(Type type)
@@ -57,7 +57,7 @@ namespace webIEA.Interactor
             else
                 return type.Name;
         }
-        public MembersDto GetHistoryDetail(string pk, DateTime date)
+        public MembersDto GetHistoryDetail(string pk, DateTime? date)
         {
             var hdt = repositoryWrapper.HistoryChangesManager.GetHistoryDetail(pk, date);
             long memberId = long.Parse(pk);
@@ -126,8 +126,8 @@ namespace webIEA.Interactor
             m.Specialization = repositoryWrapper.MemberSpecializationManager.GetAllFiltered(memberId).Select(x => x.SpecializationName).ToList();
             var languages = _ocessor.GetLanguages();
             m.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
-            var employmentstatus = repositoryWrapper.MemberStatusManager.GetAll();
-            m.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.ID, Value = x.StatusName }).ToList();
+            var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
+            m.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
             m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
             return m;

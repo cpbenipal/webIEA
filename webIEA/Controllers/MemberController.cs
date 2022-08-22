@@ -65,7 +65,7 @@ namespace webIEA.Controllers
             var result = _memberManager.GetMemberById(id);
             return View(result);
         }
-        [CustomAuthorizeAttribute("Admin")]
+        [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult EditMemeber(MembersDto membersDto)
         {
             _memberManager.UpdateMember(membersDto);
@@ -148,7 +148,7 @@ namespace webIEA.Controllers
             return View(result);
         }
         //[CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult HistoryDetails(string pk,DateTime date)
+        public ActionResult HistoryDetails(string pk,DateTime? date)
         {
             var result = _historychangesinteractor.GetHistoryDetail(pk,date);
             return View("HistoryDetails", result);
