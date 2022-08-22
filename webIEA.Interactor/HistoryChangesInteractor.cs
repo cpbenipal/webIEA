@@ -57,7 +57,7 @@ namespace webIEA.Interactor
             else
                 return type.Name;
         }
-        public MembersDto GetHistoryDetail(string pk, DateTime? date)
+        public MembersDto GetHistoryDetail(string pk, DateTime date)
         {
             var hdt = repositoryWrapper.HistoryChangesManager.GetHistoryDetail(pk, date);
             long memberId = long.Parse(pk);
@@ -84,8 +84,12 @@ namespace webIEA.Interactor
                 {
                     fdt.SetValue(data, long.Parse(oldvl), null);
                 }
+                if (ftp == "DateTime")
+                {
+                    fdt.SetValue(data, DateTime.Parse(oldvl), null);
+                }
             }
-
+            
 
             MembersDto m = new MembersDto();
             m.Id = data.Id;

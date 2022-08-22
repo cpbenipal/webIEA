@@ -1,7 +1,7 @@
 ﻿@model webIEA.Dtos.MembersDto
 
 @{
-    ViewBag.Title = "Profile details";
+    ViewBag.Title = "History Detail";
 }
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" / >
 <style>
@@ -35,7 +35,7 @@
 @Html.AntiForgeryToken()
 
 <div class="form-horizontal">
-    <h4>Become Member</h4>
+    <h4>History Detail</h4>
     @Html.Partial("~/Views/Shared/_MemberNavbar.cshtml")
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 

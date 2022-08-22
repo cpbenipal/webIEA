@@ -148,9 +148,9 @@ namespace webIEA.Controllers
             return View(result);
         }
         //[CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult HistoryDetails(string pk,DateTime? date)
+        public ActionResult HistoryDetails(string pk, string dates)
         {
-            var result = _historychangesinteractor.GetHistoryDetail(pk,date);
+            var result = _historychangesinteractor.GetHistoryDetail(pk, Convert.ToDateTime(dates));
             return View("HistoryDetails", result);
         }
     }
