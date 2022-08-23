@@ -10,34 +10,34 @@ using webIEA.Entities;
 
 namespace webIEA.Interactor
 {
-    public class MemberStatusInteractor
+    public class StatusInteractor
     {
         private readonly IRepositoryWrapper repositoryWrapper;
 
-        public MemberStatusInteractor(IRepositoryWrapper _repositoryWrapper)
+        public StatusInteractor(IRepositoryWrapper _repositoryWrapper)
         {
             repositoryWrapper = _repositoryWrapper;
         }
 
         public object Add(StatusDto model)
         {
-            return repositoryWrapper.MemberStatusManager.Add(model);
+            return repositoryWrapper.StatusManager.Add(model);
         }
         public object Update(StatusDto model)
         {
-            return repositoryWrapper.MemberStatusManager.Update(model);
+            return repositoryWrapper.StatusManager.Update(model);
         }
         public List<StatusDto> GetAll()
         {
-            return repositoryWrapper.MemberStatusManager.GetAll();
+            return repositoryWrapper.StatusManager.GetAll();
         }
         public StatusDto GetById(int id)
         {
-            return repositoryWrapper.MemberStatusManager.GetById(id);
+            return repositoryWrapper.StatusManager.GetById(id);
         }
         public object Delete(int id)
         {
-            return repositoryWrapper.MemberStatusManager.Delete(id);
+            return repositoryWrapper.StatusManager.Delete(id);
         }
     }
 }

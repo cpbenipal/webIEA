@@ -312,7 +312,7 @@ namespace webIEA
 
             _kernel.Bind<IRepositoryWrapper>().To<RepositoryWrapper>();
             _kernel.Bind<IMemberManager>().To<MemberManager>(); 
-            _kernel.Bind<IMemberStatusManager>().To<MemberStatusManager>();
+            _kernel.Bind<IStatusManager>().To<StatusManager>();
             _kernel.Bind<IUnitOfWork>().To<UnitOfWorkManager>();
             _kernel.Bind<IHashManager>().To<HashManager>();
             _kernel.Bind<IHistoryChangesManager>().To<HistoryChangesManager>();

@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ namespace webIEA.Repositories
     public class EmploymentStatusManager : IEmploymentStatusManager
     {
         private readonly IRepositoryBase<MemberEmploymentStatu> _repositoryBase; 
-        private readonly Mapper mapper;
 
         public EmploymentStatusManager(IRepositoryBase<MemberEmploymentStatu> repositoryBase)
         { 

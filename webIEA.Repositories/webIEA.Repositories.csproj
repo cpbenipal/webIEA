@@ -54,7 +54,7 @@
     <Compile Include="TraineeCourseManager .cs" />
     <Compile Include="EmploymentStatusManager.cs" />
     <Compile Include="MemberSpecializationManager.cs" />
-    <Compile Include="MemberStatusManager.cs" />
+    <Compile Include="StatusManager.cs" />
     <Compile Include="MemberManager.cs" />
     <Compile Include="RepositoryBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,11 +18,11 @@ namespace webIEA.Entities
         public string DocumentName { get; set; }
         public string ContentType { get; set; }
         public Nullable<long> MemberID { get; set; }
+        public string Path { get; set; }
         public System.DateTime AddedOn { get; set; }
         public long AddedBy { get; set; }
         public System.DateTime ModifiedOn { get; set; }
         public long ModifiedBy { get; set; }
-        public string Path { get; set; }
     
         public virtual MemberProfile MemberProfile { get; set; }
     }

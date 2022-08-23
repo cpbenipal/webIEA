@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +12,10 @@ namespace webIEA.Repositories
     public class CourseTypeManager : ICourseTypeManager
     {
         private readonly IRepositoryBase<CourseType> _repositoryBase;
-        private readonly Mapper mapper;
 
         public CourseTypeManager(IRepositoryBase<CourseType> repositoryBase)
         {
             _repositoryBase = repositoryBase;
-            var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<CourseType, CourseTypeDto>());
-            mapper = new Mapper(_mapConfig);
         }
 
         public object Add(CourseTypeDto courseTypeDto)

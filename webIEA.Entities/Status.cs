@@ -12,9 +12,9 @@ namespace webIEA.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class MemberStatu
+    public partial class Status
     {
-        public MemberStatu()
+        public Status()
         {
             this.MemberProfiles = new HashSet<MemberProfile>();
         }

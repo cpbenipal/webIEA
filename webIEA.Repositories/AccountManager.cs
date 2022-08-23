@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +12,9 @@ namespace webIEA.Repositories
     {
         private readonly IRepositoryBase<User> _repositoryBase;
         private readonly IHashManager _hashManager;
-        private readonly Mapper mapper;
         public AccountManager(IRepositoryBase<User> repositoryBase, IHashManager hashManager)
         {
             _repositoryBase = repositoryBase;
-            var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<User, AccountDto>());
-            mapper = new Mapper(_mapConfig);
             _hashManager = hashManager;
         }
 

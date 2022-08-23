@@ -25,17 +25,17 @@ namespace webIEA.Entities
             throw new UnintentionalCodeFirstException();
         }
     
+        public DbSet<CourseLanguage> CourseLanguages { get; set; }
         public DbSet<CourseType> CourseTypes { get; set; }
         public DbSet<HistoryDataChanx> HistoryDataChanges { get; set; }
         public DbSet<MemberDocument> MemberDocuments { get; set; }
         public DbSet<MemberEmploymentStatu> MemberEmploymentStatus { get; set; }
-        public DbSet<MemberSpecialization> MemberSpecializations { get; set; }
-        public DbSet<MemberStatu> MemberStatus { get; set; }
-        public DbSet<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
-        public DbSet<TrainingCours> TrainingCourses { get; set; }
-        public DbSet<CourseLanguage> CourseLanguages { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<MemberProfile> MemberProfiles { get; set; }
+        public DbSet<MemberSpecialization> MemberSpecializations { get; set; }
+        public DbSet<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
+        public DbSet<Status> Status { get; set; }
+        public DbSet<TrainingCours> TrainingCourses { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }

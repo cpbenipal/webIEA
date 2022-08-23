@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ namespace webIEA.Repositories
     public class MemberDocumentManager : IMemberDocumentManager
     {
         private readonly IRepositoryBase<MemberDocument> _repositoryBase; 
-        private readonly Mapper mapper;
 
         public MemberDocumentManager(IRepositoryBase<MemberDocument> repositoryBase)
         { 

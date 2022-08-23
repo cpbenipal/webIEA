@@ -50,7 +50,7 @@
     <Compile Include="IMemberDocumentManager.cs" />
     <Compile Include="ITraineeCourseManager .cs" />
     <Compile Include="IMemberSpecializationManager.cs" />
-    <Compile Include="IMemberStatusManager.cs" />
+    <Compile Include="IStatusManager.cs" />
     <Compile Include="IMemberManager.cs" />
     <Compile Include="IRepositoryBase.cs" />
     <Compile Include="IRepositoryWrapper.cs" />

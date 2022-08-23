@@ -19,7 +19,7 @@ namespace webIEA.Controllers
             _memberDocumentInteractor = memberDocumentInteractor;
             _historychangesinteractor = historychangesinteractor;
         } 
-        [CustomAuthorizeAttribute("Admin")]
+        //[CustomAuthorizeAttribute("Admin")]
         public ActionResult IndexPage()
         {
             var result = _memberManager.GetAllMembers();

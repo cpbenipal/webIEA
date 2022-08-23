@@ -45,16 +45,16 @@ namespace webIEA.Repositories
                 return _manager;
             }
         }
-        private IMemberStatusManager _statusmanager;
+        private IStatusManager _statusmanager;
 
-        public IMemberStatusManager MemberStatusManager
+        public IStatusManager StatusManager
         {
             get
             {
                 if (_statusmanager == null)
                 {
-                    var repositoryBase = new RepositoryBase<MemberStatu>(_context);
-                    _statusmanager = new MemberStatusManager(repositoryBase);
+                    var repositoryBase = new RepositoryBase<Status>(_context);
+                    _statusmanager = new StatusManager(repositoryBase);
                 }
                 return _statusmanager;
             }

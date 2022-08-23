@@ -93,5 +93,14 @@ namespace webIEA.Interactor
         {
             return repositoryWrapper.TraineeCourseManager.Delete(id);
         }
+        public object VerifyCourse(int id,int status)
+        {
+            var repo=_unitOfWork.GetRepository<TrainingCours>();
+            var data = repo.GetById(id);
+            data.StatusID=status;
+            var dt=repo.Update(data);
+            repo.Save();
+            return dt;
+        }
     }
 }

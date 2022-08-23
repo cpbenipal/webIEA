@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using webIEA.Contracts;
 using webIEA.Dtos;
 using webIEA.Entities;
@@ -42,7 +40,7 @@ namespace webIEA.Interactor
 
         public List<MembersDto> GetAllMembers()
         {
-            var statuses = repositoryWrapper.MemberStatusManager.GetAll();
+            var statuses = repositoryWrapper.StatusManager.GetAll();
             var userLogins = repositoryWrapper.AccountManager.GetAll();
             var model = repositoryWrapper.MemberManager.GetAllMembers().Select(x => new MembersDto()
             {

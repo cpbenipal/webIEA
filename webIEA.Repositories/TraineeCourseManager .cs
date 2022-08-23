@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ namespace webIEA.Repositories
     public class TraineeCourseManager : ITraineeCourseManager
     {
         private readonly IRepositoryBase<TrainingCours> _repositoryBase;
-        private readonly Mapper mapper;
 
         public TraineeCourseManager(IRepositoryBase<TrainingCours> repositoryBase)
         {
@@ -55,9 +53,9 @@ namespace webIEA.Repositories
             data.EndDateTime = traineeCourseDto.EndDateTime;
             data.Cost = (decimal)traineeCourseDto.Cost;
             data.IsFullTime = traineeCourseDto.IsFullTime;
-            data.Location = traineeCourseDto.Location;
+            //data.Location = traineeCourseDto.Location;
             data.IsApproved = traineeCourseDto.IsApproved;
-            data.StatusID = traineeCourseDto.StatusID;
+            data.StatusID = 1;
             var result = _repositoryBase.Update(data);
 
             _repositoryBase.Save();
@@ -78,6 +76,7 @@ namespace webIEA.Repositories
             traineeCourseDto.Location = model.Location;
             traineeCourseDto.IsApproved = model.IsApproved;
             traineeCourseDto.StatusID = model.StatusID;
+            traineeCourseDto.IsFullTime = model.IsFullTime;
             return traineeCourseDto;
         }
         public List<TraineeCourseDto> GetAll()
@@ -96,6 +95,7 @@ namespace webIEA.Repositories
                 Cost = (float)x.Cost,
                 IsFullTime = x.IsFullTime,
                 Location = x.Location,
+                StatusID=x.StatusID,
                 IsApproved = x.IsApproved,
             }).ToList();
             return data;

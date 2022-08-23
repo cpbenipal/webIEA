@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +11,10 @@ namespace webIEA.Repositories
 {
     public class MemberManager : IMemberManager
     {
-        private readonly IRepositoryBase<MemberProfile> _repositoryBase;  
-        private readonly Mapper mapper;
+        private readonly IRepositoryBase<MemberProfile> _repositoryBase; 
 
         public MemberManager(IRepositoryBase<MemberProfile> repositoryBase)
         {
-            var _mapConfig = new MapperConfiguration(cfg => cfg.CreateMap<MemberProfile, MembersDto>());
-            mapper= new Mapper(_mapConfig);
             _repositoryBase = repositoryBase; 
         }
 

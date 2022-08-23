@@ -19,8 +19,8 @@
             Location
         </th>
         @*<th>
-            Type
-        </th>*@
+                Type
+            </th>*@
         <th>
             Start Date
         </th>
@@ -47,10 +47,10 @@
                 @Html.DisplayFor(x => emp.Location)
             </td>
             @*<td>
-                @Html.DisplayFor(x => emp.TypeID)
-            </td>*@
+                    @Html.DisplayFor(x => emp.TypeID)
+                </td>*@
             <td>
-               @emp.StartDateTime.ToString("MM/dd/yyyy hh:mm tt")
+                @emp.StartDateTime.ToString("MM/dd/yyyy hh:mm tt")
             </td>
             <td>
                 @emp.EndDateTime.ToString("MM/dd/yyyy hh:mm tt")
@@ -81,13 +81,17 @@
                         Declinded
                     </td>
                 }
+                else
+                {
+                    <td></td>
+                }
             }
 
             <td>
                 @Html.ActionLink("Update", "AddUpdate", new { id = emp.Id }, null) |
-                @*@Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |*@
+                @Html.ActionLink("Delete", "Delete", new { id = emp.Id }) |
                 @*@Html.ActionLink("Edit", "UpdateMember", new { id = emp.Id }) |*@
-                @Html.ActionLink("ChangeStatus", "UpdateStatus", new { Id = emp.Id })
+                @Html.ActionLink("Chnage Status", "VerifyCourse", new { id = emp.Id, status = 2 })
             </td>
         </tr>
 

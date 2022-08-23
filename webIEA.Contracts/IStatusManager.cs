@@ -9,7 +9,7 @@ using webIEA.Entities;
 
 namespace webIEA.Contracts
 {
-    public interface IMemberStatusManager
+    public interface IStatusManager
     {
         object Add(StatusDto model);
         object Update(StatusDto model);

@@ -1,5 +1,4 @@
 ﻿
-using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +9,18 @@ using webIEA.Entities;
 
 namespace webIEA.Repositories
 {
-    public class MemberStatusManager : IMemberStatusManager
+    public class StatusManager : IStatusManager
     {
-        private readonly IRepositoryBase<MemberStatu> _repositoryBase; 
-        private readonly Mapper mapper;
+        private readonly IRepositoryBase<Status> _repositoryBase; 
 
-        public MemberStatusManager(IRepositoryBase<MemberStatu> repositoryBase)
+        public StatusManager(IRepositoryBase<Status> repositoryBase)
         { 
             _repositoryBase = repositoryBase;          
         }
 
         public object Add(StatusDto model)
         {
-            var data = new MemberStatu
+            var data = new Status
             {
                 StatusName = model.StatusName,
             };

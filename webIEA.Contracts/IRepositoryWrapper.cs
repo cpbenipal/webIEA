@@ -5,7 +5,7 @@
         IMemberManager MemberManager { get; }
        IUnitOfWork UnitOfWorkManager { get; }
        IMemberDocumentManager MemberDocumentManager { get; }
-        IMemberStatusManager MemberStatusManager { get; }
+        IStatusManager StatusManager { get; }
         IMemberSpecializationManager MemberSpecializationManager { get; }
         ICourseMemberManager CourseMemberManager { get; }
         ITraineeCourseManager TraineeCourseManager { get; }

@@ -53,7 +53,31 @@ namespace webIEA.Controllers
             }
             catch (Exception ex)
             {
-                return View(traineeCourseDto);
+                return RedirectToAction("AddUpdate", traineeCourseDto);
+            }
+        }
+        public ActionResult VerifyCourse(int id, int status)
+        {
+            try
+            {
+                var result = _traineeCourseInteractor.VerifyCourse(id, status);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                var result = _traineeCourseInteractor.Delete(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index");
             }
         }
     }
