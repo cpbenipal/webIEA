@@ -36,7 +36,7 @@
 
 <div class="form-horizontal">
     <h4>History Detail</h4>
-    @Html.Partial("~/Views/Shared/_MemberNavbar.cshtml")
+    
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="form-group">
@@ -168,7 +168,7 @@
 
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back", "Details", new { Id = Model.Id })
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>

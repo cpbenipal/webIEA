@@ -22,7 +22,7 @@ namespace webIEA.Repositories
         }
         public List<HistoryDataChanx> GetHistoryDetail(string pk,DateTime date)
         {
-            return repositoryBase.GetAllFiltered(x=>x.PK==pk && x.UpdateDate.Year==date.Year && x.UpdateDate.Month == date.Month && x.UpdateDate.Day == date.Day).ToList();
+            return repositoryBase.GetAllFiltered(x=>x.PK==pk && x.Type == "U" && x.UpdateDate.Year==date.Year && x.UpdateDate.Month == date.Month && x.UpdateDate.Day == date.Day).ToList();
         }
         public List<int?> GetMemberTranieeHistory(string pk, DateTime date)
         {

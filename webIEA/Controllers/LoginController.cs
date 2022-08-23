@@ -62,6 +62,16 @@ namespace webIEA.Controllers
             var result = _accountInteractor.GetById(id);
             return View(result);
         }
+        [CustomAuthorizeAttribute("Admin", "Member")]
+        public ActionResult Logout()
+        { 
+            Session.Clear();
+            Response.Cookies.Clear();
+            Session.Abandon();
+            Response.Cache.SetExpires(DateTime.Now.AddYears(-1));
+
+            return RedirectToAction("Index", "Login");
+        }
 
     }
 }

@@ -16,7 +16,19 @@
                     <a class="page-scroll" href="~/Members/BecomeIntern">Become Intern</a>
                 </li>
                 <li>
-                    <a class="page-scroll" href="~/Login">Sign-In</a>
+                    @if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
+                    {
+                        <a class="page-scroll" href="~/Login/Logout">Logout</a>
+
+                        @Html.Raw(Convert.ToString(Session["Email"]))
+
+                        @Html.Raw(" As " + Enum.GetName(typeof(webIEA.Dtos.IEARoles), Convert.ToInt32(Session["Role"])))
+                    }
+                    else
+                    {
+                        <a class="page-scroll" href="~/Login">Sign-In</a>
+                    }
+
                 </li>
             </ul>
 

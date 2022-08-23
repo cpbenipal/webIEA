@@ -68,25 +68,28 @@ namespace webIEA.Interactor
                 var oldvl = "";
                 oldvl = historydata.OldValue;
                 var fdt = data.GetType().GetProperty(historydata.FieldName);
-                var ftp = GetTypeName(fdt.PropertyType);
+                if (fdt != null)
+                {
+                    var ftp = GetTypeName(fdt.PropertyType);
 
 
-                if (ftp == "Int32")
-                {
-                    fdt.SetValue(data, Convert.ToInt32(oldvl), null);
-                }
-                if (ftp == "String")
-                {
-                    fdt.SetValue(data, oldvl, null);
-                }
+                    if (ftp == "Int32")
+                    {
+                        fdt.SetValue(data, Convert.ToInt32(oldvl), null);
+                    }
+                    if (ftp == "String")
+                    {
+                        fdt.SetValue(data, oldvl, null);
+                    }
 
-                if (ftp == "long")
-                {
-                    fdt.SetValue(data, long.Parse(oldvl), null);
-                }
-                if (ftp == "DateTime")
-                {
-                    fdt.SetValue(data, DateTime.Parse(oldvl), null);
+                    if (ftp == "long")
+                    {
+                        fdt.SetValue(data, long.Parse(oldvl), null);
+                    }
+                    if (ftp == "DateTime")
+                    {
+                        fdt.SetValue(data, DateTime.Parse(oldvl), null);
+                    }
                 }
             }
             

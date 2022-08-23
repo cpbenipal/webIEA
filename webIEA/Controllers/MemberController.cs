@@ -18,9 +18,8 @@ namespace webIEA.Controllers
             _memberManager = memberManager;
             _memberDocumentInteractor = memberDocumentInteractor;
             _historychangesinteractor = historychangesinteractor;
-        }
-        // GET: IEAdmin/Members
-        //   [CustomAuthorizeAttribute("Admin")]
+        } 
+        [CustomAuthorizeAttribute("Admin")]
         public ActionResult IndexPage()
         {
             var result = _memberManager.GetAllMembers();
@@ -109,9 +108,18 @@ namespace webIEA.Controllers
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult UpdatePassword(UpdatePasswordDto dto)
         {
-            var result = _memberManager.UpdatePassword(dto);
-            return RedirectToAction("IndexPage", "Member");
+            _memberManager.UpdatePassword(dto);
+            if ((int)Session["Role"] == (int)IEARoles.Admin)
+                return RedirectToAction("IndexPage", "Member");
+            else
+            {
+                Session.Clear();
+                Response.Cookies.Clear();
+                Session.Abandon();
+                Response.Cache.SetExpires(DateTime.Now.AddYears(-1));
 
+                return RedirectToAction("Index", "Login");
+            }
         }
         //public ActionResult UnAuthorized()
         //{
@@ -147,7 +155,7 @@ namespace webIEA.Controllers
             var result = _historychangesinteractor.GetMemberHistoryLogs(UserId);
             return View(result);
         }
-        //[CustomAuthorizeAttribute("Admin", "Member")]
+        [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult HistoryDetails(string pk, string dates)
         {
             var result = _historychangesinteractor.GetHistoryDetail(pk, Convert.ToDateTime(dates));
