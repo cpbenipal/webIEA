@@ -12,16 +12,16 @@ namespace webIEA.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class CourseType
+    public partial class mEmploymentStatu
     {
-        public CourseType()
+        public mEmploymentStatu()
         {
-            this.TrainingCourses = new HashSet<TrainingCours>();
+            this.MemberProfiles = new HashSet<MemberProfile>();
         }
     
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public string StatusName { get; set; }
     
-        public virtual ICollection<TrainingCours> TrainingCourses { get; set; }
+        public virtual ICollection<MemberProfile> MemberProfiles { get; set; }
     }
 }

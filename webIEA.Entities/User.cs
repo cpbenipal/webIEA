@@ -15,12 +15,13 @@ namespace webIEA.Entities
     public partial class User
     {
         public string Id { get; set; }
-        public string Email { get; set; }
         public string Password { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public int RoleId { get; set; }
         public long loginUserId { get; set; }
         public string TableName { get; set; }
+    
+        public virtual UserRole UserRole { get; set; }
     }
 }

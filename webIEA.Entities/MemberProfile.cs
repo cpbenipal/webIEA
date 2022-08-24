@@ -61,7 +61,8 @@ namespace webIEA.Entities
         public long ModifiedBy { get; set; }
     
         public virtual ICollection<MemberDocument> MemberDocuments { get; set; }
-        public virtual Status Status { get; set; }
+        public virtual mEmploymentStatu mEmploymentStatu { get; set; }
+        public virtual mStatu mStatu { get; set; }
         public virtual ICollection<MemberSpecialization> MemberSpecializations { get; set; }
         public virtual ICollection<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
     }

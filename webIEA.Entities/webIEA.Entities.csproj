@@ -48,9 +48,6 @@
     <Compile Include="CourseLanguage.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
-    <Compile Include="CourseType.cs">
-      <DependentUpon>IEA.tt</DependentUpon>
-    </Compile>
     <Compile Include="HistoryDataChanx.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
@@ -69,10 +66,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>IEA.edmx</DependentUpon>
     </Compile>
-    <Compile Include="MemberDocument.cs">
+    <Compile Include="mCourseType.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
-    <Compile Include="MemberEmploymentStatu.cs">
+    <Compile Include="MemberDocument.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
     <Compile Include="MemberProfile.cs">
@@ -84,10 +81,13 @@
     <Compile Include="MemberTranieeCommission.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Status.cs">
+    <Compile Include="mEmploymentStatu.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
+    <Compile Include="mStatu.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrainingCours.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
@@ -107,11 +107,13 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
     <EntityDeploy Include="IEA.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>IEA.Designer.cs</LastGenOutput>
     </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
     <None Include="IEA.edmx.diagram">
       <DependentUpon>IEA.edmx</DependentUpon>
     </None>

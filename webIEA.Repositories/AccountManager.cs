@@ -32,20 +32,10 @@ namespace webIEA.Repositories
 
             }
         }
-        public AccountDto Login(LoginDto dt)
+        public User Login(LoginDto dt, long MemberId)
         {
-            AccountDto AccountDto = new AccountDto();
-            dt.Password = _hashManager.EncryptPlainText(dt.Password);
-            var model = _repositoryBase.FirstOrDefaultAsync(x => x.Email == dt.Email && x.Password == dt.Password);
-            if (model != null)
-            {
-                AccountDto.Id = model.Id;
-                AccountDto.Email = model.Email;
-                AccountDto.TableName = model.TableName;
-                AccountDto.RoleId = model.RoleId;
-                AccountDto.loginUserId = model.loginUserId;
-            }
-            return AccountDto;
+            var encryptedText = _hashManager.EncryptPlainText(dt.Password);
+            return _repositoryBase.FirstOrDefaultAsync(x => x.loginUserId == MemberId && x.Password == encryptedText);                    
         }
         public object UpdatePassword(UpdatePasswordDto dt)
         {
@@ -66,12 +56,10 @@ namespace webIEA.Repositories
         {
             AccountDto AccountDto = new AccountDto();
             var model = _repositoryBase.GetById(Id);
-            AccountDto.Id = model.Id;
-            AccountDto.Email = model.Email;
+            AccountDto.Id = model.Id;            
             AccountDto.TableName = model.TableName;
             AccountDto.RoleId = model.RoleId;
-            AccountDto.loginUserId = model.loginUserId;
-            AccountDto.Email = model.Email;
+            AccountDto.loginUserId = model.loginUserId;            
             return AccountDto;
         }
         public List<AccountDto> GetAll()
@@ -80,7 +68,6 @@ namespace webIEA.Repositories
             var data = model.Select(x => new AccountDto
             {
                 Id = x.Id,
-                Email = x.Email,
                 TableName = x.TableName,
                 RoleId = x.RoleId,
                 Password = x.Password,
@@ -94,7 +81,6 @@ namespace webIEA.Repositories
             var data = model.Select(x => new AccountDto
             {
                 Id = x.Id,
-                Email = x.Email,
                 TableName = x.TableName,
                 RoleId = x.RoleId,
                 loginUserId = x.loginUserId,

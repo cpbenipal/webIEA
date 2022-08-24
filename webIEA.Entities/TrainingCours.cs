@@ -39,7 +39,7 @@ namespace webIEA.Entities
         public long ModifiedBy { get; set; }
     
         public virtual ICollection<CourseLanguage> CourseLanguages { get; set; }
-        public virtual CourseType CourseType { get; set; }
+        public virtual mCourseType mCourseType { get; set; }
         public virtual ICollection<MemberTranieeCommission> MemberTranieeCommissions { get; set; }
     }
 }

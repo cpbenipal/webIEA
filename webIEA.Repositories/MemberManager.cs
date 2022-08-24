@@ -26,6 +26,10 @@ namespace webIEA.Repositories
         { 
             return _repositoryBase.GetById(id);
         }
+        public MemberProfile GetMemberByEmail(string Email)
+        {
+            return _repositoryBase.GetAll().FirstOrDefault(x => x.Email == Email);
+        }
         public long AddMember(MemberProfile memberProfile)
         {           
             var result = _repositoryBase.Insert(memberProfile);

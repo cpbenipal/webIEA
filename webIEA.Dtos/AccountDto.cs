@@ -22,11 +22,12 @@ namespace webIEA.Dtos
         public int RoleId { get; set; }
         public long loginUserId { get; set; }
         public string TableName { get; set; }
+        public string FirstName { get; set; }
     }
 
 
 
-  public  class LoginDto
+    public  class LoginDto
     {
         [Required]
         public string Email { get; set; }

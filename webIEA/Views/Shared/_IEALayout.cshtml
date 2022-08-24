@@ -61,7 +61,7 @@
                             @Html.ActionLink("My History", "MyHistory", "Member")
                         </li>
                         <li>
-                            @Html.ActionLink("Change Password", "ChangePassword", "Member", new { @mId = Convert.ToInt32(Session["loginUserId"]) }, null)
+                            @Html.ActionLink("Change Password", "ChangePassword", "Member")
                         </li> 
                         <li>
                             <a class="page-scroll" href="~/Login/Logout">Logout</a>
@@ -77,7 +77,6 @@
                             <a class="page-scroll" href="~/Login">Sign-In</a>
                         </li>
                     }
-
 
                 </ul>
 

@@ -267,8 +267,7 @@ namespace webIEA.Interactor
 
                 var data = new User
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Email = model.Email,
+                    Id = Guid.NewGuid().ToString(),                    
                     Password = _hashManager.EncryptPlainText(password),
                     PasswordHash = hashed[0],
                     PasswordSalt = hashed[1],
@@ -300,7 +299,7 @@ namespace webIEA.Interactor
             dto.NewPassword = _hashManager.EncryptPlainText(dto.NewPassword);
             return repositoryWrapper.AccountManager.UpdatePassword(dto);
         }
-        public object GetUserId(int Id)
+        public object GetUserId(long Id)
         {
             var rest= _unitOfWork.GetRepository<User>().FirstOrDefaultAsync(x=>x.loginUserId==Id);
             if (rest != null)

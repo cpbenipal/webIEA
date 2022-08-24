@@ -53,7 +53,7 @@ namespace webIEA.Repositories
             {
                 if (_statusmanager == null)
                 {
-                    var repositoryBase = new RepositoryBase<Status>(_context);
+                    var repositoryBase = new RepositoryBase<mStatu>(_context);
                     _statusmanager = new StatusManager(repositoryBase);
                 }
                 return _statusmanager;
@@ -110,7 +110,7 @@ namespace webIEA.Repositories
             {
                 if (_EmploymentStatusManager == null)
                 {
-                    var repositoryBase = new RepositoryBase<MemberEmploymentStatu>(_context);
+                    var repositoryBase = new RepositoryBase<mEmploymentStatu>(_context);
                     _EmploymentStatusManager = new EmploymentStatusManager(repositoryBase);
                 }
                 return _EmploymentStatusManager;
@@ -124,7 +124,7 @@ namespace webIEA.Repositories
             {
                 if (_CourseType == null)
                 {
-                    var repositoryBase = new RepositoryBase<CourseType>(_context);
+                    var repositoryBase = new RepositoryBase<mCourseType>(_context);
                     _CourseType = new CourseTypeManager(repositoryBase);
                 }
                 return _CourseType;

@@ -17,5 +17,6 @@ namespace webIEA.Contracts
         object UpdateMember(MemberProfile membersDto);
         MemberProfile UpdateStatus(MemberProfile memberProfile);
         //object UpdateMemberStatus(long Id, string FieldName, int status);
+        MemberProfile GetMemberByEmail(string Email);
     }
 }

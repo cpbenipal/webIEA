@@ -12,7 +12,7 @@ namespace webIEA.Contracts
     public interface IAccountManager
     {
         User Register(User model);
-        AccountDto Login(LoginDto loginDto);
+        User Login(LoginDto dt, long MemberId);
         AccountDto GetById(string id);
         List<AccountDto> GetAll();
         List<AccountDto> GetAllFiltered(string Id);

@@ -19,7 +19,7 @@ namespace webIEA.Controllers
             _memberDocumentInteractor = memberDocumentInteractor;
             _historychangesinteractor = historychangesinteractor;
         } 
-        //[CustomAuthorizeAttribute("Admin")]
+        [CustomAuthorizeAttribute("Admin")]
         public ActionResult IndexPage()
         {
             var result = _memberManager.GetAllMembers();
@@ -53,15 +53,20 @@ namespace webIEA.Controllers
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult Details(long id)
+        public ActionResult Details(long? Id)
         {
-            var result = _memberManager.GetMemberById(id);
+            if ((int)Session["Role"] == (int)IEARoles.Member)
+            {
+                Id = Convert.ToInt64(Session["loginUserId"]);
+            }
+            var result = _memberManager.GetMemberById((long)Id);
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin")]
-        public ActionResult GetMemberById(long id)
+        public ActionResult GetMemberById()
         {
-            var result = _memberManager.GetMemberById(id);
+            long UserId = Convert.ToInt64(Session["loginUserId"]);
+            var result = _memberManager.GetMemberById(UserId);
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
@@ -71,33 +76,37 @@ namespace webIEA.Controllers
             return RedirectToAction("IndexPage");
         }
         [CustomAuthorizeAttribute("Admin")]
-        public ActionResult UpdateStatus(long Id, string FieldName, bool check)
+        public ActionResult UpdateStatus(string FieldName, bool check)
         {
-            var result = _memberManager.UpdateStatus(Id, FieldName, check);
+            long UserId = Convert.ToInt64(Session["loginUserId"]);
+
+            var result = _memberManager.UpdateStatus(UserId, FieldName, check);
             return RedirectToAction("IndexPage");
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateMemberStatus(long Id)
-        {
+        { 
             var result = _memberManager.UpdateMemberStatus(Id, "StatusID", (int)MemberStatusEnum.Active);
             return RedirectToAction("IndexPage", "Member");
-
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult Update(long id)
+        public ActionResult Update(long? Id)
         {
-            var result = _memberManager.GetMemberById(id);
+            if ((int)Session["Role"] == (int)IEARoles.Member)
+            {
+                Id = Convert.ToInt64(Session["loginUserId"]);
+            }
+            var result = _memberManager.GetMemberById((long)Id);
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult ChangePassword(int mId)
+        public ActionResult ChangePassword()
         {
             var model = new UpdatePasswordDto();
             if ((int)Session["Role"] == (int)IEARoles.Admin)
             {
-                var UserId = _memberManager.GetUserId(mId);
+                var UserId = _memberManager.GetUserId((long)Session["loginUserId"]);
                 model.Id = (string)UserId;
-
             }
             else
             {
@@ -136,9 +145,13 @@ namespace webIEA.Controllers
             return RedirectToAction("GetMemberDocument", Id);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult Documents(long Id)
+        public ActionResult Documents(long? Id)
         {
-            var result = _memberDocumentInteractor.GetAllFiltered(Id);
+            if ((int)Session["Role"] == (int)IEARoles.Member)
+            {
+                Id = Convert.ToInt64(Session["loginUserId"]);
+            }
+            var result = _memberDocumentInteractor.GetAllFiltered((long)Id);
             ViewBag.MemberId = Id;
             return View("GetMemberDocument", result);
         }
@@ -149,10 +162,13 @@ namespace webIEA.Controllers
             return RedirectToAction("GetMemberDocument", Id);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult MyHistory()
+        public ActionResult MyHistory(long? Id)
         {
-            long UserId = Convert.ToInt64(Session["loginUserId"]);
-            var result = _historychangesinteractor.GetMemberHistoryLogs(UserId);
+            if ((int)Session["Role"] == (int)IEARoles.Member)
+            {
+                Id = Convert.ToInt64(Session["loginUserId"]);
+            }
+            var result = _historychangesinteractor.GetMemberHistoryLogs((long)Id);
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]

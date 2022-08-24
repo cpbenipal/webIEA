@@ -1,9 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using webIEA.Contracts;
-using webIEA.DataBaseContext;
 using webIEA.Dtos;
 using webIEA.Entities;
 
@@ -11,16 +8,16 @@ namespace webIEA.Repositories
 {
     public class StatusManager : IStatusManager
     {
-        private readonly IRepositoryBase<Status> _repositoryBase; 
+        private readonly IRepositoryBase<mStatu> _repositoryBase; 
 
-        public StatusManager(IRepositoryBase<Status> repositoryBase)
+        public StatusManager(IRepositoryBase<mStatu> repositoryBase)
         { 
             _repositoryBase = repositoryBase;          
         }
 
         public object Add(StatusDto model)
         {
-            var data = new Status
+            var data = new mStatu
             {
                 StatusName = model.StatusName,
             };

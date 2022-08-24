@@ -11,16 +11,16 @@ namespace webIEA.Repositories
 {
     public class CourseTypeManager : ICourseTypeManager
     {
-        private readonly IRepositoryBase<CourseType> _repositoryBase;
+        private readonly IRepositoryBase<mCourseType> _repositoryBase;
 
-        public CourseTypeManager(IRepositoryBase<CourseType> repositoryBase)
+        public CourseTypeManager(IRepositoryBase<mCourseType> repositoryBase)
         {
             _repositoryBase = repositoryBase;
         }
 
         public object Add(CourseTypeDto courseTypeDto)
         {
-            var data = new CourseType
+            var data = new mCourseType
             {
                 Name = courseTypeDto.Name,
             };

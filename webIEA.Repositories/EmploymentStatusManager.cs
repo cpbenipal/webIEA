@@ -1,9 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using webIEA.Contracts;
-using webIEA.DataBaseContext;
 using webIEA.Dtos;
 using webIEA.Entities;
 
@@ -11,16 +8,16 @@ namespace webIEA.Repositories
 {
     public class EmploymentStatusManager : IEmploymentStatusManager
     {
-        private readonly IRepositoryBase<MemberEmploymentStatu> _repositoryBase; 
+        private readonly IRepositoryBase<mEmploymentStatu> _repositoryBase; 
 
-        public EmploymentStatusManager(IRepositoryBase<MemberEmploymentStatu> repositoryBase)
+        public EmploymentStatusManager(IRepositoryBase<mEmploymentStatu> repositoryBase)
         { 
             _repositoryBase = repositoryBase;          
         }
 
         public object Add(EmploymentStatusDto employmentStatusDto)
         {
-            var data = new MemberEmploymentStatu
+            var data = new mEmploymentStatu
             {
                 StatusName = employmentStatusDto.StatusName,
             };

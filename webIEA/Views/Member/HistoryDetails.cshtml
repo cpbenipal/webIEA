@@ -160,7 +160,25 @@
     <div class="form-group">
         @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10" Id="spec_div">
-            @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @disabled = "true", @class = "selectpicker" })
+           
+
+
+            <div class="col-md-10" Id="spec_div">
+                @{ if (Model.TranieeCommission.Count == 0)
+                    {
+                        <input type="text" id="TraneeComissionId" name="TraneeComissionId" disabled="true" />
+
+                    }
+                    else
+                    {
+                        foreach (var item in Model.TranieeCommission)
+                        {
+                            <input type="text" id="TraneeComissionId" name="TraneeComissionId" value="@item.Value" disabled="true" />
+                        }
+                    }
+                }
+
+            </div>
         </div>
     </div>
 
@@ -168,7 +186,7 @@
 
 
 <div>
-    @Html.ActionLink("Back", "Details", new { Id = Model.Id })
+    @Html.ActionLink("Back", "Details")
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>

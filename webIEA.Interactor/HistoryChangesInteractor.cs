@@ -43,7 +43,7 @@ namespace webIEA.Interactor
         {
 
             var list = repositoryWrapper.HistoryChangesManager.GetAll().Where(x => x.PK == Convert.ToString(MemberId) && x.TableName == TableName && x.Type == "U").ToList();
-            var groupedList = list.GroupBy(x => x.UpdateDate.ToShortDateString()).Select(x => x.FirstOrDefault()).ToList();
+            var groupedList = list.GroupBy(x => x.UpdateDate.Value.ToShortDateString()).Select(x => x.FirstOrDefault()).ToList();
             return groupedList;
         }
         public static string GetTypeName(Type type)
@@ -136,7 +136,7 @@ namespace webIEA.Interactor
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
             m.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
-            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
+            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).Where(x => m.TraneeComissionId.Contains((int)x.Id)).ToList();
             return m;
         }
     }

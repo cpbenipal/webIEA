@@ -34,20 +34,20 @@ namespace webIEA.Controllers
                     Session.Add("loginUserId", result.loginUserId);
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
+                    Session.Add("FirstName", result.FirstName);
+
                     if (result.RoleId == (int)IEARoles.Admin)
                         return RedirectToAction("IndexPage", "Member");
                     else
-                        return RedirectToAction("Details", "Member", new { id = result.loginUserId });
-
-
+                        return RedirectToAction("Details", "Member");
                 }
                 else
                 {
                     ModelState.AddModelError("", "Incorrect username or password");
-                    return View();
+                    return View("Index");
                 }
             }
-            return View();
+            return View("Index");
         }
         [HttpPost]
         [CustomAuthorizeAttribute("Admin", "Member")]
