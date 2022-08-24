@@ -26,11 +26,11 @@ namespace webIEA.Repositories
         }
         public List<int?> GetMemberTranieeHistory(string pk, DateTime date)
         {
-            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName== "TrainingCourseId" && x.TableName== "MemberTranieeCommission" && x.Type=="I" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x=>x.NewValue).Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
+            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName== "TrainingCourseId" && x.TableName== "MemberTranieeCommission" && x.Type=="D" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x=>x.NewValue).Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
         }
         public List<string> GetMemberSpecializationtHistory(string pk, DateTime date)
         {
-            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName == "SpecializationName" && x.TableName == "MemberSpecialization" && x.Type == "I" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x => x.NewValue).ToList();
+            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName == "SpecializationName" && x.TableName == "MemberSpecialization" && x.Type == "D" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x => x.NewValue).ToList();
         }
     }
 }
