@@ -18,8 +18,8 @@ namespace webIEA.Controllers
             _memberManager = memberManager;
             _memberDocumentInteractor = memberDocumentInteractor;
             _historychangesinteractor = historychangesinteractor;
-        } 
-        [CustomAuthorizeAttribute("Admin")]
+        }
+        //[CustomAuthorizeAttribute("Admin")]
         public ActionResult IndexPage()
         {
             var result = _memberManager.GetAllMembers();
@@ -85,7 +85,7 @@ namespace webIEA.Controllers
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateMemberStatus(long Id)
-        { 
+        {
             var result = _memberManager.UpdateMemberStatus(Id, "StatusID", (int)MemberStatusEnum.Active);
             return RedirectToAction("IndexPage", "Member");
         }
@@ -176,6 +176,12 @@ namespace webIEA.Controllers
         {
             var result = _historychangesinteractor.GetHistoryDetail(pk, Convert.ToDateTime(dates));
             return View("HistoryDetails", result);
+        }
+        //[CustomAuthorizeAttribute("Admin")]
+        public ActionResult MemberAvgAge()
+        {
+            var result = _memberManager.MemberAvgAge();
+            return View("Dashobard", result);
         }
     }
 }

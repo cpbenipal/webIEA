@@ -28,7 +28,7 @@ namespace webIEA.Entities
         public bool LastNamePublic { get; set; }
         public string Email { get; set; }
         public bool EmailPublic { get; set; }
-        public Nullable<System.DateTime> DOB { get; set; }
+        public DateTime DOB { get; set; }
         public bool DOBPublic { get; set; }
         public string BirthPlace { get; set; }
         public bool BirthPlacePublic { get; set; }

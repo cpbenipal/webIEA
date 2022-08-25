@@ -94,6 +94,9 @@
     <Compile Include="User.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserLog.cs">
+      <DependentUpon>IEA.tt</DependentUpon>
+    </Compile>
     <Compile Include="UserRole.cs">
       <DependentUpon>IEA.tt</DependentUpon>
     </Compile>
@@ -117,6 +120,7 @@
     <None Include="IEA.edmx.diagram">
       <DependentUpon>IEA.edmx</DependentUpon>
     </None>
+    <None Include="IEAReGBack.bak" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IEA.Context.tt">

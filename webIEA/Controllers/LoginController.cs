@@ -35,6 +35,7 @@ namespace webIEA.Controllers
                     Session.Add("Email", result.Email);
                     Session.Add("Role", result.RoleId);
                     Session.Add("FirstName", result.FirstName);
+                    Session.Add("LogId", result.LogId);
 
                     if (result.RoleId == (int)IEARoles.Admin)
                         return RedirectToAction("IndexPage", "Member");
@@ -64,7 +65,9 @@ namespace webIEA.Controllers
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult Logout()
-        { 
+        {
+            long logid = (long)Session["LogId"];
+            _accountInteractor.Logout(logid);
             Session.Clear();
             Response.Cookies.Clear();
             Session.Abandon();

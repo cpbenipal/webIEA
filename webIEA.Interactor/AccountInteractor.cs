@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using webIEA.Contracts;
 using webIEA.Dtos;
 using webIEA.Entities;
@@ -8,10 +9,14 @@ namespace webIEA.Interactor
     public class AccountInteractor
     {
         private readonly IRepositoryWrapper repositoryWrapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryBase<UserLog> userlogrep;
 
-        public AccountInteractor(IRepositoryWrapper _repositoryWrapper)
+        public AccountInteractor(IRepositoryWrapper _repositoryWrapper, IUnitOfWork unitOfWork)
         {
             repositoryWrapper = _repositoryWrapper;
+            _unitOfWork = unitOfWork;
+            userlogrep = _unitOfWork.GetRepository<UserLog>();
         }
 
         //public object register(AccountDto model)
@@ -33,6 +38,14 @@ namespace webIEA.Interactor
                     RoleId = userLogin.RoleId,
                     loginUserId = userLogin.loginUserId
                 };
+                var data = new UserLog
+                {
+                    UserId = userLogin.Id,
+                    Login = DateTime.Now,
+                };
+                userlogrep.Insert(data);
+                userlogrep.Save();
+                loginDetail.LogId = data.Id;
             }
             return loginDetail;
         }        
@@ -51,6 +64,17 @@ namespace webIEA.Interactor
         public object UpdatePassword(UpdatePasswordDto model)
         {
             return repositoryWrapper.AccountManager.UpdatePassword(model);
+        }
+        public object Logout(long Id)
+        {
+            var dt = userlogrep.FirstOrDefaultAsync(x => x.Id == Id);
+            if (dt != null)
+            {
+                dt.Logout = DateTime.Now;
+                userlogrep.Update(dt);
+                userlogrep.Save();
+            }
+            return dt;
         }
     }
 }

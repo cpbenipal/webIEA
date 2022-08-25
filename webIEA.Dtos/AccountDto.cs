@@ -23,6 +23,7 @@ namespace webIEA.Dtos
         public long loginUserId { get; set; }
         public string TableName { get; set; }
         public string FirstName { get; set; }
+        public long LogId { get; set; }
     }
 
 

@@ -26,6 +26,7 @@
         <AssociationConnector Association="webIEAModel.FK_MemberTranieeCommission_TrainingCourses" ManuallyRouted="false" />
         <EntityTypeShape EntityType="webIEAModel.User" Width="1.5" PointX="10" PointY="1" />
         <AssociationConnector Association="webIEAModel.FK_Users_UserRoles" />
+        <EntityTypeShape EntityType="webIEAModel.UserLog" Width="1.5" PointX="10.375" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

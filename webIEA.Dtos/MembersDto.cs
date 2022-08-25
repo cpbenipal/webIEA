@@ -17,7 +17,7 @@ namespace webIEA.Dtos
         public string Email { get; set; }
         public bool EmailPublic { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public Nullable<System.DateTime> DOB { get; set; }
+        public DateTime DOB { get; set; }
         public bool DOBPublic { get; set; }
         public string BirthPlace { get; set; }
         public bool BirthPlacePublic { get; set; }
@@ -66,7 +66,7 @@ namespace webIEA.Dtos
         [Required]
         public string Email { get; set; }
         [Required]
-        public Nullable<System.DateTime> DOB { get; set; }
+        public DateTime DOB { get; set; }
         [Required]
         public string BirthPlace { get; set; }
         [Required]

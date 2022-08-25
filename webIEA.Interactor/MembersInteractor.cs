@@ -19,7 +19,7 @@ namespace webIEA.Interactor
         private readonly IUnitOfWork _unitOfWork;
 
 
-        public MembersInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor, IHashManager hashManager,IUnitOfWork unitOfWork)
+        public MembersInteractor(IRepositoryWrapper _repositoryWrapper, ILanguageRepository ocessor, IHashManager hashManager, IUnitOfWork unitOfWork)
         {
             repositoryWrapper = _repositoryWrapper; _ocessor = ocessor;
             this._hashManager = hashManager;
@@ -34,7 +34,7 @@ namespace webIEA.Interactor
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
             model.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
-            model.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
+            model.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.ID, Value = x.TrainingName }).ToList();
             return model;
         }
 
@@ -50,7 +50,7 @@ namespace webIEA.Interactor
                 DOB = x.DOB,
                 Phone = x.Phone,
                 StatusID = (int)x.StatusID,
-                Password = x.StatusID == (int)MemberStatusEnum.Active ? _hashManager.DecryptCipherText(userLogins.FirstOrDefault(xx=>xx.loginUserId == x.Id)?.Password) : "",
+                Password = x.StatusID == (int)MemberStatusEnum.Active ? _hashManager.DecryptCipherText(userLogins.FirstOrDefault(xx => xx.loginUserId == x.Id)?.Password) : "",
                 StatusName = statuses.FirstOrDefault(xx => xx.ID == x.StatusID).StatusName,
             }).ToList();
             return model;
@@ -102,7 +102,7 @@ namespace webIEA.Interactor
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
             m.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
-            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.TrainingName }).ToList();
+            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.ID, Value = x.TrainingName }).ToList();
 
             return m;
         }
@@ -267,7 +267,7 @@ namespace webIEA.Interactor
 
                 var data = new User
                 {
-                    Id = Guid.NewGuid().ToString(),                    
+                    Id = Guid.NewGuid().ToString(),
                     Password = _hashManager.EncryptPlainText(password),
                     PasswordHash = hashed[0],
                     PasswordSalt = hashed[1],
@@ -301,12 +301,18 @@ namespace webIEA.Interactor
         }
         public object GetUserId(long Id)
         {
-            var rest= _unitOfWork.GetRepository<User>().FirstOrDefaultAsync(x=>x.loginUserId==Id);
+            var rest = _unitOfWork.GetRepository<User>().FirstOrDefaultAsync(x => x.loginUserId == Id);
             if (rest != null)
             {
                 return rest.Id;
             }
             return "";
+        }
+        public object MemberAvgAge()
+        {
+            var res = GetAllMembers().Average(x=>(DateTime.Now.Year-x.DOB.Year));
+            return res;
+            
         }
     }
 }
