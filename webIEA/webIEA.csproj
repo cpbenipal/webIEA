@@ -485,6 +485,7 @@
       <DependentUpon>Strings.nl.resx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\CustomAuthorizeAttribute.cs" />
+    <Compile Include="App_Start\CustomErrorAttribute.cs" />
     <Compile Include="App_Start\MapperDep.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\DependencyResolver.cs" />

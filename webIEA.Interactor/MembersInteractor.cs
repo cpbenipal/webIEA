@@ -149,7 +149,7 @@ namespace webIEA.Interactor
             };
             var result = repositoryWrapper.MemberManager.AddMember(memberProfile);
 
-            if (membersDto.TraneeComissionId.Count > 0)
+            if (membersDto.TraneeComissionId!=null)
             {
                 foreach (var tarnId in membersDto.TraneeComissionId)
                 {

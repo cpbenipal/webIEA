@@ -3,17 +3,17 @@
 @{
     ViewBag.Title = "Member Documents";
 }
+@Html.Partial("_MemberNavbar")
+
 
 <h2>Member List</h2>
 
-<p>
-    @Html.ActionLink("Create New", "CreateMember")
-</p>
-@using (Html.BeginForm("AddMemberDocument", "BecomeMember", FormMethod.Post, new { enctype = "multipart/form-data" }))
+
+@using (Html.BeginForm("AddMemberDocument", "Member", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <input type="file" name="file"  class="form-control" id="file"  />
-    <input type="hidden" name="Id" value="@ViewBag.MemberId" class="form-control" id="Id"  />
-    <button  type="submit">Upload</button>
+    <input type="file" name="file" class="form-control" id="file" />
+    <input type="hidden" name="Id" value="@ViewBag.MemberId" class="form-control" id="Id" />
+    <button type="submit">Upload</button>
 
 }
 

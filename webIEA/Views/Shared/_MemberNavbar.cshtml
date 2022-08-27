@@ -1,40 +1,22 @@
-﻿
-<nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
-    <div class="container">
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+﻿<ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+        @Html.ActionLink("Genreal Information", "Details", new { id = Convert.ToString(Session["TempId"]) }, null)
 
+    </li>
+    @*<li class="nav-item">
+            <a class="nav-link" href="#">Settings</a>
+        </li>*@
+    <li class="nav-item">
+        @Html.ActionLink("Settings", "ChangePassword", new { id = Convert.ToString(Session["TempId"]) }, null)
 
-            <ul class="nav navbar-nav navbar-right navhome">
-                <li class="hidden">
-                    <a href="#page-top"></a>
-                </li>
-                <li>
-                    <a class="page-scroll" href="~/Member/Register">Become Member</a>
-                </li>
-                <li>
-                    <a class="page-scroll" href="~/Members/BecomeIntern">Become Intern</a>
-                </li>
-                <li>
-                    @if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
-                    {
-                        <a class="page-scroll" href="~/Login/Logout">Logout</a>
+    </li>
+    <li class="nav-item">
+        @Html.ActionLink("Document", "Documents", new { id = Convert.ToString(Session["TempId"]) }, null)
 
-                        @Html.Raw(Convert.ToString(Session["Email"]))
+    </li>
+    <li class="nav-item">
+        @Html.ActionLink("History", "MyHistory", new { id = Convert.ToString(Session["TempId"]) }, null)
 
-                        @Html.Raw(" As " + Enum.GetName(typeof(webIEA.Dtos.IEARoles), Convert.ToInt32(Session["Role"])))
-                    }
-                    else
-                    {
-                        <a class="page-scroll" href="~/Login">Sign-In</a>
-                    }
+    </li>
 
-                </li>
-            </ul>
-
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</nav>
-
-
+</ul>

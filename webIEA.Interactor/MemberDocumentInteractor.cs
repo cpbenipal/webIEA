@@ -24,7 +24,7 @@ namespace webIEA.Interactor
         public object UploadDocument(long id, HttpPostedFileBase file)
         {
             MemberDocumentDto model = new MemberDocumentDto();
-            model.Id = id;
+            model.MemberId = id;
             var fileName = Guid.NewGuid().ToString() + Path.GetFileName(file.FileName);
             model.ContentType = Path.GetExtension(file.FileName);            
             model.DocumentName = Path.GetFileName(file.FileName);

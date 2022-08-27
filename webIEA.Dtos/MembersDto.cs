@@ -9,34 +9,49 @@ namespace webIEA.Dtos
 {
     public class MembersDto
     {
+        [Required]
         public long Id { get; set; }
+        [Required]
         public string FirstName { get; set; }
         public bool FirstNamePublic { get; set; }
+        [Required]
         public string LastName { get; set; }
         public bool LastNamePublic { get; set; }
+        [Required]
         public string Email { get; set; }
         public bool EmailPublic { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [Required]
         public DateTime DOB { get; set; }
         public bool DOBPublic { get; set; }
+        [Required]
         public string BirthPlace { get; set; }
         public bool BirthPlacePublic { get; set; }
+        [Required]
         public string Nationality { get; set; }
         public bool NationalityPublic { get; set; }
+        [Required]
         public string LanguageID { get; set; }
         public bool LanguageIDPublic { get; set; }
+        [Required]
         public string Phone { get; set; }
         public bool PhonePublic { get; set; }
+        [Required]
         public string GSM { get; set; }
         public bool GSMPublic { get; set; }
+        [Required]
         public string Street { get; set; }
         public bool StreetPublic { get; set; }
+        [Required]
         public string PostalCode { get; set; }
         public bool PostalCodePublic { get; set; }
+        [Required]
         public string Commune { get; set; }
         public bool CommunePublic { get; set; }
+        [Required]
         public string PrivateAddress { get; set; }
         public bool PrivateAddressPublic { get; set; }
+        [Required]
         public string PrivatePostalCode { get; set; }
         public bool PrivatePostalCodePublic { get; set; }
         public int StatusID { get; set; }
@@ -62,6 +77,7 @@ namespace webIEA.Dtos
         public long Id { get; set; }
         [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
         [Required]
         public string Email { get; set; }
@@ -87,7 +103,6 @@ namespace webIEA.Dtos
         public string PrivateAddress { get; set; }
         [Required]
         public string PrivatePostalCode { get; set; }
-        [Required]        
         public int? StatusID { get; set; }
         public int? EmploymentStatusID { get; set; }
         public List<ListCollectionDto> TranieeCommission { get; set; }

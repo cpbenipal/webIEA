@@ -46,14 +46,18 @@ namespace webIEA.Controllers
         }
         public ActionResult AddUpdateCourse(TraineeCourseDto traineeCourseDto)
         {
-            try
+            //try
+            //{
+            if (ModelState.IsValid)
             {
+
                 var result = _traineeCourseInteractor.AddUpdate(traineeCourseDto);
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            else
             {
-                return RedirectToAction("AddUpdate", traineeCourseDto);
+                var model =  _traineeCourseInteractor.GetData((int?)traineeCourseDto.Id);
+                return View("AddUpdate", model);
             }
         }
         public ActionResult VerifyCourse(int id, int status)

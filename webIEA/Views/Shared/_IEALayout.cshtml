@@ -57,12 +57,12 @@
 
                     @if (!string.IsNullOrEmpty(Convert.ToString(Session["Email"])))
                     {
-                        <li>
+                        @*<li>
                             @Html.ActionLink("My History", "MyHistory", "Member")
                         </li>
                         <li>
                             @Html.ActionLink("Change Password", "ChangePassword", "Member")
-                        </li> 
+                        </li>*@ 
                         <li>
                             <a class="page-scroll" href="~/Login/Logout">Logout</a>
 

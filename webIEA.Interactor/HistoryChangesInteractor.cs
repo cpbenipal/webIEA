@@ -42,10 +42,11 @@ namespace webIEA.Interactor
         private List<HistoryDataChanx> GetHistory(long MemberId, string TableName)
         {
 
-            var list = repositoryWrapper.HistoryChangesManager.GetAll().Where(x => x.PK == Convert.ToString(MemberId) && x.TableName == TableName && x.Type == "U").ToList();
+            var list = repositoryWrapper.HistoryChangesManager.GetAll().Where(x => x.PK == Convert.ToString(MemberId) && (x.TableName == TableName || x.TableName == "MemberTranieeCommission" || x.TableName == "MemberSpecializations") && (x.Type == "U" || x.Type == "D")).ToList();
             var groupedList = list.GroupBy(x => x.UpdateDate.Value.ToShortDateString()).Select(x => x.FirstOrDefault()).ToList();
             return groupedList;
         }
+
         public static string GetTypeName(Type type)
         {
             var nullableType = Nullable.GetUnderlyingType(type);

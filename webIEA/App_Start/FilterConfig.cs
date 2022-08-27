@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using webIEA.App_Start;
 
 namespace webIEA
 {
@@ -7,7 +8,7 @@ namespace webIEA
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new CustomErrorAttribute());
         }
     }
 }

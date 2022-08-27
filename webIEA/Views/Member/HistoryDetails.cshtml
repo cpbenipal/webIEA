@@ -3,13 +3,14 @@
 @{
     ViewBag.Title = "History Detail";
 }
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" / >
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <style>
 
     input {
         border: 0;
         outline: 0;
     }
+
     select {
         border: 0;
         outline: 0;
@@ -18,25 +19,28 @@
         text-indent: 1px;
         text-overflow: '';
     }
+
     #spec_div > div > button {
         border: 0;
         outline: 0;
     }
+
         #spec_div > div > button > span {
-            display:none;
+            display: none;
         }
+
     select::-ms-expand {
         display: none;
     }
-
-    
 </style>
 
 @Html.AntiForgeryToken()
+@Html.Partial("_MemberNavbar")
+
 
 <div class="form-horizontal">
     <h4>History Detail</h4>
-    
+
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="form-group">
@@ -135,7 +139,7 @@
         <div class="col-md-10">
             @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value", Model.EmploymentStatusID), "Select One", htmlAttributes: new { @disabled = "true" })
 
-            </div>
+        </div>
     </div>
 
     <div class="form-group">
@@ -143,7 +147,7 @@
         <div class="col-md-10" Id="spec_div">
             @{ if (Model.Specialization.Count == 0)
                 {
-                    <input type="text"  id="Specialization" name="Specialization" disabled="true" />
+                    <input type="text" id="Specialization" name="Specialization" disabled="true" />
 
                 }
                 else
@@ -156,11 +160,11 @@
             }
 
         </div>
-     </div> 
+    </div>
     <div class="form-group">
         @Html.LabelFor(model => model.TraneeComissionId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10" Id="spec_div">
-           
+
 
 
             <div class="col-md-10" Id="spec_div">

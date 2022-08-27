@@ -34,16 +34,24 @@ namespace webIEA.Controllers
         [AllowAnonymous]
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
         {
-            try
+            //try
+            //{
+            if (ModelState.IsValid)
             {
                 _memberManager.AddMember(requestMemberDto);
-                return View("IndexPage");
+                return RedirectToAction("IndexPage");
             }
-            catch (Exception ex)
+            else
             {
-                return RedirectToAction("CreateMember", requestMemberDto);
-
+                var model = _memberManager.GetProfileInitialData();
+                return View("Register", model);
             }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return RedirectToAction("CreateMember", requestMemberDto);
+
+            //}
 
         }
         [CustomAuthorizeAttribute("Admin")]
@@ -55,10 +63,12 @@ namespace webIEA.Controllers
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult Details(long? Id)
         {
+
             if ((int)Session["Role"] == (int)IEARoles.Member)
             {
                 Id = Convert.ToInt64(Session["loginUserId"]);
             }
+            Session.Add("TempId", Id);
             var result = _memberManager.GetMemberById((long)Id);
             return View(result);
         }
@@ -69,12 +79,7 @@ namespace webIEA.Controllers
             var result = _memberManager.GetMemberById(UserId);
             return View(result);
         }
-        [CustomAuthorizeAttribute("Admin", "Member")]
-        public ActionResult EditMemeber(MembersDto membersDto)
-        {
-            _memberManager.UpdateMember(membersDto);
-            return RedirectToAction("IndexPage");
-        }
+
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateStatus(string FieldName, bool check)
         {
@@ -100,6 +105,21 @@ namespace webIEA.Controllers
             return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
+        public ActionResult EditMemeber(MembersDto membersDto)
+        {
+            if (ModelState.IsValid)
+            {
+
+                _memberManager.UpdateMember(membersDto);
+                return RedirectToAction("IndexPage");
+            }
+            else
+            {
+                var model = _memberManager.GetMemberById((long)membersDto.Id);
+                return View("Update", model);
+            }
+        }
+        [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult ChangePassword()
         {
             var model = new UpdatePasswordDto();
@@ -117,17 +137,26 @@ namespace webIEA.Controllers
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult UpdatePassword(UpdatePasswordDto dto)
         {
-            _memberManager.UpdatePassword(dto);
-            if ((int)Session["Role"] == (int)IEARoles.Admin)
-                return RedirectToAction("IndexPage", "Member");
+            if (ModelState.IsValid)
+            {
+
+                _memberManager.UpdatePassword(dto);
+                if ((int)Session["Role"] == (int)IEARoles.Admin)
+                    return RedirectToAction("IndexPage", "Member");
+                else
+                {
+                    Session.Clear();
+                    Response.Cookies.Clear();
+                    Session.Abandon();
+                    Response.Cache.SetExpires(DateTime.Now.AddYears(-1));
+
+                    return RedirectToAction("Index", "Login");
+                }
+            }
             else
             {
-                Session.Clear();
-                Response.Cookies.Clear();
-                Session.Abandon();
-                Response.Cache.SetExpires(DateTime.Now.AddYears(-1));
-
-                return RedirectToAction("Index", "Login");
+                var model = new UpdatePasswordDto();
+                return View("ChangePassword", model);
             }
         }
         //public ActionResult UnAuthorized()
@@ -141,8 +170,16 @@ namespace webIEA.Controllers
 
         public ActionResult AddMemberDocument(long Id, HttpPostedFileBase file)
         {
-            var result = _memberDocumentInteractor.UploadDocument(Id, file);
-            return RedirectToAction("GetMemberDocument", Id);
+            try
+            {
+                var result = _memberDocumentInteractor.UploadDocument(Id, file);
+                return RedirectToAction("Documents", new { Id = Id });
+            }
+            catch
+            {
+                return RedirectToAction("Documents", new { Id = Id });
+
+            }
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult Documents(long? Id)
@@ -153,13 +190,13 @@ namespace webIEA.Controllers
             }
             var result = _memberDocumentInteractor.GetAllFiltered((long)Id);
             ViewBag.MemberId = Id;
-            return View("GetMemberDocument", result);
+            return View(result);
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult DeleteMemberDocument(int Id)
         {
             var result = _memberDocumentInteractor.Delete(Id);
-            return RedirectToAction("GetMemberDocument", Id);
+            return RedirectToAction("Document",new { Id = Id });
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult MyHistory(long? Id)

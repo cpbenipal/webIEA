@@ -69,7 +69,7 @@
 
 
         <div class="form-group">
-            @Html.LabelFor(model => model.TypeID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <Lable  class = "control-label col-md-2">Type</Lable>
             <div class="col-md-10" Id="spec_div">
                 @Html.DropDownListFor(x => x.TypeID, new SelectList(Model.CourseType, "Id", "Value", Model.TypeID), new { @class = "form-contro selectpicker" })
                 @Html.ValidationMessageFor(model => model.TypeID, "", new { @class = "text-danger" })
@@ -77,9 +77,10 @@
             </div>
         </div> 
         <div class="form-group">
-            @Html.LabelFor(model => model.LanguageId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <Lable class="control-label col-md-2">Languages</Lable>
+
             <div class="col-md-10" Id="spec_div">
-                @Html.ListBoxFor(x => x.LanguageId, new SelectList(Model.Languages, "Id", "Value", Model.TypeID), new { multiple="true" ,@class = "form-contro selectpicker" })
+                @Html.ListBoxFor(x => x.LanguageId, new SelectList(Model.Languages, "Id", "Value", Model.TypeID), new { multiple = "true", @class = "form-contro selectpicker" })
                 @Html.ValidationMessageFor(model => model.TypeID, "", new { @class = "text-danger" })
 
             </div>

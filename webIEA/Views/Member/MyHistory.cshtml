@@ -4,24 +4,26 @@
     ViewBag.Title = "My history";
     Layout = "~/Views/Shared/_IEALayout.cshtml";
 }
+@Html.Partial("_MemberNavbar")
 
 <h2>My history</h2>
 
- 
-<table class="table">
-     
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.UpdateDate)
-        </td>
-        <td>
-           
-            @Html.ActionLink("History Details", "HistoryDetails", new {pk=item.PK, dates= item.UpdateDate }, null) 
-         
-        </td>
-    </tr>
-}
+<table class="table">
+
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdateDate)
+            </td>
+            <td>
+
+                @Html.ActionLink("History Details", "HistoryDetails", new { pk = item.PK, dates = item.UpdateDate }, null)
+
+            </td>
+        </tr>
+    }
 
 </table>
