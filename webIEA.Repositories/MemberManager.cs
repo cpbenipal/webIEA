@@ -37,21 +37,19 @@ namespace webIEA.Repositories
             return result.Id;
 
         }
-        public object UpdateMember(MemberProfile memberProfile)
+        public MemberProfile UpdateMember(MemberProfile membersDto)
         {            
-            var result = _repositoryBase.Update(memberProfile);
+            var result = _repositoryBase.Update(membersDto);
             _repositoryBase.Save();
             return result;
 
+        } 
+        public void DeleteMember(long Id)
+        {
+            _repositoryBase.Delete(Id);
+            _repositoryBase.Save();            
         }
-        public MemberProfile UpdateStatus(MemberProfile memberProfile)
-        { 
-            var result = _repositoryBase.Update(memberProfile);
-            _repositoryBase.Save();
-            return result;
 
-        }
-       
         //public object UpdateMemberStatus(long Id, string FieldName, int status)
         //{
         //    var data = _repositoryBase.GetById(Id);

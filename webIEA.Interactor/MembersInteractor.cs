@@ -33,8 +33,8 @@ namespace webIEA.Interactor
             model.Languages = languages.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.Name }).ToList();
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
             model.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
-            var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
-            model.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.ID, Value = x.TrainingName }).ToList();
+            var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll().Where(e=> e.StatusID == (int)MemberStatusEnum.Active).ToList();
+            model.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.TrainingName }).ToList();
             return model;
         }
 
@@ -44,7 +44,7 @@ namespace webIEA.Interactor
             var userLogins = repositoryWrapper.AccountManager.GetAll();
             var model = repositoryWrapper.MemberManager.GetAllMembers().Select(x => new MembersDto()
             {
-                Id = x.Id,
+                Id = x.Id, 
                 FirstName = x.FirstName,
                 Email = x.Email,
                 DOB = x.DOB,
@@ -108,72 +108,88 @@ namespace webIEA.Interactor
         }
         public long AddMember(RequestMemberDto membersDto)
         {
-            var memberProfile = new MemberProfile
+            var emailcheck = repositoryWrapper.MemberManager.GetMemberByEmail(membersDto.Email);
+            if (emailcheck != null)
             {
-                Id = membersDto.Id,
-                FirstName = membersDto.FirstName,
-                FirstNamePublic = true,
-                LastName = membersDto.LastName,
-                LastNamePublic = true,
-                DOB = membersDto.DOB,
-                DOBPublic = true,
-                Email = membersDto.Email,
-                EmailPublic = true,
-                BirthPlace = membersDto.BirthPlace,
-                BirthPlacePublic = true,
-                Nationality = membersDto.Nationality,
-                NationalityPublic = true,
-                LanguageID = membersDto.LanguageID,
-                LanguageIDPublic = true,
-                Phone = membersDto.Phone,
-                PhonePublic = true,
-                GSM = membersDto.GSM,
-                GSMPublic = true,
-                Street = membersDto.Street,
-                StreetPublic = true,
-                PostalCode = membersDto.PostalCode,
-                PostalCodePublic = true,
-                Commune = membersDto.Commune,
-                CommunePublic = true,
-                PrivateAddress = membersDto.PrivateAddress,
-                PrivateAddressPublic = true,
-                PrivatePostalCode = membersDto.PrivatePostalCode,
-                PrivatePostalCodePublic = true,
-                StatusID = (int)MemberStatusEnum.Pending,
-                EmploymentStatusID = membersDto.EmploymentStatusID,
-                EmploymentStatusIDPublic = true,
-                SpecializationPublic = true,
-                TraineeCommissionPublic = true,
-                AddedOn = DateTime.Now,
-                ModifiedOn = DateTime.Now,
-            };
-            var result = repositoryWrapper.MemberManager.AddMember(memberProfile);
-
-            if (membersDto.TraneeComissionId!=null)
-            {
-                foreach (var tarnId in membersDto.TraneeComissionId)
-                {
-                    var cmdt = new CourseMemberDto();
-                    cmdt.MemberID = result;
-                    cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
-                    repositoryWrapper.CourseMemberManager.Add(cmdt);
-                }
+                return -1;
             }
-            if (membersDto.Specialization.Count > 0)
+            else
             {
-                foreach (var sepname in membersDto.Specialization)
+                var memberProfile = new MemberProfile
                 {
-                    if (sepname != "")
+                    Id = membersDto.Id,
+                    FirstName = membersDto.FirstName,
+                    FirstNamePublic = true,
+                    LastName = membersDto.LastName,
+                    LastNamePublic = true,
+                    DOB = membersDto.DOB,
+                    DOBPublic = true,
+                    Email = membersDto.Email,
+                    EmailPublic = true,
+                    BirthPlace = membersDto.BirthPlace,
+                    BirthPlacePublic = true,
+                    Nationality = membersDto.Nationality,
+                    NationalityPublic = true,
+                    LanguageID = membersDto.LanguageID,
+                    LanguageIDPublic = true,
+                    Phone = membersDto.Phone,
+                    PhonePublic = true,
+                    GSM = membersDto.GSM,
+                    GSMPublic = true,
+                    Street = membersDto.Street,
+                    StreetPublic = true,
+                    PostalCode = membersDto.PostalCode,
+                    PostalCodePublic = true,
+                    Commune = membersDto.Commune,
+                    CommunePublic = true,
+                    PrivateAddress = membersDto.PrivateAddress,
+                    PrivateAddressPublic = true,
+                    PrivatePostalCode = membersDto.PrivatePostalCode,
+                    PrivatePostalCodePublic = true,
+                    StatusID = (int)MemberStatusEnum.Pending,
+                    EmploymentStatusID = membersDto.EmploymentStatusID,
+                    EmploymentStatusIDPublic = true,
+                    SpecializationPublic = true,
+                    TraineeCommissionPublic = true,
+                    AddedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now,
+                };
+                var result = repositoryWrapper.MemberManager.AddMember(memberProfile);
+
+                if (membersDto.TraneeComissionId != null)
+                {
+                    foreach (var tarnId in membersDto.TraneeComissionId)
                     {
-                        var msdt = new MemberSpecializationDto();
-                        msdt.MemberId = (int)result;
-                        msdt.SpecializationName = sepname;
-                        repositoryWrapper.MemberSpecializationManager.Add(msdt);
+                        var cmdt = new CourseMemberDto();
+                        cmdt.MemberID = result;
+                        cmdt.TrainingCourseId = Convert.ToInt32(tarnId);
+                        repositoryWrapper.CourseMemberManager.Add(cmdt);
                     }
                 }
+                if (membersDto.Specialization.Count > 0)
+                {
+                    foreach (var sepname in membersDto.Specialization)
+                    {
+                        if (sepname != "")
+                        {
+                            var msdt = new MemberSpecializationDto();
+                            msdt.MemberId = (int)result;
+                            msdt.SpecializationName = sepname;
+                            repositoryWrapper.MemberSpecializationManager.Add(msdt);
+                        }
+                    }
+                }
+                return result;
             }
-            return result;
+         
         }
+
+        public void DeleteMember(long Id)
+        {            
+            repositoryWrapper.MemberManager.DeleteMember(Id);
+            repositoryWrapper.HistoryChangesManager.DeleteMemberHistory(Id);
+        }
+
         public object UpdateMember(MembersDto membersDto)
         {
             //var specdata = _speciallizationrepo.GetAll().ToList();
@@ -245,13 +261,13 @@ namespace webIEA.Interactor
         {
             var data = repositoryWrapper.MemberManager.GetMemberById(Id);
             data.GetType().GetProperty(FieldName).SetValue(data, check, null);
-            return repositoryWrapper.MemberManager.UpdateStatus(data);
+            return repositoryWrapper.MemberManager.UpdateMember(data);
         }
-        public object UpdateMemberStatus(long Id, string FieldName, int Status)
+        public object UpdateMemberStatus(long Id, int Status)
         {
             MemberProfile memberProfile = new MemberProfile();
             var dt = repositoryWrapper.MemberManager.GetMemberById(Id);
-            if (dt.StatusID == (int)MemberStatusEnum.Pending)
+            if (Status == (int)MemberStatusEnum.Pending)
             {
                 var model = new AccountDto
                 {
@@ -279,21 +295,40 @@ namespace webIEA.Interactor
                 var response = repositoryWrapper.AccountManager.Register(data);
                 if (response != null)
                 {
-                    dt.StatusID = Status;
-                    dt.ModifiedBy = 1;
-                    dt.ModifiedOn = DateTime.Now;
-                    memberProfile = repositoryWrapper.MemberManager.UpdateStatus(dt);
-                    var mailHelper = new MailHelper();
-                    bool resultNotifing = mailHelper.SendMail(ConfigurationManager.AppSettings["FromAddress"], model.Email, "IAE - IEA - Account Approved", $"Your account has been approved. <br/><br/> Here's login email is {model.Email} and password is {password}.");
-                    if (resultNotifing)
-                    {
-
-                    }
+                    string emailmsg = $"Your account has been approved. <br/><br/> Here's login email is {model.Email} and password is {password}.";
+                    string subject = "IAE - IEA - Account approved";
+                    memberProfile = ChangeMemberStatus(Status, dt, emailmsg, subject);
                 }
+            }
+            else
+            {
+                dt.StatusID = Status;
+                dt.ModifiedBy = 1;
+                dt.ModifiedOn = DateTime.Now;
+                string emailmsg = $"Your account has been Suspended. <br/>.";
+                string subject = "IAE - IEA - Account Suspended";
+                memberProfile = ChangeMemberStatus(Status, dt, emailmsg, subject);
+            }          
+            return memberProfile;
+        }
+
+        private MemberProfile ChangeMemberStatus(int Status, MemberProfile dt, string body, string subject)
+        {
+            MemberProfile memberProfile;
+            dt.StatusID = Status;
+            dt.ModifiedBy = 1;
+            dt.ModifiedOn = DateTime.Now;
+            memberProfile = repositoryWrapper.MemberManager.UpdateMember(dt);
+            var mailHelper = new MailHelper();
+            bool resultNotifing = mailHelper.SendMail(ConfigurationManager.AppSettings["FromAddress"], dt.Email, subject,body);
+            if (resultNotifing)
+            {
+
             }
 
             return memberProfile;
         }
+
         public object UpdatePassword(UpdatePasswordDto dto)
         {
             dto.NewPassword = _hashManager.EncryptPlainText(dto.NewPassword);

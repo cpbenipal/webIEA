@@ -18,5 +18,7 @@ namespace webIEA.Entities
         public string UserId { get; set; }
         public Nullable<System.DateTime> Login { get; set; }
         public Nullable<System.DateTime> Logout { get; set; }
+    
+        public virtual User User { get; set; }
     }
 }

@@ -9,6 +9,7 @@
 @using (Html.BeginForm("EditMemeber", "Member", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
+    @Html.Partial("_MemberNavbar")
 
 <div class="form-horizontal">
     <h4>Update Member details</h4>
@@ -180,8 +181,8 @@
 </div>
 }
 
-<div>
-    @Html.ActionLink("Profile", "Details")
+<div> 
+    @Html.ActionLink("Profile", "Details", !string.IsNullOrEmpty(Convert.ToString(Session["TempId"])) ? new { Id = Session["TempId"] } : null)
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
@@ -190,7 +191,7 @@
     $('#SpecializationId').selectpicker();
     function AddRow() {
         $.ajax({
-            url: "/Members/BecomeMember/GetSpecialization",
+            url: "/Member/GetSpecialization",
             type: "GET",
             dataType: 'json',
             success: function (result) {

@@ -9,7 +9,7 @@ namespace webIEA.Repositories
 {
     public class HistoryChangesManager: IHistoryChangesManager
     {
-        private RepositoryBase<HistoryDataChanx> repositoryBase;  
+        private readonly RepositoryBase<HistoryDataChanx> repositoryBase;  
 
         public HistoryChangesManager(RepositoryBase<HistoryDataChanx> repositoryBase)
         {
@@ -26,11 +26,16 @@ namespace webIEA.Repositories
         }
         public List<int?> GetMemberTranieeHistory(string pk, DateTime date)
         {
-            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName== "TrainingCourseId" && x.TableName== "MemberTranieeCommission" && x.Type=="D" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x=>x.OldValue).Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
+            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName== "TrainingCourseId" && x.TableName== "MemberTranieeCommission" && x.Type=="U" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x=>x.OldValue).Select(s => Int32.TryParse(s, out int n) ? n : (int?)null).ToList();
         }
         public List<string> GetMemberSpecializationtHistory(string pk, DateTime date)
         {
-            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName == "SpecializationName" && x.TableName == "MemberSpecialization" && x.Type == "D" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x => x.OldValue).ToList();
+            return repositoryBase.GetAllFiltered(x => x.PK == pk && x.FieldName == "SpecializationName" && x.TableName == "MemberSpecializations" && x.Type == "U" && x.UpdateDate.Value.Year == date.Year && x.UpdateDate.Value.Month == date.Month && x.UpdateDate.Value.Day == date.Day).Select(x => x.OldValue).ToList();
+        }
+
+        public void DeleteMemberHistory(long id)
+        { 
+            repositoryBase.DeleteList(x => x.PK == Convert.ToString(id));
         }
     }
 }

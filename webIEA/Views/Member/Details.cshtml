@@ -47,14 +47,14 @@
 
         @Html.LabelFor(model => model.FirstName)
         @Html.DisplayFor(model => model.FirstName)
-        @Html.CheckBoxFor(model => model.FirstNamePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.FirstNamePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
     </div>
 
     <div class="form-group">
         @Html.LabelFor(model => model.LastName)
         @Html.DisplayFor(model => model.LastName)
-        @Html.CheckBoxFor(model => model.LastNamePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.LastNamePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -62,7 +62,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Email)
         @Html.DisplayFor(model => model.Email)
-        @Html.CheckBoxFor(model => model.EmailPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.EmailPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -70,7 +70,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.DOB)
         @Html.DisplayFor(model => model.DOB)
-        @Html.CheckBoxFor(model => model.DOBPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.DOBPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
 
@@ -79,7 +79,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.BirthPlace)
         @Html.DisplayFor(model => model.BirthPlace)
-        @Html.CheckBoxFor(model => model.BirthPlacePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.BirthPlacePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -87,7 +87,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Nationality)
         @Html.DisplayFor(model => model.Nationality)
-        @Html.CheckBoxFor(model => model.FirstNamePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.FirstNamePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -95,7 +95,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Phone)
         @Html.DisplayFor(model => model.Phone)
-        @Html.CheckBoxFor(model => model.PhonePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.PhonePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -103,7 +103,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.GSM)
         @Html.DisplayFor(model => model.GSM)
-        @Html.CheckBoxFor(model => model.GSMPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.GSMPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -111,7 +111,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Street)
         @Html.DisplayFor(model => model.Street)
-        @Html.CheckBoxFor(model => model.StreetPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.StreetPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -119,7 +119,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.PostalCode)
         @Html.DisplayFor(model => model.PostalCode)
-        @Html.CheckBoxFor(model => model.PostalCodePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.PostalCodePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -127,7 +127,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Commune)
         @Html.DisplayFor(model => model.Commune)
-        @Html.CheckBoxFor(model => model.CommunePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.CommunePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -135,7 +135,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.PrivateAddress)
         @Html.DisplayFor(model => model.PrivateAddress)
-        @Html.CheckBoxFor(model => model.PrivateAddressPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.PrivateAddressPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -143,7 +143,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.PrivatePostalCode)
         @Html.DisplayFor(model => model.PrivatePostalCode)
-        @Html.CheckBoxFor(model => model.PrivatePostalCodePublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+        @Html.CheckBoxFor(model => model.PrivatePostalCodePublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
     </div>
@@ -154,7 +154,7 @@
         <div class="col-md-10">
             @Html.DropDownListFor(x => x.EmploymentStatusID, new SelectList(Model.EmploymentStatuses, "Id", "Value"), "Select One", htmlAttributes: new { @disabled = "true" })
 
-            @Html.CheckBoxFor(model => model.EmploymentStatusIDPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+            @Html.CheckBoxFor(model => model.EmploymentStatusIDPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
         </div>
     </div>
 
@@ -175,7 +175,7 @@
                 }
             }
 
-            @Html.CheckBoxFor(model => model.SpecializationPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+            @Html.CheckBoxFor(model => model.SpecializationPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
 
         </div>
@@ -185,7 +185,7 @@
         <div class="col-md-10" Id="spec_div">
             @Html.ListBoxFor(x => x.TraneeComissionId, new SelectList(Model.TranieeCommission, "Id", "Value", Model.TraneeComissionId), new { multiple = "true", @disabled = "true", @class = "selectpicker" })
 
-            @Html.CheckBoxFor(model => model.TraineeCommissionPublic, new { @onclick = "chnagestatus(this,name)", type = "checkbox", @class = "" })
+            @Html.CheckBoxFor(model => model.TraineeCommissionPublic, new { @onclick = "ChangeVisibiltiy(this,name)", type = "checkbox", @class = "" })
 
         </div>
     </div>
@@ -193,18 +193,19 @@
 </div>
 
 
-<div>
-    @Html.ActionLink("Update", "Update")
+<div> 
+    @Html.ActionLink("Update", "Update",  !string.IsNullOrEmpty(Convert.ToString(Session["TempId"])) ? new { Id = Session["TempId"] } : null)
+
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script>
-    function chnagestatus(e, name) {
+    function ChangeVisibiltiy(e, name) {
         debugger;
         var check = e.checked;
         var id = $('#Id').val();
         $.ajax({
-            url: "/Members/BecomeMember/UpdateStatus",
+            url: "/Member/UpdateStatus",
             data: { "Id": id, "FieldName": name, "check": check },
             type: "GET",
             success: function (result) {

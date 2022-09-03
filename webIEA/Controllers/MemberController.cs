@@ -33,26 +33,16 @@ namespace webIEA.Controllers
         }
         [AllowAnonymous]
         public ActionResult AddMemeber(RequestMemberDto requestMemberDto)
-        {
-            //try
-            //{
+        { 
             if (ModelState.IsValid)
             {
-                _memberManager.AddMember(requestMemberDto);
-                return RedirectToAction("IndexPage");
+                long result = _memberManager.AddMember(requestMemberDto);
+                
+                TempData.Add("Message", result == -1 ? "Email already exists" : "Register successfull, Admin will review and approve your membership");
+                
+                return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                var model = _memberManager.GetProfileInitialData();
-                return View("Register", model);
-            }
-            //}
-            //catch (Exception ex)
-            //{
-            //    return RedirectToAction("CreateMember", requestMemberDto);
-
-            //}
-
+            return RedirectToAction("Register");
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult GetAllMembers()
@@ -68,7 +58,8 @@ namespace webIEA.Controllers
             {
                 Id = Convert.ToInt64(Session["loginUserId"]);
             }
-            Session.Add("TempId", Id);
+            else
+                Session.Add("TempId", Id);
             var result = _memberManager.GetMemberById((long)Id);
             return View(result);
         }
@@ -81,17 +72,15 @@ namespace webIEA.Controllers
         }
 
         [CustomAuthorizeAttribute("Admin")]
-        public ActionResult UpdateStatus(string FieldName, bool check)
+        public ActionResult UpdateStatus(int Id,string FieldName, bool check)
         {
-            long UserId = Convert.ToInt64(Session["loginUserId"]);
-
-            var result = _memberManager.UpdateStatus(UserId, FieldName, check);
+            var result = _memberManager.UpdateStatus(Id, FieldName, check);
             return RedirectToAction("IndexPage");
         }
         [CustomAuthorizeAttribute("Admin")]
         public ActionResult UpdateMemberStatus(long Id)
         {
-            var result = _memberManager.UpdateMemberStatus(Id, "StatusID", (int)MemberStatusEnum.Active);
+            _memberManager.UpdateMemberStatus(Id, (int)MemberStatusEnum.Active);
             return RedirectToAction("IndexPage", "Member");
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
@@ -101,6 +90,8 @@ namespace webIEA.Controllers
             {
                 Id = Convert.ToInt64(Session["loginUserId"]);
             }
+            else
+                Session.Add("TempId", Id);
             var result = _memberManager.GetMemberById((long)Id);
             return View(result);
         }
@@ -109,7 +100,6 @@ namespace webIEA.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 _memberManager.UpdateMember(membersDto);
                 return RedirectToAction("IndexPage");
             }
@@ -196,7 +186,7 @@ namespace webIEA.Controllers
         public ActionResult DeleteMemberDocument(int Id)
         {
             var result = _memberDocumentInteractor.Delete(Id);
-            return RedirectToAction("Document",new { Id = Id });
+            return RedirectToAction("Document", new { Id = Id });
         }
         [CustomAuthorizeAttribute("Admin", "Member")]
         public ActionResult MyHistory(long? Id)
@@ -214,11 +204,23 @@ namespace webIEA.Controllers
             var result = _historychangesinteractor.GetHistoryDetail(pk, Convert.ToDateTime(dates));
             return View("HistoryDetails", result);
         }
-        //[CustomAuthorizeAttribute("Admin")]
+        [CustomAuthorizeAttribute("Admin")]
         public ActionResult MemberAvgAge()
         {
             var result = _memberManager.MemberAvgAge();
             return View("Dashobard", result);
+        }
+        [CustomAuthorizeAttribute("Admin")]
+        public ActionResult DeleteMember(long Id)
+        {
+            _memberManager.DeleteMember(Id);
+            return RedirectToAction("IndexPage", "Member");
+        }
+        [CustomAuthorizeAttribute("Admin")]
+        public ActionResult SuspendMember(long Id) 
+        {
+            var result = _memberManager.UpdateMemberStatus(Id, (int)MemberStatusEnum.Suspended); 
+            return RedirectToAction("IndexPage");
         }
     }
 }

@@ -30,17 +30,25 @@ namespace webIEA.Controllers
                 var result = _accountInteractor.Login(model);
                 if (result != null)
                 {
-                    Session.Add("Id", result.Id);
-                    Session.Add("loginUserId", result.loginUserId);
-                    Session.Add("Email", result.Email);
-                    Session.Add("Role", result.RoleId);
-                    Session.Add("FirstName", result.FirstName);
-                    Session.Add("LogId", result.LogId);
-
-                    if (result.RoleId == (int)IEARoles.Admin)
-                        return RedirectToAction("IndexPage", "Member");
+                    if (result.Status == (int)MemberStatusEnum.Suspended)
+                    {
+                        ModelState.AddModelError("", "Your account has been suspended. Please contact admin");
+                        return View("Index");
+                    }
                     else
-                        return RedirectToAction("Details", "Member");
+                    {
+                        Session.Add("Id", result.Id);
+                        Session.Add("loginUserId", result.loginUserId);
+                        Session.Add("Email", result.Email);
+                        Session.Add("Role", result.RoleId);
+                        Session.Add("FirstName", result.FirstName);
+                        Session.Add("LogId", result.LogId);
+
+                        if (result.RoleId == (int)IEARoles.Admin)
+                            return RedirectToAction("IndexPage", "Member");
+                        else
+                            return RedirectToAction("Details", "Member");
+                    }
                 }
                 else
                 {

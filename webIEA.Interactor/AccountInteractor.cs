@@ -30,22 +30,27 @@ namespace webIEA.Interactor
             if (emailcheck != null)
             {
                 var userLogin = repositoryWrapper.AccountManager.Login(model, emailcheck.Id);
-                loginDetail = userLogin == null ? null :  new AccountDto()
+                if(userLogin != null)                
                 {
-                    Id = userLogin.Id,
-                    Email = emailcheck.Email,
-                    FirstName = emailcheck.FirstName,
-                    RoleId = userLogin.RoleId,
-                    loginUserId = userLogin.loginUserId
-                };
-                var data = new UserLog
-                {
-                    UserId = userLogin.Id,
-                    Login = DateTime.Now,
-                };
-                userlogrep.Insert(data);
-                userlogrep.Save();
-                loginDetail.LogId = data.Id;
+                    loginDetail = new AccountDto()
+                    {
+                        Id = userLogin.Id,
+                        Email = emailcheck.Email,
+                        FirstName = emailcheck.FirstName,
+                        RoleId = userLogin.RoleId,
+                        loginUserId = userLogin.loginUserId,
+                        Status = (int)emailcheck.StatusID
+                    };
+
+                    var data = new UserLog
+                    {
+                        UserId = userLogin.Id,
+                        Login = DateTime.Now,
+                    };
+                    userlogrep.Insert(data);
+                    userlogrep.Save();
+                    loginDetail.LogId = data.Id;
+                }                
             }
             return loginDetail;
         }        

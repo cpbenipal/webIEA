@@ -65,7 +65,7 @@
           <Property Name="LastNamePublic" Type="bit" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="EmailPublic" Type="bit" Nullable="false" />
-          <Property Name="DOB" Type="datetime" />
+          <Property Name="DOB" Type="datetime" Nullable="false" />
           <Property Name="DOBPublic" Type="bit" Nullable="false" />
           <Property Name="BirthPlace" Type="nvarchar" MaxLength="200" />
           <Property Name="BirthPlacePublic" Type="bit" Nullable="false" />
@@ -198,7 +198,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MemberDocuments_MemberDocuments">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
+          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MemberDocuments" Type="Self.MemberDocuments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MemberProfile">
@@ -234,7 +236,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MemberSpecifications_Members">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
+          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MemberSpecializations" Type="Self.MemberSpecializations" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MemberProfile">
@@ -246,7 +250,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MemberTranieeCommission_Members">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
+          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MemberTranieeCommission" Type="Self.MemberTranieeCommission" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MemberProfile">
@@ -281,8 +287,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserLog_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserLog" Type="Self.UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Users_UserRoles">
-          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Users" Type="Self.Users" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserRoles">
@@ -339,6 +361,10 @@
             <End Role="mCourseType" EntitySet="mCourseType" />
             <End Role="TrainingCourses" EntitySet="TrainingCourses" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserLog_Users" Association="Self.FK_UserLog_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserLog" EntitySet="UserLog" />
+          </AssociationSet>
           <AssociationSet Name="FK_Users_UserRoles" Association="Self.FK_Users_UserRoles">
             <End Role="UserRoles" EntitySet="UserRoles" />
             <End Role="Users" EntitySet="Users" />
@@ -348,6 +374,61 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="webIEAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="webIEAEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CourseLanguages" EntityType="webIEAModel.CourseLanguage" />
+          <EntitySet Name="HistoryDataChanges" EntityType="webIEAModel.HistoryDataChanx" />
+          <EntitySet Name="mCourseTypes" EntityType="webIEAModel.mCourseType" />
+          <EntitySet Name="MemberDocuments" EntityType="webIEAModel.MemberDocument" />
+          <EntitySet Name="MemberProfiles" EntityType="webIEAModel.MemberProfile" />
+          <EntitySet Name="MemberSpecializations" EntityType="webIEAModel.MemberSpecialization" />
+          <EntitySet Name="MemberTranieeCommissions" EntityType="webIEAModel.MemberTranieeCommission" />
+          <EntitySet Name="mEmploymentStatus" EntityType="webIEAModel.mEmploymentStatu" />
+          <EntitySet Name="mStatus" EntityType="webIEAModel.mStatu" />
+          <EntitySet Name="TrainingCourses" EntityType="webIEAModel.TrainingCours" />
+          <EntitySet Name="UserLogs" EntityType="webIEAModel.UserLog" />
+          <EntitySet Name="UserRoles" EntityType="webIEAModel.UserRole" />
+          <EntitySet Name="Users" EntityType="webIEAModel.User" />
+          <AssociationSet Name="FK_CourseLanguage_TrainingCourses" Association="webIEAModel.FK_CourseLanguage_TrainingCourses">
+            <End Role="TrainingCours" EntitySet="TrainingCourses" />
+            <End Role="CourseLanguage" EntitySet="CourseLanguages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TrainingCourses_mCourseType" Association="webIEAModel.FK_TrainingCourses_mCourseType">
+            <End Role="mCourseType" EntitySet="mCourseTypes" />
+            <End Role="TrainingCours" EntitySet="TrainingCourses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberDocuments_MemberDocuments" Association="webIEAModel.FK_MemberDocuments_MemberDocuments">
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+            <End Role="MemberDocument" EntitySet="MemberDocuments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberProfile_mEmploymentStatus" Association="webIEAModel.FK_MemberProfile_mEmploymentStatus">
+            <End Role="mEmploymentStatu" EntitySet="mEmploymentStatus" />
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Members_mStatus" Association="webIEAModel.FK_Members_mStatus">
+            <End Role="mStatu" EntitySet="mStatus" />
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberSpecifications_Members" Association="webIEAModel.FK_MemberSpecifications_Members">
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+            <End Role="MemberSpecialization" EntitySet="MemberSpecializations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberTranieeCommission_Members" Association="webIEAModel.FK_MemberTranieeCommission_Members">
+            <End Role="MemberProfile" EntitySet="MemberProfiles" />
+            <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberTranieeCommission_TrainingCourses" Association="webIEAModel.FK_MemberTranieeCommission_TrainingCourses">
+            <End Role="TrainingCours" EntitySet="TrainingCourses" />
+            <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserLog_Users" Association="webIEAModel.FK_UserLog_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserLog" EntitySet="UserLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_UserRoles" Association="webIEAModel.FK_Users_UserRoles">
+            <End Role="UserRole" EntitySet="UserRoles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="CourseLanguage">
           <Key>
             <PropertyRef Name="Id" />
@@ -359,7 +440,7 @@
           <Property Name="AddedOn" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedOn" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TrainingCours" Relationship="Self.FK_CourseLanguage_TrainingCourses" FromRole="CourseLanguage" ToRole="TrainingCourses" />
+          <NavigationProperty Name="TrainingCours" Relationship="webIEAModel.FK_CourseLanguage_TrainingCourses" FromRole="CourseLanguage" ToRole="TrainingCours" />
         </EntityType>
         <EntityType Name="HistoryDataChanx">
           <Key>
@@ -383,7 +464,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TrainingCourses" Relationship="Self.FK_TrainingCourses_mCourseType" FromRole="mCourseType" ToRole="TrainingCourses" />
+          <NavigationProperty Name="TrainingCourses" Relationship="webIEAModel.FK_TrainingCourses_mCourseType" FromRole="mCourseType" ToRole="TrainingCours" />
         </EntityType>
         <EntityType Name="MemberDocument">
           <Key>
@@ -398,20 +479,20 @@
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="MemberProfile" Relationship="Self.FK_MemberDocuments_MemberDocuments" FromRole="MemberDocuments" ToRole="MemberProfile" />
+          <NavigationProperty Name="MemberProfile" Relationship="webIEAModel.FK_MemberDocuments_MemberDocuments" FromRole="MemberDocument" ToRole="MemberProfile" />
         </EntityType>
         <EntityType Name="MemberProfile">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="FirstNamePublic" Type="Boolean" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="LastNamePublic" Type="Boolean" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="EmailPublic" Type="Boolean" Nullable="false" />
-          <Property Name="DOB" Type="DateTime" Precision="3" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DOBPublic" Type="Boolean" Nullable="false" />
           <Property Name="BirthPlace" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="BirthPlacePublic" Type="Boolean" Nullable="false" />
@@ -442,11 +523,11 @@
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="MemberDocuments" Relationship="Self.FK_MemberDocuments_MemberDocuments" FromRole="MemberProfile" ToRole="MemberDocuments" />
-          <NavigationProperty Name="mEmploymentStatu" Relationship="Self.FK_MemberProfile_mEmploymentStatus" FromRole="MemberProfile" ToRole="mEmploymentStatus" />
-          <NavigationProperty Name="mStatu" Relationship="Self.FK_Members_mStatus" FromRole="MemberProfile" ToRole="mStatus" />
-          <NavigationProperty Name="MemberSpecializations" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecializations" />
-          <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_Members" FromRole="MemberProfile" ToRole="MemberTranieeCommission" />
+          <NavigationProperty Name="MemberDocuments" Relationship="webIEAModel.FK_MemberDocuments_MemberDocuments" FromRole="MemberProfile" ToRole="MemberDocument" />
+          <NavigationProperty Name="mEmploymentStatu" Relationship="webIEAModel.FK_MemberProfile_mEmploymentStatus" FromRole="MemberProfile" ToRole="mEmploymentStatu" />
+          <NavigationProperty Name="mStatu" Relationship="webIEAModel.FK_Members_mStatus" FromRole="MemberProfile" ToRole="mStatu" />
+          <NavigationProperty Name="MemberSpecializations" Relationship="webIEAModel.FK_MemberSpecifications_Members" FromRole="MemberProfile" ToRole="MemberSpecialization" />
+          <NavigationProperty Name="MemberTranieeCommissions" Relationship="webIEAModel.FK_MemberTranieeCommission_Members" FromRole="MemberProfile" ToRole="MemberTranieeCommission" />
         </EntityType>
         <EntityType Name="MemberSpecialization">
           <Key>
@@ -459,7 +540,7 @@
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="MemberProfile" Relationship="Self.FK_MemberSpecifications_Members" FromRole="MemberSpecializations" ToRole="MemberProfile" />
+          <NavigationProperty Name="MemberProfile" Relationship="webIEAModel.FK_MemberSpecifications_Members" FromRole="MemberSpecialization" ToRole="MemberProfile" />
         </EntityType>
         <EntityType Name="MemberTranieeCommission">
           <Key>
@@ -472,16 +553,16 @@
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="MemberProfile" Relationship="Self.FK_MemberTranieeCommission_Members" FromRole="MemberTranieeCommission" ToRole="MemberProfile" />
-          <NavigationProperty Name="TrainingCours" Relationship="Self.FK_MemberTranieeCommission_TrainingCourses" FromRole="MemberTranieeCommission" ToRole="TrainingCourses" />
+          <NavigationProperty Name="MemberProfile" Relationship="webIEAModel.FK_MemberTranieeCommission_Members" FromRole="MemberTranieeCommission" ToRole="MemberProfile" />
+          <NavigationProperty Name="TrainingCours" Relationship="webIEAModel.FK_MemberTranieeCommission_TrainingCourses" FromRole="MemberTranieeCommission" ToRole="TrainingCours" />
         </EntityType>
         <EntityType Name="mEmploymentStatu">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="MemberProfiles" Relationship="Self.FK_MemberProfile_mEmploymentStatus" FromRole="mEmploymentStatus" ToRole="MemberProfile" />
+          <Property Name="StatusName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="MemberProfiles" Relationship="webIEAModel.FK_MemberProfile_mEmploymentStatus" FromRole="mEmploymentStatu" ToRole="MemberProfile" />
         </EntityType>
         <EntityType Name="mStatu">
           <Key>
@@ -489,188 +570,51 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="StatusName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MemberProfiles" Relationship="Self.FK_Members_mStatus" FromRole="mStatus" ToRole="MemberProfile" />
+          <NavigationProperty Name="MemberProfiles" Relationship="webIEAModel.FK_Members_mStatus" FromRole="mStatu" ToRole="MemberProfile" />
         </EntityType>
         <EntityType Name="TrainingCours">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TrainingName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TrainingName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ValidatedHours" Type="Int32" />
           <Property Name="IsShow" Type="Boolean" Nullable="false" />
           <Property Name="TypeID" Type="Int32" Nullable="false" />
           <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndDateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Cost" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Cost" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="IsFullTime" Type="Boolean" Nullable="false" />
-          <Property Name="Location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Location" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="IsApproved" Type="Boolean" Nullable="false" />
           <Property Name="StatusID" Type="Int32" Nullable="false" />
           <Property Name="AddedOn" Type="DateTime" Precision="3" />
           <Property Name="AddedBy" Type="Int64" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="CourseLanguages" Relationship="Self.FK_CourseLanguage_TrainingCourses" FromRole="TrainingCourses" ToRole="CourseLanguage" />
-          <NavigationProperty Name="mCourseType" Relationship="Self.FK_TrainingCourses_mCourseType" FromRole="TrainingCourses" ToRole="mCourseType" />
-          <NavigationProperty Name="MemberTranieeCommissions" Relationship="Self.FK_MemberTranieeCommission_TrainingCourses" FromRole="TrainingCourses" ToRole="MemberTranieeCommission" />
+          <NavigationProperty Name="CourseLanguages" Relationship="webIEAModel.FK_CourseLanguage_TrainingCourses" FromRole="TrainingCours" ToRole="CourseLanguage" />
+          <NavigationProperty Name="mCourseType" Relationship="webIEAModel.FK_TrainingCourses_mCourseType" FromRole="TrainingCours" ToRole="mCourseType" />
+          <NavigationProperty Name="MemberTranieeCommissions" Relationship="webIEAModel.FK_MemberTranieeCommission_TrainingCourses" FromRole="TrainingCours" ToRole="MemberTranieeCommission" />
+        </EntityType>
+        <EntityType Name="UserLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Login" Type="DateTime" Precision="3" />
+          <Property Name="Logout" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="User" Relationship="webIEAModel.FK_UserLog_Users" FromRole="UserLog" ToRole="User" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Users" Relationship="webIEAModel.FK_Users_UserRoles" FromRole="UserRole" ToRole="User" />
         </EntityType>
-        <Association Name="FK_CourseLanguage_TrainingCourses">
-          <End Role="TrainingCourses" Type="Self.TrainingCours" Multiplicity="1" />
-          <End Role="CourseLanguage" Type="Self.CourseLanguage" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TrainingCourses">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="CourseLanguage">
-              <PropertyRef Name="CourseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TrainingCourses_mCourseType">
-          <End Role="mCourseType" Type="Self.mCourseType" Multiplicity="1" />
-          <End Role="TrainingCourses" Type="Self.TrainingCours" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="mCourseType">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TrainingCourses">
-              <PropertyRef Name="TypeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MemberDocuments_MemberDocuments">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
-          <End Role="MemberDocuments" Type="Self.MemberDocument" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MemberProfile">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MemberDocuments">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MemberProfile_mEmploymentStatus">
-          <End Role="mEmploymentStatus" Type="Self.mEmploymentStatu" Multiplicity="0..1" />
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="mEmploymentStatus">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MemberProfile">
-              <PropertyRef Name="EmploymentStatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Members_mStatus">
-          <End Role="mStatus" Type="Self.mStatu" Multiplicity="0..1" />
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="mStatus">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MemberProfile">
-              <PropertyRef Name="StatusID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MemberSpecifications_Members">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
-          <End Role="MemberSpecializations" Type="Self.MemberSpecialization" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MemberProfile">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MemberSpecializations">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MemberTranieeCommission_Members">
-          <End Role="MemberProfile" Type="Self.MemberProfile" Multiplicity="0..1" />
-          <End Role="MemberTranieeCommission" Type="Self.MemberTranieeCommission" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MemberProfile">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="MemberTranieeCommission">
-              <PropertyRef Name="MemberID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MemberTranieeCommission_TrainingCourses">
-          <End Role="TrainingCourses" Type="Self.TrainingCours" Multiplicity="0..1" />
-          <End Role="MemberTranieeCommission" Type="Self.MemberTranieeCommission" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TrainingCourses">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MemberTranieeCommission">
-              <PropertyRef Name="TrainingCourseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="webIEAEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CourseLanguages" EntityType="Self.CourseLanguage" />
-          <EntitySet Name="HistoryDataChanges" EntityType="Self.HistoryDataChanx" />
-          <EntitySet Name="mCourseTypes" EntityType="Self.mCourseType" />
-          <EntitySet Name="MemberDocuments" EntityType="Self.MemberDocument" />
-          <EntitySet Name="MemberProfiles" EntityType="Self.MemberProfile" />
-          <EntitySet Name="MemberSpecializations" EntityType="Self.MemberSpecialization" />
-          <EntitySet Name="MemberTranieeCommissions" EntityType="Self.MemberTranieeCommission" />
-          <EntitySet Name="mEmploymentStatus" EntityType="Self.mEmploymentStatu" />
-          <EntitySet Name="mStatus" EntityType="Self.mStatu" />
-          <EntitySet Name="TrainingCourses" EntityType="Self.TrainingCours" />
-          <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
-          <AssociationSet Name="FK_CourseLanguage_TrainingCourses" Association="Self.FK_CourseLanguage_TrainingCourses">
-            <End Role="TrainingCourses" EntitySet="TrainingCourses" />
-            <End Role="CourseLanguage" EntitySet="CourseLanguages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TrainingCourses_mCourseType" Association="Self.FK_TrainingCourses_mCourseType">
-            <End Role="mCourseType" EntitySet="mCourseTypes" />
-            <End Role="TrainingCourses" EntitySet="TrainingCourses" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MemberDocuments_MemberDocuments" Association="Self.FK_MemberDocuments_MemberDocuments">
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-            <End Role="MemberDocuments" EntitySet="MemberDocuments" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MemberProfile_mEmploymentStatus" Association="Self.FK_MemberProfile_mEmploymentStatus">
-            <End Role="mEmploymentStatus" EntitySet="mEmploymentStatus" />
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Members_mStatus" Association="Self.FK_Members_mStatus">
-            <End Role="mStatus" EntitySet="mStatus" />
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MemberSpecifications_Members" Association="Self.FK_MemberSpecifications_Members">
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-            <End Role="MemberSpecializations" EntitySet="MemberSpecializations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MemberTranieeCommission_Members" Association="Self.FK_MemberTranieeCommission_Members">
-            <End Role="MemberProfile" EntitySet="MemberProfiles" />
-            <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MemberTranieeCommission_TrainingCourses" Association="Self.FK_MemberTranieeCommission_TrainingCourses">
-            <End Role="TrainingCourses" EntitySet="TrainingCourses" />
-            <End Role="MemberTranieeCommission" EntitySet="MemberTranieeCommissions" />
-          </AssociationSet>
-          <EntitySet Name="Users" EntityType="webIEAModel.User" />
-          <AssociationSet Name="FK_Users_UserRoles" Association="webIEAModel.FK_Users_UserRoles">
-            <End Role="UserRole" EntitySet="UserRoles" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <EntitySet Name="UserLogs" EntityType="webIEAModel.UserLog" />
-        </EntityContainer>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
@@ -682,10 +626,129 @@
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="loginUserId" Type="Int64" Nullable="false" />
           <Property Name="TableName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserLogs" Relationship="webIEAModel.FK_UserLog_Users" FromRole="User" ToRole="UserLog" />
           <NavigationProperty Name="UserRole" Relationship="webIEAModel.FK_Users_UserRoles" FromRole="User" ToRole="UserRole" />
         </EntityType>
+        <Association Name="FK_CourseLanguage_TrainingCourses">
+          <End Type="webIEAModel.TrainingCours" Role="TrainingCours" Multiplicity="1" />
+          <End Type="webIEAModel.CourseLanguage" Role="CourseLanguage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrainingCours">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CourseLanguage">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TrainingCourses_mCourseType">
+          <End Type="webIEAModel.mCourseType" Role="mCourseType" Multiplicity="1" />
+          <End Type="webIEAModel.TrainingCours" Role="TrainingCours" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="mCourseType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TrainingCours">
+              <PropertyRef Name="TypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberDocuments_MemberDocuments">
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="webIEAModel.MemberDocument" Role="MemberDocument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberProfile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberDocument">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberProfile_mEmploymentStatus">
+          <End Type="webIEAModel.mEmploymentStatu" Role="mEmploymentStatu" Multiplicity="0..1" />
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="mEmploymentStatu">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberProfile">
+              <PropertyRef Name="EmploymentStatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Members_mStatus">
+          <End Type="webIEAModel.mStatu" Role="mStatu" Multiplicity="0..1" />
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="mStatu">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MemberProfile">
+              <PropertyRef Name="StatusID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberSpecifications_Members">
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="webIEAModel.MemberSpecialization" Role="MemberSpecialization" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberProfile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberSpecialization">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberTranieeCommission_Members">
+          <End Type="webIEAModel.MemberProfile" Role="MemberProfile" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="webIEAModel.MemberTranieeCommission" Role="MemberTranieeCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MemberProfile">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberTranieeCommission">
+              <PropertyRef Name="MemberID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberTranieeCommission_TrainingCourses">
+          <End Type="webIEAModel.TrainingCours" Role="TrainingCours" Multiplicity="0..1" />
+          <End Type="webIEAModel.MemberTranieeCommission" Role="MemberTranieeCommission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrainingCours">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MemberTranieeCommission">
+              <PropertyRef Name="TrainingCourseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserLog_Users">
+          <End Type="webIEAModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="webIEAModel.UserLog" Role="UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Users_UserRoles">
-          <End Type="webIEAModel.UserRole" Role="UserRole" Multiplicity="1" />
+          <End Type="webIEAModel.UserRole" Role="UserRole" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="webIEAModel.User" Role="User" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="UserRole">
@@ -696,16 +759,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="UserLog">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Login" Type="DateTime" Precision="3" />
-          <Property Name="Logout" Type="DateTime" Precision="3" />
-        </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -714,170 +768,180 @@
           <EntitySetMapping Name="CourseLanguages">
             <EntityTypeMapping TypeName="webIEAModel.CourseLanguage">
               <MappingFragment StoreEntitySet="CourseLanguage">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
-                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="HistoryDataChanges">
             <EntityTypeMapping TypeName="webIEAModel.HistoryDataChanx">
               <MappingFragment StoreEntitySet="HistoryDataChanges">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="TableName" ColumnName="TableName" />
-                <ScalarProperty Name="PK" ColumnName="PK" />
-                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
-                <ScalarProperty Name="OldValue" ColumnName="OldValue" />
-                <ScalarProperty Name="NewValue" ColumnName="NewValue" />
-                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UniqueId" ColumnName="UniqueId" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="NewValue" ColumnName="NewValue" />
+                <ScalarProperty Name="OldValue" ColumnName="OldValue" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+                <ScalarProperty Name="PK" ColumnName="PK" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="mCourseTypes">
             <EntityTypeMapping TypeName="webIEAModel.mCourseType">
               <MappingFragment StoreEntitySet="mCourseType">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MemberDocuments">
             <EntityTypeMapping TypeName="webIEAModel.MemberDocument">
               <MappingFragment StoreEntitySet="MemberDocuments">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
-                <ScalarProperty Name="ContentType" ColumnName="ContentType" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="ContentType" ColumnName="ContentType" />
+                <ScalarProperty Name="DocumentName" ColumnName="DocumentName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MemberProfiles">
             <EntityTypeMapping TypeName="webIEAModel.MemberProfile">
               <MappingFragment StoreEntitySet="MemberProfile">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="FirstNamePublic" ColumnName="FirstNamePublic" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="LastNamePublic" ColumnName="LastNamePublic" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="EmailPublic" ColumnName="EmailPublic" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="DOBPublic" ColumnName="DOBPublic" />
-                <ScalarProperty Name="BirthPlace" ColumnName="BirthPlace" />
-                <ScalarProperty Name="BirthPlacePublic" ColumnName="BirthPlacePublic" />
-                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
-                <ScalarProperty Name="NationalityPublic" ColumnName="NationalityPublic" />
-                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
-                <ScalarProperty Name="LanguageIDPublic" ColumnName="LanguageIDPublic" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="PhonePublic" ColumnName="PhonePublic" />
-                <ScalarProperty Name="GSM" ColumnName="GSM" />
-                <ScalarProperty Name="GSMPublic" ColumnName="GSMPublic" />
-                <ScalarProperty Name="Street" ColumnName="Street" />
-                <ScalarProperty Name="StreetPublic" ColumnName="StreetPublic" />
-                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
-                <ScalarProperty Name="PostalCodePublic" ColumnName="PostalCodePublic" />
-                <ScalarProperty Name="Commune" ColumnName="Commune" />
-                <ScalarProperty Name="CommunePublic" ColumnName="CommunePublic" />
-                <ScalarProperty Name="PrivateAddress" ColumnName="PrivateAddress" />
-                <ScalarProperty Name="PrivateAddressPublic" ColumnName="PrivateAddressPublic" />
-                <ScalarProperty Name="PrivatePostalCode" ColumnName="PrivatePostalCode" />
-                <ScalarProperty Name="PrivatePostalCodePublic" ColumnName="PrivatePostalCodePublic" />
-                <ScalarProperty Name="EmploymentStatusID" ColumnName="EmploymentStatusID" />
-                <ScalarProperty Name="EmploymentStatusIDPublic" ColumnName="EmploymentStatusIDPublic" />
-                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
-                <ScalarProperty Name="SpecializationPublic" ColumnName="SpecializationPublic" />
-                <ScalarProperty Name="TraineeCommissionPublic" ColumnName="TraineeCommissionPublic" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="TraineeCommissionPublic" ColumnName="TraineeCommissionPublic" />
+                <ScalarProperty Name="SpecializationPublic" ColumnName="SpecializationPublic" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="EmploymentStatusIDPublic" ColumnName="EmploymentStatusIDPublic" />
+                <ScalarProperty Name="EmploymentStatusID" ColumnName="EmploymentStatusID" />
+                <ScalarProperty Name="PrivatePostalCodePublic" ColumnName="PrivatePostalCodePublic" />
+                <ScalarProperty Name="PrivatePostalCode" ColumnName="PrivatePostalCode" />
+                <ScalarProperty Name="PrivateAddressPublic" ColumnName="PrivateAddressPublic" />
+                <ScalarProperty Name="PrivateAddress" ColumnName="PrivateAddress" />
+                <ScalarProperty Name="CommunePublic" ColumnName="CommunePublic" />
+                <ScalarProperty Name="Commune" ColumnName="Commune" />
+                <ScalarProperty Name="PostalCodePublic" ColumnName="PostalCodePublic" />
+                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+                <ScalarProperty Name="StreetPublic" ColumnName="StreetPublic" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="GSMPublic" ColumnName="GSMPublic" />
+                <ScalarProperty Name="GSM" ColumnName="GSM" />
+                <ScalarProperty Name="PhonePublic" ColumnName="PhonePublic" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="LanguageIDPublic" ColumnName="LanguageIDPublic" />
+                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+                <ScalarProperty Name="NationalityPublic" ColumnName="NationalityPublic" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="BirthPlacePublic" ColumnName="BirthPlacePublic" />
+                <ScalarProperty Name="BirthPlace" ColumnName="BirthPlace" />
+                <ScalarProperty Name="DOBPublic" ColumnName="DOBPublic" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="EmailPublic" ColumnName="EmailPublic" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastNamePublic" ColumnName="LastNamePublic" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstNamePublic" ColumnName="FirstNamePublic" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MemberSpecializations">
             <EntityTypeMapping TypeName="webIEAModel.MemberSpecialization">
               <MappingFragment StoreEntitySet="MemberSpecializations">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="SpecializationName" ColumnName="SpecializationName" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="SpecializationName" ColumnName="SpecializationName" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="MemberTranieeCommissions">
             <EntityTypeMapping TypeName="webIEAModel.MemberTranieeCommission">
               <MappingFragment StoreEntitySet="MemberTranieeCommission">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="TrainingCourseId" ColumnName="TrainingCourseId" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="TrainingCourseId" ColumnName="TrainingCourseId" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="mEmploymentStatus">
             <EntityTypeMapping TypeName="webIEAModel.mEmploymentStatu">
               <MappingFragment StoreEntitySet="mEmploymentStatus">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="mStatus">
             <EntityTypeMapping TypeName="webIEAModel.mStatu">
               <MappingFragment StoreEntitySet="mStatus">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TrainingCourses">
             <EntityTypeMapping TypeName="webIEAModel.TrainingCours">
               <MappingFragment StoreEntitySet="TrainingCourses">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="TrainingName" ColumnName="TrainingName" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ValidatedHours" ColumnName="ValidatedHours" />
-                <ScalarProperty Name="IsShow" ColumnName="IsShow" />
-                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
-                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
-                <ScalarProperty Name="Cost" ColumnName="Cost" />
-                <ScalarProperty Name="IsFullTime" ColumnName="IsFullTime" />
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
-                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
-                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="IsFullTime" ColumnName="IsFullTime" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="EndDateTime" ColumnName="EndDateTime" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="IsShow" ColumnName="IsShow" />
+                <ScalarProperty Name="ValidatedHours" ColumnName="ValidatedHours" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="TrainingName" ColumnName="TrainingName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserLogs">
+            <EntityTypeMapping TypeName="webIEAModel.UserLog">
+              <MappingFragment StoreEntitySet="UserLog">
+                <ScalarProperty Name="Logout" ColumnName="Logout" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="UserRoles">
             <EntityTypeMapping TypeName="webIEAModel.UserRole">
               <MappingFragment StoreEntitySet="UserRoles">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -890,16 +954,6 @@
                 <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
                 <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserLogs">
-            <EntityTypeMapping TypeName="webIEAModel.UserLog">
-              <MappingFragment StoreEntitySet="UserLog">
-                <ScalarProperty Name="Logout" ColumnName="Logout" />
-                <ScalarProperty Name="Login" ColumnName="Login" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

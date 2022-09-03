@@ -14,6 +14,11 @@ namespace webIEA.Entities
     
     public partial class User
     {
+        public User()
+        {
+            this.UserLogs = new HashSet<UserLog>();
+        }
+    
         public string Id { get; set; }
         public string Password { get; set; }
         public byte[] PasswordHash { get; set; }
@@ -22,6 +27,7 @@ namespace webIEA.Entities
         public long loginUserId { get; set; }
         public string TableName { get; set; }
     
+        public virtual ICollection<UserLog> UserLogs { get; set; }
         public virtual UserRole UserRole { get; set; }
     }
 }

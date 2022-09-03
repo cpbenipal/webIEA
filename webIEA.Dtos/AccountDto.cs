@@ -24,6 +24,7 @@ namespace webIEA.Dtos
         public string TableName { get; set; }
         public string FirstName { get; set; }
         public long LogId { get; set; }
+        public int Status { get; set; } 
     }
 
 

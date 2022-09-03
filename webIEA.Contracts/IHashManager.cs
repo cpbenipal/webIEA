@@ -11,6 +11,6 @@ namespace webIEA.Contracts
         List<byte[]> HashWithSalt(string password);
         bool VerifyPasswordWithSaltAndStoredHash(string password, byte[] storedHash, byte[] storedSalt);
         string EncryptPlainText(string plainText);
-        string DecryptCipherText(string cipherText);
+        string DecryptCipherText(string cipherText); 
     }
 }

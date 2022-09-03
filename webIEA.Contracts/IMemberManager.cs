@@ -14,9 +14,8 @@ namespace webIEA.Contracts
         List<MemberProfile> GetAllMembers();
         long AddMember(MemberProfile memberProfile);
         MemberProfile GetMemberById(long id);
-        object UpdateMember(MemberProfile membersDto);
-        MemberProfile UpdateStatus(MemberProfile memberProfile);
-        //object UpdateMemberStatus(long Id, string FieldName, int status);
+        MemberProfile UpdateMember(MemberProfile membersDto);         
         MemberProfile GetMemberByEmail(string Email);
+        void DeleteMember(long Id); 
     }
 }

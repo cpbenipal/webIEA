@@ -18,5 +18,19 @@
         @Html.ActionLink("History", "MyHistory", new { id = Convert.ToString(Session["TempId"]) }, null)
 
     </li>
-
+    @if (!string.IsNullOrEmpty(Convert.ToString(Session["Role"])) && Convert.ToInt32(Session["Role"]) == (int)webIEA.Dtos.IEARoles.Admin)
+    {
+        <li class="nav-item">
+            @Html.ActionLink("Member List", "IndexPage")
+        </li>
+        if (Convert.ToString(Session["TempId"]) != Convert.ToString(Session["loginUserId"]))
+        {
+            <li class="nav-item">
+                @Html.ActionLink("Delete", "DeleteMember", new { id = Convert.ToString(Session["TempId"]) }, null)
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("Suspend", "SuspendMember", new { id = Convert.ToString(Session["TempId"]) }, null)
+            </li>
+        }
+    }
 </ul>

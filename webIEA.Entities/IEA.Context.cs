@@ -35,8 +35,8 @@ namespace webIEA.Entities
         public DbSet<mEmploymentStatu> mEmploymentStatus { get; set; }
         public DbSet<mStatu> mStatus { get; set; }
         public DbSet<TrainingCours> TrainingCourses { get; set; }
+        public DbSet<UserLog> UserLogs { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserLog> UserLogs { get; set; }
     }
 }

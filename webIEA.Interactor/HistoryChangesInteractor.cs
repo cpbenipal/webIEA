@@ -137,7 +137,7 @@ namespace webIEA.Interactor
             var employmentstatus = repositoryWrapper.EmploymentStatusManager.GetAll();
             m.EmploymentStatuses = employmentstatus.Select(x => new ListCollectionDto() { Id = (int)x.Id, Value = x.StatusName }).ToList();
             var traningcourse = repositoryWrapper.TraineeCourseManager.GetAll();
-            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = (int)x.ID, Value = x.TrainingName }).Where(x => m.TraneeComissionId.Contains((int)x.Id)).ToList();
+            m.TranieeCommission = traningcourse.Select(x => new ListCollectionDto() { Id = x.ID, Value = x.TrainingName }).Where(x => m.TraneeComissionId.Contains(x.Id)).ToList();
             return m;
         }
     }
